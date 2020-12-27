@@ -5,6 +5,7 @@ import os
 import torch
 import torch.nn
 import torch.distributed as dist
+from torch import nn
 from torch.distributed import rpc, timedelta, Backend
 from torch.distributed.rpc import TensorPipeRpcBackendOptions
 from torch.nn.parallel import DistributedDataParallel as DDP
@@ -152,18 +153,34 @@ class AutoDataParallel:
                                                    timeout=timedelta(days=365))
 
     def generate_ddp_model(self, model, gpu_num_per_process, ddp_params_to_skip):
+        """
+        Issues Description:
+        the output of pipe is RRef，but DDP cannot recognize RRef object so DDP cannot find Tensor inside RRef.
+        Then DDP will view all parameters as used ones.
+
+        Temporal Solution:
+        Using a Wrapper model to help DDP find find Tensors inside RRef.
+        """
+        class Wrapper(nn.Module):
+            def __init__(self, pipe_module):
+                super().__init__()
+                self.pipe_module = pipe_module
+
+            def forward(self, *args, **kwargs):
+                return self.pipe_module(*args, **kwargs).local_value()
+
         self.pipe_len = gpu_num_per_process
         DDP._set_params_and_buffers_to_ignore_for_model(model, ddp_params_to_skip)
         if gpu_num_per_process > 1:
             # find_unused_parameters = True can avoid bucket rebuilt, which takes around 20s
             # model = DDP(model, process_group=self.active_process_group,
             #             find_unused_parameters=True)
-            model = DDP(model, process_group=self.active_process_group)
+            model = DDP(Wrapper(model), process_group=self.active_process_group)
         else:
             # find_unused_parameters = True can avoid bucket rebuilt, which takes around 20s
             # model = DDP(model, device_ids=[self.local_rank], process_group=self.active_process_group,
             #             find_unused_parameters=True)
-            model = DDP(model, device_ids=[self.local_rank], process_group=self.active_process_group,
+            model = DDP(Wrapper(model), device_ids=[self.local_rank], process_group=self.active_process_group,
                         find_unused_parameters=True)
         return model
 
