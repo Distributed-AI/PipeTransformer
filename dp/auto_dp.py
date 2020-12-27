@@ -3,6 +3,7 @@ import logging
 import os
 
 import torch
+import torch.nn
 import torch.distributed as dist
 from torch.distributed import rpc, timedelta, Backend
 from torch.distributed.rpc import TensorPipeRpcBackendOptions
@@ -96,6 +97,19 @@ class AutoDataParallel:
             rpc_backend_options=rpc_backend_options,
         )
         print("init_rpc")
+
+    def warm_up(self):
+        class WarmupModel(torch.nn.Module):
+            def __init__(self):
+                super(WarmupModel, self).__init__()
+                self.model_arch = torch.nn.Parameter(1e-3*torch.randn(1,1))
+
+            def forward(self, x):
+                x = self.model_arch*2
+                return x
+        warmup_model = WarmupModel()
+        warmup_model.to(self.local_rank)
+        print("local_rank = %d, global_rank = %d" % (self.local_rank, self.global_rank))
 
     def is_active(self):
         return True if self.global_rank in self.active_ranks else False
