@@ -197,7 +197,7 @@ def train(args, auto_pipe, auto_dp, model, epoch, train_dataloader, test_dataloa
         # logging.info(f"forward time cost (ms) by CUDA event {start_fp.elapsed_time(end_fp)}")
         # logging.info(f"backwards time cost: (ms) by CUDA event {start_bp.elapsed_time(end_bp)}")
 
-        logging.info("global_rank = %d. data loading cost = %f" % (auto_dp.global_rank(), time_finish_loading-starting_time))
+        logging.info("data loading cost = " + str(time_finish_loading-starting_time))
 
         sample_num_throughput = int(
             num_sample_processed_in_total / (time.time() - time_finish_loading)) * auto_dp.get_active_world_size()
