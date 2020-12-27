@@ -13,6 +13,7 @@ from torch.utils.data import SequentialSampler, DataLoader, DistributedSampler
 from torchvision import transforms, datasets
 
 from dp.auto_dp import AutoDataParallel
+from freeze.auto_freeze import AutoFreeze
 from model.vit.vision_transformer_origin import VisionTransformer
 from model.vit.vision_transformer_task_specific_layer import CONFIGS
 from pipe.auto_pipe import AutoElasticPipe
@@ -97,12 +98,13 @@ def get_data_loader(trainset, testset, rank):
 
 
 def train(args, auto_pipe, auto_dp, model, epoch, train_dataloader):
-    new_freeze_point = dict()
-    new_freeze_point['epoch'] = epoch
-    model = auto_dp.transform(auto_pipe, model, min(epoch, 12), new_freeze_point)
-    new_freeze_point = auto_dp.get_freeze_point()
-    new_train_dl, new_test_dl = get_data_loader(train_dataset, test_dataset, auto_dp.get_data_rank())
-    train_dataloader = new_train_dl
+    if auto_freeze.is_freeze_open():
+        new_freeze_point = dict()
+        new_freeze_point['epoch'] = epoch
+        model = auto_dp.transform(auto_pipe, model, auto_freeze.get_hand_crafted_frozen_layers_by_epoch(epoch), new_freeze_point)
+        new_freeze_point = auto_dp.get_freeze_point()
+        new_train_dl, new_test_dl = get_data_loader(train_dataset, test_dataset, auto_dp.get_data_rank())
+        train_dataloader = new_train_dl
 
     num_sample_processed_in_total = 0
     communication_count = 0.0
@@ -211,7 +213,7 @@ def _infer(model, test_data, device_first, device_last):
     iteration_num = 0
     with torch.no_grad():
         for batch_idx, (x, target) in enumerate(test_data):
-            logging.info("evaluation - batch index = %d/%d" % (batch_idx, len(train_dl)))
+            logging.info("evaluation - batch index = %d/%d" % (batch_idx, len(test_data)))
             iteration_num += 1
             x = x.to(device_first)
             target = target.to(device_last)
@@ -230,7 +232,7 @@ def _infer(model, test_data, device_first, device_last):
 
 def eval(model, args, epoch, train_dl, test_dl, device_first, device_last):
     # train data
-    if (epoch + 1) % args.freq_eval_train_acc == 0:
+    if epoch == args.epochs - 1:
         train_tot_correct, train_num_sample, train_loss = _infer(model, train_dl, device_first, device_last)
         # test on training dataset
         train_acc = train_tot_correct / train_num_sample
@@ -319,7 +321,7 @@ if __name__ == "__main__":
     parser.add_argument("--warmup_steps", default=2, type=int,
                         help="Step of training to perform learning rate warmup for.")
 
-    parser.add_argument('--epochs', type=int, default=20, metavar='EP',
+    parser.add_argument('--epochs', type=int, default=10, metavar='EP',
                         help='how many epochs will be trained locally')
 
     parser.add_argument("--freq_eval_train_acc", default=4, type=int)
@@ -388,6 +390,10 @@ if __name__ == "__main__":
 
     num_layers = config.transformer.num_layers
     print("num_layers = %d" % num_layers)
+
+    # create AutoFreeze algorithm
+    auto_freeze = AutoFreeze()
+    auto_freeze.do_not_freeze()
 
     # create pipe and DDP
     auto_pipe = AutoElasticPipe(auto_dp.get_world_size(), args.local_rank, args.global_rank, model,
