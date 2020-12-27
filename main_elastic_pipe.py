@@ -154,11 +154,6 @@ def train(args, auto_pipe, auto_dp, model, epoch, train_dataloader, test_dataloa
         x = x.to(device_first)
         target = target.to(device_last)
 
-        if batch_idx == 0:
-            sync_all_devices(0, auto_pipe.get_pipe_len())
-            time_finish_loading = time.time()
-            logging.info("data loading cost = " + str(time_finish_loading - starting_time))
-
         with torch.cuda.device(device_first):
             end_ld.record()
 
@@ -201,13 +196,20 @@ def train(args, auto_pipe, auto_dp, model, epoch, train_dataloader, test_dataloa
         # logging.info(f"forward time cost (ms) by CUDA event {start_fp.elapsed_time(end_fp)}")
         # logging.info(f"backwards time cost: (ms) by CUDA event {start_bp.elapsed_time(end_bp)}")
 
+        if batch_idx == 0:
+            sync_all_devices(0, auto_pipe.get_pipe_len())
+            # including bucket rebuilt
+            # we can see DDP's
+            time_finish_prepare_ddp = time.time()
+            logging.info("data loading cost = " + str(time_finish_prepare_ddp - starting_time))
+
 
         sample_num_throughput = int(
-            num_sample_processed_in_total / (time.time() - time_finish_loading)) * auto_dp.get_active_world_size()
+            num_sample_processed_in_total / (time.time() - time_finish_prepare_ddp)) * auto_dp.get_active_world_size()
         logging.info("global_rank = %d. sample_num_throughput (images/second): %d" % (auto_dp.get_global_rank(),
                                                                                       sample_num_throughput))
 
-        comm_freq = communication_count / (time.time() - time_finish_loading)
+        comm_freq = communication_count / (time.time() - time_finish_prepare_ddp)
         logging.info("global_rank = %d. communication frequency (cross machine sync/second): %f" % (auto_dp.get_global_rank(),
                                                                                                     comm_freq))
 
