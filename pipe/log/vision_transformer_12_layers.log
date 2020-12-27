@@ -1,0 +1,222 @@
+/Users/chaoyanghe/opt/anaconda3/envs/distributed-training/bin/python /Users/chaoyanghe/sourcecode/distributed-deep-learning-on-cv-and-nlp/pipe_and_ddp/auto_pipe_test.py
+Vision Transformer Configuration: classifier: token
+hidden_size: 768
+patches:
+  size: !!python/tuple
+  - 16
+  - 16
+representation_size: null
+transformer:
+  attention_dropout_rate: 0.0
+  dropout_rate: 0.1
+  mlp_dim: 3072
+  num_heads: 12
+  num_layers: 12
+
+model_size = 85.806346
+num_layers = 12
+num_layer_max_per_device = 0
+----------------freeze layer number = 0---------------
+[0.742656, 2.363904, 4.723968, 2.363904, 4.723968, 2.363904, 4.723968, 2.363904, 4.723968, 2.363904, 4.723968, 2.363904, 4.723968, 2.363904, 4.723968, 2.363904, 4.723968, 2.363904, 4.723968, 2.363904, 4.723968, 2.363904, 4.723968, 2.363904, 4.723968, 0.001536, 0.00769]
+len(model) = 27
+len(paras_size) = 27
+total_param_size_to_be_assigned = 85.806346
+max_params_in_balanced_partition - min_params_in_balanced_partition = 7.087872
+max_params_in_balanced_partition - min_params_in_balanced_partition = 7.087872
+{0: 4, 1: 2, 2: 3, 3: 3, 4: 3, 5: 3, 6: 4, 7: 5}
+{0: 10.194431999999999, 1: 7.087872, 2: 11.81184, 3: 9.451775999999999, 4: 11.81184, 5: 9.451775999999999, 6: 14.175744, 7: 11.821066}
+self.max_parameter_per_gpu_at_beginning = 14.175744
+----------------freeze layer number = 1---------------
+[0.742656, 2.363904, 4.723968, 2.363904, 4.723968, 2.363904, 4.723968, 2.363904, 4.723968, 2.363904, 4.723968, 2.363904, 4.723968, 2.363904, 4.723968, 2.363904, 4.723968, 2.363904, 4.723968, 2.363904, 4.723968, 2.363904, 4.723968, 2.363904, 4.723968, 0.001536, 0.00769]
+len(model) = 27
+len(paras_size) = 27
+----------start to detection---------
+frozen_params = 7.830528
+total_param_size_to_be_assigned = 77.975818
+max_params_in_balanced_partition - min_params_in_balanced_partition = 3.418880
+max_params_in_balanced_partition - min_params_in_balanced_partition = 2.354678
+current_num_device = 8
+frozen_params = 7.830528
+total_param_size_to_be_assigned = 77.975818
+max_params_in_balanced_partition - min_params_in_balanced_partition = 7.087872
+max_params_in_balanced_partition - min_params_in_balanced_partition = 7.087872
+{0: 5, 1: 3, 2: 2, 3: 2, 4: 3, 5: 3, 6: 4, 7: 5}
+{0: 14.918399999999998, 1: 9.451775999999999, 2: 7.087872, 3: 7.087872, 4: 11.81184, 5: 9.451775999999999, 6: 14.175744, 7: 11.821066}
+----------------freeze layer number = 2---------------
+[0.742656, 2.363904, 4.723968, 2.363904, 4.723968, 2.363904, 4.723968, 2.363904, 4.723968, 2.363904, 4.723968, 2.363904, 4.723968, 2.363904, 4.723968, 2.363904, 4.723968, 2.363904, 4.723968, 2.363904, 4.723968, 2.363904, 4.723968, 2.363904, 4.723968, 0.001536, 0.00769]
+len(model) = 27
+len(paras_size) = 27
+----------start to detection---------
+frozen_params = 14.918400
+total_param_size_to_be_assigned = 70.887946
+max_params_in_balanced_partition - min_params_in_balanced_partition = 4.723968
+max_params_in_balanced_partition - min_params_in_balanced_partition = 4.723968
+current_num_device = 8
+frozen_params = 14.918400
+total_param_size_to_be_assigned = 70.887946
+max_params_in_balanced_partition - min_params_in_balanced_partition = 9.325440
+max_params_in_balanced_partition - min_params_in_balanced_partition = 7.087872
+{0: 6, 1: 2, 2: 2, 3: 2, 4: 3, 5: 3, 6: 4, 7: 5}
+{0: 17.282303999999996, 1: 7.087872, 2: 7.087872, 3: 7.087872, 4: 11.81184, 5: 9.451775999999999, 6: 14.175744, 7: 11.821066}
+----------------freeze layer number = 3---------------
+[0.742656, 2.363904, 4.723968, 2.363904, 4.723968, 2.363904, 4.723968, 2.363904, 4.723968, 2.363904, 4.723968, 2.363904, 4.723968, 2.363904, 4.723968, 2.363904, 4.723968, 2.363904, 4.723968, 2.363904, 4.723968, 2.363904, 4.723968, 2.363904, 4.723968, 0.001536, 0.00769]
+len(model) = 27
+len(paras_size) = 27
+----------start to detection---------
+frozen_params = 22.006272
+total_param_size_to_be_assigned = 63.800074
+max_params_in_balanced_partition - min_params_in_balanced_partition = 5.789450
+max_params_in_balanced_partition - min_params_in_balanced_partition = 2.369290
+current_num_device = 8
+frozen_params = 22.006272
+total_param_size_to_be_assigned = 63.800074
+max_params_in_balanced_partition - min_params_in_balanced_partition = 5.789450
+max_params_in_balanced_partition - min_params_in_balanced_partition = 4.733194
+{0: 8, 1: 2, 2: 2, 3: 2, 4: 2, 5: 3, 6: 3, 7: 5}
+{0: 24.370175999999994, 1: 7.087872, 2: 7.087872, 3: 7.087872, 4: 7.087872, 5: 11.81184, 6: 9.451775999999999, 7: 11.821066}
+----------------freeze layer number = 4---------------
+[0.742656, 2.363904, 4.723968, 2.363904, 4.723968, 2.363904, 4.723968, 2.363904, 4.723968, 2.363904, 4.723968, 2.363904, 4.723968, 2.363904, 4.723968, 2.363904, 4.723968, 2.363904, 4.723968, 2.363904, 4.723968, 2.363904, 4.723968, 2.363904, 4.723968, 0.001536, 0.00769]
+len(model) = 27
+len(paras_size) = 27
+----------start to detection---------
+frozen_params = 29.094144
+total_param_size_to_be_assigned = 56.712202
+max_params_in_balanced_partition - min_params_in_balanced_partition = 4.733194
+max_params_in_balanced_partition - min_params_in_balanced_partition = 4.733194
+current_num_device = 8
+frozen_params = 29.094144
+total_param_size_to_be_assigned = 56.712202
+max_params_in_balanced_partition - min_params_in_balanced_partition = 4.733194
+max_params_in_balanced_partition - min_params_in_balanced_partition = 4.733194
+{0: 10, 1: 2, 2: 2, 3: 2, 4: 2, 5: 2, 6: 2, 7: 5}
+{0: 31.45804799999999, 1: 7.087872, 2: 7.087872, 3: 7.087872, 4: 7.087872, 5: 7.087872, 6: 7.087872, 7: 11.821066}
+----------------freeze layer number = 5---------------
+[0.742656, 2.363904, 4.723968, 2.363904, 4.723968, 2.363904, 4.723968, 2.363904, 4.723968, 2.363904, 4.723968, 2.363904, 4.723968, 2.363904, 4.723968, 2.363904, 4.723968, 2.363904, 4.723968, 2.363904, 4.723968, 2.363904, 4.723968, 2.363904, 4.723968, 0.001536, 0.00769]
+len(model) = 27
+len(paras_size) = 27
+----------start to detection---------
+frozen_params = 36.182016
+total_param_size_to_be_assigned = 49.624330
+max_params_in_balanced_partition - min_params_in_balanced_partition = 10.514698
+max_params_in_balanced_partition - min_params_in_balanced_partition = 4.733194
+current_num_device = 8
+frozen_params = 36.182016
+total_param_size_to_be_assigned = 49.624330
+max_params_in_balanced_partition - min_params_in_balanced_partition = 1.066762
+max_params_in_balanced_partition - min_params_in_balanced_partition = 0.009226
+{0: 11, 1: 2, 2: 2, 3: 2, 4: 2, 5: 2, 6: 2, 7: 4}
+{0: 36.18201599999999, 1: 7.087872, 2: 7.087872, 3: 7.087872, 4: 7.087872, 5: 7.087872, 6: 7.087872, 7: 7.097098}
+----------------freeze layer number = 6---------------
+[0.742656, 2.363904, 4.723968, 2.363904, 4.723968, 2.363904, 4.723968, 2.363904, 4.723968, 2.363904, 4.723968, 2.363904, 4.723968, 2.363904, 4.723968, 2.363904, 4.723968, 2.363904, 4.723968, 2.363904, 4.723968, 2.363904, 4.723968, 2.363904, 4.723968, 0.001536, 0.00769]
+len(model) = 27
+len(paras_size) = 27
+----------start to detection---------
+frozen_params = 43.269888
+total_param_size_to_be_assigned = 42.536458
+max_params_in_balanced_partition - min_params_in_balanced_partition = 4.600192
+max_params_in_balanced_partition - min_params_in_balanced_partition = 2.354678
+#########    add pipe    #######
+current_num_device = 4
+frozen_params = 43.269888
+total_param_size_to_be_assigned = 42.536458
+max_params_in_balanced_partition - min_params_in_balanced_partition = 4.600192
+max_params_in_balanced_partition - min_params_in_balanced_partition = 2.354678
+{0: 14, 1: 4, 2: 4, 3: 5}
+{0: 45.633791999999985, 1: 14.175744, 2: 14.175744, 3: 11.821066}
+----------------freeze layer number = 7---------------
+[0.742656, 2.363904, 4.723968, 2.363904, 4.723968, 2.363904, 4.723968, 2.363904, 4.723968, 2.363904, 4.723968, 2.363904, 4.723968, 2.363904, 4.723968, 2.363904, 4.723968, 2.363904, 4.723968, 2.363904, 4.723968, 2.363904, 4.723968, 2.363904, 4.723968, 0.001536, 0.00769]
+len(model) = 27
+len(paras_size) = 27
+----------start to detection---------
+frozen_params = 50.357760
+total_param_size_to_be_assigned = 35.448586
+max_params_in_balanced_partition - min_params_in_balanced_partition = 8.152074
+max_params_in_balanced_partition - min_params_in_balanced_partition = 0.000000
+current_num_device = 4
+frozen_params = 50.357760
+total_param_size_to_be_assigned = 35.448586
+max_params_in_balanced_partition - min_params_in_balanced_partition = 5.782784
+max_params_in_balanced_partition - min_params_in_balanced_partition = 4.723968
+{0: 15, 1: 3, 2: 4, 3: 5}
+{0: 50.357759999999985, 1: 9.451775999999999, 2: 14.175744, 3: 11.821066}
+----------------freeze layer number = 8---------------
+[0.742656, 2.363904, 4.723968, 2.363904, 4.723968, 2.363904, 4.723968, 2.363904, 4.723968, 2.363904, 4.723968, 2.363904, 4.723968, 2.363904, 4.723968, 2.363904, 4.723968, 2.363904, 4.723968, 2.363904, 4.723968, 2.363904, 4.723968, 2.363904, 4.723968, 0.001536, 0.00769]
+len(model) = 27
+len(paras_size) = 27
+----------start to detection---------
+frozen_params = 57.445632
+total_param_size_to_be_assigned = 28.360714
+max_params_in_balanced_partition - min_params_in_balanced_partition = 14.058634
+max_params_in_balanced_partition - min_params_in_balanced_partition = 0.000000
+current_num_device = 4
+frozen_params = 57.445632
+total_param_size_to_be_assigned = 28.360714
+max_params_in_balanced_partition - min_params_in_balanced_partition = 4.733194
+max_params_in_balanced_partition - min_params_in_balanced_partition = 4.733194
+{0: 17, 1: 3, 2: 2, 3: 5}
+{0: 57.44563199999998, 1: 9.451775999999999, 2: 7.087872, 3: 11.821066}
+----------------freeze layer number = 9---------------
+[0.742656, 2.363904, 4.723968, 2.363904, 4.723968, 2.363904, 4.723968, 2.363904, 4.723968, 2.363904, 4.723968, 2.363904, 4.723968, 2.363904, 4.723968, 2.363904, 4.723968, 2.363904, 4.723968, 2.363904, 4.723968, 2.363904, 4.723968, 2.363904, 4.723968, 0.001536, 0.00769]
+len(model) = 27
+len(paras_size) = 27
+----------start to detection---------
+frozen_params = 64.533504
+total_param_size_to_be_assigned = 21.272842
+max_params_in_balanced_partition - min_params_in_balanced_partition = 10.517258
+max_params_in_balanced_partition - min_params_in_balanced_partition = 0.000000
+current_num_device = 4
+frozen_params = 64.533504
+total_param_size_to_be_assigned = 21.272842
+max_params_in_balanced_partition - min_params_in_balanced_partition = 3.667712
+max_params_in_balanced_partition - min_params_in_balanced_partition = 0.009226
+{0: 19, 1: 2, 2: 2, 3: 4}
+{0: 64.53350399999998, 1: 7.087872, 2: 7.087872, 3: 7.097098}
+----------------freeze layer number = 10---------------
+[0.742656, 2.363904, 4.723968, 2.363904, 4.723968, 2.363904, 4.723968, 2.363904, 4.723968, 2.363904, 4.723968, 2.363904, 4.723968, 2.363904, 4.723968, 2.363904, 4.723968, 2.363904, 4.723968, 2.363904, 4.723968, 2.363904, 4.723968, 2.363904, 4.723968, 0.001536, 0.00769]
+len(model) = 27
+len(paras_size) = 27
+----------start to detection---------
+frozen_params = 71.621376
+total_param_size_to_be_assigned = 14.184970
+max_params_in_balanced_partition - min_params_in_balanced_partition = 2.248074
+max_params_in_balanced_partition - min_params_in_balanced_partition = 0.000000
+current_num_device = 4
+frozen_params = 71.621376
+total_param_size_to_be_assigned = 14.184970
+max_params_in_balanced_partition - min_params_in_balanced_partition = 9.572992
+max_params_in_balanced_partition - min_params_in_balanced_partition = 4.723968
+{0: 21, 1: 1, 2: 2, 3: 3}
+{0: 71.62137599999998, 1: 2.363904, 2: 7.087872, 3: 4.733194}
+----------------freeze layer number = 11---------------
+[0.742656, 2.363904, 4.723968, 2.363904, 4.723968, 2.363904, 4.723968, 2.363904, 4.723968, 2.363904, 4.723968, 2.363904, 4.723968, 2.363904, 4.723968, 2.363904, 4.723968, 2.363904, 4.723968, 2.363904, 4.723968, 2.363904, 4.723968, 2.363904, 4.723968, 0.001536, 0.00769]
+len(model) = 27
+len(paras_size) = 27
+----------start to detection---------
+frozen_params = 78.709248
+total_param_size_to_be_assigned = 7.097098
+max_params_in_balanced_partition - min_params_in_balanced_partition = 6.021110
+max_params_in_balanced_partition - min_params_in_balanced_partition = 0.000000
+#########    add pipe    #######
+current_num_device = 2
+frozen_params = 78.709248
+total_param_size_to_be_assigned = 7.097098
+max_params_in_balanced_partition - min_params_in_balanced_partition = 6.021110
+max_params_in_balanced_partition - min_params_in_balanced_partition = 0.000000
+{0: 23, 1: 4}
+{0: 78.70924799999999, 1: 7.097098}
+----------------freeze layer number = 12---------------
+[0.742656, 2.363904, 4.723968, 2.363904, 4.723968, 2.363904, 4.723968, 2.363904, 4.723968, 2.363904, 4.723968, 2.363904, 4.723968, 2.363904, 4.723968, 2.363904, 4.723968, 2.363904, 4.723968, 2.363904, 4.723968, 2.363904, 4.723968, 2.363904, 4.723968, 0.001536, 0.00769]
+len(model) = 27
+len(paras_size) = 27
+----------start to detection---------
+frozen_params = 85.797120
+total_param_size_to_be_assigned = 0.009226
+max_params_in_balanced_partition - min_params_in_balanced_partition = 0.000000
+#########    add pipe    #######
+current_num_device = 1
+frozen_params = 85.797120
+total_param_size_to_be_assigned = 0.009226
+max_params_in_balanced_partition - min_params_in_balanced_partition = 0.000000
+{0: 27}
+{0: 85.80634599999999}
+finished!

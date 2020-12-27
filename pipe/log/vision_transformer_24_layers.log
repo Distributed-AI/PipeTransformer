@@ -1,0 +1,402 @@
+/Users/chaoyanghe/opt/anaconda3/envs/distributed-training/bin/python /Users/chaoyanghe/sourcecode/distributed-deep-learning-on-cv-and-nlp/pipe_and_ddp/auto_pipe_test.py
+Vision Transformer Configuration: classifier: token
+hidden_size: 1024
+patches:
+  size: !!python/tuple
+  - 32
+  - 32
+representation_size: null
+transformer:
+  attention_dropout_rate: 0.0
+  dropout_rate: 0.1
+  mlp_dim: 4096
+  num_heads: 16
+  num_layers: 24
+
+model_size = 305.52065
+num_layers = 24
+num_layer_max_per_device = 0
+----------------freeze layer number = 0---------------
+[3.198976, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 0.002048, 0.01025]
+len(model) = 51
+len(paras_size) = 51
+total_param_size_to_be_assigned = 305.520650
+max_params_in_balanced_partition - min_params_in_balanced_partition = 13.592576
+max_params_in_balanced_partition - min_params_in_balanced_partition = 8.395776
+{0: 6, 1: 6, 2: 6, 3: 6, 4: 6, 5: 6, 6: 7, 7: 8}
+{0: 32.591872, 1: 37.788672, 2: 37.788672, 3: 37.788672, 4: 37.788672, 5: 37.788672, 6: 46.184447999999996, 7: 37.80097}
+self.max_parameter_per_gpu_at_beginning = 46.184448
+----------------freeze layer number = 1---------------
+[3.198976, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 0.002048, 0.01025]
+len(model) = 51
+len(paras_size) = 51
+----------start to detection---------
+frozen_params = 15.795200
+total_param_size_to_be_assigned = 289.725450
+max_params_in_balanced_partition - min_params_in_balanced_partition = 5.763243
+max_params_in_balanced_partition - min_params_in_balanced_partition = 4.188150
+current_num_device = 8
+frozen_params = 15.795200
+total_param_size_to_be_assigned = 289.725450
+max_params_in_balanced_partition - min_params_in_balanced_partition = 5.763243
+max_params_in_balanced_partition - min_params_in_balanced_partition = 4.188150
+{0: 8, 1: 6, 2: 6, 3: 6, 4: 6, 5: 6, 6: 6, 7: 7}
+{0: 45.188096, 1: 37.788672, 2: 37.788672, 3: 37.788672, 4: 37.788672, 5: 37.788672, 6: 37.788672, 7: 33.600522}
+----------------freeze layer number = 2---------------
+[3.198976, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 0.002048, 0.01025]
+len(model) = 51
+len(paras_size) = 51
+----------start to detection---------
+frozen_params = 28.391424
+total_param_size_to_be_assigned = 277.129226
+max_params_in_balanced_partition - min_params_in_balanced_partition = 8.395776
+max_params_in_balanced_partition - min_params_in_balanced_partition = 8.395776
+current_num_device = 8
+frozen_params = 28.391424
+total_param_size_to_be_assigned = 277.129226
+max_params_in_balanced_partition - min_params_in_balanced_partition = 8.395776
+max_params_in_balanced_partition - min_params_in_balanced_partition = 8.395776
+{0: 10, 1: 5, 2: 5, 3: 6, 4: 6, 5: 6, 6: 6, 7: 7}
+{0: 57.78432, 1: 33.588224, 2: 29.392896, 3: 37.788672, 4: 37.788672, 5: 37.788672, 6: 37.788672, 7: 33.600522}
+----------------freeze layer number = 3---------------
+[3.198976, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 0.002048, 0.01025]
+len(model) = 51
+len(paras_size) = 51
+----------start to detection---------
+frozen_params = 40.987648
+total_param_size_to_be_assigned = 264.533002
+max_params_in_balanced_partition - min_params_in_balanced_partition = 9.972575
+max_params_in_balanced_partition - min_params_in_balanced_partition = 4.207626
+current_num_device = 8
+frozen_params = 40.987648
+total_param_size_to_be_assigned = 264.533002
+max_params_in_balanced_partition - min_params_in_balanced_partition = 8.395776
+max_params_in_balanced_partition - min_params_in_balanced_partition = 8.395776
+{0: 11, 1: 5, 2: 5, 3: 5, 4: 6, 5: 6, 6: 6, 7: 7}
+{0: 66.180096, 1: 29.392896, 2: 33.588224, 3: 29.392896, 4: 37.788672, 5: 37.788672, 6: 37.788672, 7: 33.600522}
+----------------freeze layer number = 4---------------
+[3.198976, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 0.002048, 0.01025]
+len(model) = 51
+len(paras_size) = 51
+----------start to detection---------
+frozen_params = 53.583872
+total_param_size_to_be_assigned = 251.936778
+max_params_in_balanced_partition - min_params_in_balanced_partition = 8.408074
+max_params_in_balanced_partition - min_params_in_balanced_partition = 8.408074
+current_num_device = 8
+frozen_params = 53.583872
+total_param_size_to_be_assigned = 251.936778
+max_params_in_balanced_partition - min_params_in_balanced_partition = 12.061355
+max_params_in_balanced_partition - min_params_in_balanced_partition = 8.395776
+{0: 12, 1: 5, 2: 5, 3: 5, 4: 5, 5: 6, 6: 6, 7: 7}
+{0: 70.380544, 1: 33.588224, 2: 29.392896, 3: 33.588224, 4: 29.392896, 5: 37.788672, 6: 37.788672, 7: 33.600522}
+----------------freeze layer number = 5---------------
+[3.198976, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 0.002048, 0.01025]
+len(model) = 51
+len(paras_size) = 51
+----------start to detection---------
+frozen_params = 66.180096
+total_param_size_to_be_assigned = 239.340554
+max_params_in_balanced_partition - min_params_in_balanced_partition = 18.370058
+max_params_in_balanced_partition - min_params_in_balanced_partition = 8.408074
+current_num_device = 8
+frozen_params = 66.180096
+total_param_size_to_be_assigned = 239.340554
+max_params_in_balanced_partition - min_params_in_balanced_partition = 12.596224
+max_params_in_balanced_partition - min_params_in_balanced_partition = 12.596224
+{0: 14, 1: 4, 2: 5, 3: 5, 4: 5, 5: 5, 6: 6, 7: 7}
+{0: 82.97676799999999, 1: 25.192448, 2: 33.588224, 3: 29.392896, 4: 33.588224, 5: 29.392896, 6: 37.788672, 7: 33.600522}
+----------------freeze layer number = 6---------------
+[3.198976, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 0.002048, 0.01025]
+len(model) = 51
+len(paras_size) = 51
+----------start to detection---------
+frozen_params = 78.776320
+total_param_size_to_be_assigned = 226.744330
+max_params_in_balanced_partition - min_params_in_balanced_partition = 7.862613
+max_params_in_balanced_partition - min_params_in_balanced_partition = 4.188150
+current_num_device = 8
+frozen_params = 78.776320
+total_param_size_to_be_assigned = 226.744330
+max_params_in_balanced_partition - min_params_in_balanced_partition = 12.596224
+max_params_in_balanced_partition - min_params_in_balanced_partition = 12.596224
+{0: 15, 1: 5, 2: 4, 3: 4, 4: 5, 5: 5, 6: 6, 7: 7}
+{0: 91.37254399999999, 1: 29.392896, 2: 25.192448, 3: 25.192448, 4: 33.588224, 5: 29.392896, 6: 37.788672, 7: 33.600522}
+----------------freeze layer number = 7---------------
+[3.198976, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 0.002048, 0.01025]
+len(model) = 51
+len(paras_size) = 51
+----------start to detection---------
+frozen_params = 91.372544
+total_param_size_to_be_assigned = 214.148106
+max_params_in_balanced_partition - min_params_in_balanced_partition = 9.963691
+max_params_in_balanced_partition - min_params_in_balanced_partition = 8.395776
+current_num_device = 8
+frozen_params = 91.372544
+total_param_size_to_be_assigned = 214.148106
+max_params_in_balanced_partition - min_params_in_balanced_partition = 18.359467
+max_params_in_balanced_partition - min_params_in_balanced_partition = 12.596224
+{0: 16, 1: 4, 2: 4, 3: 4, 4: 5, 5: 5, 6: 6, 7: 7}
+{0: 95.57299199999999, 1: 25.192448, 2: 25.192448, 3: 25.192448, 4: 33.588224, 5: 29.392896, 6: 37.788672, 7: 33.600522}
+----------------freeze layer number = 8---------------
+[3.198976, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 0.002048, 0.01025]
+len(model) = 51
+len(paras_size) = 51
+----------start to detection---------
+frozen_params = 103.968768
+total_param_size_to_be_assigned = 201.551882
+max_params_in_balanced_partition - min_params_in_balanced_partition = 12.071946
+max_params_in_balanced_partition - min_params_in_balanced_partition = 4.207626
+current_num_device = 8
+frozen_params = 103.968768
+total_param_size_to_be_assigned = 201.551882
+max_params_in_balanced_partition - min_params_in_balanced_partition = 12.071946
+max_params_in_balanced_partition - min_params_in_balanced_partition = 8.408074
+{0: 18, 1: 4, 2: 4, 3: 4, 4: 4, 5: 5, 6: 5, 7: 7}
+{0: 108.16921599999998, 1: 25.192448, 2: 25.192448, 3: 25.192448, 4: 25.192448, 5: 33.588224, 6: 29.392896, 7: 33.600522}
+----------------freeze layer number = 9---------------
+[3.198976, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 0.002048, 0.01025]
+len(model) = 51
+len(paras_size) = 51
+----------start to detection---------
+frozen_params = 116.564992
+total_param_size_to_be_assigned = 188.955658
+max_params_in_balanced_partition - min_params_in_balanced_partition = 9.972575
+max_params_in_balanced_partition - min_params_in_balanced_partition = 8.408074
+current_num_device = 8
+frozen_params = 116.564992
+total_param_size_to_be_assigned = 188.955658
+max_params_in_balanced_partition - min_params_in_balanced_partition = 9.960277
+max_params_in_balanced_partition - min_params_in_balanced_partition = 8.395776
+{0: 20, 1: 4, 2: 4, 3: 4, 4: 4, 5: 4, 6: 5, 7: 6}
+{0: 120.76543999999997, 1: 25.192448, 2: 25.192448, 3: 25.192448, 4: 25.192448, 5: 25.192448, 6: 33.588224, 7: 25.204745999999997}
+----------------freeze layer number = 10---------------
+[3.198976, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 0.002048, 0.01025]
+len(model) = 51
+len(paras_size) = 51
+----------start to detection---------
+frozen_params = 129.161216
+total_param_size_to_be_assigned = 176.359434
+max_params_in_balanced_partition - min_params_in_balanced_partition = 20.469429
+max_params_in_balanced_partition - min_params_in_balanced_partition = 8.408074
+current_num_device = 8
+frozen_params = 129.161216
+total_param_size_to_be_assigned = 176.359434
+max_params_in_balanced_partition - min_params_in_balanced_partition = 8.388598
+max_params_in_balanced_partition - min_params_in_balanced_partition = 8.388598
+{0: 21, 1: 4, 2: 4, 3: 4, 4: 4, 5: 4, 6: 5, 7: 5}
+{0: 129.16121599999997, 1: 25.192448, 2: 25.192448, 3: 25.192448, 4: 25.192448, 5: 25.192448, 6: 29.392896, 7: 21.004297999999995}
+----------------freeze layer number = 11---------------
+[3.198976, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 0.002048, 0.01025]
+len(model) = 51
+len(paras_size) = 51
+----------start to detection---------
+frozen_params = 141.757440
+total_param_size_to_be_assigned = 163.763210
+max_params_in_balanced_partition - min_params_in_balanced_partition = 9.961984
+max_params_in_balanced_partition - min_params_in_balanced_partition = 4.188150
+current_num_device = 8
+frozen_params = 141.757440
+total_param_size_to_be_assigned = 163.763210
+max_params_in_balanced_partition - min_params_in_balanced_partition = 8.395776
+max_params_in_balanced_partition - min_params_in_balanced_partition = 8.395776
+{0: 23, 1: 3, 2: 4, 3: 4, 4: 4, 5: 4, 6: 4, 7: 5}
+{0: 141.75743999999997, 1: 16.796672, 2: 25.192448, 3: 25.192448, 4: 25.192448, 5: 25.192448, 6: 25.192448, 7: 21.004297999999995}
+----------------freeze layer number = 12---------------
+[3.198976, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 0.002048, 0.01025]
+len(model) = 51
+len(paras_size) = 51
+----------start to detection---------
+frozen_params = 154.353664
+total_param_size_to_be_assigned = 151.166986
+max_params_in_balanced_partition - min_params_in_balanced_partition = 12.063061
+max_params_in_balanced_partition - min_params_in_balanced_partition = 8.395776
+current_num_device = 8
+frozen_params = 154.353664
+total_param_size_to_be_assigned = 151.166986
+max_params_in_balanced_partition - min_params_in_balanced_partition = 8.928939
+max_params_in_balanced_partition - min_params_in_balanced_partition = 8.395776
+{0: 25, 1: 3, 2: 3, 3: 3, 4: 4, 5: 4, 6: 4, 7: 5}
+{0: 154.35366399999998, 1: 16.796672, 2: 20.991999999999997, 3: 16.796672, 4: 25.192448, 5: 25.192448, 6: 25.192448, 7: 21.004297999999995}
+----------------freeze layer number = 13---------------
+[3.198976, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 0.002048, 0.01025]
+len(model) = 51
+len(paras_size) = 51
+----------start to detection---------
+frozen_params = 166.949888
+total_param_size_to_be_assigned = 138.570762
+max_params_in_balanced_partition - min_params_in_balanced_partition = 14.171317
+max_params_in_balanced_partition - min_params_in_balanced_partition = 4.207626
+current_num_device = 8
+frozen_params = 166.949888
+total_param_size_to_be_assigned = 138.570762
+max_params_in_balanced_partition - min_params_in_balanced_partition = 11.028309
+max_params_in_balanced_partition - min_params_in_balanced_partition = 8.395776
+{0: 27, 1: 3, 2: 3, 3: 3, 4: 3, 5: 3, 6: 4, 7: 5}
+{0: 166.949888, 1: 16.796672, 2: 20.991999999999997, 3: 16.796672, 4: 20.991999999999997, 5: 16.796672, 6: 25.192448, 7: 21.004297999999995}
+----------------freeze layer number = 14---------------
+[3.198976, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 0.002048, 0.01025]
+len(model) = 51
+len(paras_size) = 51
+----------start to detection---------
+frozen_params = 179.546112
+total_param_size_to_be_assigned = 125.974538
+max_params_in_balanced_partition - min_params_in_balanced_partition = 16.260096
+max_params_in_balanced_partition - min_params_in_balanced_partition = 8.383478
+#########    add pipe    #######
+current_num_device = 4
+frozen_params = 179.546112
+total_param_size_to_be_assigned = 125.974538
+max_params_in_balanced_partition - min_params_in_balanced_partition = 16.260096
+max_params_in_balanced_partition - min_params_in_balanced_partition = 8.383478
+{0: 29, 1: 7, 2: 7, 3: 8}
+{0: 179.546112, 1: 41.98912, 2: 46.184447999999996, 3: 37.80097}
+----------------freeze layer number = 15---------------
+[3.198976, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 0.002048, 0.01025]
+len(model) = 51
+len(paras_size) = 51
+----------start to detection---------
+frozen_params = 192.142336
+total_param_size_to_be_assigned = 113.378314
+max_params_in_balanced_partition - min_params_in_balanced_partition = 30.969695
+max_params_in_balanced_partition - min_params_in_balanced_partition = 0.000000
+current_num_device = 4
+frozen_params = 192.142336
+total_param_size_to_be_assigned = 113.378314
+max_params_in_balanced_partition - min_params_in_balanced_partition = 9.965397
+max_params_in_balanced_partition - min_params_in_balanced_partition = 8.388598
+{0: 31, 1: 6, 2: 7, 3: 7}
+{0: 192.142336, 1: 37.788672, 2: 41.98912, 3: 33.600522}
+----------------freeze layer number = 16---------------
+[3.198976, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 0.002048, 0.01025]
+len(model) = 51
+len(paras_size) = 51
+----------start to detection---------
+frozen_params = 204.738560
+total_param_size_to_be_assigned = 100.782090
+max_params_in_balanced_partition - min_params_in_balanced_partition = 33.065653
+max_params_in_balanced_partition - min_params_in_balanced_partition = 0.000000
+current_num_device = 4
+frozen_params = 204.738560
+total_param_size_to_be_assigned = 100.782090
+max_params_in_balanced_partition - min_params_in_balanced_partition = 8.395776
+max_params_in_balanced_partition - min_params_in_balanced_partition = 8.395776
+{0: 33, 1: 5, 2: 6, 3: 7}
+{0: 204.73856, 1: 29.392896, 2: 37.788672, 3: 33.600522}
+----------------freeze layer number = 17---------------
+[3.198976, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 0.002048, 0.01025]
+len(model) = 51
+len(paras_size) = 51
+----------start to detection---------
+frozen_params = 217.334784
+total_param_size_to_be_assigned = 88.185866
+max_params_in_balanced_partition - min_params_in_balanced_partition = 43.562506
+max_params_in_balanced_partition - min_params_in_balanced_partition = 0.000000
+current_num_device = 4
+frozen_params = 217.334784
+total_param_size_to_be_assigned = 88.185866
+max_params_in_balanced_partition - min_params_in_balanced_partition = 11.017718
+max_params_in_balanced_partition - min_params_in_balanced_partition = 8.383478
+{0: 35, 1: 5, 2: 5, 3: 6}
+{0: 217.334784, 1: 29.392896, 2: 33.588224, 3: 25.204745999999997}
+----------------freeze layer number = 18---------------
+[3.198976, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 0.002048, 0.01025]
+len(model) = 51
+len(paras_size) = 51
+----------start to detection---------
+frozen_params = 229.931008
+total_param_size_to_be_assigned = 75.589642
+max_params_in_balanced_partition - min_params_in_balanced_partition = 37.267807
+max_params_in_balanced_partition - min_params_in_balanced_partition = 0.000000
+current_num_device = 4
+frozen_params = 229.931008
+total_param_size_to_be_assigned = 75.589642
+max_params_in_balanced_partition - min_params_in_balanced_partition = 17.317537
+max_params_in_balanced_partition - min_params_in_balanced_partition = 8.388598
+{0: 37, 1: 4, 2: 5, 3: 5}
+{0: 229.93100800000002, 1: 25.192448, 2: 29.392896, 3: 21.004297999999995}
+----------------freeze layer number = 19---------------
+[3.198976, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 0.002048, 0.01025]
+len(model) = 51
+len(paras_size) = 51
+----------start to detection---------
+frozen_params = 242.527232
+total_param_size_to_be_assigned = 62.993418
+max_params_in_balanced_partition - min_params_in_balanced_partition = 22.572213
+max_params_in_balanced_partition - min_params_in_balanced_partition = 0.000000
+current_num_device = 4
+frozen_params = 242.527232
+total_param_size_to_be_assigned = 62.993418
+max_params_in_balanced_partition - min_params_in_balanced_partition = 23.624533
+max_params_in_balanced_partition - min_params_in_balanced_partition = 8.395776
+{0: 39, 1: 3, 2: 4, 3: 5}
+{0: 242.52723200000003, 1: 16.796672, 2: 25.192448, 3: 21.004297999999995}
+----------------freeze layer number = 20---------------
+[3.198976, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 0.002048, 0.01025]
+len(model) = 51
+len(paras_size) = 51
+----------start to detection---------
+frozen_params = 255.123456
+total_param_size_to_be_assigned = 50.397194
+max_params_in_balanced_partition - min_params_in_balanced_partition = 7.876618
+max_params_in_balanced_partition - min_params_in_balanced_partition = 0.000000
+current_num_device = 4
+frozen_params = 255.123456
+total_param_size_to_be_assigned = 50.397194
+max_params_in_balanced_partition - min_params_in_balanced_partition = 29.912054
+max_params_in_balanced_partition - min_params_in_balanced_partition = 8.383478
+{0: 41, 1: 3, 2: 3, 3: 4}
+{0: 255.12345600000003, 1: 16.796672, 2: 20.991999999999997, 3: 12.608521999999999}
+----------------freeze layer number = 21---------------
+[3.198976, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 0.002048, 0.01025]
+len(model) = 51
+len(paras_size) = 51
+----------start to detection---------
+frozen_params = 267.719680
+total_param_size_to_be_assigned = 37.800970
+max_params_in_balanced_partition - min_params_in_balanced_partition = 6.818977
+max_params_in_balanced_partition - min_params_in_balanced_partition = 0.000000
+#########    add pipe    #######
+current_num_device = 2
+frozen_params = 267.719680
+total_param_size_to_be_assigned = 37.800970
+max_params_in_balanced_partition - min_params_in_balanced_partition = 6.818977
+max_params_in_balanced_partition - min_params_in_balanced_partition = 0.000000
+{0: 43, 1: 8}
+{0: 267.71968000000004, 1: 37.80097}
+----------------freeze layer number = 22---------------
+[3.198976, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 0.002048, 0.01025]
+len(model) = 51
+len(paras_size) = 51
+----------start to detection---------
+frozen_params = 280.315904
+total_param_size_to_be_assigned = 25.204746
+max_params_in_balanced_partition - min_params_in_balanced_partition = 0.000000
+#########    add pipe    #######
+current_num_device = 1
+frozen_params = 280.315904
+total_param_size_to_be_assigned = 25.204746
+max_params_in_balanced_partition - min_params_in_balanced_partition = 0.000000
+{0: 51}
+{0: 305.52065000000005}
+----------------freeze layer number = 23---------------
+[3.198976, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 0.002048, 0.01025]
+len(model) = 51
+len(paras_size) = 51
+current_num_device = 1
+frozen_params = 292.912128
+total_param_size_to_be_assigned = 12.608522
+max_params_in_balanced_partition - min_params_in_balanced_partition = 0.000000
+{0: 51}
+{0: 305.52065000000005}
+----------------freeze layer number = 24---------------
+[3.198976, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 4.200448, 8.395776, 0.002048, 0.01025]
+len(model) = 51
+len(paras_size) = 51
+current_num_device = 1
+frozen_params = 305.508352
+total_param_size_to_be_assigned = 0.012298
+max_params_in_balanced_partition - min_params_in_balanced_partition = 0.000000
+{0: 51}
+{0: 305.52065000000005}
+finished!
