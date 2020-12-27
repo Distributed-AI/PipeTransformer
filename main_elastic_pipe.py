@@ -111,7 +111,6 @@ def train(args, auto_pipe, auto_dp, model, epoch, train_dataloader, test_dataloa
 
     num_sample_processed_in_total = 0
     communication_count = 0.0
-    starting_time = time.time()
 
     criterion = nn.CrossEntropyLoss()
     optimizer, scheduler = build_optimizer(model)
@@ -137,6 +136,8 @@ def train(args, auto_pipe, auto_dp, model, epoch, train_dataloader, test_dataloa
 
     iteration_num = 0
     for batch_idx, (x, target) in enumerate(train_dataloader):
+        if batch_idx == 0:
+            starting_time = time.time()
         logging.info("global_rank = %d. epoch = %d, batch index = %d/%d" % (auto_dp.get_global_rank(), epoch, batch_idx, len(train_dl)))
         num_sample_processed_in_total += len(x)
         communication_count += 1
@@ -147,6 +148,8 @@ def train(args, auto_pipe, auto_dp, model, epoch, train_dataloader, test_dataloa
             start_ld.record()
         x = x.to(device_first)
         target = target.to(device_last)
+
+        time_finish_loading = time.time()
 
         with torch.cuda.device(device_first):
             end_ld.record()
@@ -185,7 +188,7 @@ def train(args, auto_pipe, auto_dp, model, epoch, train_dataloader, test_dataloa
 
         # torch.cuda.synchronize(0)
         # torch.cuda.synchronize(3)
-        sync_all_devices(args.local_rank, auto_pipe.get_pipe_len())
+        # sync_all_devices(args.local_rank, auto_pipe.get_pipe_len())
 
         # recv_gbyte, transmit_gbyte = net_meter.update_bandwidth()
         # logging.info("BW {recv_MB:%.3f} {transmit_MB:%.3f}" % (recv_gbyte * 1024, transmit_gbyte * 1024))
@@ -194,12 +197,14 @@ def train(args, auto_pipe, auto_dp, model, epoch, train_dataloader, test_dataloa
         # logging.info(f"forward time cost (ms) by CUDA event {start_fp.elapsed_time(end_fp)}")
         # logging.info(f"backwards time cost: (ms) by CUDA event {start_bp.elapsed_time(end_bp)}")
 
+        logging.info("global_rank = %d. data loading cost = %f" % (auto_dp.global_rank(), time_finish_loading-starting_time))
+
         sample_num_throughput = int(
-            num_sample_processed_in_total / (time.time() - starting_time)) * auto_dp.get_active_world_size()
+            num_sample_processed_in_total / (time.time() - time_finish_loading)) * auto_dp.get_active_world_size()
         logging.info("global_rank = %d. sample_num_throughput (images/second): %d" % (auto_dp.get_global_rank(),
                                                                                       sample_num_throughput))
 
-        comm_freq = communication_count / (time.time() - starting_time)
+        comm_freq = communication_count / (time.time() - time_finish_loading)
         logging.info("global_rank = %d. communication frequency (cross machine sync/second): %f" % (auto_dp.get_global_rank(),
                                                                                                     comm_freq))
 
