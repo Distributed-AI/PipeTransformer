@@ -149,7 +149,9 @@ def train(args, auto_pipe, auto_dp, model, epoch, train_dataloader, test_dataloa
         x = x.to(device_first)
         target = target.to(device_last)
 
-        time_finish_loading = time.time()
+        if batch_idx == 0:
+            time_finish_loading = time.time()
+            logging.info("data loading cost = " + str(time_finish_loading - starting_time))
 
         with torch.cuda.device(device_first):
             end_ld.record()
@@ -197,7 +199,6 @@ def train(args, auto_pipe, auto_dp, model, epoch, train_dataloader, test_dataloa
         # logging.info(f"forward time cost (ms) by CUDA event {start_fp.elapsed_time(end_fp)}")
         # logging.info(f"backwards time cost: (ms) by CUDA event {start_bp.elapsed_time(end_bp)}")
 
-        logging.info("data loading cost = " + str(time_finish_loading-starting_time))
 
         sample_num_throughput = int(
             num_sample_processed_in_total / (time.time() - time_finish_loading)) * auto_dp.get_active_world_size()
