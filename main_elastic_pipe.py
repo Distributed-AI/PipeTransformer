@@ -137,7 +137,7 @@ def train(args, auto_pipe, auto_dp, model, epoch, train_dataloader, test_dataloa
 
     iteration_num = 0
     for batch_idx, (x, target) in enumerate(train_dataloader):
-        logging.info("epoch = %d, batch index = %d/%d" % (epoch, batch_idx, len(train_dl)))
+        logging.info("global_rank = %d. epoch = %d, batch index = %d/%d" % (auto_dp.get_global_rank(), epoch, batch_idx, len(train_dl)))
         num_sample_processed_in_total += len(x)
         communication_count += 1
         iteration_num += 1
@@ -195,13 +195,16 @@ def train(args, auto_pipe, auto_dp, model, epoch, train_dataloader, test_dataloa
         # logging.info(f"backwards time cost: (ms) by CUDA event {start_bp.elapsed_time(end_bp)}")
 
         sample_num_throughput = int(
-            num_sample_processed_in_total / (time.time() - starting_time)) * auto_dp.get_world_size()
-        logging.info("sample_num_throughput (images/second): %d" % sample_num_throughput)
+            num_sample_processed_in_total / (time.time() - starting_time)) * auto_dp.get_active_world_size()
+        logging.info("global_rank = %d. sample_num_throughput (images/second): %d" % (auto_dp.get_global_rank(),
+                                                                                      sample_num_throughput))
 
         comm_freq = communication_count / (time.time() - starting_time)
-        logging.info("communication frequency (cross machine sync/second): %f" % comm_freq)
+        logging.info("global_rank = %d. communication frequency (cross machine sync/second): %f" % (auto_dp.get_global_rank(),
+                                                                                                    comm_freq))
 
-        logging.info("size_params_ddp_sum: %f" % (size_params_ddp_sum / 1e6))
+        logging.info("global_rank = %d. size_params_ddp_sum: %f" % (auto_dp.get_global_rank(),
+                                                                    size_params_ddp_sum / 1e6))
         size_params_ddp_sum = 0.0
 
         if iteration_num == 2 and args.is_debug_mode:

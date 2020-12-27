@@ -83,6 +83,9 @@ class AutoDataParallel:
     def get_world_size(self):
         return self.world_size
 
+    def get_active_world_size(self):
+        return len(self.active_ranks)
+
     def init_rpc(self):
         rpc_backend_options = TensorPipeRpcBackendOptions()
         rpc_backend_options.init_method = 'tcp://' + self.master_addr + ':10000'
