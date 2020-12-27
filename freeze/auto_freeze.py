@@ -17,7 +17,7 @@ class AutoFreeze:
         if epoch == 0:
             num_freeze_layers = 0
         elif epoch > 1 and epoch <= 2:
-            num_freeze_layers = 4
+            num_freeze_layers = 6
         elif epoch > 3 and epoch <= 5:
             num_freeze_layers = 8
         elif epoch > 5 and epoch <= 7:
