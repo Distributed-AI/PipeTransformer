@@ -97,7 +97,7 @@ def get_data_loader(trainset, testset, rank):
     return train_loader, test_loader
 
 
-def train(args, auto_pipe, auto_dp, model, epoch, train_dataloader):
+def train(args, auto_pipe, auto_dp, model, epoch, train_dataloader, test_dataloader):
     if auto_freeze.is_freeze_open():
         new_freeze_point = dict()
         new_freeze_point['epoch'] = epoch
@@ -105,6 +105,9 @@ def train(args, auto_pipe, auto_dp, model, epoch, train_dataloader):
         new_freeze_point = auto_dp.get_freeze_point()
         new_train_dl, new_test_dl = get_data_loader(train_dataset, test_dataset, auto_dp.get_data_rank())
         train_dataloader = new_train_dl
+    else:
+        new_train_dl = train_dataloader
+        new_test_dl = test_dataloader
 
     num_sample_processed_in_total = 0
     communication_count = 0.0
@@ -262,7 +265,7 @@ def eval(model, args, epoch, train_dl, test_dl, device_first, device_last):
 def train_and_eval(auto_pipe, auto_dp, model, train_dl, test_dl, freeze_point, args):
     epoch_start = freeze_point['epoch']
     for epoch in range(epoch_start, args.epochs):
-        model, device_first, device_last, new_train_dl, new_test_dl = train(args, auto_pipe, auto_dp, model, epoch, train_dl)
+        model, device_first, device_last, new_train_dl, new_test_dl = train(args, auto_pipe, auto_dp, model, epoch, train_dl, test_dl)
         eval(model, args, epoch, new_train_dl, new_test_dl, device_first, device_last)
 
 
