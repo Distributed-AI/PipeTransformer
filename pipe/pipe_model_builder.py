@@ -1,3 +1,5 @@
+import time
+
 import torch
 import torch.nn as nn
 
@@ -99,6 +101,7 @@ def convert_to_balanced_model(local_rank, global_rank,
     # print(pipe)
     # print(balance)
     print("convert_to_balanced_model. local_rank = %d, global_rank = %d" % (local_rank, global_rank))
+    time_start_loading = time.time()
     pipe_layer_idx = 0
     balanced_pipe = []
     for device_id in balance.keys():
@@ -115,6 +118,8 @@ def convert_to_balanced_model(local_rank, global_rank,
             balanced_pipe.append(nn.Sequential(*layers).to(device))
         else:
             balanced_pipe.append(nn.Sequential(*layers))
+    time_end_loading = time.time()
+    print("CPU->GPU time cost = " + str(time_end_loading-time_start_loading))
     return nn.Sequential(*balanced_pipe)
 
 
