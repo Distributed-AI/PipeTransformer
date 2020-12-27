@@ -251,7 +251,8 @@ def eval(model, args, epoch, train_dl, test_dl, device_first, device_last):
             logging.info(stats)
 
     # test data
-    if (epoch + 1) % args.freq_eval_test_acc == 0:
+    # if (epoch + 1) % args.freq_eval_test_acc == 0:
+    if epoch == args.epochs - 1:
         test_tot_correct, test_num_sample, test_loss = _infer(model, test_dl, device_first, device_last)
 
         # test on test dataset
