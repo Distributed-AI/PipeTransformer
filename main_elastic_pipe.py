@@ -121,6 +121,11 @@ def train(args, auto_pipe, auto_dp, model, epoch, train_dataloader, test_dataloa
     print("device_first = " + str(device_first))
     print("device_last = " + str(device_last))
 
+    def sync_all_devices(local_rank, device_cnt=4):
+        for d in range(device_cnt):
+            device = torch.device("cuda:" + str(local_rank + d))
+            torch.cuda.synchronize(device)
+
     # measure latency with cuda event:
     # https://discuss.pytorch.org/t/distributed-training-slower-than-dataparallel/81539/4
     model.train()
@@ -150,6 +155,7 @@ def train(args, auto_pipe, auto_dp, model, epoch, train_dataloader, test_dataloa
         target = target.to(device_last)
 
         if batch_idx == 0:
+            sync_all_devices(0, auto_pipe.get_pipe_len())
             time_finish_loading = time.time()
             logging.info("data loading cost = " + str(time_finish_loading - starting_time))
 
@@ -183,10 +189,6 @@ def train(args, auto_pipe, auto_dp, model, epoch, train_dataloader, test_dataloa
         with torch.cuda.device(device_first):
             end_bp.record()
 
-        def sync_all_devices(local_rank, device_cnt=4):
-            for d in range(device_cnt):
-                device = torch.device("cuda:" + str(local_rank + d))
-                torch.cuda.synchronize(device)
 
         # torch.cuda.synchronize(0)
         # torch.cuda.synchronize(3)
