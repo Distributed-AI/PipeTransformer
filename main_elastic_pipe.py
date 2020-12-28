@@ -162,10 +162,7 @@ def train(args, auto_pipe, auto_dp, model, epoch, train_dataloader, test_dataloa
             start_fp.record()
 
         optimizer.zero_grad()
-        if auto_pipe.get_pipe_len() == 1:
-            log_probs = model(x).local_value()
-        else:
-            log_probs = model(x).local_value()
+        log_probs = model(x)
 
         with torch.cuda.device(device_last):
             end_fp.record()
@@ -233,7 +230,7 @@ def _infer(model, test_data, device_first, device_last):
             iteration_num += 1
             x = x.to(device_first)
             target = target.to(device_last)
-            log_probs = model(x).local_value()
+            log_probs = model(x)
             loss = criterion(log_probs, target)
             _, predicted = torch.max(log_probs, -1)
             correct = predicted.eq(target).sum()
