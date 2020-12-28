@@ -359,7 +359,7 @@ if __name__ == "__main__":
 
     # create AutoFreeze algorithm
     auto_freeze = AutoFreeze()
-    # auto_freeze.do_not_freeze()
+    auto_freeze.do_not_freeze()
 
     # create FP cache with CPU memory
     auto_cache = AutoCache()
