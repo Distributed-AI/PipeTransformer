@@ -12,9 +12,6 @@ DDP rebuilt:
 
 
 
-Memory Cost:
-
-
 Optimization:
 
 1. CPU pin_memory to GPU: reducing the CPU to GPU loading time cost:
