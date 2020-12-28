@@ -363,7 +363,7 @@ if __name__ == "__main__":
 
     # create FP cache with CPU memory
     auto_cache = AutoCache()
-    auto_cache.enable()
+    # auto_cache.enable()
 
     # create pipe and DDP
     auto_pipe = AutoElasticPipe(auto_dp.get_world_size(), args.local_rank, args.global_rank, model,
