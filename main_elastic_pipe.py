@@ -197,9 +197,12 @@ def train(args, auto_pipe, auto_dp, model, epoch, train_dataloader, test_dataloa
             time_finish_prepare_ddp = time.time()
             logging.info("data loading cost = " + str(time_finish_prepare_ddp - starting_time))
 
-        logging.info(f"data loading time cost (ms) by CUDA event {start_ld.elapsed_time(end_ld)}")
-        logging.info(f"forward time cost (ms) by CUDA event {start_fp.elapsed_time(end_fp)}")
-        logging.info(f"backwards time cost: (ms) by CUDA event {start_bp.elapsed_time(end_bp)}")
+        with torch.cuda.device(device_first):
+            logging.info(f"data loading time cost (ms) by CUDA event {start_ld.elapsed_time(end_ld)}")
+        with torch.cuda.device(device_last):
+            logging.info(f"forward time cost (ms) by CUDA event {start_fp.elapsed_time(end_fp)}")
+        with torch.cuda.device(device_first):
+            logging.info(f"backwards time cost: (ms) by CUDA event {start_bp.elapsed_time(end_bp)}")
 
         sample_num_throughput = int(
             num_sample_processed_in_total / (time.time() - time_finish_prepare_ddp)) * auto_dp.get_active_world_size()
