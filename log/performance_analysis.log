@@ -1,0 +1,16 @@
+时间开销分解：
+CPU->GPU:
+1. 17.6s ----8GPUs/pipe
+2. 14.4s (node0) / 29.3s (node1)      ----4GPUs/pipe, add 1 pipe/node
+3. 7s (node0) / 14s (node1)    -----2GPUs/pipe, add 2 pipes/node
+
+DDP rebuilt:
+1. 5S ----- 8GPUs/pipe
+2. 23s (node0) / 23s (node1)  --------4GPUs/pipe
+3. 12s (node0) / 12s (node1) ------- 2GPUs/pipe
+
+Optimization:
+
+1. CPU pin_memory to GPU: reducing the CPU to GPU loading time cost
+
+2. Cache for frozen layer hidden output

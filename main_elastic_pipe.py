@@ -12,6 +12,7 @@ import wandb
 from torch.utils.data import SequentialSampler, DataLoader, DistributedSampler
 from torchvision import transforms, datasets
 
+from cache.auto_cache import AutoCache
 from dp.auto_dp import AutoDataParallel
 from freeze.auto_freeze import AutoFreeze
 from model.vit.vision_transformer_origin import VisionTransformer
@@ -189,7 +190,6 @@ def train(args, auto_pipe, auto_dp, model, epoch, train_dataloader, test_dataloa
         # recv_gbyte, transmit_gbyte = net_meter.update_bandwidth()
         # logging.info("BW {recv_MB:%.3f} {transmit_MB:%.3f}" % (recv_gbyte * 1024, transmit_gbyte * 1024))
 
-
         sync_all_devices(0, auto_pipe.get_pipe_len())
         if batch_idx == 0:
             time_finish_prepare_ddp = time.time()
@@ -201,7 +201,6 @@ def train(args, auto_pipe, auto_dp, model, epoch, train_dataloader, test_dataloa
         logging.info("global_rank = %d. forward time cost (s) by CUDA event %f" % (auto_dp.get_global_rank(), start_fp.elapsed_time(end_fp)/1000))
         # with torch.cuda.device(device_last):
         logging.info("global_rank = %d. backwards time cost (s) by CUDA event %f" % (auto_dp.get_global_rank(), start_bp.elapsed_time(end_bp)/1000))
-
 
         sample_num_throughput = int(
             num_sample_processed_in_total / (time.time() - time_finish_prepare_ddp)) * auto_dp.get_active_world_size()
@@ -412,6 +411,9 @@ if __name__ == "__main__":
     # create AutoFreeze algorithm
     auto_freeze = AutoFreeze()
     # auto_freeze.do_not_freeze()
+
+    # create FP cache with CPU memory
+    auto_cache = AutoCache()
 
     # create pipe and DDP
     auto_pipe = AutoElasticPipe(auto_dp.get_world_size(), args.local_rank, args.global_rank, model,

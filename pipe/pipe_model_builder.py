@@ -106,7 +106,6 @@ def convert_to_balanced_model(local_rank, global_rank,
     # print(pipe)
     # print(balance)
     """
-    self.model_backbone = self.model_backbone.pin_memory()
     Optimization:
         Pin Memory: https://pytorch.org/docs/stable/notes/cuda.html#use-pinned-memory-buffers
         Prepare a Pin Memory model
