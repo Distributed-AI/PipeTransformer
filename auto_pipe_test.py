@@ -43,9 +43,7 @@ if __name__ == "__main__":
         auto_pipe = AutoElasticPipe(world_size, local_rank, global_rank, model, output_head,
                                     num_device, num_layers, debug_mode=True)
 
-        if auto_pipe.is_active():
-            for num_frozen_layers in range(num_layers + 1):
-                model, pipe_len, params_skip = auto_pipe.transform(num_frozen_layers)
-                print("############## active ranks" + str(auto_pipe.get_active_ranks()))
+        for num_frozen_layers in range(num_layers + 1):
+            model, pipe_len, params_skip = auto_pipe.transform(num_frozen_layers)
         print("finished!")
     sys.exit()

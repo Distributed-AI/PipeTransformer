@@ -3,7 +3,7 @@ from torch.distributed.pipeline.sync import Pipe
 
 from pipe.load_balance import generate_parameter_size_wise_balance
 from pipe.pipe_model_builder import convert_to_balanced_model, create_pipe_styled_model, get_ddp_ignored_params_name, \
-    freeze_layers_for_pipe_model
+    freeze_layers_for_pipe_model, Wrapper
 
 """
 Under development by Chaoyang He
@@ -32,12 +32,13 @@ class AutoElasticPipe:
             Pin Memory: https://pytorch.org/docs/stable/notes/cuda.html#use-pinned-memory-buffers
             Prepare a Pin Memory model
         """
-        for p in self.model_backbone.parameters():
-            p.pin_memory()
-        for p in self.output_head.parameters():
-            p.pin_memory()
-        for p in self.normal_model.parameters():
-            p.pin_memory()
+        if torch.cuda.is_available():
+            for p in self.model_backbone.parameters():
+                p.pin_memory()
+            for p in self.output_head.parameters():
+                p.pin_memory()
+            for p in self.normal_model.parameters():
+                p.pin_memory()
 
         self.num_device_at_beginning = num_device
         self.pipe_len = num_device
@@ -87,7 +88,7 @@ class AutoElasticPipe:
 
         params_to_skip = get_ddp_ignored_params_name(pipe_model, num_frozen_layers)
 
-        return pipe_model, self.pipe_len, params_to_skip
+        return Wrapper(pipe_model, num_frozen_layers), self.pipe_len, params_to_skip
 
     def get_num_frozen_layers(self):
         return self.num_frozen_layers

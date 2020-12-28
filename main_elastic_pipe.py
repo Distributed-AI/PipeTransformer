@@ -37,6 +37,8 @@ def train(args, auto_pipe, auto_dp, model, epoch, train_dataloader, test_dataloa
         new_train_dl, new_test_dl = get_data_loader(train_dataset, test_dataset, args.batch_size,
                                                     auto_dp.get_data_rank())
         train_dataloader = new_train_dl
+
+        auto_cache.update_num_frozen_layers(auto_pipe.get_num_frozen_layers())
     else:
         new_train_dl = train_dataloader
         new_test_dl = test_dataloader
@@ -97,7 +99,13 @@ def train(args, auto_pipe, auto_dp, model, epoch, train_dataloader, test_dataloa
         start_fp.record()
 
         optimizer.zero_grad()
-        log_probs = model(x)
+
+        if auto_cache.get_train_extracted_hidden_feature(batch_idx) is None:
+            hidden_feature = model.frozen_layers(x)
+            auto_cache.cache_train_extracted_hidden_feature(batch_idx, hidden_feature)
+        else:
+            hidden_feature = auto_cache.get_train_extracted_hidden_feature(batch_idx)
+        log_probs = model.active_layers(hidden_feature)
 
         # with torch.cuda.device(device_last):
         end_fp.record()
@@ -166,7 +174,14 @@ def _infer(model, test_data, device_first, device_last):
             iteration_num += 1
             x = x.to(device_first)
             target = target.to(device_last)
-            log_probs = model(x)
+
+            if auto_cache.get_test_extracted_hidden_feature(batch_idx) is None:
+                hidden_feature = model.frozen_layers(x)
+                auto_cache.cache_test_extracted_hidden_feature(batch_idx, hidden_feature)
+            else:
+                hidden_feature = auto_cache.get_test_extracted_hidden_feature(batch_idx)
+            log_probs = model.active_layers(hidden_feature)
+
             loss = criterion(log_probs, target)
             _, predicted = torch.max(log_probs, -1)
             correct = predicted.eq(target).sum()

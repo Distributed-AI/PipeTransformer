@@ -42,6 +42,48 @@ class OutputHead(nn.Module):
         return logits
 
 
+"""
+Issues Description:
+the output of pipe is RRef，but DDP cannot recognize RRef object so DDP cannot find Tensor inside RRef.
+Then DDP will view all parameters as used ones.
+
+Temporal Solution:
+Using a Wrapper model to help DDP find find Tensors inside RRef.
+"""
+
+
+class Wrapper(nn.Module):
+    def __init__(self, pipe_model, num_frozen_layers):
+        super().__init__()
+        self.pipe_model = pipe_model
+        print(self.pipe_model)
+        self.num_frozen_layers = num_frozen_layers
+
+        self.frozen_layers = nn.Sequential()
+        self.active_layers = nn.Sequential()
+        layer_idx_in_total = 0
+        is_active_layer = False
+        for partition_idx in range(len(pipe_model.partitions)):
+            model_partition = pipe_model.partitions[partition_idx]
+            for sub_layer_idx in range(len(model_partition)):
+                model_sub_layer = model_partition[sub_layer_idx]
+                if not is_active_layer:
+                    self.frozen_layers.add_module("frozen_layer_" + str(layer_idx_in_total), model_sub_layer)
+                else:
+                    self.frozen_layers.add_module("active_layer" + str(layer_idx_in_total), model_sub_layer)
+
+                layer_idx_in_total += 1
+                if layer_idx_in_total >= num_frozen_layers * 2 + 1:
+                    is_active_layer = True
+
+        # print(self.frozen_layers)
+        # print(self.active_layers)
+
+    def forward(self, *args, **kwargs):
+        return self.pipe_module(*args, **kwargs).local_value()
+
+
+
 def count_parameters(model, b_is_required_grad=True):
     if b_is_required_grad:
         params = sum(p.numel() for p in model.parameters() if p.requires_grad)
@@ -98,6 +140,7 @@ def create_pipe_styled_model(model_backbone, output_model, num_layer_in_total, n
     print(parameters_list)
 
     return pipe_model, parameters_list
+
 
 
 def convert_to_balanced_model(local_rank, global_rank,

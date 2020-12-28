@@ -16,7 +16,9 @@ class AutoCache:
         self.test_extracted_features[batch_idx] = extracted_feature.cpu().pin_memory()
 
     def get_train_extracted_hidden_feature(self, batch_idx):
-        return self.train_extracted_features[batch_idx]
+        # the hidden features are always in device 0
+        return self.train_extracted_features[batch_idx].to("cuda:0")
 
     def get_test_extracted_hidden_feature(self, batch_idx):
-        return self.test_extracted_features[batch_idx]
+        # the hidden features are always in device 0
+        return self.test_extracted_features[batch_idx].to("cuda:0")
