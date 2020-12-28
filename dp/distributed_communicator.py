@@ -3,9 +3,9 @@ import torch
 import torch.distributed as dist
 
 
-def dist_broadcast(src, object_list):
+def dist_broadcast(object_list, src):
     """Broadcasts a given object to all parties."""
-    dist.broadcast_object_list(src, object_list)
+    dist.broadcast_object_list(object_list, src)
     return object_list
 
 
