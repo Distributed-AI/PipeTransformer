@@ -76,10 +76,12 @@ def train(args, auto_pipe, auto_dp, model, epoch, train_dataloader, test_dataloa
     # wait for CUDA
     sync_all_devices(0, auto_pipe.get_pipe_len())
 
-    torch.cuda.empty_cache()
 
     iteration_num = 0
     for batch_idx, (x, target) in enumerate(train_dataloader):
+
+        torch.cuda.empty_cache()
+
         if batch_idx == 0:
             starting_time = time.time()
         logging.info("--------------global_rank = %d. Epoch %d, batch index %d Statistics: " % (
