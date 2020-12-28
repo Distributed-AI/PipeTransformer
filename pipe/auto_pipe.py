@@ -32,13 +32,13 @@ class AutoElasticPipe:
             Pin Memory: https://pytorch.org/docs/stable/notes/cuda.html#use-pinned-memory-buffers
             Prepare a Pin Memory model
         """
-        if torch.cuda.is_available():
-            for p in self.model_backbone.parameters():
-                p.pin_memory()
-            for p in self.output_head.parameters():
-                p.pin_memory()
-            for p in self.normal_model.parameters():
-                p.pin_memory()
+        # if torch.cuda.is_available():
+        #     for p in self.model_backbone.parameters():
+        #         p.pin_memory()
+        #     for p in self.output_head.parameters():
+        #         p.pin_memory()
+        #     for p in self.normal_model.parameters():
+        #         p.pin_memory()
 
         self.num_device_at_beginning = num_device
         self.pipe_len = num_device
