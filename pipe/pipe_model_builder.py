@@ -53,35 +53,62 @@ Using a Wrapper model to help DDP find find Tensors inside RRef.
 
 
 class Wrapper(nn.Module):
+    ALL_LAYER = 0
+    FROZEN_LAYER = 1
+    ACTIVE_LYAER = 2
+    
     def __init__(self, pipe_model, num_frozen_layers):
         super().__init__()
         self.pipe_model = pipe_model
         # print(self.pipe_model)
         self.num_frozen_layers = num_frozen_layers
 
-        self.frozen_layers = nn.Sequential()
-        self.active_layers = nn.Sequential()
+        self.mode = Wrapper.ALL_LAYER
+
+    def set_mode(self, mode):
+        self.mode = mode
+
+    def forward(self, input):
+        if self.mode == Wrapper.ALL_LAYER:
+            return self.forward_all_layers(input)
+        elif self.mode == Wrapper.FROZEN_LAYER:
+            return self.forward_frozen_layers(input)
+        elif self.mode == Wrapper.ACTIVE_LYAER:
+            return self.forward_active_layer(input)
+        else:
+            raise Exception("cannot work in this mode")
+
+    def forward_all_layers(self, input):
+        return self.pipe_model(input).local_value()
+
+    def forward_frozen_layers(self, input):
+        hidden_output = input
         layer_idx_in_total = 0
-        is_active_layer = False
-        for partition_idx in range(len(pipe_model.partitions)):
-            model_partition = pipe_model.partitions[partition_idx]
+
+        for partition_idx in range(len(self.pipe_model.partitions)):
+            model_partition = self.pipe_model.partitions[partition_idx]
             for sub_layer_idx in range(len(model_partition)):
                 model_sub_layer = model_partition[sub_layer_idx]
-                if not is_active_layer:
-                    self.frozen_layers.add_module("frozen_layer_" + str(layer_idx_in_total), model_sub_layer)
-                else:
-                    self.frozen_layers.add_module("active_layer" + str(layer_idx_in_total), model_sub_layer)
-
+                hidden_output = model_sub_layer(hidden_output)
                 layer_idx_in_total += 1
-                if layer_idx_in_total >= num_frozen_layers * 2 + 1:
+                if layer_idx_in_total >= self.num_frozen_layers * 2 + 1:
+                    return hidden_output.local_value()
+
+    def forward_active_layer(self, input):
+        hidden_output = input
+        layer_idx_in_total = 0
+        is_active_layer = False
+
+        for partition_idx in range(len(self.pipe_model.partitions)):
+            model_partition = self.pipe_model.partitions[partition_idx]
+            for sub_layer_idx in range(len(model_partition)):
+                model_sub_layer = model_partition[sub_layer_idx]
+                if is_active_layer:
+                    hidden_output = model_sub_layer(hidden_output)
+                layer_idx_in_total += 1
+                if layer_idx_in_total >= self.num_frozen_layers * 2 + 1:
                     is_active_layer = True
-
-        # print(self.frozen_layers)
-        # print(self.active_layers)
-
-    def forward(self, *args, **kwargs):
-        return self.pipe_model(*args, **kwargs).local_value()
-
+        return hidden_output.local_value()
 
 
 def count_parameters(model, b_is_required_grad=True):
@@ -142,7 +169,6 @@ def create_pipe_styled_model(model_backbone, output_model, num_layer_in_total, n
     return pipe_model, parameters_list
 
 
-
 def convert_to_balanced_model(local_rank, global_rank,
                               device_idx_start, pipe: nn.Sequential, balance):
     # print("device_idx_start = %d" % device_idx_start)
@@ -172,7 +198,7 @@ def convert_to_balanced_model(local_rank, global_rank,
         else:
             balanced_pipe.append(nn.Sequential(*layers))
     time_end_loading = time.time()
-    print("CPU->GPU time cost = " + str(time_end_loading-time_start_loading))
+    print("CPU->GPU time cost = " + str(time_end_loading - time_start_loading))
     return nn.Sequential(*balanced_pipe)
 
 
