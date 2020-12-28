@@ -73,6 +73,8 @@ def train(args, auto_pipe, auto_dp, model, epoch, train_dataloader, test_dataloa
     end_fp = torch.cuda.Event(enable_timing=True)
     start_bp = torch.cuda.Event(enable_timing=True)
 
+    # wait for CUDA
+    sync_all_devices(0, auto_pipe.get_pipe_len())
 
     iteration_num = 0
     for batch_idx, (x, target) in enumerate(train_dataloader):
