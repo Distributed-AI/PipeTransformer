@@ -82,6 +82,10 @@ def load_cifar_centralized_training_for_vit(args):
 
 
 def get_data_loader(trainset, testset, rank):
+    """
+    Optimization:
+        Pin Memory: https://pytorch.org/docs/stable/notes/cuda.html#use-pinned-memory-buffers
+    """
     train_sampler = DistributedSampler(trainset, rank=rank)
     test_sampler = SequentialSampler(testset)
     train_loader = DataLoader(trainset,

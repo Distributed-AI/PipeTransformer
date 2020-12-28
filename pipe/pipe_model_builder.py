@@ -100,6 +100,12 @@ def convert_to_balanced_model(local_rank, global_rank,
     # print("device_idx_start = %d" % device_idx_start)
     # print(pipe)
     # print(balance)
+    """
+    self.model_backbone = self.model_backbone.pin_memory()
+    Optimization:
+        Pin Memory: https://pytorch.org/docs/stable/notes/cuda.html#use-pinned-memory-buffers
+        Prepare a Pin Memory model
+    """
     print("convert_to_balanced_model. local_rank = %d, global_rank = %d" % (local_rank, global_rank))
     time_start_loading = time.time()
     pipe_layer_idx = 0
