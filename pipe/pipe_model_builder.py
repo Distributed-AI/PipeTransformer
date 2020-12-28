@@ -56,7 +56,7 @@ class Wrapper(nn.Module):
     def __init__(self, pipe_model, num_frozen_layers):
         super().__init__()
         self.pipe_model = pipe_model
-        print(self.pipe_model)
+        # print(self.pipe_model)
         self.num_frozen_layers = num_frozen_layers
 
         self.frozen_layers = nn.Sequential()
@@ -80,7 +80,7 @@ class Wrapper(nn.Module):
         # print(self.active_layers)
 
     def forward(self, *args, **kwargs):
-        return self.pipe_module(*args, **kwargs).local_value()
+        return self.pipe_model(*args, **kwargs).local_value()
 
 
 
