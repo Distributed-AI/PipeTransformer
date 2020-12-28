@@ -63,10 +63,10 @@ sh run_elastic_pipe.sh 8 2 0 192.168.11.2 22222 1 0.03 320 cifar10 ./data/cifar1
 sh run_elastic_pipe.sh 8 2 1 192.168.11.2 22222 1 0.03 320 cifar10 ./data/cifar10/ 8
 ```
 
-ImageNet
+ImageNet. Batch Size = 320
 ```
-sh run_elastic_pipe.sh 8 2 0 192.168.11.2 22222 1 0.03 320 imagenet /home/chaoyanghe/dataset/cv/imagenet 8
-sh run_elastic_pipe.sh 8 2 1 192.168.11.2 22222 1 0.03 320 imagenet /home/chaoyanghe/dataset/cv/imagenet 8
+nohup sh run_elastic_pipe.sh 8 2 0 192.168.11.2 22222 1 0.03 320 imagenet /home/chaoyanghe/dataset/cv/imagenet 8 > ./machine1-imagenet.txt 2>&1 &
+nohup sh run_elastic_pipe.sh 8 2 1 192.168.11.2 22222 1 0.03 320 imagenet /home/chaoyanghe/dataset/cv/imagenet 8 > ./machine2-imagenet.txt 2>&1 &
 ```
 
 ## DDP 
