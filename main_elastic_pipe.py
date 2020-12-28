@@ -129,15 +129,15 @@ def train(args, auto_pipe, auto_dp, model, epoch, train_dataloader, test_dataloa
     # measure latency with cuda event:
     # https://discuss.pytorch.org/t/distributed-training-slower-than-dataparallel/81539/4
     model.train()
-    with torch.cuda.device(device_first):
-        start_ld = torch.cuda.Event(enable_timing=True)
-        end_ld = torch.cuda.Event(enable_timing=True)
-        start_fp = torch.cuda.Event(enable_timing=True)
-        end_bp = torch.cuda.Event(enable_timing=True)
+    # with torch.cuda.device(device_first):
+    start_ld = torch.cuda.Event(enable_timing=True)
+    end_ld = torch.cuda.Event(enable_timing=True)
+    start_fp = torch.cuda.Event(enable_timing=True)
+    end_bp = torch.cuda.Event(enable_timing=True)
 
-    with torch.cuda.device(device_last):
-        end_fp = torch.cuda.Event(enable_timing=True)
-        start_bp = torch.cuda.Event(enable_timing=True)
+    # with torch.cuda.device(device_last):
+    end_fp = torch.cuda.Event(enable_timing=True)
+    start_bp = torch.cuda.Event(enable_timing=True)
 
     iteration_num = 0
     for batch_idx, (x, target) in enumerate(train_dataloader):
@@ -149,27 +149,27 @@ def train(args, auto_pipe, auto_dp, model, epoch, train_dataloader, test_dataloa
         iteration_num += 1
 
         # load data
-        with torch.cuda.device(device_first):
-            start_ld.record()
+        # with torch.cuda.device(device_first):
+        start_ld.record()
         x = x.to(device_first)
         target = target.to(device_last)
 
-        with torch.cuda.device(device_first):
-            end_ld.record()
+        # with torch.cuda.device(device_first):
+        end_ld.record()
 
         # FP
-        with torch.cuda.device(device_first):
-            start_fp.record()
+        # with torch.cuda.device(device_first):
+        start_fp.record()
 
         optimizer.zero_grad()
         log_probs = model(x)
 
-        with torch.cuda.device(device_last):
-            end_fp.record()
+        # with torch.cuda.device(device_last):
+        end_fp.record()
 
         # BP
-        with torch.cuda.device(device_last):
-            start_bp.record()
+        # with torch.cuda.device(device_last):
+        start_bp.record()
 
         loss = criterion(log_probs, target)
         loss.backward()
@@ -178,8 +178,8 @@ def train(args, auto_pipe, auto_dp, model, epoch, train_dataloader, test_dataloa
         optimizer.step()
         scheduler.step()
 
-        with torch.cuda.device(device_first):
-            end_bp.record()
+        # with torch.cuda.device(device_first):
+        end_bp.record()
 
         # recv_gbyte, transmit_gbyte = net_meter.update_bandwidth()
         # logging.info("BW {recv_MB:%.3f} {transmit_MB:%.3f}" % (recv_gbyte * 1024, transmit_gbyte * 1024))
@@ -189,12 +189,12 @@ def train(args, auto_pipe, auto_dp, model, epoch, train_dataloader, test_dataloa
             time_finish_prepare_ddp = time.time()
             logging.info("data loading cost = " + str(time_finish_prepare_ddp - starting_time))
 
-        with torch.cuda.device(device_first):
-            logging.info(f"data loading time cost (s) by CUDA event {start_ld.elapsed_time(end_ld)/1000}")
-        with torch.cuda.device(device_first):
-            logging.info(f"forward time cost (s) by CUDA event {start_fp.elapsed_time(end_fp)/1000}")
-        with torch.cuda.device(device_first):
-            logging.info(f"backwards time cost: (s) by CUDA event {start_bp.elapsed_time(end_bp)/1000}")
+        # with torch.cuda.device(device_first):
+        logging.info(f"data loading time cost (s) by CUDA event {start_ld.elapsed_time(end_ld)/1000}")
+        # with torch.cuda.device(device_first):
+        logging.info(f"forward time cost (s) by CUDA event {start_fp.elapsed_time(end_fp)/1000}")
+        # with torch.cuda.device(device_last):
+        logging.info(f"backwards time cost: (s) by CUDA event {start_bp.elapsed_time(end_bp)/1000}")
 
         sample_num_throughput = int(
             num_sample_processed_in_total / (time.time() - time_finish_prepare_ddp)) * auto_dp.get_active_world_size()
