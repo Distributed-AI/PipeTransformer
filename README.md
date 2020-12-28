@@ -60,6 +60,11 @@ sh run_elastic_pipe.sh 8 2 0 192.168.11.1 11111 1 0.03 320 cifar10 ./data/cifar1
 sh run_elastic_pipe.sh 8 2 1 192.168.11.1 11111 1 0.03 320 cifar10 ./data/cifar10/ 8
 ```
 
+```
+sh run_elastic_pipe.sh 8 2 0 192.168.11.2 22222 1 0.03 320 cifar10 ./data/cifar10/ 8
+sh run_elastic_pipe.sh 8 2 1 192.168.11.2 22222 1 0.03 320 cifar10 ./data/cifar10/ 8
+```
+
 ## DDP 
 ```
 nohup sh run_ddp.sh 4 2 0 192.168.11.1 11111 1 0.03 64 cifar10 ./data/cifar10/ > ./machine1_ddp.txt 2>&1 &
@@ -84,6 +89,7 @@ nohup sh run_ddp.sh 8 2 1 192.168.11.1 11111 > ./machine2.txt 2>&1 &
 # kill all processes
 kill $(ps aux | grep "main.py" | grep -v grep | awk '{print $2}')
 kill $(ps aux | grep "main_elastic_pipe.py" | grep -v grep | awk '{print $2}')
+kill $(ps aux | grep "main_fedseg.py" | grep -v grep | awk '{print $2}')
 ```
 
 # Single GPU training (for performance evaluation)

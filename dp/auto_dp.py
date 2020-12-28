@@ -43,9 +43,11 @@ class AutoDataParallel:
 
         self.global_port += 1
         if args.is_infiniband:
-            self.master_addr = "192.168.11.1"
+            # self.master_addr = "192.168.11.1"
+            self.master_addr = "192.168.11.2"
         else:
-            self.master_addr = "192.168.1.1"
+            # self.master_addr = "192.168.1.1"
+            self.master_addr = "192.168.11.2"
         os.environ.update({"MASTER_ADDR": self.master_addr})
         os.environ.update({"MASTER_PORT": str(self.global_port)})
 
