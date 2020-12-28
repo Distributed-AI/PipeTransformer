@@ -194,7 +194,7 @@ def convert_to_balanced_model(local_rank, global_rank,
             print("######################local_rank = %d, global_rank = %d, device id: %d" % (local_rank,
                                                                                               global_rank,
                                                                                               device_id + device_idx_start))
-            balanced_pipe.append(nn.Sequential(*layers).to(device, non_blocking=True))
+            balanced_pipe.append(nn.Sequential(*layers).to(device, non_blocking=False))
         else:
             balanced_pipe.append(nn.Sequential(*layers))
     time_end_loading = time.time()
