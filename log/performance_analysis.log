@@ -19,3 +19,18 @@ Expermental Results: DOES NOT WORK
 
 2. Avoid Rebuilt of DDP Bucket
 Expermental Results: DOES NOT WORK
+
+
+CUDA context memory cost:
+
+(pipe_distributed) chaoyanghe@lambda-server1:~/PipeTransformer$ python
+Python 3.7.4 (default, Aug 13 2019, 20:35:49)
+[GCC 7.3.0] :: Anaconda, Inc. on linux
+Type "help", "copyright", "credits" or "license" for more information.
+>>> import torch
+>>> torch.zeros(2).to(0)
+tensor([0., 0.], device='cuda:0')
+>>>
+
+
+867MiB

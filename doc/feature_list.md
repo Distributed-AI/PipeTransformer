@@ -2,7 +2,7 @@
 
 1. DPipe: a pytorch compatible pipe parallelism for large model like BERT, Vision Transformer.
 
-2. Pipe Load Balance: making the communication inside pipe evenly
+2. Pipe Load Balance: making the computation inside pipe evenly
 
 3. Elastic Pipelining: adding more pipes to increase parallelism when memory is released.
 
@@ -13,6 +13,9 @@
 5. Forward Cache
 
 6. Depending on the model size, adaptively choose DP or Pipe in a single machine.
+(1) Single GPU
+(2) Single Machine, Multiple GPUs
+(3) Multiple Machines, Multiple GPUs
 
 Machine Learning-wise Optimization:
 
@@ -20,4 +23,7 @@ Machine Learning-wise Optimization:
 
 2. redistribute the dataset to additional pipes
 
-3. auto freeze algorithm
+3. auto freeze algorithm (*)
+
+
+

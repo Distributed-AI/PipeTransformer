@@ -72,10 +72,12 @@ class AutoDataParallel:
         self.world_size = int(os.environ['WORLD_SIZE'])
         print("world_size = %d" % self.world_size)
 
-        # initialize the process group
+        # initialize the process group (this must be GLOO)
         dist.init_process_group(init_method='tcp://' + self.master_addr + ':' + str(self.global_port),
-                                backend=Backend.NCCL, rank=self.global_rank, world_size=self.world_size)
+                                backend=Backend.GLOO, rank=self.global_rank, world_size=self.world_size)
         print("init_process_group. local_rank = %d, global_rank = %d" % (self.local_rank, self.global_rank))
+
+
 
     def get_local_rank(self):
         return self.local_rank
@@ -154,6 +156,16 @@ class AutoDataParallel:
         self.active_process_group = dist.new_group(ranks=self.active_ranks, backend=Backend.NCCL,
                                                    timeout=timedelta(days=365))
 
+    def create_broadcast_process_group(self):
+        if self.comm_broadcast_group is None:
+            del self.comm_broadcast_group
+        self.update_active_ranks()
+        print("create_broadcast_process_group - auto_pipe.get_active_ranks() = " + str(self.active_ranks))
+        print("local_rank = %d, global_rank = %d - *************************create_broadcast_process_group*********"
+              % (self.local_rank, self.global_rank))
+        self.comm_broadcast_group = dist.new_group(ranks=self.active_ranks, backend=Backend.GLOO,
+                                                   timeout=timedelta(days=365))
+
     def generate_ddp_model(self, model, gpu_num_per_process, ddp_params_to_skip):
         self.pipe_len = gpu_num_per_process
         DDP._set_params_and_buffers_to_ignore_for_model(model, ddp_params_to_skip)
@@ -187,6 +199,7 @@ class AutoDataParallel:
         # create the initial group only once
         if self.first_run:
             self.create_active_process_group()
+            self.create_broadcast_process_group()
             self.clear_memory()
             self.first_run = False
 
@@ -211,11 +224,11 @@ class AutoDataParallel:
             if self.global_rank == 0:
                 print("local_rank = %d, global_rank = %d - *************************dist_send send(START) "
                       % (self.local_rank, self.global_rank))
-                dist_broadcast(broad_cast_msg, 0)
+                dist_broadcast(broad_cast_msg, 0, self.comm_broadcast_group)
                 print("local_rank = %d, global_rank = %d - *************************dist_send send(END)"
                       % (self.local_rank, self.global_rank))
             else:
-                dist_broadcast(broad_cast_msg, 0)
+                dist_broadcast(broad_cast_msg, 0, self.comm_broadcast_group)
 
             self.create_active_process_group()
             self.clear_memory()
@@ -225,7 +238,7 @@ class AutoDataParallel:
     def _inactive_process_impl(self, auto_pipe):
         broad_cast_msg = [float(i * 0.0) for i in range(20)]
         torch.cuda.set_device(self.local_rank)
-        frozen_message = dist_broadcast(broad_cast_msg, 0)
+        frozen_message = dist_broadcast(broad_cast_msg, 0, self.comm_broadcast_group)
         num_frozen_layers, pipe_len, max_parameter_per_gpu_at_beginning, \
         newly_added_active_ranks, freeze_point = self._parse_broad_cast_message(frozen_message)
 
