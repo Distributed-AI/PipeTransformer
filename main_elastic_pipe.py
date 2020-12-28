@@ -73,6 +73,7 @@ def train(args, auto_pipe, auto_dp, model, epoch, train_dataloader, test_dataloa
     end_fp = torch.cuda.Event(enable_timing=True)
     start_bp = torch.cuda.Event(enable_timing=True)
 
+
     iteration_num = 0
     for batch_idx, (x, target) in enumerate(train_dataloader):
         if batch_idx == 0:
@@ -102,8 +103,10 @@ def train(args, auto_pipe, auto_dp, model, epoch, train_dataloader, test_dataloa
 
         log_probs = auto_cache.infer_train(model, x, batch_idx)
 
-        with torch.cuda.device(device_last):
-            end_fp.record()
+        first_stream = torch.cuda.current_stream(device=device_first)
+        last_stream = torch.cuda.current_stream(device=device_last)
+        first_stream.wait_stream(last_stream)
+        end_fp.record()
 
         # BP
         # with torch.cuda.device(device_last):
