@@ -1,5 +1,3 @@
-import traceback
-
 import torch
 from torch.distributed.pipeline.sync import Pipe
 
@@ -56,9 +54,10 @@ class AutoElasticPipe:
 
     def transform(self, num_frozen_layers):
         # traceback.print_stack()
-        print("---local_rank = %d, global_rank = %d -------------freeze layer number = %d---------------" % (self.local_rank,
-                                                                                                             self.global_rank,
-                                                                                                             num_frozen_layers))
+        print("---local_rank = %d, global_rank = %d -------------freeze layer number = %d---------------" % (
+        self.local_rank,
+        self.global_rank,
+        num_frozen_layers))
         # if self.is_first_call and num_frozen_layers != 0:
         #     raise Exception("the first transformation must from all layers training")
 
