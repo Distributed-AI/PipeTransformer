@@ -1,12 +1,10 @@
 import gc
 import logging
 import os
-from typing import List
 
 import torch
-import torch.nn
 import torch.distributed as dist
-from torch import nn
+import torch.nn
 from torch.distributed import rpc, timedelta, Backend
 from torch.distributed.rpc import TensorPipeRpcBackendOptions
 from torch.nn.parallel import DistributedDataParallel as DDP
@@ -106,11 +104,12 @@ class AutoDataParallel:
         class WarmupModel(torch.nn.Module):
             def __init__(self):
                 super(WarmupModel, self).__init__()
-                self.model_arch = torch.nn.Parameter(1e-3*torch.randn(1,1))
+                self.model_arch = torch.nn.Parameter(1e-3 * torch.randn(1, 1))
 
             def forward(self, x):
-                x = self.model_arch*2
+                x = self.model_arch * 2
                 return x
+
         warmup_model = WarmupModel()
         warmup_model.to(self.local_rank)
         print("local_rank = %d, global_rank = %d" % (self.local_rank, self.global_rank))
