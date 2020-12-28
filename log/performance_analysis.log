@@ -1,4 +1,5 @@
-时间开销分解：
+Time Cost Disect:
+
 CPU->GPU:
 1. 17.6s ----8GPUs/pipe
 2. 14.4s (node0) / 29.3s (node1)      ----4GPUs/pipe, add 1 pipe/node
@@ -9,8 +10,15 @@ DDP rebuilt:
 2. 23s (node0) / 23s (node1)  --------4GPUs/pipe
 3. 12s (node0) / 12s (node1) ------- 2GPUs/pipe
 
+
+
+Memory Cost:
+
+
 Optimization:
 
-1. CPU pin_memory to GPU: reducing the CPU to GPU loading time cost
+1. CPU pin_memory to GPU: reducing the CPU to GPU loading time cost:
+Expermental Results: DOES NOT WORK
 
-2. Cache for frozen layer hidden output
+2. Avoid Rebuilt of DDP Bucket
+Expermental Results: DOES NOT WORK
