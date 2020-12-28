@@ -122,7 +122,7 @@ def train(args, auto_pipe, auto_dp, model, epoch, train_dataloader, test_dataloa
         # recv_gbyte, transmit_gbyte = net_meter.update_bandwidth()
         # logging.info("BW {recv_MB:%.3f} {transmit_MB:%.3f}" % (recv_gbyte * 1024, transmit_gbyte * 1024))
 
-        # sync_all_devices(0, auto_pipe.get_pipe_len())
+        sync_all_devices(0, auto_pipe.get_pipe_len())
         if batch_idx == 0:
             time_finish_prepare_ddp = time.time()
             logging.info("global_rank = %d. data loading cost = %s" % (
