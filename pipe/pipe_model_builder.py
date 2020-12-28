@@ -56,7 +56,7 @@ class Wrapper(nn.Module):
     ALL_LAYER = 0
     FROZEN_LAYER = 1
     ACTIVE_LYAER = 2
-    
+
     def __init__(self, pipe_model, num_frozen_layers):
         super().__init__()
         self.pipe_model = pipe_model
