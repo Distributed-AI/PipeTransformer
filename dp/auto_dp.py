@@ -33,6 +33,8 @@ class AutoDataParallel:
         self.active_data_ranks = dict()
         self.freeze_point = None
 
+        self.comm_broadcast_group = None
+
     def get_ddp_model(self, model, local_rank):
         return DDP(model, device_ids=[local_rank], output_device=local_rank)
 
@@ -157,8 +159,6 @@ class AutoDataParallel:
                                                    timeout=timedelta(days=365))
 
     def create_broadcast_process_group(self):
-        if self.comm_broadcast_group is None:
-            del self.comm_broadcast_group
         self.update_active_ranks()
         print("create_broadcast_process_group - auto_pipe.get_active_ranks() = " + str(self.active_ranks))
         print("local_rank = %d, global_rank = %d - *************************create_broadcast_process_group*********"
