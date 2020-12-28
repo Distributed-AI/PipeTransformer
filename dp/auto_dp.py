@@ -79,8 +79,6 @@ class AutoDataParallel:
                                 backend=Backend.GLOO, rank=self.global_rank, world_size=self.world_size)
         print("init_process_group. local_rank = %d, global_rank = %d" % (self.local_rank, self.global_rank))
 
-
-
     def get_local_rank(self):
         return self.local_rank
 
@@ -159,7 +157,6 @@ class AutoDataParallel:
                                                    timeout=timedelta(days=365))
 
     def create_broadcast_process_group(self):
-        self.update_active_ranks()
         print("create_broadcast_process_group - auto_pipe.get_active_ranks() = " + str(self.active_ranks))
         print("local_rank = %d, global_rank = %d - *************************create_broadcast_process_group*********"
               % (self.local_rank, self.global_rank))
