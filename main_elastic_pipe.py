@@ -143,6 +143,7 @@ def train(args, auto_pipe, auto_dp, model, epoch, train_dataloader, test_dataloa
     for batch_idx, (x, target) in enumerate(train_dataloader):
         if batch_idx == 0:
             starting_time = time.time()
+        logging.info("--------------Epoch %d Statistics: " % epoch)
         logging.info("global_rank = %d. epoch = %d, batch index = %d/%d" % (auto_dp.get_global_rank(), epoch, batch_idx, len(train_dl)))
         num_sample_processed_in_total += len(x)
         communication_count += 1
@@ -184,7 +185,7 @@ def train(args, auto_pipe, auto_dp, model, epoch, train_dataloader, test_dataloa
         # recv_gbyte, transmit_gbyte = net_meter.update_bandwidth()
         # logging.info("BW {recv_MB:%.3f} {transmit_MB:%.3f}" % (recv_gbyte * 1024, transmit_gbyte * 1024))
 
-        logging.info("--------------Epoch %d Statistics: " % epoch)
+
         sync_all_devices(0, auto_pipe.get_pipe_len())
         if batch_idx == 0:
             time_finish_prepare_ddp = time.time()
