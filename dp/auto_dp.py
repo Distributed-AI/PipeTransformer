@@ -160,7 +160,7 @@ class AutoDataParallel:
         print("create_broadcast_process_group - auto_pipe.get_active_ranks() = " + str(self.active_ranks))
         print("local_rank = %d, global_rank = %d - *************************create_broadcast_process_group*********"
               % (self.local_rank, self.global_rank))
-        self.comm_broadcast_group = dist.new_group(ranks=self.active_ranks, backend=Backend.GLOO,
+        self.comm_broadcast_group = dist.new_group(ranks=[i for i in range(self.world_size)], backend=Backend.GLOO,
                                                    timeout=timedelta(days=365))
 
     def generate_ddp_model(self, model, gpu_num_per_process, ddp_params_to_skip):
