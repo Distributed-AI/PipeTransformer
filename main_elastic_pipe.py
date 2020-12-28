@@ -191,7 +191,7 @@ def train(args, auto_pipe, auto_dp, model, epoch, train_dataloader, test_dataloa
 
         with torch.cuda.device(device_first):
             logging.info(f"data loading time cost (s) by CUDA event {start_ld.elapsed_time(end_ld)/1000}")
-        with torch.cuda.device(device_last):
+        with torch.cuda.device(device_first):
             logging.info(f"forward time cost (s) by CUDA event {start_fp.elapsed_time(end_fp)/1000}")
         with torch.cuda.device(device_first):
             logging.info(f"backwards time cost: (s) by CUDA event {start_bp.elapsed_time(end_bp)/1000}")
