@@ -147,7 +147,7 @@ def train(args, auto_pipe, auto_dp, model, epoch, train_dataloader, test_dataloa
     for batch_idx, (x, target) in enumerate(train_dataloader):
         if batch_idx == 0:
             starting_time = time.time()
-        logging.info("--------------Epoch %d, batch index %d Statistics: " % (epoch, batch_idx))
+        logging.info("--------------global_rank = %d. Epoch %d, batch index %d Statistics: " % (auto_dp.get_global_rank(), epoch, batch_idx))
         logging.info("global_rank = %d. epoch = %d, batch index = %d/%d" % (auto_dp.get_global_rank(), epoch, batch_idx, len(train_dl)))
         num_sample_processed_in_total += len(x)
         communication_count += 1
@@ -193,14 +193,14 @@ def train(args, auto_pipe, auto_dp, model, epoch, train_dataloader, test_dataloa
         sync_all_devices(0, auto_pipe.get_pipe_len())
         if batch_idx == 0:
             time_finish_prepare_ddp = time.time()
-            logging.info("data loading cost = " + str(time_finish_prepare_ddp - starting_time))
+            logging.info("global_rank = %d. data loading cost = %s" % (auto_dp.get_global_rank(), str(time_finish_prepare_ddp - starting_time)))
 
         # with torch.cuda.device(device_first):
-        logging.info(f"data loading time cost (s) by CUDA event {start_ld.elapsed_time(end_ld)/1000}")
+        logging.info("global_rank = %d. data loading time cost (s) by CUDA event %f" % (auto_dp.get_global_rank(), start_ld.elapsed_time(end_ld)/1000))
         # with torch.cuda.device(device_first):
-        logging.info(f"forward time cost (s) by CUDA event {start_fp.elapsed_time(end_fp)/1000}")
+        logging.info("global_rank = %d. forward time cost (s) by CUDA event %f" % (auto_dp.get_global_rank(), start_fp.elapsed_time(end_fp)/1000))
         # with torch.cuda.device(device_last):
-        logging.info(f"backwards time cost: (s) by CUDA event {start_bp.elapsed_time(end_bp)/1000}")
+        logging.info("global_rank = %d. backwards time cost (s) by CUDA event %f" % (auto_dp.get_global_rank(), start_bp.elapsed_time(end_bp)/1000))
 
 
         sample_num_throughput = int(
