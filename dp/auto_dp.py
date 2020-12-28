@@ -239,7 +239,7 @@ class AutoDataParallel:
         return model
 
     def _inactive_process_impl(self, auto_pipe):
-        frozen_message = dist_broadcast(0, [None] * 5)
+        frozen_message = dist_broadcast([None] * 5, 0)
         num_frozen_layers, pipe_len, max_parameter_per_gpu_at_beginning, \
         newly_added_active_ranks, freeze_point = self._parse_broad_cast_message(frozen_message)
 
