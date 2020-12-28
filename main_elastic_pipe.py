@@ -143,7 +143,7 @@ def train(args, auto_pipe, auto_dp, model, epoch, train_dataloader, test_dataloa
     for batch_idx, (x, target) in enumerate(train_dataloader):
         if batch_idx == 0:
             starting_time = time.time()
-        logging.info("--------------Epoch %d Statistics: " % epoch)
+        logging.info("--------------Epoch %d, batch index %d Statistics: " % (epoch, batch_idx))
         logging.info("global_rank = %d. epoch = %d, batch index = %d/%d" % (auto_dp.get_global_rank(), epoch, batch_idx, len(train_dl)))
         num_sample_processed_in_total += len(x)
         communication_count += 1
