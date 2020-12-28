@@ -302,7 +302,7 @@ class AutoDataParallel:
 
     def clear_memory(self):
         # dist.destroy_process_group()
-        # torch.cuda.empty_cache()
+        torch.cuda.empty_cache()
         gc.collect()
 
     def _diff_list(self, li1, li2):
