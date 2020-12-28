@@ -102,8 +102,8 @@ def train(args, auto_pipe, auto_dp, model, epoch, train_dataloader, test_dataloa
 
         log_probs = auto_cache.infer_train(model, x, batch_idx)
 
-        # with torch.cuda.device(device_last):
-        end_fp.record()
+        with torch.cuda.device(device_last):
+            end_fp.record()
 
         # BP
         # with torch.cuda.device(device_last):
@@ -359,7 +359,7 @@ if __name__ == "__main__":
 
     # create AutoFreeze algorithm
     auto_freeze = AutoFreeze()
-    # auto_freeze.do_not_freeze()
+    auto_freeze.do_not_freeze()
 
     # create FP cache with CPU memory
     auto_cache = AutoCache()
