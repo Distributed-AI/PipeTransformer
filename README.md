@@ -50,19 +50,23 @@ nohup sh run_elastic_pipe.sh 2 2 0 192.168.11.1 11111 1 0.03 320 cifar10 ./data/
 nohup sh run_elastic_pipe.sh 2 2 1 192.168.11.1 11111 1 0.03 320 cifar10 ./data/cifar10/ 2 > ./machine2.txt 2>&1 &
 ```
 
-```
-sh run_elastic_pipe.sh 8 2 0 192.168.11.1 11111 1 0.03 120 cifar10 ./data/cifar10/ 8
-sh run_elastic_pipe.sh 8 2 1 192.168.11.1 11111 1 0.03 120 cifar10 ./data/cifar10/ 8
-```
 
-```
-sh run_elastic_pipe.sh 8 2 0 192.168.11.1 11111 1 0.03 320 cifar10 ./data/cifar10/ 8
-sh run_elastic_pipe.sh 8 2 1 192.168.11.1 11111 1 0.03 320 cifar10 ./data/cifar10/ 8
-```
-
+CIFAR 10
 ```
 sh run_elastic_pipe.sh 8 2 0 192.168.11.2 22222 1 0.03 320 cifar10 ./data/cifar10/ 8
 sh run_elastic_pipe.sh 8 2 1 192.168.11.2 22222 1 0.03 320 cifar10 ./data/cifar10/ 8
+```
+
+CIFAR 100
+```
+sh run_elastic_pipe.sh 8 2 0 192.168.11.2 22222 1 0.03 320 cifar10 ./data/cifar10/ 8
+sh run_elastic_pipe.sh 8 2 1 192.168.11.2 22222 1 0.03 320 cifar10 ./data/cifar10/ 8
+```
+
+ImageNet
+```
+sh run_elastic_pipe.sh 8 2 0 192.168.11.2 22222 1 0.03 320 imagenet /home/chaoyanghe/dataset/cv/imagenet 8
+sh run_elastic_pipe.sh 8 2 1 192.168.11.2 22222 1 0.03 320 imagenet /home/chaoyanghe/dataset/cv/imagenet 8
 ```
 
 ## DDP 

@@ -9,10 +9,10 @@ import psutil
 import torch
 import torch.nn as nn
 import wandb
-from torch.utils.data import SequentialSampler, DataLoader, DistributedSampler
-from torchvision import transforms, datasets
 
 from cache.auto_cache import AutoCache
+from data_preprocessing.data_loader import get_data_loader, load_cifar_centralized_training_for_vit, \
+    load_imagenet_centralized_training_for_vit
 from dp.auto_dp import AutoDataParallel
 from freeze.auto_freeze import AutoFreeze
 from model.vit.vision_transformer_origin import VisionTransformer
@@ -27,88 +27,15 @@ def count_parameters(model):
     return params / 1000000
 
 
-def load_cifar_centralized_training_for_vit(args):
-    # if args.is_distributed == 1:
-    #     torch.distributed.barrier()
-
-    """
-        the std 0.5 normalization is proposed by BiT (Big Transfer), which can increase the accuracy around 3%
-    """
-    # CIFAR_MEAN = [0.49139968, 0.48215827, 0.44653124]
-    # CIFAR_STD = [0.24703233, 0.24348505, 0.26158768]
-    CIFAR_MEAN = [0.5, 0.5, 0.5]
-    CIFAR_STD = [0.5, 0.5, 0.5]
-
-    """
-        transforms.RandomSizedCrop((args.img_size, args.img_size), scale=(0.05, 1.0)) leads to a very low training accuracy.
-    """
-    transform_train = transforms.Compose([
-        # transforms.RandomSizedCrop((args.img_size, args.img_size), scale=(0.05, 1.0)),
-        transforms.Resize(args.img_size),
-        transforms.RandomCrop(args.img_size),
-        transforms.RandomHorizontalFlip(),
-        transforms.ToTensor(),
-        transforms.Normalize(CIFAR_MEAN, CIFAR_STD),
-    ])
-    transform_test = transforms.Compose([
-        transforms.Resize((args.img_size, args.img_size)),
-        transforms.ToTensor(),
-        transforms.Normalize(CIFAR_MEAN, CIFAR_STD),
-    ])
-
-    if args.dataset == "cifar10":
-        trainset = datasets.CIFAR10(root=args.data_dir,
-                                    train=True,
-                                    download=True,
-                                    transform=transform_train)
-        testset = datasets.CIFAR10(root=args.data_dir,
-                                   train=False,
-                                   download=True,
-                                   transform=transform_test)
-        output_dim = 10
-    else:
-        trainset = datasets.CIFAR100(root=args.data_dir,
-                                     train=True,
-                                     download=True,
-                                     transform=transform_train)
-        testset = datasets.CIFAR100(root=args.data_dir,
-                                    train=False,
-                                    download=True,
-                                    transform=transform_test)
-        output_dim = 100
-
-    # if args.is_distributed == 1:
-    #     torch.distributed.barrier()
-    return trainset, testset, output_dim
-
-
-def get_data_loader(trainset, testset, rank):
-    """
-    Optimization:
-        Pin Memory: https://pytorch.org/docs/stable/notes/cuda.html#use-pinned-memory-buffers
-    """
-    train_sampler = DistributedSampler(trainset, rank=rank)
-    test_sampler = SequentialSampler(testset)
-    train_loader = DataLoader(trainset,
-                              sampler=train_sampler,
-                              batch_size=args.batch_size,
-                              num_workers=4,
-                              pin_memory=True)
-    test_loader = DataLoader(testset,
-                             sampler=test_sampler,
-                             batch_size=args.batch_size,
-                             num_workers=4,
-                             pin_memory=True) if testset is not None else None
-    return train_loader, test_loader
-
-
 def train(args, auto_pipe, auto_dp, model, epoch, train_dataloader, test_dataloader):
     if auto_freeze.is_freeze_open():
         new_freeze_point = dict()
         new_freeze_point['epoch'] = epoch
-        model = auto_dp.transform(auto_pipe, model, auto_freeze.get_hand_crafted_frozen_layers_by_epoch(epoch), new_freeze_point)
+        model = auto_dp.transform(auto_pipe, model, auto_freeze.get_hand_crafted_frozen_layers_by_epoch(epoch),
+                                  new_freeze_point)
         new_freeze_point = auto_dp.get_freeze_point()
-        new_train_dl, new_test_dl = get_data_loader(train_dataset, test_dataset, auto_dp.get_data_rank())
+        new_train_dl, new_test_dl = get_data_loader(train_dataset, test_dataset, args.batch_size,
+                                                    auto_dp.get_data_rank())
         train_dataloader = new_train_dl
     else:
         new_train_dl = train_dataloader
@@ -148,8 +75,10 @@ def train(args, auto_pipe, auto_dp, model, epoch, train_dataloader, test_dataloa
     for batch_idx, (x, target) in enumerate(train_dataloader):
         if batch_idx == 0:
             starting_time = time.time()
-        logging.info("--------------global_rank = %d. Epoch %d, batch index %d Statistics: " % (auto_dp.get_global_rank(), epoch, batch_idx))
-        logging.info("global_rank = %d. epoch = %d, batch index = %d/%d" % (auto_dp.get_global_rank(), epoch, batch_idx, len(train_dl)))
+        logging.info("--------------global_rank = %d. Epoch %d, batch index %d Statistics: " % (
+            auto_dp.get_global_rank(), epoch, batch_idx))
+        logging.info("global_rank = %d. epoch = %d, batch index = %d/%d" % (
+            auto_dp.get_global_rank(), epoch, batch_idx, len(train_dl)))
         num_sample_processed_in_total += len(x)
         communication_count += 1
         iteration_num += 1
@@ -193,14 +122,18 @@ def train(args, auto_pipe, auto_dp, model, epoch, train_dataloader, test_dataloa
         sync_all_devices(0, auto_pipe.get_pipe_len())
         if batch_idx == 0:
             time_finish_prepare_ddp = time.time()
-            logging.info("global_rank = %d. data loading cost = %s" % (auto_dp.get_global_rank(), str(time_finish_prepare_ddp - starting_time)))
+            logging.info("global_rank = %d. data loading cost = %s" % (
+                auto_dp.get_global_rank(), str(time_finish_prepare_ddp - starting_time)))
 
         # with torch.cuda.device(device_first):
-        logging.info("global_rank = %d. data loading time cost (s) by CUDA event %f" % (auto_dp.get_global_rank(), start_ld.elapsed_time(end_ld)/1000))
+        logging.info("global_rank = %d. data loading time cost (s) by CUDA event %f" % (
+            auto_dp.get_global_rank(), start_ld.elapsed_time(end_ld) / 1000))
         # with torch.cuda.device(device_first):
-        logging.info("global_rank = %d. forward time cost (s) by CUDA event %f" % (auto_dp.get_global_rank(), start_fp.elapsed_time(end_fp)/1000))
+        logging.info("global_rank = %d. forward time cost (s) by CUDA event %f" % (
+            auto_dp.get_global_rank(), start_fp.elapsed_time(end_fp) / 1000))
         # with torch.cuda.device(device_last):
-        logging.info("global_rank = %d. backwards time cost (s) by CUDA event %f" % (auto_dp.get_global_rank(), start_bp.elapsed_time(end_bp)/1000))
+        logging.info("global_rank = %d. backwards time cost (s) by CUDA event %f" % (
+            auto_dp.get_global_rank(), start_bp.elapsed_time(end_bp) / 1000))
 
         sample_num_throughput = int(
             num_sample_processed_in_total / (time.time() - time_finish_prepare_ddp)) * auto_dp.get_active_world_size()
@@ -208,8 +141,9 @@ def train(args, auto_pipe, auto_dp, model, epoch, train_dataloader, test_dataloa
                                                                                       sample_num_throughput))
 
         comm_freq = communication_count / (time.time() - time_finish_prepare_ddp)
-        logging.info("global_rank = %d. communication frequency (cross machine sync/second): %f" % (auto_dp.get_global_rank(),
-                                                                                                    comm_freq))
+        logging.info(
+            "global_rank = %d. communication frequency (cross machine sync/second): %f" % (auto_dp.get_global_rank(),
+                                                                                           comm_freq))
 
         logging.info("global_rank = %d. size_params_ddp_sum: %f" % (auto_dp.get_global_rank(),
                                                                     size_params_ddp_sum / 1e6))
@@ -278,7 +212,8 @@ def eval(model, args, epoch, train_dl, test_dl, device_first, device_last):
 def train_and_eval(auto_pipe, auto_dp, model, train_dl, test_dl, freeze_point, args):
     epoch_start = freeze_point['epoch']
     for epoch in range(epoch_start, args.epochs):
-        model, device_first, device_last, new_train_dl, new_test_dl = train(args, auto_pipe, auto_dp, model, epoch, train_dl, test_dl)
+        model, device_first, device_last, new_train_dl, new_test_dl = train(args, auto_pipe, auto_dp, model, epoch,
+                                                                            train_dl, test_dl)
         eval(model, args, epoch, new_train_dl, new_test_dl, device_first, device_last)
 
 
@@ -389,7 +324,16 @@ if __name__ == "__main__":
                    config=args)
 
     # create dataset
-    train_dataset, test_dataset, output_dim = load_cifar_centralized_training_for_vit(args)
+    # Dataset
+    logging.info("load_data. dataset_name = %s" % args.dataset)
+    if args.dataset == "cifar10":
+        train_dataset, test_dataset, output_dim = load_cifar_centralized_training_for_vit(args)
+    elif args.dataset == "cifar100":
+        train_dataset, test_dataset, output_dim = load_cifar_centralized_training_for_vit(args)
+    elif args.dataset == "imagenet":
+        train_dataset, test_dataset, output_dim = load_imagenet_centralized_training_for_vit(args)
+    else:
+        raise Exception("no such dataset!")
 
     # create model
     model_type = 'vit-B_16'
@@ -424,5 +368,5 @@ if __name__ == "__main__":
     freeze_point['epoch'] = 0
     model = auto_dp.transform(auto_pipe, model, 0, freeze_point)
     freeze_point = auto_dp.get_freeze_point()
-    train_dl, test_dl = get_data_loader(train_dataset, test_dataset, auto_dp.get_data_rank())
+    train_dl, test_dl = get_data_loader(train_dataset, test_dataset, args.batch_size, auto_dp.get_data_rank())
     train_and_eval(auto_pipe, auto_dp, model, train_dl, test_dl, freeze_point, args)
