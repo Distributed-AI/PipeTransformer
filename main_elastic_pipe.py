@@ -181,28 +181,20 @@ def train(args, auto_pipe, auto_dp, model, epoch, train_dataloader, test_dataloa
         with torch.cuda.device(device_first):
             end_bp.record()
 
-
-        # torch.cuda.synchronize(0)
-        # torch.cuda.synchronize(3)
-        # sync_all_devices(args.local_rank, auto_pipe.get_pipe_len())
-
         # recv_gbyte, transmit_gbyte = net_meter.update_bandwidth()
         # logging.info("BW {recv_MB:%.3f} {transmit_MB:%.3f}" % (recv_gbyte * 1024, transmit_gbyte * 1024))
 
-
+        sync_all_devices(0, auto_pipe.get_pipe_len())
         if batch_idx == 0:
-            sync_all_devices(0, auto_pipe.get_pipe_len())
-            # including bucket rebuilt
-            # we can see DDP's
             time_finish_prepare_ddp = time.time()
             logging.info("data loading cost = " + str(time_finish_prepare_ddp - starting_time))
 
         with torch.cuda.device(device_first):
-            logging.info(f"data loading time cost (ms) by CUDA event {start_ld.elapsed_time(end_ld)}")
+            logging.info(f"data loading time cost (s) by CUDA event {start_ld.elapsed_time(end_ld)/1000}")
         with torch.cuda.device(device_last):
-            logging.info(f"forward time cost (ms) by CUDA event {start_fp.elapsed_time(end_fp)}")
+            logging.info(f"forward time cost (s) by CUDA event {start_fp.elapsed_time(end_fp)/1000}")
         with torch.cuda.device(device_first):
-            logging.info(f"backwards time cost: (ms) by CUDA event {start_bp.elapsed_time(end_bp)}")
+            logging.info(f"backwards time cost: (s) by CUDA event {start_bp.elapsed_time(end_bp)/1000}")
 
         sample_num_throughput = int(
             num_sample_processed_in_total / (time.time() - time_finish_prepare_ddp)) * auto_dp.get_active_world_size()
