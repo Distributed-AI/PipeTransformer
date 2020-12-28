@@ -173,15 +173,15 @@ class AutoDataParallel:
         DDP._set_params_and_buffers_to_ignore_for_model(model, ddp_params_to_skip)
         if gpu_num_per_process > 1:
             # find_unused_parameters = True can avoid bucket rebuilt, which takes around 20s
-            # model = DDP(model, process_group=self.active_process_group,
-            #             find_unused_parameters=True)
-            model = DDP(Wrapper(model), process_group=self.active_process_group)
+            model = DDP(model, process_group=self.active_process_group,
+                        find_unused_parameters=True)
+            # model = DDP(Wrapper(model), process_group=self.active_process_group)
         else:
             # find_unused_parameters = True can avoid bucket rebuilt, which takes around 20s
-            # model = DDP(model, device_ids=[self.local_rank], process_group=self.active_process_group,
-            #             find_unused_parameters=True)
-            model = DDP(Wrapper(model), device_ids=[self.local_rank], process_group=self.active_process_group,
+            model = DDP(model, device_ids=[self.local_rank], process_group=self.active_process_group,
                         find_unused_parameters=True)
+            # model = DDP(Wrapper(model), device_ids=[self.local_rank], process_group=self.active_process_group,
+            #             find_unused_parameters=True)
         return model
 
     def get_freeze_point(self):
