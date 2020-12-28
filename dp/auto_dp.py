@@ -278,7 +278,7 @@ class AutoDataParallel:
         freeze_point = dict()
         freeze_point['epoch'] = epoch_start
         self.freeze_point = freeze_point
-        newly_added_active_ranks = frozen_message[5]
+        newly_added_active_ranks = frozen_message[4]
         print("newly_added_active_ranks = " + str(newly_added_active_ranks))
         return num_frozen_layers, pipe_len, max_parameter_per_gpu_at_beginning, newly_added_active_ranks, freeze_point
 
