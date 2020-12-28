@@ -224,6 +224,7 @@ class AutoDataParallel:
             max_parameter_per_gpu_at_beginning = auto_pipe.get_max_parameter_per_gpu_at_beginning()
             broad_cast_msg = self._build_broad_cast_message(num_frozen_layers, pipe_len,
                                                             max_parameter_per_gpu_at_beginning, self.freeze_point)
+            torch.cuda.set_device(self.local_rank)
             if self.global_rank == 0:
                 print("local_rank = %d, global_rank = %d - *************************dist_send send(START) "
                       % (self.local_rank, self.global_rank))
@@ -240,6 +241,7 @@ class AutoDataParallel:
 
     def _inactive_process_impl(self, auto_pipe):
         broad_cast_msg = [float(i * 0.0) for i in range(20)]
+        torch.cuda.set_device(self.local_rank)
         frozen_message = dist_broadcast(broad_cast_msg, 0)
         num_frozen_layers, pipe_len, max_parameter_per_gpu_at_beginning, \
         newly_added_active_ranks, freeze_point = self._parse_broad_cast_message(frozen_message)
