@@ -238,7 +238,7 @@ class AutoDataParallel:
         return model
 
     def _inactive_process_impl(self, auto_pipe):
-        broad_cast_msg = [float(i * 0.0) for i in range(20)]
+        broad_cast_msg = [None, None, None, None, None]
         frozen_message = dist_broadcast(0, broad_cast_msg)
         num_frozen_layers, pipe_len, max_parameter_per_gpu_at_beginning, \
         newly_added_active_ranks, freeze_point = self._parse_broad_cast_message(frozen_message)
@@ -260,19 +260,14 @@ class AutoDataParallel:
 
     def _build_broad_cast_message(self, num_frozen_layers, pipe_len, max_parameter_per_gpu_at_beginning, freeze_point):
         print("self.newly_added_active_ranks = " + str(self.newly_added_active_ranks))
-        broad_cast_msg = [float(i * 0.0) for i in range(20)]
-        broad_cast_msg[0] = float(num_frozen_layers)
-        broad_cast_msg[1] = float(pipe_len)
-        broad_cast_msg[2] = max_parameter_per_gpu_at_beginning
-        broad_cast_msg[3] = float(freeze_point['epoch'])
-        broad_cast_msg[4] = float(len(self.newly_added_active_ranks))
-        for idx, new_active_rank in enumerate(self.newly_added_active_ranks):
-            broad_cast_msg[idx + 5] = float(new_active_rank)
+        broad_cast_msg = [num_frozen_layers, pipe_len, max_parameter_per_gpu_at_beginning,
+                          freeze_point['epoch'], self.newly_added_active_ranks]
         return broad_cast_msg
 
     def _parse_broad_cast_message(self, frozen_message):
         print("local_rank = %d, global_rank = %d - frozen_message = %s" % (
             self.local_rank, self.global_rank, frozen_message))
+
         num_frozen_layers = int(frozen_message[0])
         pipe_len = int(frozen_message[1])
         max_parameter_per_gpu_at_beginning = frozen_message[2]
@@ -283,10 +278,7 @@ class AutoDataParallel:
         freeze_point = dict()
         freeze_point['epoch'] = epoch_start
         self.freeze_point = freeze_point
-        size_of_newly_added_active_ranks = int(frozen_message[4])
-        newly_added_active_ranks = []
-        for i in range(size_of_newly_added_active_ranks):
-            newly_added_active_ranks.append(int(frozen_message[i + 5]))
+        newly_added_active_ranks = frozen_message[5]
         print("newly_added_active_ranks = " + str(newly_added_active_ranks))
         return num_frozen_layers, pipe_len, max_parameter_per_gpu_at_beginning, newly_added_active_ranks, freeze_point
 
