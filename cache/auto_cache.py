@@ -18,7 +18,6 @@ class AutoCache:
         self.is_enable = False
 
     def infer_train(self, model, x, batch_idx):
-        print(model)
         if self.is_enable:
             if self.get_train_extracted_hidden_feature(batch_idx) is None:
                 hidden_feature = model.module.frozen_layers(x)
