@@ -30,16 +30,6 @@ class AutoElasticPipe:
         self.output_head = output_head
         self.normal_model = model_backbone
 
-        """
-        Optimization:
-            Pin Memory: https://pytorch.org/docs/stable/notes/cuda.html#use-pinned-memory-buffers
-            Prepare a Pin Memory model
-        """
-        self.model_backbone = self.model_backbone.pin_memory()
-        self.output_head = self.output_head.pin_memory()
-        self.normal_model = self.normal_model.pin_memory()
-
-
         self.num_device_at_beginning = num_device
         self.pipe_len = num_device
         self.num_layer_in_total = num_layer_in_total

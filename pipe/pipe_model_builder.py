@@ -51,6 +51,11 @@ def count_parameters(model, b_is_required_grad=True):
 
 
 def create_pipe_styled_model(model_backbone, output_model, num_layer_in_total, num_frozen_layer):
+    """
+    Optimization:
+        Pin Memory: https://pytorch.org/docs/stable/notes/cuda.html#use-pinned-memory-buffers
+        Prepare a Pin Memory model
+    """
     pipe_model = nn.Sequential()
 
     parameters_list = []
