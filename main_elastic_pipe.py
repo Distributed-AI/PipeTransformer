@@ -76,6 +76,8 @@ def train(args, auto_pipe, auto_dp, model, epoch, train_dataloader, test_dataloa
     # wait for CUDA
     sync_all_devices(0, auto_pipe.get_pipe_len())
 
+    torch.cuda.empty_cache()
+
     iteration_num = 0
     for batch_idx, (x, target) in enumerate(train_dataloader):
         if batch_idx == 0:
