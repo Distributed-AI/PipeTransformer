@@ -100,12 +100,7 @@ def train(args, auto_pipe, auto_dp, model, epoch, train_dataloader, test_dataloa
 
         optimizer.zero_grad()
 
-        if auto_cache.get_train_extracted_hidden_feature(batch_idx) is None:
-            hidden_feature = model.frozen_layers(x)
-            auto_cache.cache_train_extracted_hidden_feature(batch_idx, hidden_feature)
-        else:
-            hidden_feature = auto_cache.get_train_extracted_hidden_feature(batch_idx)
-        log_probs = model.active_layers(hidden_feature)
+        log_probs = auto_cache.infer_train(model, x, batch_idx)
 
         # with torch.cuda.device(device_last):
         end_fp.record()
@@ -175,12 +170,7 @@ def _infer(model, test_data, device_first, device_last):
             x = x.to(device_first)
             target = target.to(device_last)
 
-            if auto_cache.get_test_extracted_hidden_feature(batch_idx) is None:
-                hidden_feature = model.frozen_layers(x)
-                auto_cache.cache_test_extracted_hidden_feature(batch_idx, hidden_feature)
-            else:
-                hidden_feature = auto_cache.get_test_extracted_hidden_feature(batch_idx)
-            log_probs = model.active_layers(hidden_feature)
+            log_probs = auto_cache.infer_test(model, x, batch_idx)
 
             loss = criterion(log_probs, target)
             _, predicted = torch.max(log_probs, -1)
@@ -373,6 +363,7 @@ if __name__ == "__main__":
 
     # create FP cache with CPU memory
     auto_cache = AutoCache()
+    auto_cache.enable()
 
     # create pipe and DDP
     auto_pipe = AutoElasticPipe(auto_dp.get_world_size(), args.local_rank, args.global_rank, model,
