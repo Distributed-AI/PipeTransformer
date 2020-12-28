@@ -80,7 +80,7 @@ def train(args, auto_pipe, auto_dp, model, epoch, train_dataloader, test_dataloa
     iteration_num = 0
     for batch_idx, (x, target) in enumerate(train_dataloader):
 
-        torch.cuda.empty_cache()
+        # torch.cuda.empty_cache()
 
         if batch_idx == 0:
             starting_time = time.time()
@@ -368,7 +368,7 @@ if __name__ == "__main__":
 
     # create AutoFreeze algorithm
     auto_freeze = AutoFreeze()
-    auto_freeze.do_not_freeze()
+    # auto_freeze.do_not_freeze()
 
     # create FP cache with CPU memory
     auto_cache = AutoCache()
