@@ -380,7 +380,7 @@ if __name__ == "__main__":
     auto_dp = AutoDataParallel(args.pipe_len_at_the_beginning)
     auto_dp.init_ddp(args)
     auto_dp.init_rpc()
-    auto_dp.warm_up()
+    # auto_dp.warm_up()
     args.global_rank = auto_dp.get_global_rank()
 
     if args.global_rank == 0:

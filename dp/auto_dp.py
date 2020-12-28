@@ -1,6 +1,7 @@
 import gc
 import logging
 import os
+from typing import List
 
 import torch
 import torch.nn
@@ -238,7 +239,7 @@ class AutoDataParallel:
         return model
 
     def _inactive_process_impl(self, auto_pipe):
-        broad_cast_msg = [None, None, None, None, None]
+        broad_cast_msg = [None] * 5
         frozen_message = dist_broadcast(0, broad_cast_msg)
         num_frozen_layers, pipe_len, max_parameter_per_gpu_at_beginning, \
         newly_added_active_ranks, freeze_point = self._parse_broad_cast_message(frozen_message)
