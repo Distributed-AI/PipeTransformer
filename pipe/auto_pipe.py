@@ -1,3 +1,5 @@
+import traceback
+
 import torch
 from torch.distributed.pipeline.sync import Pipe
 
@@ -54,7 +56,7 @@ class AutoElasticPipe:
         self.num_frozen_layers = -1
 
     def transform(self, num_frozen_layers):
-        # traceback.print_stack()
+        traceback.print_stack()
         print("---local_rank = %d, global_rank = %d -------------freeze layer number = %d---------------" % (
         self.local_rank,
         self.global_rank,
