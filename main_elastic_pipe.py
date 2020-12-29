@@ -87,7 +87,8 @@ def train(args, auto_pipe, auto_dp, frozen_model, pipe_model, epoch, train_datal
 
     overlap_queue = queue.SimpleQueue()
     if frozen_model is not None:
-        hidden_feature = frozen_model(next(iter(train_dataloader)))
+        x_first, target_first = next(iter(train_dataloader))
+        hidden_feature = frozen_model(x_first)
         overlap_queue.put(hidden_feature)
         auto_cache.cache_train_extracted_hidden_feature(0, hidden_feature)
 
@@ -199,7 +200,8 @@ def _infer(frozen_model, pipe_model, test_data, device_first, device_last, is_tr
 
     overlap_queue = queue.SimpleQueue()
     if frozen_model is not None:
-        hidden_feature = frozen_model(next(iter(test_data)))
+        x_first, target_first = next(iter(test_data))
+        hidden_feature = frozen_model(x_first)
         overlap_queue.put(hidden_feature)
         auto_cache.cache_train_extracted_hidden_feature(0, hidden_feature)
 
