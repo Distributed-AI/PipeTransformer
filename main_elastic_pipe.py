@@ -87,14 +87,14 @@ def train(args, auto_pipe, auto_dp, frozen_model, pipe_model, epoch, train_datal
 
     overlap_queue_x = queue.SimpleQueue()
     overlap_queue_target = queue.SimpleQueue()
-    # if frozen_model is not None:
-    #     x_first, target_first = next(iter(train_dataloader))
-    #     x_first = x_first.to(device_first)
-    #     target_first = target_first.to(device_last)
-    #     hidden_feature = frozen_model(x_first)
-    #     overlap_queue_x.put(hidden_feature)
-    #     overlap_queue_target.put(target_first)
-    #     auto_cache.cache_train_extracted_hidden_feature(0, hidden_feature)
+    if frozen_model is not None:
+        x_first, target_first = next(iter(train_dataloader))
+        x_first = x_first.to(device_first)
+        target_first = target_first.to(device_last)
+        hidden_feature = frozen_model(x_first)
+        overlap_queue_x.put(hidden_feature)
+        overlap_queue_target.put(target_first)
+        auto_cache.cache_train_extracted_hidden_feature(0, hidden_feature)
 
     for batch_idx, (x, target) in enumerate(train_dataloader):
         print(x)
@@ -152,8 +152,8 @@ def train(args, auto_pipe, auto_dp, frozen_model, pipe_model, epoch, train_datal
             torch.nn.utils.clip_grad_norm_(pipe_model.parameters(), 1.0)
             optimizer.step()
             scheduler.step()
-            overlap_queue_x.empty()
-            overlap_queue_target.empty()
+            # overlap_queue_x.empty()
+            # overlap_queue_target.empty()
 
         # with torch.cuda.device(device_first):
         # end_bp.record()
