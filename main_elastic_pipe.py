@@ -170,7 +170,8 @@ def train(args, auto_pipe, auto_dp, frozen_model, pipe_model, epoch, train_datal
 
 
 def _infer(frozen_model, pipe_model, test_data, device_first, device_last):
-    frozen_model.eval()
+    if frozen_model is not None:
+        frozen_model.eval()
     pipe_model.eval()
     test_loss = test_acc = test_total = 0.
     criterion = nn.CrossEntropyLoss()
