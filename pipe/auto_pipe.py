@@ -83,6 +83,9 @@ class AutoElasticPipe:
 
         model = convert_to_balanced_model(self.local_rank, self.global_rank,
                                           self.local_rank * self.pipe_len, model, balanced_sub_layer_distribution)
+        # frozen model is always in device 0
+        if frozen_model is not None:
+            frozen_model.to(0)
 
         pipe_model = self._get_pipe(model)
 
