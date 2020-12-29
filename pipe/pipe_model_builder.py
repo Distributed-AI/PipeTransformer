@@ -82,10 +82,10 @@ def create_pipe_styled_model(model_backbone, output_model, num_layer_in_total, n
     parameters_list_pipe = []
 
     if num_frozen_layer > 0:
-        frozen_model = nn.ModuleList()
+        frozen_model = nn.Sequential()
         for param in model_backbone.transformer.embeddings.parameters():
             param.requires_grad = False
-        frozen_model.append(model_backbone.transformer.embeddings)
+        frozen_model.add_module("embedding", model_backbone.transformer.embeddings)
 
         size_embedding = count_parameters(model_backbone.transformer.embeddings, False)
         parameters_size_frozen += size_embedding
@@ -94,7 +94,7 @@ def create_pipe_styled_model(model_backbone, output_model, num_layer_in_total, n
             layer_block = model_backbone.transformer.encoder.layer[frozen_layer_index]
             for param in layer_block.parameters():
                 param.requires_grad = False
-            frozen_model.append(layer_block)
+            frozen_model.add_module("transformer_block_" + str(frozen_layer_index), layer_block)
 
             size_layer_block = count_parameters(layer_block, False)
             parameters_size_frozen += size_layer_block
