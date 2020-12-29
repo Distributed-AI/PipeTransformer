@@ -104,7 +104,7 @@ def train(args, auto_pipe, auto_dp, frozen_model, pipe_model, epoch, train_datal
         logging.info("--------------global_rank = %d. Epoch %d, batch index %d Statistics: " % (
             auto_dp.get_global_rank(), epoch, batch_idx))
         logging.info("global_rank = %d. epoch = %d, batch index = %d/%d" % (
-            auto_dp.get_global_rank(), epoch, batch_idx, len(train_dl)))
+            auto_dp.get_global_rank(), epoch, batch_idx, len(train_dataloader)))
         num_sample_processed_in_total += len(x)
         communication_count += 1
         iteration_num += 1
