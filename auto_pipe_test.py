@@ -44,6 +44,7 @@ if __name__ == "__main__":
                                     num_device, num_layers, debug_mode=True)
 
         for num_frozen_layers in range(num_layers + 1):
-            model, pipe_len, params_skip = auto_pipe.transform(num_frozen_layers)
+            frozen_model, pipe_model, pipe_len = auto_pipe.transform(num_frozen_layers)
         print("finished!")
+        break
     sys.exit()

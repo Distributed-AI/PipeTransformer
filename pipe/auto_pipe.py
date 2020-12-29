@@ -3,7 +3,7 @@ from torch.distributed.pipeline.sync import Pipe
 
 from pipe.load_balance import generate_parameter_size_wise_balance
 from pipe.pipe_model_builder import convert_to_balanced_model, create_pipe_styled_model, get_ddp_ignored_params_name, \
-    freeze_layers_for_pipe_model, Wrapper
+    freeze_layers_for_pipe_model, PipeModelWrapper
 
 """
 Under development by Chaoyang He
@@ -48,7 +48,7 @@ class AutoElasticPipe:
 
         # pipe
         self.pipe = None
-        self.params_size_list = []
+        self.pipe_model_params_size_list = []
         self.frozen_params = 0.0
         self.max_parameter_per_gpu_at_beginning = 0.0
         self.num_frozen_layers = -1
@@ -63,32 +63,32 @@ class AutoElasticPipe:
         #     raise Exception("the first transformation must from all layers training")
 
         self.num_frozen_layers = num_frozen_layers
-        model, self.params_size_list = create_pipe_styled_model(self.model_backbone, self.output_head,
-                                                                self.num_layer_in_total, num_frozen_layers)
-        print("len(model) = %d" % len(model))
-        print("len(paras_size) = %d" % len(self.params_size_list))
+        # frozen_model, parameters_size_frozen, pipe_model, parameters_list_pipe
+
+        frozen_model, parameters_size_frozen, \
+        model, self.pipe_model_params_size_list = create_pipe_styled_model(self.model_backbone, self.output_head,
+                                                                           self.num_layer_in_total, num_frozen_layers)
+        print("len(pipe_model) = %d" % len(model))
+        print("len(pipe_model paras_size) = %d" % len(self.pipe_model_params_size_list))
 
         if num_frozen_layers == 0:
-            balanced_sub_layer_distribution, balanced_params_size_distribution = self._auto_balanced_elastic_partition(
-                num_frozen_layers)
+            # set the num_frozen_layers = 0 because we put all frozen layers into frozen_model
+            balanced_sub_layer_distribution, balanced_params_size_distribution = self._auto_balanced_elastic_partition(0)
             self.max_parameter_per_gpu_at_beginning = max(balanced_params_size_distribution.values())
             print("self.max_parameter_per_gpu_at_beginning = %f" % self.max_parameter_per_gpu_at_beginning)
         else:
             self._auto_pipe_length(num_frozen_layers)
-            balanced_sub_layer_distribution, _ = self._auto_balanced_elastic_partition(num_frozen_layers)
+            # set the num_frozen_layers = 0 because we put all frozen layers into frozen_model
+            balanced_sub_layer_distribution, _ = self._auto_balanced_elastic_partition(0)
 
         model = convert_to_balanced_model(self.local_rank, self.global_rank,
                                           self.local_rank * self.pipe_len, model, balanced_sub_layer_distribution)
 
         pipe_model = self._get_pipe(model)
 
-        # do freeze here to avoid pipe to change the required_grad=False
-        with torch.no_grad():
-            freeze_layers_for_pipe_model(pipe_model, num_frozen_layers)
+        # params_to_skip = get_ddp_ignored_params_name(pipe_model, num_frozen_layers)
 
-        params_to_skip = get_ddp_ignored_params_name(pipe_model, num_frozen_layers)
-
-        return Wrapper(pipe_model, num_frozen_layers), self.pipe_len, params_to_skip
+        return frozen_model, PipeModelWrapper(pipe_model), self.pipe_len
 
     def get_num_frozen_layers(self):
         return self.num_frozen_layers
@@ -118,7 +118,7 @@ class AutoElasticPipe:
     def _auto_balanced_elastic_partition(self, num_frozen_layers):
         balanced_sub_layer_distribution, balanced_params_size_distribution, self.frozen_params = generate_parameter_size_wise_balance(
             self.pipe_len,
-            self.params_size_list,
+            self.pipe_model_params_size_list,
             num_frozen_layers)
 
         print(balanced_sub_layer_distribution)
@@ -137,7 +137,7 @@ class AutoElasticPipe:
             print("----------start to detection---------")
             balanced_sub_layer_distribution, balanced_params_size_distribution, self.frozen_params = generate_parameter_size_wise_balance(
                 int(self.pipe_len / 2),
-                self.params_size_list,
+                self.pipe_model_params_size_list,
                 num_frozen_layers)
             balanced_params_size_distribution[0] -= self.frozen_params * (5.0 / 6.0)
             max_parameter_per_gpu = max(balanced_params_size_distribution.values())

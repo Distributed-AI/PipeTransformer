@@ -27,11 +27,12 @@ def count_parameters(model):
     return params / 1000000
 
 
-def train(args, auto_pipe, auto_dp, model, epoch, train_dataloader, test_dataloader):
+def train(args, auto_pipe, auto_dp, frozen_model, pipe_model, epoch, train_dataloader, test_dataloader):
     if auto_freeze.is_freeze_open():
         new_freeze_point = dict()
         new_freeze_point['epoch'] = epoch
-        model = auto_dp.transform(auto_pipe, model, auto_freeze.get_hand_crafted_frozen_layers_by_epoch(epoch),
+        frozen_model, pipe_model = auto_dp.transform(auto_pipe, frozen_model, pipe_model,
+                                  auto_freeze.get_hand_crafted_frozen_layers_by_epoch(epoch),
                                   new_freeze_point)
         new_freeze_point = auto_dp.get_freeze_point()
         new_train_dl, new_test_dl = get_data_loader(train_dataset, test_dataset, args.batch_size,
@@ -47,7 +48,7 @@ def train(args, auto_pipe, auto_dp, model, epoch, train_dataloader, test_dataloa
     communication_count = 0.0
 
     criterion = nn.CrossEntropyLoss()
-    optimizer, scheduler = build_optimizer(model)
+    optimizer, scheduler = build_optimizer(pipe_model)
 
     global size_params_ddp_sum
     device_first = auto_pipe.get_device_first()
@@ -62,7 +63,7 @@ def train(args, auto_pipe, auto_dp, model, epoch, train_dataloader, test_dataloa
 
     # measure latency with cuda event:
     # https://discuss.pytorch.org/t/distributed-training-slower-than-dataparallel/81539/4
-    model.train()
+    pipe_model.train()
     # with torch.cuda.device(device_first):
     start_ld = torch.cuda.Event(enable_timing=True)
     end_ld = torch.cuda.Event(enable_timing=True)
@@ -75,7 +76,6 @@ def train(args, auto_pipe, auto_dp, model, epoch, train_dataloader, test_dataloa
 
     # wait for CUDA
     sync_all_devices(0, auto_pipe.get_pipe_len())
-
 
     iteration_num = 0
     for batch_idx, (x, target) in enumerate(train_dataloader):
@@ -107,7 +107,7 @@ def train(args, auto_pipe, auto_dp, model, epoch, train_dataloader, test_dataloa
 
         optimizer.zero_grad()
 
-        log_probs = auto_cache.infer_train(model, x, batch_idx)
+        log_probs = auto_cache.infer_train(frozen_model, pipe_model, x, batch_idx)
 
         first_stream = torch.cuda.current_stream(device=device_first)
         last_stream = torch.cuda.current_stream(device=device_last)
@@ -121,7 +121,7 @@ def train(args, auto_pipe, auto_dp, model, epoch, train_dataloader, test_dataloa
         loss = criterion(log_probs, target)
         loss.backward()
         # this clip will cost 0.6 second, can be skipped?
-        torch.nn.utils.clip_grad_norm_(model.parameters(), 1.0)
+        torch.nn.utils.clip_grad_norm_(pipe_model.parameters(), 1.0)
         optimizer.step()
         scheduler.step()
 
@@ -164,11 +164,12 @@ def train(args, auto_pipe, auto_dp, model, epoch, train_dataloader, test_dataloa
 
         if iteration_num == 2 and args.is_debug_mode:
             break
-    return model, device_first, device_last, new_train_dl, new_test_dl
+    return frozen_model, pipe_model, device_first, device_last, new_train_dl, new_test_dl
 
 
-def _infer(model, test_data, device_first, device_last):
-    model.eval()
+def _infer(frozen_model, pipe_model, test_data, device_first, device_last):
+    frozen_model.eval()
+    pipe_model.eval()
     test_loss = test_acc = test_total = 0.
     criterion = nn.CrossEntropyLoss()
     iteration_num = 0
@@ -179,7 +180,7 @@ def _infer(model, test_data, device_first, device_last):
             x = x.to(device_first)
             target = target.to(device_last)
 
-            log_probs = auto_cache.infer_test(model, x, batch_idx)
+            log_probs = auto_cache.infer_test(frozen_model, pipe_model, x, batch_idx)
 
             loss = criterion(log_probs, target)
             _, predicted = torch.max(log_probs, -1)
@@ -193,10 +194,10 @@ def _infer(model, test_data, device_first, device_last):
     return test_acc, test_total, test_loss
 
 
-def eval(model, args, epoch, train_dl, test_dl, device_first, device_last):
+def eval(frozen_model, pipe_model, args, epoch, train_dl, test_dl, device_first, device_last):
     # train data
     if epoch == args.epochs - 1:
-        train_tot_correct, train_num_sample, train_loss = _infer(model, train_dl, device_first, device_last)
+        train_tot_correct, train_num_sample, train_loss = _infer(frozen_model, pipe_model, train_dl, device_first, device_last)
         # test on training dataset
         train_acc = train_tot_correct / train_num_sample
         train_loss = train_loss / train_num_sample
@@ -210,7 +211,7 @@ def eval(model, args, epoch, train_dl, test_dl, device_first, device_last):
     # test data
     # if (epoch + 1) % args.freq_eval_test_acc == 0:
     if epoch == args.epochs - 1:
-        test_tot_correct, test_num_sample, test_loss = _infer(model, test_dl, device_first, device_last)
+        test_tot_correct, test_num_sample, test_loss = _infer(frozen_model, pipe_model, test_dl, device_first, device_last)
 
         # test on test dataset
         test_acc = test_tot_correct / test_num_sample
@@ -223,12 +224,13 @@ def eval(model, args, epoch, train_dl, test_dl, device_first, device_last):
             logging.info(stats)
 
 
-def train_and_eval(auto_pipe, auto_dp, model, train_dl, test_dl, freeze_point, args):
+def train_and_eval(auto_pipe, auto_dp, frozen_model, pipe_model, train_dl, test_dl, freeze_point, args):
     epoch_start = freeze_point['epoch']
     for epoch in range(epoch_start, args.epochs):
-        model, device_first, device_last, new_train_dl, new_test_dl = train(args, auto_pipe, auto_dp, model, epoch,
+        frozen_model, pipe_model, device_first, device_last, new_train_dl, new_test_dl = train(args, auto_pipe, auto_dp,
+                                                                            frozen_model, pipe_model, epoch,
                                                                             train_dl, test_dl)
-        eval(model, args, epoch, new_train_dl, new_test_dl, device_first, device_last)
+        eval(frozen_model, pipe_model, args, epoch, new_train_dl, new_test_dl, device_first, device_last)
 
 
 def build_optimizer(model):
@@ -381,7 +383,7 @@ if __name__ == "__main__":
     # start training
     freeze_point = dict()
     freeze_point['epoch'] = 0
-    model = auto_dp.transform(auto_pipe, model, 0, freeze_point)
+    frozen_model, pipe_model = auto_dp.transform(auto_pipe, model, 0, freeze_point)
     freeze_point = auto_dp.get_freeze_point()
     train_dl, test_dl = get_data_loader(train_dataset, test_dataset, args.batch_size, auto_dp.get_data_rank())
-    train_and_eval(auto_pipe, auto_dp, model, train_dl, test_dl, freeze_point, args)
+    train_and_eval(auto_pipe, auto_dp, frozen_model, pipe_model, train_dl, test_dl, freeze_point, args)

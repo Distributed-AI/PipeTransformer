@@ -163,9 +163,9 @@ class AutoDataParallel:
         self.comm_broadcast_group = dist.new_group(ranks=[i for i in range(self.world_size)], backend=Backend.GLOO,
                                                    timeout=timedelta(days=365))
 
-    def generate_ddp_model(self, model, gpu_num_per_process, ddp_params_to_skip):
+    def generate_ddp_model(self, model, gpu_num_per_process):
         self.pipe_len = gpu_num_per_process
-        DDP._set_params_and_buffers_to_ignore_for_model(model, ddp_params_to_skip)
+        # DDP._set_params_and_buffers_to_ignore_for_model(model, ddp_params_to_skip)
         if gpu_num_per_process > 1:
             # find_unused_parameters = True can avoid bucket rebuilt, which takes around 20s
             model = DDP(model, process_group=self.active_process_group,
@@ -201,13 +201,13 @@ class AutoDataParallel:
             self.first_run = False
 
         if self.is_active():
-            model = self._active_process_impl(auto_pipe, num_frozen_layers)
+            frozen_model, pipe_model = self._active_process_impl(auto_pipe, num_frozen_layers)
         else:
-            model = self._inactive_process_impl(auto_pipe)
-        return model
+            frozen_model, pipe_model = self._inactive_process_impl(auto_pipe)
+        return frozen_model, pipe_model
 
     def _active_process_impl(self, auto_pipe, num_frozen_layers):
-        model, pipe_len, ddp_params_to_skip = auto_pipe.transform(num_frozen_layers)
+        frozen_model, pipe_model, pipe_len = auto_pipe.transform(num_frozen_layers)
         if self.compressed_pipe_len != pipe_len:
             self.compressed_pipe_len = pipe_len
             self.update_active_ranks()
@@ -228,8 +228,8 @@ class AutoDataParallel:
 
             self.create_active_process_group()
             self.clear_memory()
-        model = self.generate_ddp_model(model, pipe_len, ddp_params_to_skip)
-        return model
+        pipe_model = self.generate_ddp_model(pipe_model, pipe_len)
+        return frozen_model, pipe_model
 
     def _inactive_process_impl(self, auto_pipe):
         broad_cast_msg = [float(i * 0.0) for i in range(20)]
@@ -246,11 +246,11 @@ class AutoDataParallel:
         if self.global_rank in newly_added_active_ranks:
             print("global_rank %d is activated!" % self.global_rank)
 
-            model, pipe_len, ddp_params_to_skip = auto_pipe.transform(num_frozen_layers)
-            model = self.generate_ddp_model(model, pipe_len, ddp_params_to_skip)
+            frozen_model, pipe_model, pipe_len = auto_pipe.transform(num_frozen_layers)
+            pipe_model = self.generate_ddp_model(pipe_model, pipe_len)
         else:
-            model = self._inactive_process_impl(auto_pipe)
-        return model
+            frozen_model, pipe_model = self._inactive_process_impl(auto_pipe)
+        return frozen_model, pipe_model
 
     def _build_broad_cast_message(self, num_frozen_layers, pipe_len, max_parameter_per_gpu_at_beginning, freeze_point):
         print("self.newly_added_active_ranks = " + str(self.newly_added_active_ranks))

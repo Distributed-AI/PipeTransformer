@@ -17,28 +17,36 @@ class AutoCache:
     def disable(self):
         self.is_enable = False
 
-    def infer_train(self, model, x, batch_idx):
-        if self.is_enable:
+    def infer_train(self, frozen_model, pipe_model, x, batch_idx):
+        if self.is_enable and frozen_model is not None:
             if self.get_train_extracted_hidden_feature(batch_idx) is None:
-                hidden_feature = model.module.frozen_layers(x)
+                hidden_feature = frozen_model(x)
                 self.cache_train_extracted_hidden_feature(batch_idx, hidden_feature)
             else:
                 hidden_feature = self.get_train_extracted_hidden_feature(batch_idx)
-            log_probs = model.module.active_layers(hidden_feature)
+            log_probs = pipe_model(hidden_feature)
         else:
-            log_probs = model(x)
+            if frozen_model is None:
+                log_probs = pipe_model(x)
+            else:
+                hidden_feature = frozen_model(x)
+                log_probs = pipe_model(hidden_feature)
         return log_probs
 
-    def infer_test(self, model, x, batch_idx):
-        if self.is_enable:
+    def infer_test(self, frozen_model, pipe_model, x, batch_idx):
+        if self.is_enable and frozen_model is not None:
             if self.get_test_extracted_hidden_feature(batch_idx) is None:
-                hidden_feature = model.module.frozen_layers(x)
+                hidden_feature = frozen_model(x)
                 self.cache_test_extracted_hidden_feature(batch_idx, hidden_feature)
             else:
                 hidden_feature = self.get_test_extracted_hidden_feature(batch_idx)
-            log_probs = model.module.active_layers(hidden_feature)
+            log_probs = pipe_model(hidden_feature)
         else:
-            log_probs = model(x)
+            if frozen_model is None:
+                log_probs = pipe_model(x)
+            else:
+                hidden_feature = frozen_model(x)
+                log_probs = pipe_model(hidden_feature)
         return log_probs
 
     def cache_train_extracted_hidden_feature(self, batch_idx, extracted_feature):

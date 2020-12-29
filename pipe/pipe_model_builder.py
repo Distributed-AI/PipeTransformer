@@ -52,63 +52,13 @@ Using a Wrapper model to help DDP find find Tensors inside RRef.
 """
 
 
-class Wrapper(nn.Module):
-    ALL_LAYER = 0
-    FROZEN_LAYER = 1
-    ACTIVE_LYAER = 2
-
-    def __init__(self, pipe_model, num_frozen_layers):
+class PipeModelWrapper(nn.Module):
+    def __init__(self, pipe_model):
         super().__init__()
         self.pipe_model = pipe_model
-        # print(self.pipe_model)
-        self.num_frozen_layers = num_frozen_layers
 
-        self.mode = Wrapper.ALL_LAYER
-
-    def set_mode(self, mode):
-        self.mode = mode
-
-    def forward(self, input):
-        if self.mode == Wrapper.ALL_LAYER:
-            return self.forward_all_layers(input)
-        elif self.mode == Wrapper.FROZEN_LAYER:
-            return self.forward_frozen_layers(input)
-        elif self.mode == Wrapper.ACTIVE_LYAER:
-            return self.forward_active_layer(input)
-        else:
-            raise Exception("cannot work in this mode")
-
-    def forward_all_layers(self, input):
-        return self.pipe_model(input).local_value()
-
-    def forward_frozen_layers(self, input):
-        hidden_output = input
-        layer_idx_in_total = 0
-
-        for partition_idx in range(len(self.pipe_model.partitions)):
-            model_partition = self.pipe_model.partitions[partition_idx]
-            for sub_layer_idx in range(len(model_partition)):
-                model_sub_layer = model_partition[sub_layer_idx]
-                hidden_output = model_sub_layer(hidden_output)
-                layer_idx_in_total += 1
-                if layer_idx_in_total >= self.num_frozen_layers * 2 + 1:
-                    return hidden_output.local_value()
-
-    def forward_active_layer(self, input):
-        hidden_output = input
-        layer_idx_in_total = 0
-        is_active_layer = False
-
-        for partition_idx in range(len(self.pipe_model.partitions)):
-            model_partition = self.pipe_model.partitions[partition_idx]
-            for sub_layer_idx in range(len(model_partition)):
-                model_sub_layer = model_partition[sub_layer_idx]
-                if is_active_layer:
-                    hidden_output = model_sub_layer(hidden_output)
-                layer_idx_in_total += 1
-                if layer_idx_in_total >= self.num_frozen_layers * 2 + 1:
-                    is_active_layer = True
-        return hidden_output.local_value()
+    def forward(self, *args, **kwargs):
+        return self.pipe_model(*args, **kwargs).local_value()
 
 
 def count_parameters(model, b_is_required_grad=True):
@@ -125,25 +75,37 @@ def create_pipe_styled_model(model_backbone, output_model, num_layer_in_total, n
         Pin Memory: https://pytorch.org/docs/stable/notes/cuda.html#use-pinned-memory-buffers
         Prepare a Pin Memory model
     """
+    frozen_model = None
     pipe_model = nn.Sequential()
 
-    parameters_list = []
+    parameters_size_frozen = 0.0
+    parameters_list_pipe = []
 
     if num_frozen_layer > 0:
+        frozen_model = nn.ModuleList()
         for param in model_backbone.transformer.embeddings.parameters():
             param.requires_grad = False
+        frozen_model.append(model_backbone.transformer.embeddings)
+
+        size_embedding = count_parameters(model_backbone.transformer.embeddings, False)
+        parameters_size_frozen += size_embedding
 
         for frozen_layer_index in range(num_frozen_layer):
             layer_block = model_backbone.transformer.encoder.layer[frozen_layer_index]
             for param in layer_block.parameters():
                 param.requires_grad = False
+            frozen_model.append(layer_block)
 
-    pipe_model.add_module("embedding", model_backbone.transformer.embeddings)
-    size_embedding = count_parameters(model_backbone.transformer.embeddings, False)
-    parameters_list.append(size_embedding)
+            size_layer_block = count_parameters(layer_block, False)
+            parameters_size_frozen += size_layer_block
+
+    else:
+        pipe_model.add_module("embedding", model_backbone.transformer.embeddings)
+        size_embedding = count_parameters(model_backbone.transformer.embeddings, False)
+        parameters_list_pipe.append(size_embedding)
 
     # add transformer blocks needed to be trained
-    for layer_index in range(0, num_layer_in_total):
+    for layer_index in range(num_frozen_layer, num_layer_in_total):
         layer_block = model_backbone.transformer.encoder.layer[layer_index]
         multihead_attention_layer = MultHeadAttentionLayer(layer_block.attention_norm, layer_block.attn)
         mlp_layer = MLPLayer(layer_block.ffn_norm, layer_block.ffn)
@@ -151,22 +113,25 @@ def create_pipe_styled_model(model_backbone, output_model, num_layer_in_total, n
         pipe_model.add_module("mlp_layer" + str(layer_index), mlp_layer)
 
         size_multihead_attention_layer = count_parameters(multihead_attention_layer, False)
-        parameters_list.append(size_multihead_attention_layer)
+        parameters_list_pipe.append(size_multihead_attention_layer)
 
         size_mlp_layer = count_parameters(mlp_layer, False)
-        parameters_list.append(size_mlp_layer)
+        parameters_list_pipe.append(size_mlp_layer)
 
     pipe_model.add_module("encoder_norm", model_backbone.transformer.encoder.encoder_norm)
     size_encoder_norm = count_parameters(model_backbone.transformer.encoder.encoder_norm, False)
-    parameters_list.append(size_encoder_norm)
+    parameters_list_pipe.append(size_encoder_norm)
 
     pipe_model.add_module("head", output_model)
     size_output_model = count_parameters(output_model, False)
-    parameters_list.append(size_output_model)
+    parameters_list_pipe.append(size_output_model)
 
-    print(parameters_list)
+    print(frozen_model)
+    print(parameters_size_frozen)
+    print(pipe_model)
+    print(parameters_list_pipe)
 
-    return pipe_model, parameters_list
+    return frozen_model, parameters_size_frozen, pipe_model, parameters_list_pipe
 
 
 def convert_to_balanced_model(local_rank, global_rank,
