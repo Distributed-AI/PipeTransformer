@@ -113,12 +113,12 @@ def load_imagenet_centralized_training_for_vit(args):
     return trainset, testset, output_dim
 
 
-def get_data_loader(trainset, testset, batch_size, rank):
+def get_data_loader(trainset, testset, batch_size, num_replicas, rank):
     """
     Optimization:
         Pin Memory: https://pytorch.org/docs/stable/notes/cuda.html#use-pinned-memory-buffers
     """
-    train_sampler = DistributedSampler(trainset, rank=rank)
+    train_sampler = DistributedSampler(trainset, num_replicas=num_replicas, rank=rank)
     #
     # test_sampler = SequentialSampler(testset)
     test_sampler = DistributedSampler(testset, rank=rank)

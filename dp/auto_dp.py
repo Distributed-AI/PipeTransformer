@@ -187,6 +187,10 @@ class AutoDataParallel:
         print("self.active_data_ranks = " + str(self.active_data_ranks))
         return self.active_data_ranks[self.global_rank]
 
+    def get_data_duplicate_num(self):
+        self.update_active_ranks()
+        return len(self.active_data_ranks)
+
     def transform(self, auto_pipe, frozen_model, pipe_model, num_frozen_layers, freeze_point):
         self.freeze_point = freeze_point
         if auto_pipe.get_num_frozen_layers() == num_frozen_layers:
