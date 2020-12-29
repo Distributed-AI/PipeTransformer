@@ -380,7 +380,7 @@ if __name__ == "__main__":
 
     # create AutoFreeze algorithm
     auto_freeze = AutoFreeze()
-    auto_freeze.do_not_freeze()
+    # auto_freeze.do_not_freeze()
 
     # create pipe and DDP
     auto_pipe = AutoElasticPipe(auto_dp.get_world_size(), args.local_rank, args.global_rank, model,
