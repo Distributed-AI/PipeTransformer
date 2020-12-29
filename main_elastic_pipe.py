@@ -1,6 +1,7 @@
 import argparse
 import logging
 import os
+import queue
 import socket
 import time
 
@@ -38,8 +39,9 @@ def train(args, auto_pipe, auto_dp, frozen_model, pipe_model, epoch, train_datal
         new_freeze_point = dict()
         new_freeze_point['epoch'] = epoch
         frozen_model, pipe_model, is_pipe_len_changed = auto_dp.transform(auto_pipe, frozen_model, pipe_model,
-                                  auto_freeze.get_hand_crafted_frozen_layers_by_epoch(epoch),
-                                  new_freeze_point)
+                                                                          auto_freeze.get_hand_crafted_frozen_layers_by_epoch(
+                                                                              epoch),
+                                                                          new_freeze_point)
         new_freeze_point = auto_dp.get_freeze_point()
         new_train_dl, new_test_dl = get_data_loader(train_dataset, test_dataset, args.batch_size,
                                                     auto_dp.get_data_rank())
@@ -62,8 +64,6 @@ def train(args, auto_pipe, auto_dp, frozen_model, pipe_model, epoch, train_datal
     print("device_first = " + str(device_first))
     print("device_last = " + str(device_last))
 
-
-
     # measure latency with cuda event:
     # https://discuss.pytorch.org/t/distributed-training-slower-than-dataparallel/81539/4
     pipe_model.train()
@@ -84,6 +84,10 @@ def train(args, auto_pipe, auto_dp, frozen_model, pipe_model, epoch, train_datal
     # sync_all_devices(0, auto_pipe.get_pipe_len())
 
     iteration_num = 0
+
+    queue.Queue(0)
+    queue.put(frozen_model(train_dataloader[0]))
+
     for batch_idx, (x, target) in enumerate(train_dataloader):
         # torch.cuda.empty_cache()
 
@@ -206,7 +210,8 @@ def _infer(frozen_model, pipe_model, test_data, device_first, device_last, is_tr
 def eval(frozen_model, pipe_model, args, epoch, train_dl, test_dl, device_first, device_last):
     # train data
     if epoch == args.epochs - 1:
-        train_tot_correct, train_num_sample, train_loss = _infer(frozen_model, pipe_model, train_dl, device_first, device_last, is_train=True)
+        train_tot_correct, train_num_sample, train_loss = _infer(frozen_model, pipe_model, train_dl, device_first,
+                                                                 device_last, is_train=True)
         # test on training dataset
         train_acc = train_tot_correct / train_num_sample
         train_loss = train_loss / train_num_sample
@@ -220,7 +225,8 @@ def eval(frozen_model, pipe_model, args, epoch, train_dl, test_dl, device_first,
     # test data
     # if (epoch + 1) % args.freq_eval_test_acc == 0:
     if epoch == args.epochs - 1:
-        test_tot_correct, test_num_sample, test_loss = _infer(frozen_model, pipe_model, test_dl, device_first, device_last, is_train=False)
+        test_tot_correct, test_num_sample, test_loss = _infer(frozen_model, pipe_model, test_dl, device_first,
+                                                              device_last, is_train=False)
 
         # test on test dataset
         test_acc = test_tot_correct / test_num_sample
@@ -237,8 +243,9 @@ def train_and_eval(auto_pipe, auto_dp, frozen_model, pipe_model, train_dl, test_
     epoch_start = freeze_point['epoch']
     for epoch in range(epoch_start, args.epochs):
         frozen_model, pipe_model, device_first, device_last, new_train_dl, new_test_dl = train(args, auto_pipe, auto_dp,
-                                                                            frozen_model, pipe_model, epoch,
-                                                                            train_dl, test_dl)
+                                                                                               frozen_model, pipe_model,
+                                                                                               epoch,
+                                                                                               train_dl, test_dl)
         eval(frozen_model, pipe_model, args, epoch, new_train_dl, new_test_dl, device_first, device_last)
 
 
@@ -396,5 +403,3 @@ if __name__ == "__main__":
     freeze_point = auto_dp.get_freeze_point()
     train_dl, test_dl = get_data_loader(train_dataset, test_dataset, args.batch_size, auto_dp.get_data_rank())
     train_and_eval(auto_pipe, auto_dp, frozen_model, pipe_model, train_dl, test_dl, freeze_point, args)
-
-    sync_all_devices(auto_dp.get_global_rank(), auto_dp.initial_pipe_len)
