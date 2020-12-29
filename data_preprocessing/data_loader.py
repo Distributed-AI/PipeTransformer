@@ -121,7 +121,7 @@ def get_data_loader(trainset, testset, batch_size, num_replicas, rank):
     train_sampler = DistributedSampler(trainset, num_replicas=num_replicas, rank=rank)
     #
     # test_sampler = SequentialSampler(testset)
-    test_sampler = DistributedSampler(testset, rank=rank)
+    test_sampler = DistributedSampler(testset, num_replicas=num_replicas, rank=rank)
     train_loader = DataLoader(trainset,
                               sampler=train_sampler,
                               batch_size=batch_size,
