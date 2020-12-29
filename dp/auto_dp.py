@@ -210,7 +210,7 @@ class AutoDataParallel:
             frozen_model, pipe_model, is_pipe_len_changed, is_frozen_layer_changed = self._active_process_impl(auto_pipe, num_frozen_layers)
         else:
             frozen_model, pipe_model, is_pipe_len_changed, is_frozen_layer_changed = self._inactive_process_impl(auto_pipe)
-        return frozen_model, pipe_model, is_pipe_len_changed
+        return frozen_model, pipe_model, is_pipe_len_changed, is_frozen_layer_changed
 
     def _active_process_impl(self, auto_pipe, num_frozen_layers):
         is_pipe_len_changed = False
