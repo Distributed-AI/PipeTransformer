@@ -2,7 +2,9 @@ import torch
 
 
 class AutoCache:
-    def __init__(self):
+    def __init__(self, auto_dp, auto_pipe):
+        self.auto_dp = auto_dp
+        self.auto_pipe = auto_pipe
         self.num_frozen_layers = 0
         self.train_extracted_features = dict()
         self.test_extracted_features = dict()
@@ -73,7 +75,8 @@ class AutoCache:
         if batch_idx not in self.train_extracted_features.keys():
             return None
         print("--------get_train_extracted_hidden_feature------------")
-        return self.train_extracted_features[batch_idx].to("cuda:0")
+        device_idx_start = self.auto_dp.get_local_rank() * self.auto_pipe.get_pipe_len()
+        return self.train_extracted_features[batch_idx].to(device_idx_start)
 
     def get_test_extracted_hidden_feature(self, batch_idx):
         if not self.is_enable:
@@ -82,4 +85,5 @@ class AutoCache:
             return None
         # the hidden features are always in device 0
         print("--------get_test_extracted_hidden_feature------------")
-        return self.test_extracted_features[batch_idx].to("cuda:0")
+        device_idx_start = self.auto_dp.get_local_rank() * self.auto_pipe.get_pipe_len()
+        return self.test_extracted_features[batch_idx].to(device_idx_start)
