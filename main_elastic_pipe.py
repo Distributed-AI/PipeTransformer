@@ -172,7 +172,7 @@ def train(args, auto_pipe, auto_dp, frozen_model, pipe_model, epoch, train_datal
     return frozen_model, pipe_model, device_first, device_last, new_train_dl, new_test_dl
 
 
-def _infer(frozen_model, pipe_model, test_data, device_first, device_last):
+def _infer(frozen_model, pipe_model, test_data, device_first, device_last, is_train):
     if frozen_model is not None:
         frozen_model.eval()
     pipe_model.eval()
@@ -186,7 +186,10 @@ def _infer(frozen_model, pipe_model, test_data, device_first, device_last):
             x = x.to(device_first)
             target = target.to(device_last)
 
-            log_probs = auto_cache.infer_test(frozen_model, pipe_model, x, batch_idx)
+            if is_train:
+                log_probs = auto_cache.infer_train(frozen_model, pipe_model, x, batch_idx)
+            else:
+                log_probs = auto_cache.infer_test(frozen_model, pipe_model, x, batch_idx)
 
             loss = criterion(log_probs, target)
             _, predicted = torch.max(log_probs, -1)
@@ -203,7 +206,8 @@ def _infer(frozen_model, pipe_model, test_data, device_first, device_last):
 def eval(frozen_model, pipe_model, args, epoch, train_dl, test_dl, device_first, device_last):
     # train data
     if epoch == args.epochs - 1:
-        train_tot_correct, train_num_sample, train_loss = _infer(frozen_model, pipe_model, train_dl, device_first, device_last, is_train=True)
+        train_tot_correct, train_num_sample, train_loss = _infer(frozen_model, pipe_model, train_dl,
+                                                                 device_first, device_last, is_train=True)
         # test on training dataset
         train_acc = train_tot_correct / train_num_sample
         train_loss = train_loss / train_num_sample
@@ -217,7 +221,8 @@ def eval(frozen_model, pipe_model, args, epoch, train_dl, test_dl, device_first,
     # test data
     # if (epoch + 1) % args.freq_eval_test_acc == 0:
     if epoch == args.epochs - 1:
-        test_tot_correct, test_num_sample, test_loss = _infer(frozen_model, pipe_model, test_dl, device_first, device_last, is_train=False)
+        test_tot_correct, test_num_sample, test_loss = _infer(frozen_model, pipe_model, test_dl,
+                                                              device_first, device_last, is_train=False)
 
         # test on test dataset
         test_acc = test_tot_correct / test_num_sample
