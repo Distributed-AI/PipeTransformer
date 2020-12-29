@@ -23,14 +23,17 @@ class AutoCache:
         self.is_enable = False
 
     def infer_train(self, frozen_model, pipe_model, x, batch_idx):
-        if self.is_enable and frozen_model is not None:
-            if self.get_train_extracted_hidden_feature(batch_idx) is None:
-                with torch.no_grad():
-                    hidden_feature = frozen_model(x)
-                self.cache_train_extracted_hidden_feature(batch_idx, hidden_feature)
+        if self.is_enable:
+            if frozen_model is not None:
+                if self.get_train_extracted_hidden_feature(batch_idx) is None:
+                    with torch.no_grad():
+                        hidden_feature = frozen_model(x)
+                    self.cache_train_extracted_hidden_feature(batch_idx, hidden_feature)
+                else:
+                    hidden_feature = self.get_train_extracted_hidden_feature(batch_idx)
+                log_probs = pipe_model(hidden_feature)
             else:
-                hidden_feature = self.get_train_extracted_hidden_feature(batch_idx)
-            log_probs = pipe_model(hidden_feature)
+                log_probs = pipe_model(x)
         else:
             if frozen_model is None:
                 log_probs = pipe_model(x)
@@ -41,14 +44,17 @@ class AutoCache:
         return log_probs
 
     def infer_test(self, frozen_model, pipe_model, x, batch_idx):
-        if self.is_enable and frozen_model is not None:
-            if self.get_test_extracted_hidden_feature(batch_idx) is None:
-                with torch.no_grad():
-                    hidden_feature = frozen_model(x)
-                self.cache_test_extracted_hidden_feature(batch_idx, hidden_feature)
+        if self.is_enable:
+            if frozen_model is not None:
+                if self.get_test_extracted_hidden_feature(batch_idx) is None:
+                    with torch.no_grad():
+                        hidden_feature = frozen_model(x)
+                    self.cache_test_extracted_hidden_feature(batch_idx, hidden_feature)
+                else:
+                    hidden_feature = self.get_test_extracted_hidden_feature(batch_idx)
+                log_probs = pipe_model(hidden_feature)
             else:
-                hidden_feature = self.get_test_extracted_hidden_feature(batch_idx)
-            log_probs = pipe_model(hidden_feature)
+                log_probs = pipe_model(x)
         else:
             if frozen_model is None:
                 log_probs = pipe_model(x)
