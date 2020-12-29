@@ -43,7 +43,6 @@ def train(args, auto_pipe, auto_dp, frozen_model, pipe_model, epoch, train_datal
         new_freeze_point = auto_dp.get_freeze_point()
         new_train_dl, new_test_dl = get_data_loader(train_dataset, test_dataset, args.batch_size,
                                                     auto_dp.get_data_duplicate_num(), auto_dp.get_data_rank())
-        train_dataloader = new_train_dl
         if is_pipe_len_changed:
             auto_cache.update_num_frozen_layers(auto_pipe.get_num_frozen_layers())
     else:
@@ -84,7 +83,7 @@ def train(args, auto_pipe, auto_dp, frozen_model, pipe_model, epoch, train_datal
     # sync_all_devices(0, auto_pipe.get_pipe_len())
 
     iteration_num = 0
-    for batch_idx, (x, target) in enumerate(train_dataloader):
+    for batch_idx, (x, target) in enumerate(new_train_dl):
         # torch.cuda.empty_cache()
 
         if batch_idx == 0:
