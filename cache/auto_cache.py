@@ -72,6 +72,7 @@ class AutoCache:
         # the hidden features are always in device 0
         if batch_idx not in self.train_extracted_features.keys():
             return None
+        print("--------get_train_extracted_hidden_feature------------")
         return self.train_extracted_features[batch_idx].to("cuda:0")
 
     def get_test_extracted_hidden_feature(self, batch_idx):
@@ -80,4 +81,5 @@ class AutoCache:
         if batch_idx not in self.test_extracted_features.keys():
             return None
         # the hidden features are always in device 0
+        print("--------get_test_extracted_hidden_feature------------")
         return self.test_extracted_features[batch_idx].to("cuda:0")
