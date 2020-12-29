@@ -81,11 +81,12 @@ class AutoElasticPipe:
             # set the num_frozen_layers = 0 because we put all frozen layers into frozen_model
             balanced_sub_layer_distribution, _ = self._auto_balanced_elastic_partition(0)
 
+        device_idx_start = self.local_rank * self.pipe_len
         model = convert_to_balanced_model(self.local_rank, self.global_rank,
-                                          self.local_rank * self.pipe_len, model, balanced_sub_layer_distribution)
+                                          device_idx_start, model, balanced_sub_layer_distribution)
         # frozen model is always in device 0
         if frozen_model is not None:
-            frozen_model.to(0)
+            frozen_model.to(device_idx_start)
 
         pipe_model = self._get_pipe(model)
 

@@ -29,7 +29,6 @@ class AutoCache:
             if frozen_model is None:
                 log_probs = pipe_model(x)
             else:
-                print(x.shape)
                 hidden_feature = frozen_model(x)
                 log_probs = pipe_model(hidden_feature)
         return log_probs
