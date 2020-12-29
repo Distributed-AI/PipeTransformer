@@ -85,11 +85,15 @@ def train(args, auto_pipe, auto_dp, frozen_model, pipe_model, epoch, train_datal
 
     iteration_num = 0
 
-    queue.Queue(0)
-    queue.put(frozen_model(train_dataloader[0]))
+    overlap_queue = queue.SimpleQueue()
+    if frozen_model is not None:
+        hidden_feature = frozen_model(train_dataloader[0])
+        overlap_queue.put(hidden_feature)
+        auto_cache.cache_train_extracted_hidden_feature(0, hidden_feature)
 
     for batch_idx, (x, target) in enumerate(train_dataloader):
-        # torch.cuda.empty_cache()
+        if batch_idx == 0:
+            continue
 
         if batch_idx == 0:
             starting_time = time.time()
@@ -116,7 +120,7 @@ def train(args, auto_pipe, auto_dp, frozen_model, pipe_model, epoch, train_datal
 
         optimizer.zero_grad()
 
-        log_probs = auto_cache.infer_train(frozen_model, pipe_model, x, batch_idx)
+        log_probs = auto_cache.infer_train(frozen_model, pipe_model, overlap_queue, x, batch_idx)
 
         # first_stream = torch.cuda.current_stream(device=device_first)
         # last_stream = torch.cuda.current_stream(device=device_last)
@@ -133,6 +137,16 @@ def train(args, auto_pipe, auto_dp, frozen_model, pipe_model, epoch, train_datal
         torch.nn.utils.clip_grad_norm_(pipe_model.parameters(), 1.0)
         optimizer.step()
         scheduler.step()
+
+        if batch_idx == len(train_dataloader) - 1:
+            log_probs = auto_cache.infer_train(frozen_model, pipe_model, overlap_queue, x, batch_idx)
+            loss = criterion(log_probs, target)
+            loss.backward()
+            # this clip will cost 0.6 second, can be skipped?
+            torch.nn.utils.clip_grad_norm_(pipe_model.parameters(), 1.0)
+            optimizer.step()
+            scheduler.step()
+            overlap_queue.empty()
 
         # with torch.cuda.device(device_first):
         # end_bp.record()
@@ -183,17 +197,26 @@ def _infer(frozen_model, pipe_model, test_data, device_first, device_last, is_tr
     test_loss = test_acc = test_total = 0.
     criterion = nn.CrossEntropyLoss()
     iteration_num = 0
+
+    overlap_queue = queue.SimpleQueue()
+    if frozen_model is not None:
+        hidden_feature = frozen_model(test_data[0])
+        overlap_queue.put(hidden_feature)
+        auto_cache.cache_train_extracted_hidden_feature(0, hidden_feature)
+
     with torch.no_grad():
         for batch_idx, (x, target) in enumerate(test_data):
             logging.info("evaluation - batch index = %d/%d" % (batch_idx, len(test_data)))
+            if batch_idx == 0:
+                continue
             iteration_num += 1
             x = x.to(device_first)
             target = target.to(device_last)
 
             if is_train:
-                log_probs = auto_cache.infer_train(frozen_model, pipe_model, x, batch_idx)
+                log_probs = auto_cache.infer_train(frozen_model, pipe_model, overlap_queue, x, batch_idx)
             else:
-                log_probs = auto_cache.infer_test(frozen_model, pipe_model, x, batch_idx)
+                log_probs = auto_cache.infer_test(frozen_model, pipe_model, overlap_queue, x, batch_idx)
 
             loss = criterion(log_probs, target)
             _, predicted = torch.max(log_probs, -1)
@@ -201,6 +224,19 @@ def _infer(frozen_model, pipe_model, test_data, device_first, device_last, is_tr
             test_acc += correct.item()
             test_loss += loss.item() * target.size(0)
             test_total += target.size(0)
+
+            if batch_idx == len(test_data) - 1:
+                if is_train:
+                    log_probs = auto_cache.infer_train(frozen_model, pipe_model, overlap_queue, x, batch_idx)
+                else:
+                    log_probs = auto_cache.infer_test(frozen_model, pipe_model, overlap_queue, x, batch_idx)
+                loss = criterion(log_probs, target)
+                _, predicted = torch.max(log_probs, -1)
+                correct = predicted.eq(target).sum()
+                test_acc += correct.item()
+                test_loss += loss.item() * target.size(0)
+                test_total += target.size(0)
+                overlap_queue.empty()
             if iteration_num == 2 and args.is_debug_mode:
                 break
 

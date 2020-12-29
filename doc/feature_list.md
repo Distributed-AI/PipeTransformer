@@ -23,8 +23,6 @@
 
 
 
-
-
 Machine Learning-wise Optimization:
 
 1. checking point for Optimizer, Scheduler
