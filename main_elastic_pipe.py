@@ -374,13 +374,13 @@ if __name__ == "__main__":
     auto_freeze = AutoFreeze()
     # auto_freeze.do_not_freeze()
 
-    # create FP cache with CPU memory
-    auto_cache = AutoCache()
-    auto_cache.enable()
-
     # create pipe and DDP
     auto_pipe = AutoElasticPipe(auto_dp.get_world_size(), args.local_rank, args.global_rank, model,
                                 output_head, args.pipe_len_at_the_beginning, num_layers)
+
+    # create FP cache with CPU memory
+    auto_cache = AutoCache(auto_dp, auto_pipe)
+    auto_cache.enable()
 
     # start training
     freeze_point = dict()
