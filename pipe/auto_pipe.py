@@ -1,22 +1,8 @@
-import traceback
-
 import torch
 from torch.distributed.pipeline.sync import Pipe
 
 from pipe.load_balance import generate_parameter_size_wise_balance
-from pipe.pipe_model_builder import convert_to_balanced_model, create_pipe_styled_model, get_ddp_ignored_params_name, \
-    freeze_layers_for_pipe_model, PipeModelWrapper
-
-"""
-Under development by Chaoyang He
-    
-Chaoyang's idea for elastic pipe：
-1. 首先按照8卡去创建单个pipe，然后均衡分配所有的layer，也能确定单个device能使用的最大batch size (fixed during training) 和max_layer_per_device的值
-2. 如果有frozen，需要训练的layer数足够分配给所有num_gpu_device*max_layer_per_device时，就只是重新改变partition的分布使得更为均衡，称之为elastic partition
-3. 如果继续frozen，需要训练的layer数小于了num_gpu_device*max_layer_per_device，也就是不够分配了，会创建新的pipe，缩小单个pipe的device数，然后按照2的算法做elastic partition。pipe增加的过程称之为elastic pipe generation
-4. 最后继续frozen到只有max_layer_per_device需要训练的时候，直接降级为ddp，所有pipe销毁，也就是每个device创建一个进程，进行ddp。这个步骤称之为extreme pipe generation (名字暂定)
-
-"""
+from pipe.pipe_model_builder import convert_to_balanced_model, create_pipe_styled_model, PipeModelWrapper
 
 
 class AutoElasticPipe:
@@ -56,11 +42,11 @@ class AutoElasticPipe:
         self.num_frozen_layers = -1
 
     def transform(self, num_frozen_layers):
-        traceback.print_stack()
+        # traceback.print_stack()
         print("---local_rank = %d, global_rank = %d -------------freeze layer number = %d---------------" % (
-        self.local_rank,
-        self.global_rank,
-        num_frozen_layers))
+            self.local_rank,
+            self.global_rank,
+            num_frozen_layers))
         # if self.is_first_call and num_frozen_layers != 0:
         #     raise Exception("the first transformation must from all layers training")
 
@@ -75,7 +61,8 @@ class AutoElasticPipe:
 
         if num_frozen_layers == 0:
             # set the num_frozen_layers = 0 because we put all frozen layers into frozen_model
-            balanced_sub_layer_distribution, balanced_params_size_distribution = self._auto_balanced_elastic_partition(0)
+            balanced_sub_layer_distribution, balanced_params_size_distribution = self._auto_balanced_elastic_partition(
+                0)
             self.max_parameter_per_gpu_at_beginning = max(balanced_params_size_distribution.values())
             print("self.max_parameter_per_gpu_at_beginning = %f" % self.max_parameter_per_gpu_at_beginning)
         else:
