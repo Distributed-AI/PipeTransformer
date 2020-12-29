@@ -82,7 +82,6 @@ def train(args, auto_pipe, auto_dp, frozen_model, pipe_model, epoch, train_datal
 
     iteration_num = 0
     for batch_idx, (x, target) in enumerate(train_dataloader):
-
         # torch.cuda.empty_cache()
 
         if batch_idx == 0:

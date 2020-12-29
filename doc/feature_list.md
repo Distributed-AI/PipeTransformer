@@ -10,12 +10,20 @@
 (1) make the newly created parallel processes in DP can communicate with the existing DP processes.
 (2) skip parameters during cross-pipe synchronization, largely reducing the communication cost.
 
-5. Forward Cache
+5. Forward Cache: Overlap frozen bp and pipe bubble are suitable for the time when the fp time in the early stage is small, or when it is equivalent to the bp time
 
-6. Depending on the model size, adaptively choose DP or Pipe in a single machine.
+6. When the cache is responsible for a lot of frozen layers in the later stage, because the fp time is much longer than bp.
+
+(5 and 6 are combination of two swords)
+
+7. Depending on the model size, adaptively choose DP or Pipe in a single machine.
 (1) Single GPU
 (2) Single Machine, Multiple GPUs
 (3) Multiple Machines, Multiple GPUs
+
+
+
+
 
 Machine Learning-wise Optimization:
 
