@@ -383,7 +383,7 @@ if __name__ == "__main__":
     # start training
     freeze_point = dict()
     freeze_point['epoch'] = 0
-    frozen_model, pipe_model = auto_dp.transform(auto_pipe, model, 0, freeze_point)
+    frozen_model, pipe_model = auto_dp.transform(auto_pipe, None, model, 0, freeze_point)
     freeze_point = auto_dp.get_freeze_point()
     train_dl, test_dl = get_data_loader(train_dataset, test_dataset, args.batch_size, auto_dp.get_data_rank())
     train_and_eval(auto_pipe, auto_dp, frozen_model, pipe_model, train_dl, test_dl, freeze_point, args)

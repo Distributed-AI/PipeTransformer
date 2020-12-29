@@ -186,12 +186,12 @@ class AutoDataParallel:
         self.update_active_ranks()
         return self.active_data_ranks[self.global_rank]
 
-    def transform(self, auto_pipe, model, num_frozen_layers, freeze_point):
+    def transform(self, auto_pipe, frozen_model, pipe_model, num_frozen_layers, freeze_point):
         self.freeze_point = freeze_point
         if auto_pipe.get_num_frozen_layers() == num_frozen_layers:
-            return model
+            return frozen_model, pipe_model
         if num_frozen_layers == 0 and auto_pipe.get_pipe_len() == 1:
-            return model
+            return frozen_model, pipe_model
 
         # create the initial group only once
         if self.first_run:
