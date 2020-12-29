@@ -63,46 +63,46 @@ class AutoCache:
                     hidden_feature = frozen_model(x)
                 log_probs = pipe_model(hidden_feature)
         return log_probs
+    #
+    # def cache_train_extracted_hidden_feature(self, batch_idx, extracted_feature):
+    #     if not self.is_enable:
+    #         return
+    #     self.train_extracted_features[batch_idx] = extracted_feature
+    #
+    # def cache_test_extracted_hidden_feature(self, batch_idx, extracted_feature):
+    #     if not self.is_enable:
+    #         return
+    #     self.test_extracted_features[batch_idx] = extracted_feature
 
     def cache_train_extracted_hidden_feature(self, batch_idx, extracted_feature):
         if not self.is_enable:
             return
-        self.train_extracted_features[batch_idx] = extracted_feature
+        self.train_extracted_features[batch_idx] = extracted_feature.cpu()
 
     def cache_test_extracted_hidden_feature(self, batch_idx, extracted_feature):
         if not self.is_enable:
             return
-        self.test_extracted_features[batch_idx] = extracted_feature
-
-    def cache_train_extracted_hidden_feature_cpu(self, batch_idx, extracted_feature):
-        if not self.is_enable:
-            return
-        self.train_extracted_features[batch_idx] = extracted_feature.cpu()
-
-    def cache_test_extracted_hidden_feature_cpu(self, batch_idx, extracted_feature):
-        if not self.is_enable:
-            return
         self.test_extracted_features[batch_idx] = extracted_feature.cpu()
 
+    # def get_train_extracted_hidden_feature(self, batch_idx):
+    #     if not self.is_enable:
+    #         return None
+    #     # the hidden features are always in device 0
+    #     if batch_idx not in self.train_extracted_features.keys():
+    #         return None
+    #     print("--------get_train_extracted_hidden_feature------------")
+    #     return self.train_extracted_features[batch_idx]
+    #
+    # def get_test_extracted_hidden_feature(self, batch_idx):
+    #     if not self.is_enable:
+    #         return None
+    #     if batch_idx not in self.test_extracted_features.keys():
+    #         return None
+    #     # the hidden features are always in device 0
+    #     print("--------get_test_extracted_hidden_feature------------")
+    #     return self.test_extracted_features[batch_idx]
+
     def get_train_extracted_hidden_feature(self, batch_idx):
-        if not self.is_enable:
-            return None
-        # the hidden features are always in device 0
-        if batch_idx not in self.train_extracted_features.keys():
-            return None
-        print("--------get_train_extracted_hidden_feature------------")
-        return self.train_extracted_features[batch_idx]
-
-    def get_test_extracted_hidden_feature(self, batch_idx):
-        if not self.is_enable:
-            return None
-        if batch_idx not in self.test_extracted_features.keys():
-            return None
-        # the hidden features are always in device 0
-        print("--------get_test_extracted_hidden_feature------------")
-        return self.test_extracted_features[batch_idx]
-
-    def get_train_extracted_hidden_feature_cpu(self, batch_idx):
         if not self.is_enable:
             return None
         # the hidden features are always in device 0
@@ -112,7 +112,7 @@ class AutoCache:
         device_idx_start = self.auto_dp.get_local_rank() * self.auto_pipe.get_pipe_len()
         return self.train_extracted_features[batch_idx].to(device_idx_start)
 
-    def get_test_extracted_hidden_feature_cpu(self, batch_idx):
+    def get_test_extracted_hidden_feature(self, batch_idx):
         if not self.is_enable:
             return None
         if batch_idx not in self.test_extracted_features.keys():
