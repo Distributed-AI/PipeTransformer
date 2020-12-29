@@ -68,14 +68,14 @@ def train(args, auto_pipe, auto_dp, frozen_model, pipe_model, epoch, train_datal
         frozen_model.eval()
 
     # with torch.cuda.device(device_first):
-    start_ld = torch.cuda.Event(enable_timing=True)
-    end_ld = torch.cuda.Event(enable_timing=True)
-    start_fp = torch.cuda.Event(enable_timing=True)
-    end_bp = torch.cuda.Event(enable_timing=True)
-
-    # with torch.cuda.device(device_last):
-    end_fp = torch.cuda.Event(enable_timing=True)
-    start_bp = torch.cuda.Event(enable_timing=True)
+    # start_ld = torch.cuda.Event(enable_timing=True)
+    # end_ld = torch.cuda.Event(enable_timing=True)
+    # start_fp = torch.cuda.Event(enable_timing=True)
+    # end_bp = torch.cuda.Event(enable_timing=True)
+    #
+    # # with torch.cuda.device(device_last):
+    # end_fp = torch.cuda.Event(enable_timing=True)
+    # start_bp = torch.cuda.Event(enable_timing=True)
 
     # wait for CUDA
     # sync_all_devices(0, auto_pipe.get_pipe_len())
@@ -97,29 +97,29 @@ def train(args, auto_pipe, auto_dp, frozen_model, pipe_model, epoch, train_datal
 
         # load data
         # with torch.cuda.device(device_first):
-        start_ld.record()
+        # start_ld.record()
         x = x.to(device_first)
         target = target.to(device_last)
 
         # with torch.cuda.device(device_first):
-        end_ld.record()
+        # end_ld.record()
 
         # FP
         # with torch.cuda.device(device_first):
-        start_fp.record()
+        # start_fp.record()
 
         optimizer.zero_grad()
 
         log_probs = auto_cache.infer_train(frozen_model, pipe_model, x, batch_idx)
 
-        first_stream = torch.cuda.current_stream(device=device_first)
-        last_stream = torch.cuda.current_stream(device=device_last)
-        first_stream.wait_stream(last_stream)
-        end_fp.record()
+        # first_stream = torch.cuda.current_stream(device=device_first)
+        # last_stream = torch.cuda.current_stream(device=device_last)
+        # first_stream.wait_stream(last_stream)
+        # end_fp.record()
 
         # BP
         # with torch.cuda.device(device_last):
-        start_bp.record()
+        # start_bp.record()
 
         loss = criterion(log_probs, target)
         loss.backward()
@@ -129,7 +129,7 @@ def train(args, auto_pipe, auto_dp, frozen_model, pipe_model, epoch, train_datal
         scheduler.step()
 
         # with torch.cuda.device(device_first):
-        end_bp.record()
+        # end_bp.record()
 
         # recv_gbyte, transmit_gbyte = net_meter.update_bandwidth()
         # logging.info("BW {recv_MB:%.3f} {transmit_MB:%.3f}" % (recv_gbyte * 1024, transmit_gbyte * 1024))
