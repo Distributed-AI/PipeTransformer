@@ -1,16 +1,20 @@
+import numpy as np
+import torch
+
+
 class AutoFreeze:
     def __init__(self):
         self.num_freeze_layers = 0
         self.is_freeze = True
 
-        # self.grad_tensor_dict = {}
-        # for name, param in model.bert.named_parameters():
-        #     self.grad_tensor_dict[name] = torch.zeros(param.shape).to(device)
-        #
-        # self.prev_intermediate_grad_dict = None
-        #
-        # self.grad_eval_iteration = 500
-        # self.percentile = 50
+        self.grad_tensor_dict = {}
+        for name, param in model.bert.named_parameters():
+            self.grad_tensor_dict[name] = torch.zeros(param.shape).to(device)
+
+        self.prev_intermediate_grad_dict = None
+
+        self.grad_eval_iteration = 500
+        self.percentile = 50
 
     def do_freeze(self):
         self.is_freeze = True

@@ -130,9 +130,9 @@ class AutoDataParallel:
         if self.world_size < self.initial_pipe_len:
             raise Exception("world_size should be divided by self.initial_pipe_len")
         else:
-            ddp_num = int(self.world_size / self.compressed_pipe_len)
+            ddp_num = int(self.world_size / self.initial_pipe_len)
         for dp_idx in range(ddp_num):
-            start_rank = dp_idx * self.compressed_pipe_len
+            start_rank = dp_idx * self.initial_pipe_len
             for active_rank in range(pipe_num):
                 active_rank += start_rank
                 new_active_ranks.append(active_rank)
