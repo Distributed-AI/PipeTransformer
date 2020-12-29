@@ -189,9 +189,9 @@ class AutoDataParallel:
     def transform(self, auto_pipe, frozen_model, pipe_model, num_frozen_layers, freeze_point):
         self.freeze_point = freeze_point
         if auto_pipe.get_num_frozen_layers() == num_frozen_layers:
-            return frozen_model, pipe_model
+            return frozen_model, pipe_model, False
         if num_frozen_layers == 0 and auto_pipe.get_pipe_len() == 1:
-            return frozen_model, pipe_model
+            raise Exception("unexpected trace")
 
         # create the initial group only once
         if self.first_run:
