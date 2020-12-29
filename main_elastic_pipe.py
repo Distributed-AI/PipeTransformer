@@ -93,10 +93,9 @@ def train(args, auto_pipe, auto_dp, frozen_model, pipe_model, epoch, train_datal
 
     for batch_idx, (x, target) in enumerate(train_dataloader):
         if batch_idx == 0:
-            continue
-
-        if batch_idx == 0:
             starting_time = time.time()
+            continue
+            
         logging.info("--------------global_rank = %d. Epoch %d, batch index %d Statistics: " % (
             auto_dp.get_global_rank(), epoch, batch_idx))
         logging.info("global_rank = %d. epoch = %d, batch index = %d/%d" % (
