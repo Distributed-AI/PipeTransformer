@@ -4,17 +4,18 @@ import torch
 
 class AutoFreeze:
     def __init__(self):
+        self.model = None
         self.num_freeze_layers = 0
         self.is_freeze = True
 
-        self.grad_tensor_dict = {}
-        for name, param in model.bert.named_parameters():
-            self.grad_tensor_dict[name] = torch.zeros(param.shape).to(device)
-
-        self.prev_intermediate_grad_dict = None
-
-        self.grad_eval_iteration = 500
-        self.percentile = 50
+        # self.grad_tensor_dict = {}
+        # for name, param in self.model.bert.named_parameters():
+        #     self.grad_tensor_dict[name] = torch.zeros(param.shape).to(0)
+        #
+        # self.prev_intermediate_grad_dict = None
+        #
+        # self.grad_eval_iteration = 500
+        # self.percentile = 50
 
     def do_freeze(self):
         self.is_freeze = True
@@ -46,45 +47,45 @@ class AutoFreeze:
                     self.grad_tensor_dict[name] = param.grad
                 else:
                     self.grad_tensor_dict[name] += param.grad
-
-    def freeze(self):
-        current_grad_dict = {}
-        for i in range(12):
-            current_grad_dict[i] = 0
-        for name in self.grad_tensor_dict.keys():
-            param_list = name.split(".")
-            layer_num = 0
-            for split_param in param_list:
-                try:
-                    layer_num = int(split_param)
-                    if "encoder" in name:
-                        current_grad_dict[layer_num] += torch.norm(self.grad_tensor_dict[name].cpu().detach(), p=1).item()
-                except ValueError:
-                    pass
-
-        # Clear gradient accumulator
-        for name, param in model.bert.named_parameters():
-            self.grad_tensor_dict[name] = torch.zeros(param.shape).to(device)
-
-        if self.prev_intermediate_grad_dict is None:
-            # Set gradient dict to be compared with for the first time
-            self.prev_intermediate_grad_dict = current_grad_dict
-        else:
-            threshold_dict = {}
-            for key in range(12):
-                threshold_dict[key] = 0
-            # Calculate gradient changing threshold
-            for key in current_grad_dict.keys():
-                if current_grad_dict[key] > 0:
-                    threshold_dict[key] = abs(self.prev_intermediate_grad_dict[key] - current_grad_dict[key]) / \
-                                          self.prev_intermediate_grad_dict[key]
-
-            median_value = np.percentile(list(threshold_dict.values())[self.num_freeze_layers:], self.percentile)
-            # Find out the first layer with ratio ge to the median value
-            for key in threshold_dict.keys():
-                if threshold_dict[key] >= median_value:
-                    start_layer = key
-                    break
-            self.prev_intermediate_grad_dict = current_grad_dict
-            print("threshold: ", threshold_dict)
-            print("layer num: ", self.num_freeze_layers)
+    #
+    # def freeze(self):
+    #     current_grad_dict = {}
+    #     for i in range(12):
+    #         current_grad_dict[i] = 0
+    #     for name in self.grad_tensor_dict.keys():
+    #         param_list = name.split(".")
+    #         layer_num = 0
+    #         for split_param in param_list:
+    #             try:
+    #                 layer_num = int(split_param)
+    #                 if "encoder" in name:
+    #                     current_grad_dict[layer_num] += torch.norm(self.grad_tensor_dict[name].cpu().detach(), p=1).item()
+    #             except ValueError:
+    #                 pass
+    #
+    #     # Clear gradient accumulator
+    #     for name, param in self.model.bert.named_parameters():
+    #         self.grad_tensor_dict[name] = torch.zeros(param.shape).to(device)
+    #
+    #     if self.prev_intermediate_grad_dict is None:
+    #         # Set gradient dict to be compared with for the first time
+    #         self.prev_intermediate_grad_dict = current_grad_dict
+    #     else:
+    #         threshold_dict = {}
+    #         for key in range(12):
+    #             threshold_dict[key] = 0
+    #         # Calculate gradient changing threshold
+    #         for key in current_grad_dict.keys():
+    #             if current_grad_dict[key] > 0:
+    #                 threshold_dict[key] = abs(self.prev_intermediate_grad_dict[key] - current_grad_dict[key]) / \
+    #                                       self.prev_intermediate_grad_dict[key]
+    #
+    #         median_value = np.percentile(list(threshold_dict.values())[self.num_freeze_layers:], self.percentile)
+    #         # Find out the first layer with ratio ge to the median value
+    #         for key in threshold_dict.keys():
+    #             if threshold_dict[key] >= median_value:
+    #                 start_layer = key
+    #                 break
+    #         self.prev_intermediate_grad_dict = current_grad_dict
+    #         print("threshold: ", threshold_dict)
+    #         print("layer num: ", self.num_freeze_layers)
