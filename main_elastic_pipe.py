@@ -87,7 +87,7 @@ def train(args, auto_pipe, auto_dp, frozen_model, pipe_model, epoch, train_datal
 
     overlap_queue = queue.SimpleQueue()
     if frozen_model is not None:
-        hidden_feature = frozen_model(train_dataloader[0])
+        hidden_feature = frozen_model(next(iter(train_dataloader)))
         overlap_queue.put(hidden_feature)
         auto_cache.cache_train_extracted_hidden_feature(0, hidden_feature)
 
@@ -95,7 +95,7 @@ def train(args, auto_pipe, auto_dp, frozen_model, pipe_model, epoch, train_datal
         if batch_idx == 0:
             starting_time = time.time()
             continue
-            
+
         logging.info("--------------global_rank = %d. Epoch %d, batch index %d Statistics: " % (
             auto_dp.get_global_rank(), epoch, batch_idx))
         logging.info("global_rank = %d. epoch = %d, batch index = %d/%d" % (
@@ -199,7 +199,7 @@ def _infer(frozen_model, pipe_model, test_data, device_first, device_last, is_tr
 
     overlap_queue = queue.SimpleQueue()
     if frozen_model is not None:
-        hidden_feature = frozen_model(test_data[0])
+        hidden_feature = frozen_model(next(iter(test_data)))
         overlap_queue.put(hidden_feature)
         auto_cache.cache_train_extracted_hidden_feature(0, hidden_feature)
 
