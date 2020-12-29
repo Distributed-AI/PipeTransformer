@@ -41,11 +41,10 @@ def train(args, auto_pipe, auto_dp, frozen_model, pipe_model, epoch, cv_data, tr
                                                                           auto_freeze.get_hand_crafted_frozen_layers_by_epoch(
                                                                               epoch), new_freeze_point)
         new_freeze_point = auto_dp.get_freeze_point()
-        new_train_dl, new_test_dl = cv_data.get_data_loader(args.batch_size,
-                                                                                         auto_dp.get_data_duplicate_num(),
-                                                                                         auto_dp.get_data_rank())
         if is_pipe_len_changed:
             auto_cache.update_num_frozen_layers(auto_pipe.get_num_frozen_layers())
+            new_train_dl, new_test_dl = cv_data.get_data_loader(args.batch_size, auto_dp.get_data_duplicate_num(),
+                                                                auto_dp.get_data_rank())
     else:
         new_train_dl = train_dataloader
         new_test_dl = test_dataloader

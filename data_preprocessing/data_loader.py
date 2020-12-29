@@ -17,7 +17,12 @@ class CVDataset:
         self.train_sampler = None
         self.test_sampler = None
 
+        self.args = None
+        self.dataset = "cifar10"
+
     def get_data(self, args, dataset):
+        self.args = args
+        self.dataset = dataset
         print("load_data. dataset_name = %s" % dataset)
         if dataset == "cifar10":
             train_dataset, test_dataset, output_dim = self.load_cifar_centralized_training_for_vit(args)
@@ -139,6 +144,9 @@ class CVDataset:
     def get_data_loader(self, batch_size, num_replicas, rank):
         traceback.print_stack()
         print("---num_replicas = %d, rank = %d --------------" % (num_replicas, rank))
+        del self.train_dataset
+        del self.test_dataset
+        self.get_data(self.args, self.dataset)
         """
         Optimization:
             Pin Memory: https://pytorch.org/docs/stable/notes/cuda.html#use-pinned-memory-buffers
