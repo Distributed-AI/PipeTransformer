@@ -126,10 +126,10 @@ def create_pipe_styled_model(model_backbone, output_model, num_layer_in_total, n
     size_output_model = count_parameters(output_model, False)
     parameters_list_pipe.append(size_output_model)
 
-    print(frozen_model)
-    print(parameters_size_frozen)
-    print(pipe_model)
-    print(parameters_list_pipe)
+    # print(frozen_model)
+    # print(parameters_size_frozen)
+    # print(pipe_model)
+    # print(parameters_list_pipe)
 
     return frozen_model, parameters_size_frozen, pipe_model, parameters_list_pipe
 
