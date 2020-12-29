@@ -27,3 +27,8 @@ Machine Learning-wise Optimization:
 
 
 
+Destory CUDA context:
+
+https://docs.nvidia.com/cuda/cuda-driver-api/group__CUDA__CTX.html#group__CUDA__CTX_1g27a365aebb0eb548166309f58a1e8b8e
+
+https://github.com/pytorch/pytorch/issues/37664

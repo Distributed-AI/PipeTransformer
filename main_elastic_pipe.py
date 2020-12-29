@@ -64,7 +64,8 @@ def train(args, auto_pipe, auto_dp, frozen_model, pipe_model, epoch, train_datal
     # measure latency with cuda event:
     # https://discuss.pytorch.org/t/distributed-training-slower-than-dataparallel/81539/4
     pipe_model.train()
-    frozen_model.eval()
+    if frozen_model is not None:
+        frozen_model.eval()
 
     # with torch.cuda.device(device_first):
     start_ld = torch.cuda.Event(enable_timing=True)
