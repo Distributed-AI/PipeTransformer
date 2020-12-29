@@ -155,7 +155,7 @@ def train(args, auto_pipe, auto_dp, frozen_model, pipe_model, epoch, train_datal
         # logging.info("BW {recv_MB:%.3f} {transmit_MB:%.3f}" % (recv_gbyte * 1024, transmit_gbyte * 1024))
 
         # sync_all_devices(0, auto_pipe.get_pipe_len())
-        if batch_idx == 0:
+        if batch_idx == 1:
             time_finish_prepare_ddp = time.time()
             logging.info("global_rank = %d. data loading cost = %s" % (
                 auto_dp.get_global_rank(), str(time_finish_prepare_ddp - starting_time)))
