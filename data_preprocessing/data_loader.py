@@ -1,3 +1,5 @@
+import traceback
+
 import torch
 import torch.distributed as dist
 from torch.utils.data import RandomSampler, SequentialSampler, DataLoader, DistributedSampler
@@ -114,6 +116,8 @@ def load_imagenet_centralized_training_for_vit(args):
 
 
 def get_data_loader(trainset, testset, batch_size, num_replicas, rank):
+    traceback.print_stack()
+    print("---num_replicas = %d, rank = %d --------------" % (num_replicas, rank))
     """
     Optimization:
         Pin Memory: https://pytorch.org/docs/stable/notes/cuda.html#use-pinned-memory-buffers
