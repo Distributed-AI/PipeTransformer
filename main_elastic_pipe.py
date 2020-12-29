@@ -37,12 +37,13 @@ def train(args, auto_pipe, auto_dp, frozen_model, pipe_model, epoch, cv_data, tr
         new_freeze_point = dict()
         new_freeze_point['epoch'] = epoch
         # self, auto_pipe, frozen_model, pipe_model, num_frozen_layers, freeze_point
-        frozen_model, pipe_model, is_pipe_len_changed = auto_dp.transform(auto_pipe, frozen_model, pipe_model,
+        frozen_model, pipe_model, is_pipe_len_changed, is_frozen_layer_changed = auto_dp.transform(auto_pipe, frozen_model, pipe_model,
                                                                           auto_freeze.get_hand_crafted_frozen_layers_by_epoch(
                                                                               epoch), new_freeze_point)
         new_freeze_point = auto_dp.get_freeze_point()
-        if is_pipe_len_changed:
+        if is_frozen_layer_changed:
             auto_cache.update_num_frozen_layers(auto_pipe.get_num_frozen_layers())
+        if is_pipe_len_changed:
             new_train_dl, new_test_dl = cv_data.get_data_loader(args.batch_size, auto_dp.get_data_duplicate_num(),
                                                                 auto_dp.get_data_rank())
         else:
@@ -388,7 +389,7 @@ if __name__ == "__main__":
     # start training
     freeze_point = dict()
     freeze_point['epoch'] = 0
-    frozen_model, pipe_model, is_pipe_len_changed = auto_dp.transform(auto_pipe, None, model, 0, freeze_point)
+    frozen_model, pipe_model, is_pipe_len_changed, is_frozen_layer_changed = auto_dp.transform(auto_pipe, None, model, 0, freeze_point)
     freeze_point = auto_dp.get_freeze_point()
     train_dl, test_dl = cv_data.get_data_loader(args.batch_size, auto_dp.get_data_duplicate_num(),
                                                 auto_dp.get_data_rank())

@@ -207,13 +207,16 @@ class AutoDataParallel:
             self.first_run = False
 
         if self.is_active():
-            frozen_model, pipe_model, is_pipe_len_changed = self._active_process_impl(auto_pipe, num_frozen_layers)
+            frozen_model, pipe_model, is_pipe_len_changed, is_frozen_layer_changed = self._active_process_impl(auto_pipe, num_frozen_layers)
         else:
-            frozen_model, pipe_model, is_pipe_len_changed = self._inactive_process_impl(auto_pipe)
+            frozen_model, pipe_model, is_pipe_len_changed, is_frozen_layer_changed = self._inactive_process_impl(auto_pipe)
         return frozen_model, pipe_model, is_pipe_len_changed
 
     def _active_process_impl(self, auto_pipe, num_frozen_layers):
         is_pipe_len_changed = False
+        is_frozen_layer_changed = False
+        if auto_pipe.get_num_frozen_layers() != is_frozen_layer_changed:
+            is_frozen_layer_changed = True
         frozen_model, pipe_model, pipe_len = auto_pipe.transform(num_frozen_layers)
         if self.compressed_pipe_len != pipe_len:
             self.compressed_pipe_len = pipe_len
@@ -237,7 +240,7 @@ class AutoDataParallel:
             self.clear_memory()
             is_pipe_len_changed = True
         pipe_model = self.generate_ddp_model(pipe_model, pipe_len)
-        return frozen_model, pipe_model, is_pipe_len_changed
+        return frozen_model, pipe_model, is_pipe_len_changed, is_frozen_layer_changed
 
     def _inactive_process_impl(self, auto_pipe):
 
@@ -247,6 +250,7 @@ class AutoDataParallel:
         newly_added_active_ranks, freeze_point = self._parse_broad_cast_message(frozen_message)
 
         is_pipe_len_changed = True
+        is_frozen_layer_changed = True
         self.compressed_pipe_len = pipe_len
         auto_pipe.set_pipe_len(pipe_len)
         auto_pipe.set_max_parameter_per_gpu_at_beginning(max_parameter_per_gpu_at_beginning)
@@ -259,8 +263,8 @@ class AutoDataParallel:
             frozen_model, pipe_model, pipe_len = auto_pipe.transform(num_frozen_layers)
             pipe_model = self.generate_ddp_model(pipe_model, pipe_len)
         else:
-            frozen_model, pipe_model, is_pipe_len_changed = self._inactive_process_impl(auto_pipe)
-        return frozen_model, pipe_model, is_pipe_len_changed
+            frozen_model, pipe_model, is_pipe_len_changed, is_frozen_layer_changed = self._inactive_process_impl(auto_pipe)
+        return frozen_model, pipe_model, is_pipe_len_changed, is_frozen_layer_changed
 
     def _build_broad_cast_message(self, num_frozen_layers, pipe_len, max_parameter_per_gpu_at_beginning, freeze_point):
         print("self.newly_added_active_ranks = " + str(self.newly_added_active_ranks))
