@@ -59,12 +59,12 @@ class AutoCache:
     def cache_train_extracted_hidden_feature(self, batch_idx, extracted_feature):
         if not self.is_enable:
             return
-        self.train_extracted_features[batch_idx] = extracted_feature.cpu().pin_memory()
+        self.train_extracted_features[batch_idx] = extracted_feature.cpu()
 
     def cache_test_extracted_hidden_feature(self, batch_idx, extracted_feature):
         if not self.is_enable:
             return
-        self.test_extracted_features[batch_idx] = extracted_feature.cpu().pin_memory()
+        self.test_extracted_features[batch_idx] = extracted_feature.cpu()
 
     def get_train_extracted_hidden_feature(self, batch_idx):
         if not self.is_enable:
