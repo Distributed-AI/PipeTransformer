@@ -27,6 +27,11 @@ def count_parameters(model):
     return params / 1000000
 
 
+def sync_all_devices(local_rank, device_cnt=4):
+    for d in range(device_cnt):
+        device = torch.device("cuda:" + str(local_rank + d))
+        torch.cuda.synchronize(device)
+
 def train(args, auto_pipe, auto_dp, frozen_model, pipe_model, epoch, train_dataloader, test_dataloader):
     if auto_freeze.is_freeze_open():
         new_freeze_point = dict()
@@ -56,10 +61,7 @@ def train(args, auto_pipe, auto_dp, frozen_model, pipe_model, epoch, train_datal
     print("device_first = " + str(device_first))
     print("device_last = " + str(device_last))
 
-    def sync_all_devices(local_rank, device_cnt=4):
-        for d in range(device_cnt):
-            device = torch.device("cuda:" + str(local_rank + d))
-            torch.cuda.synchronize(device)
+
 
     # measure latency with cuda event:
     # https://discuss.pytorch.org/t/distributed-training-slower-than-dataparallel/81539/4
@@ -390,3 +392,5 @@ if __name__ == "__main__":
     freeze_point = auto_dp.get_freeze_point()
     train_dl, test_dl = get_data_loader(train_dataset, test_dataset, args.batch_size, auto_dp.get_data_rank())
     train_and_eval(auto_pipe, auto_dp, frozen_model, pipe_model, train_dl, test_dl, freeze_point, args)
+
+    sync_all_devices(auto_dp.get_global_rank(), auto_dp.initial_pipe_len)
