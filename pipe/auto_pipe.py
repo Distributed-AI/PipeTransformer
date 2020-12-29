@@ -141,8 +141,7 @@ class AutoElasticPipe:
             print("----------start to detection---------")
             balanced_sub_layer_distribution, balanced_params_size_distribution, self.frozen_params = generate_parameter_size_wise_balance(
                 int(self.pipe_len / 2),
-                self.pipe_model_params_size_list,
-                num_frozen_layers)
+                self.pipe_model_params_size_list, 0)
             balanced_params_size_distribution[0] -= self.frozen_params * (5.0 / 6.0)
             max_parameter_per_gpu = max(balanced_params_size_distribution.values())
             print("max_parameter_per_gpu = %f" % max_parameter_per_gpu)
