@@ -11,8 +11,7 @@ import torch.nn as nn
 import wandb
 
 from cache.auto_cache import AutoCache
-from data_preprocessing.data_loader import get_data_loader, load_cifar_centralized_training_for_vit, \
-    load_imagenet_centralized_training_for_vit
+from data_preprocessing.data_loader import CVDataset
 from dp.auto_dp import AutoDataParallel
 from freeze.auto_freeze import AutoFreeze
 from model.vit.vision_transformer_origin import VisionTransformer
@@ -33,18 +32,18 @@ def sync_all_devices(local_rank, device_cnt=4):
         torch.cuda.synchronize(device)
 
 
-def train(args, auto_pipe, auto_dp, frozen_model, pipe_model, epoch, train_dataloader, test_dataloader):
+def train(args, auto_pipe, auto_dp, frozen_model, pipe_model, epoch, cv_data, train_dataloader, test_dataloader):
     if auto_freeze.is_freeze_open():
         new_freeze_point = dict()
         new_freeze_point['epoch'] = epoch
         # self, auto_pipe, frozen_model, pipe_model, num_frozen_layers, freeze_point
         frozen_model, pipe_model, is_pipe_len_changed = auto_dp.transform(auto_pipe, frozen_model, pipe_model,
-                                  auto_freeze.get_hand_crafted_frozen_layers_by_epoch(epoch), new_freeze_point)
+                                                                          auto_freeze.get_hand_crafted_frozen_layers_by_epoch(
+                                                                              epoch), new_freeze_point)
         new_freeze_point = auto_dp.get_freeze_point()
-        del train_dataloader
-        del test_dataloader
-        new_train_dl, new_test_dl = get_data_loader(train_dataset, test_dataset, args.batch_size,
-                                                    auto_dp.get_data_duplicate_num(), auto_dp.get_data_rank())
+        new_train_dl, new_test_dl, train_sampler, test_sampler = cv_data.get_data_loader(args.batch_size,
+                                                                                         auto_dp.get_data_duplicate_num(),
+                                                                                         auto_dp.get_data_rank())
         if is_pipe_len_changed:
             auto_cache.update_num_frozen_layers(auto_pipe.get_num_frozen_layers())
     else:
@@ -62,8 +61,6 @@ def train(args, auto_pipe, auto_dp, frozen_model, pipe_model, epoch, train_datal
     device_last = auto_pipe.get_device_last()
     print("device_first = " + str(device_first))
     print("device_last = " + str(device_last))
-
-
 
     # measure latency with cuda event:
     # https://discuss.pytorch.org/t/distributed-training-slower-than-dataparallel/81539/4
@@ -236,12 +233,14 @@ def eval(frozen_model, pipe_model, args, epoch, train_dl, test_dl, device_first,
             logging.info(stats)
 
 
-def train_and_eval(auto_pipe, auto_dp, frozen_model, pipe_model, train_dl, test_dl, freeze_point, args):
+def train_and_eval(auto_pipe, auto_dp, frozen_model, pipe_model, cv_data, train_dl, test_dl, freeze_point, args):
     epoch_start = freeze_point['epoch']
     for epoch in range(epoch_start, args.epochs):
         frozen_model, pipe_model, device_first, device_last, new_train_dl, new_test_dl = train(args, auto_pipe, auto_dp,
-                                                                            frozen_model, pipe_model, epoch,
-                                                                            train_dl, test_dl)
+                                                                                               frozen_model, pipe_model,
+                                                                                               epoch,
+                                                                                               cv_data, train_dl,
+                                                                                               test_dl)
         eval(frozen_model, pipe_model, args, epoch, new_train_dl, new_test_dl, device_first, device_last)
 
 
@@ -352,16 +351,8 @@ if __name__ == "__main__":
                    config=args)
 
     # create dataset
-    # Dataset
-    logging.info("load_data. dataset_name = %s" % args.dataset)
-    if args.dataset == "cifar10":
-        train_dataset, test_dataset, output_dim = load_cifar_centralized_training_for_vit(args)
-    elif args.dataset == "cifar100":
-        train_dataset, test_dataset, output_dim = load_cifar_centralized_training_for_vit(args)
-    elif args.dataset == "imagenet":
-        train_dataset, test_dataset, output_dim = load_imagenet_centralized_training_for_vit(args)
-    else:
-        raise Exception("no such dataset!")
+    cv_data = CVDataset()
+    train_dataset, test_dataset, output_dim = cv_data.get_data(args, args.dataset)
 
     # create model
     model_type = 'vit-B_16'
@@ -397,6 +388,6 @@ if __name__ == "__main__":
     freeze_point['epoch'] = 0
     frozen_model, pipe_model, is_pipe_len_changed = auto_dp.transform(auto_pipe, None, model, 0, freeze_point)
     freeze_point = auto_dp.get_freeze_point()
-    train_dl, test_dl = get_data_loader(train_dataset, test_dataset, args.batch_size,
-                                        auto_dp.get_data_duplicate_num(), auto_dp.get_data_rank())
-    train_and_eval(auto_pipe, auto_dp, frozen_model, pipe_model, train_dl, test_dl, freeze_point, args)
+    train_dl, test_dl = cv_data.get_data_loader(args.batch_size, auto_dp.get_data_duplicate_num(),
+                                                auto_dp.get_data_rank())
+    train_and_eval(auto_pipe, auto_dp, frozen_model, pipe_model, cv_data, train_dl, test_dl, freeze_point, args)

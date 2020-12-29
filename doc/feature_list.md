@@ -38,3 +38,7 @@ Destory CUDA context:
 https://docs.nvidia.com/cuda/cuda-driver-api/group__CUDA__CTX.html#group__CUDA__CTX_1g27a365aebb0eb548166309f58a1e8b8e
 
 https://github.com/pytorch/pytorch/issues/37664
+
+This idea can also be used in Federated Learning. We can calculate the frozen number at the server side.
+
+https://arxiv.org/pdf/1706.05806.pdf
