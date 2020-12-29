@@ -22,13 +22,13 @@ class AutoCache:
     def disable(self):
         self.is_enable = False
 
-    def infer_train(self, frozen_model, pipe_model, overlap_queue, x, batch_idx):
+    def infer_train(self, frozen_model, pipe_model, overlap_queue_x, x, batch_idx):
         if self.is_enable and frozen_model is not None:
             if self.get_train_extracted_hidden_feature(batch_idx) is None:
-                log_probs = pipe_model(overlap_queue.get())
+                log_probs = pipe_model(overlap_queue_x.get())
                 with torch.no_grad():
                     hidden_feature = frozen_model(x)
-                    overlap_queue.put(hidden_feature)
+                    overlap_queue_x.put(hidden_feature)
                 self.cache_train_extracted_hidden_feature(batch_idx, hidden_feature)
             else:
                 hidden_feature = self.get_train_extracted_hidden_feature(batch_idx)
@@ -37,19 +37,19 @@ class AutoCache:
             if frozen_model is None:
                 log_probs = pipe_model(x)
             else:
-                log_probs = pipe_model(overlap_queue.get())
+                log_probs = pipe_model(overlap_queue_x.get())
                 with torch.no_grad():
                     hidden_feature = frozen_model(x)
-                    overlap_queue.put(hidden_feature)
+                    overlap_queue_x.put(hidden_feature)
         return log_probs
 
-    def infer_test(self, frozen_model, pipe_model, overlap_queue, x, batch_idx):
+    def infer_test(self, frozen_model, pipe_model, overlap_queue_x, x, batch_idx):
         if self.is_enable and frozen_model is not None:
             if self.get_test_extracted_hidden_feature(batch_idx) is None:
-                log_probs = pipe_model(overlap_queue.get())
+                log_probs = pipe_model(overlap_queue_x.get())
                 with torch.no_grad():
                     hidden_feature = frozen_model(x)
-                    overlap_queue.put(hidden_feature)
+                    overlap_queue_x.put(hidden_feature)
                 self.cache_test_extracted_hidden_feature(batch_idx, hidden_feature)
             else:
                 hidden_feature = self.get_test_extracted_hidden_feature(batch_idx)
@@ -58,10 +58,10 @@ class AutoCache:
             if frozen_model is None:
                 log_probs = pipe_model(x)
             else:
-                log_probs = pipe_model(overlap_queue.get())
+                log_probs = pipe_model(overlap_queue_x.get())
                 with torch.no_grad():
                     hidden_feature = frozen_model(x)
-                    overlap_queue.put(hidden_feature)
+                    overlap_queue_x.put(hidden_feature)
         return log_probs
 
     def cache_train_extracted_hidden_feature(self, batch_idx, extracted_feature):

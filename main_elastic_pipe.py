@@ -85,11 +85,15 @@ def train(args, auto_pipe, auto_dp, frozen_model, pipe_model, epoch, train_datal
 
     iteration_num = 0
 
-    overlap_queue = queue.SimpleQueue()
+    overlap_queue_x = queue.SimpleQueue()
+    overlap_queue_target = queue.SimpleQueue()
     if frozen_model is not None:
         x_first, target_first = next(iter(train_dataloader))
+        x_first = x_first.to(device_first)
+        target_first = target_first.to(device_last)
         hidden_feature = frozen_model(x_first)
-        overlap_queue.put(hidden_feature)
+        overlap_queue_x.put(hidden_feature)
+        overlap_queue_target.put(target_first)
         auto_cache.cache_train_extracted_hidden_feature(0, hidden_feature)
 
     for batch_idx, (x, target) in enumerate(train_dataloader):
@@ -119,8 +123,8 @@ def train(args, auto_pipe, auto_dp, frozen_model, pipe_model, epoch, train_datal
         # start_fp.record()
 
         optimizer.zero_grad()
-
-        log_probs = auto_cache.infer_train(frozen_model, pipe_model, overlap_queue, x, batch_idx)
+        log_probs = auto_cache.infer_train(frozen_model, pipe_model, overlap_queue_x, x, batch_idx)
+        overlap_queue_target.put(target)
 
         # first_stream = torch.cuda.current_stream(device=device_first)
         # last_stream = torch.cuda.current_stream(device=device_last)
@@ -130,8 +134,8 @@ def train(args, auto_pipe, auto_dp, frozen_model, pipe_model, epoch, train_datal
         # BP
         # with torch.cuda.device(device_last):
         # start_bp.record()
-
-        loss = criterion(log_probs, target)
+        target_last = overlap_queue_target.get()
+        loss = criterion(log_probs, target_last)
         loss.backward()
         # this clip will cost 0.6 second, can be skipped?
         torch.nn.utils.clip_grad_norm_(pipe_model.parameters(), 1.0)
@@ -139,14 +143,16 @@ def train(args, auto_pipe, auto_dp, frozen_model, pipe_model, epoch, train_datal
         scheduler.step()
 
         if batch_idx == len(train_dataloader) - 1:
-            log_probs = auto_cache.infer_train(frozen_model, pipe_model, overlap_queue, x, batch_idx)
-            loss = criterion(log_probs, target)
+            log_probs = auto_cache.infer_train(frozen_model, pipe_model, overlap_queue_x, x, batch_idx)
+            target_last = overlap_queue_target.get()
+            loss = criterion(log_probs, target_last)
             loss.backward()
             # this clip will cost 0.6 second, can be skipped?
             torch.nn.utils.clip_grad_norm_(pipe_model.parameters(), 1.0)
             optimizer.step()
             scheduler.step()
-            overlap_queue.empty()
+            overlap_queue_x.empty()
+            overlap_queue_target.empty()
 
         # with torch.cuda.device(device_first):
         # end_bp.record()
@@ -198,11 +204,15 @@ def _infer(frozen_model, pipe_model, test_data, device_first, device_last, is_tr
     criterion = nn.CrossEntropyLoss()
     iteration_num = 0
 
-    overlap_queue = queue.SimpleQueue()
+    overlap_queue_x = queue.SimpleQueue()
+    overlap_queue_target = queue.SimpleQueue()
     if frozen_model is not None:
         x_first, target_first = next(iter(test_data))
+        x_first = x_first.to(device_first)
+        target_first = target_first.to(device_last)
         hidden_feature = frozen_model(x_first)
-        overlap_queue.put(hidden_feature)
+        overlap_queue_x.put(hidden_feature)
+        overlap_queue_target.put(target_first)
         auto_cache.cache_train_extracted_hidden_feature(0, hidden_feature)
 
     with torch.no_grad():
@@ -215,11 +225,13 @@ def _infer(frozen_model, pipe_model, test_data, device_first, device_last, is_tr
             target = target.to(device_last)
 
             if is_train:
-                log_probs = auto_cache.infer_train(frozen_model, pipe_model, overlap_queue, x, batch_idx)
+                log_probs = auto_cache.infer_train(frozen_model, pipe_model, overlap_queue_x, x, batch_idx)
             else:
-                log_probs = auto_cache.infer_test(frozen_model, pipe_model, overlap_queue, x, batch_idx)
+                log_probs = auto_cache.infer_test(frozen_model, pipe_model, overlap_queue_x, x, batch_idx)
+            overlap_queue_target.put(target)
 
-            loss = criterion(log_probs, target)
+            target_last = overlap_queue_target.get()
+            loss = criterion(log_probs, target_last)
             _, predicted = torch.max(log_probs, -1)
             correct = predicted.eq(target).sum()
             test_acc += correct.item()
@@ -228,16 +240,17 @@ def _infer(frozen_model, pipe_model, test_data, device_first, device_last, is_tr
 
             if batch_idx == len(test_data) - 1:
                 if is_train:
-                    log_probs = auto_cache.infer_train(frozen_model, pipe_model, overlap_queue, x, batch_idx)
+                    log_probs = auto_cache.infer_train(frozen_model, pipe_model, overlap_queue_x, x, batch_idx)
                 else:
-                    log_probs = auto_cache.infer_test(frozen_model, pipe_model, overlap_queue, x, batch_idx)
-                loss = criterion(log_probs, target)
+                    log_probs = auto_cache.infer_test(frozen_model, pipe_model, overlap_queue_x, x, batch_idx)
+                target_last = overlap_queue_target.get()
+                loss = criterion(log_probs, target_last)
                 _, predicted = torch.max(log_probs, -1)
                 correct = predicted.eq(target).sum()
                 test_acc += correct.item()
                 test_loss += loss.item() * target.size(0)
                 test_total += target.size(0)
-                overlap_queue.empty()
+                overlap_queue_x.empty()
             if iteration_num == 2 and args.is_debug_mode:
                 break
 
