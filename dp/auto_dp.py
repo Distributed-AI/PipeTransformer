@@ -184,6 +184,7 @@ class AutoDataParallel:
 
     def get_data_rank(self):
         self.update_active_ranks()
+        print("self.active_data_ranks = " + str(self.active_data_ranks))
         return self.active_data_ranks[self.global_rank]
 
     def transform(self, auto_pipe, frozen_model, pipe_model, num_frozen_layers, freeze_point):

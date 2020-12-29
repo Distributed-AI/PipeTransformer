@@ -119,7 +119,9 @@ def get_data_loader(trainset, testset, batch_size, rank):
         Pin Memory: https://pytorch.org/docs/stable/notes/cuda.html#use-pinned-memory-buffers
     """
     train_sampler = DistributedSampler(trainset, rank=rank)
-    test_sampler = SequentialSampler(testset)
+    #
+    # test_sampler = SequentialSampler(testset)
+    test_sampler = DistributedSampler(testset, rank=rank)
     train_loader = DataLoader(trainset,
                               sampler=train_sampler,
                               batch_size=batch_size,
@@ -129,5 +131,5 @@ def get_data_loader(trainset, testset, batch_size, rank):
                              sampler=test_sampler,
                              batch_size=batch_size,
                              num_workers=4,
-                             pin_memory=True) if testset is not None else None
+                             pin_memory=True)
     return train_loader, test_loader
