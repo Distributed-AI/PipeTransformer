@@ -274,6 +274,7 @@ class AutoDataParallel:
             self.local_rank, self.global_rank, frozen_message))
 
         num_frozen_layers = int(frozen_message[0])
+        print("_parse_broad_cast_message. num_frozen_layers = %d" % num_frozen_layers)
         pipe_len = int(frozen_message[1])
         max_parameter_per_gpu_at_beginning = frozen_message[2]
         print("local_rank = %d, global_rank = %d - frozen_layer_num = %s" % (
