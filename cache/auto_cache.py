@@ -8,8 +8,9 @@ class AutoCache:
         self.num_frozen_layers = 0
         self.train_extracted_features = dict()
         self.test_extracted_features = dict()
-
         self.is_enable = False
+
+
 
     def update_num_frozen_layers(self, num_frozen_layers):
         self.num_frozen_layers = num_frozen_layers
@@ -22,25 +23,31 @@ class AutoCache:
     def disable(self):
         self.is_enable = False
 
+    def is_cached(self):
+        return True if len(self.train_extracted_features.keys()) > 0 else False
+
     def infer_train(self, frozen_model, pipe_model, overlap_queue_x, x, batch_idx):
-        if self.is_enable and frozen_model is not None:
-            if self.get_train_extracted_hidden_feature(batch_idx) is None:
-                log_probs = pipe_model(overlap_queue_x.get())
-                with torch.no_grad():
-                    hidden_feature = frozen_model(x)
-                    overlap_queue_x.put(hidden_feature)
-                self.cache_train_extracted_hidden_feature(batch_idx, hidden_feature)
+        if self.is_enable:
+            if frozen_model is not None:
+                if self.get_train_extracted_hidden_feature(batch_idx) is None:
+                    log_probs = pipe_model(overlap_queue_x.get())
+                    with torch.no_grad():
+                        hidden_feature = frozen_model(x)
+                        overlap_queue_x.put(hidden_feature)
+                    self.cache_train_extracted_hidden_feature(batch_idx, hidden_feature)
+                else:
+                    hidden_feature = self.get_train_extracted_hidden_feature(batch_idx)
+                    log_probs = pipe_model(hidden_feature)
             else:
-                hidden_feature = self.get_train_extracted_hidden_feature(batch_idx)
-                log_probs = pipe_model(hidden_feature)
-        else:
-            if frozen_model is None:
                 log_probs = pipe_model(x)
-            else:
+        else:
+            if frozen_model is not None:
                 log_probs = pipe_model(overlap_queue_x.get())
                 with torch.no_grad():
                     hidden_feature = frozen_model(x)
                     overlap_queue_x.put(hidden_feature)
+            else:
+                log_probs = pipe_model(x)
         return log_probs
 
     def infer_test(self, frozen_model, pipe_model, overlap_queue_x, x, batch_idx):

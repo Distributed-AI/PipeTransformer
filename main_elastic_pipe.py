@@ -87,7 +87,7 @@ def train(args, auto_pipe, auto_dp, frozen_model, pipe_model, epoch, train_datal
 
     overlap_queue_x = queue.SimpleQueue()
     overlap_queue_target = queue.SimpleQueue()
-    if frozen_model is not None:
+    if (frozen_model is not None) and (not auto_cache.is_cached()):
         x_first, target_first = next(iter(train_dataloader))
         x_first = x_first.to(device_first)
         target_first = target_first.to(device_last)
@@ -98,7 +98,7 @@ def train(args, auto_pipe, auto_dp, frozen_model, pipe_model, epoch, train_datal
 
     for batch_idx, (x, target) in enumerate(train_dataloader):
         # print(x)
-        if batch_idx == 0:
+        if batch_idx == 0 and frozen_model is not None and (not auto_cache.is_cached()):
             starting_time = time.time()
             continue
 
@@ -125,7 +125,8 @@ def train(args, auto_pipe, auto_dp, frozen_model, pipe_model, epoch, train_datal
 
         optimizer.zero_grad()
         log_probs = auto_cache.infer_train(frozen_model, pipe_model, overlap_queue_x, x, batch_idx)
-        overlap_queue_target.put(target)
+        if frozen_model is not None and (not auto_cache.is_cached()):
+            overlap_queue_target.put(target)
 
         # first_stream = torch.cuda.current_stream(device=device_first)
         # last_stream = torch.cuda.current_stream(device=device_last)
@@ -135,23 +136,25 @@ def train(args, auto_pipe, auto_dp, frozen_model, pipe_model, epoch, train_datal
         # BP
         # with torch.cuda.device(device_last):
         # start_bp.record()
-        target_last = overlap_queue_target.get()
-        loss = criterion(log_probs, target_last)
+        if frozen_model is not None and (not auto_cache.is_cached()):
+            target = overlap_queue_target.get()
+        loss = criterion(log_probs, target)
         loss.backward()
         # this clip will cost 0.6 second, can be skipped?
         torch.nn.utils.clip_grad_norm_(pipe_model.parameters(), 1.0)
         optimizer.step()
         scheduler.step()
 
-        if batch_idx == len(train_dataloader) - 1 and frozen_model is not None:
-            log_probs = auto_cache.infer_train(frozen_model, pipe_model, overlap_queue_x, x, batch_idx)
-            target_last = overlap_queue_target.get()
-            loss = criterion(log_probs, target_last)
-            loss.backward()
-            # this clip will cost 0.6 second, can be skipped?
-            torch.nn.utils.clip_grad_norm_(pipe_model.parameters(), 1.0)
-            optimizer.step()
-            scheduler.step()
+        if batch_idx == len(train_dataloader) - 1 and frozen_model is not None and (not auto_cache.is_cached()):
+            if not overlap_queue_x.empty():
+                log_probs = pipe_model(overlap_queue_x.get())
+                target_last = overlap_queue_target.get()
+                loss = criterion(log_probs, target_last)
+                loss.backward()
+                # this clip will cost 0.6 second, can be skipped?
+                torch.nn.utils.clip_grad_norm_(pipe_model.parameters(), 1.0)
+                optimizer.step()
+                scheduler.step()
 
         # with torch.cuda.device(device_first):
         # end_bp.record()
