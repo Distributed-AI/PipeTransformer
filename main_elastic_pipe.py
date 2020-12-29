@@ -37,9 +37,9 @@ def train(args, auto_pipe, auto_dp, frozen_model, pipe_model, epoch, train_datal
     if auto_freeze.is_freeze_open():
         new_freeze_point = dict()
         new_freeze_point['epoch'] = epoch
+        # self, auto_pipe, frozen_model, pipe_model, num_frozen_layers, freeze_point
         frozen_model, pipe_model, is_pipe_len_changed = auto_dp.transform(auto_pipe, frozen_model, pipe_model,
-                                  auto_freeze.get_hand_crafted_frozen_layers_by_epoch(epoch),
-                                  new_freeze_point)
+                                  auto_freeze.get_hand_crafted_frozen_layers_by_epoch(epoch), new_freeze_point)
         new_freeze_point = auto_dp.get_freeze_point()
         new_train_dl, new_test_dl = get_data_loader(train_dataset, test_dataset, args.batch_size,
                                                     auto_dp.get_data_rank())
