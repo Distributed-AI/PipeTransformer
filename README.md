@@ -60,8 +60,8 @@ nohup sh run_elastic_pipe.sh 8 2 1 192.168.11.2 22222 1 0.03 320 cifar100 ./data
 
 ImageNet. Batch Size = 320
 ```
-nohup sh run_elastic_pipe.sh 8 2 0 192.168.11.2 22222 1 0.03 320 imagenet /home/chaoyanghe/dataset/cv/imagenet 8 > ./PipeTransformer-imagenet-node0.log 2>&1 &
-nohup sh run_elastic_pipe.sh 8 2 1 192.168.11.2 22222 1 0.03 320 imagenet /home/chaoyanghe/dataset/cv/imagenet 8 > ./PipeTransformer-imagenet-node1.log 2>&1 &
+nohup sh run_elastic_pipe.sh 8 2 0 192.168.11.2 22222 1 0.03 320 imagenet /home/chaoyanghe/dataset/cv/imagenet 8 1 > ./PipeTransformer-imagenet-node0.log 2>&1 &
+nohup sh run_elastic_pipe.sh 8 2 1 192.168.11.2 22222 1 0.03 320 imagenet /home/chaoyanghe/dataset/cv/imagenet 8 1 > ./PipeTransformer-imagenet-node1.log 2>&1 &
 ```
 
 ## DDP 

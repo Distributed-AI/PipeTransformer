@@ -18,7 +18,7 @@ from pipe.pipe_model_builder import OutputHead
 from trainer import VisionTransformerTrainer
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="PyTorch DDP Demo")
+    parser = argparse.ArgumentParser(description="PipeTransformer: Elastic and Automated Pipelining for Fast Distributed Training of Transformer Models")
     parser.add_argument("--local_rank", type=int, default=0)
 
     parser.add_argument("--global_rank", type=int, default=0)
