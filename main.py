@@ -79,7 +79,7 @@ if __name__ == "__main__":
     logging.info(args)
 
     # customize the log format
-    logging.basicConfig(level=logging.INFO,
+    logging.basicConfig(level=logging.DEBUG,
                         format='%(asctime)s.%(msecs)03d %(levelname)s {%(module)s} [%(funcName)s] %(message)s',
                         datefmt='%Y-%m-%d,%H:%M:%S')
     hostname = socket.gethostname()

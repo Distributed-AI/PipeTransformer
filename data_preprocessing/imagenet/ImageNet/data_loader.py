@@ -8,10 +8,6 @@ import torchvision.transforms as transforms
 from .datasets import ImageNet
 from .datasets import ImageNet_truncated
 
-logging.basicConfig()
-logger = logging.getLogger()
-logger.setLevel(logging.INFO)
-
 
 class Cutout(object):
     def __init__(self, length):
@@ -181,8 +177,6 @@ def load_partition_data_ImageNet(dataset, data_dir,
     logging.info("data_local_num_dict: %s" % data_local_num_dict)
     return train_data_num, test_data_num, train_data_global, test_data_global, \
            data_local_num_dict, train_data_local_dict, test_data_local_dict, class_num
-
-
 
 
 if __name__ == '__main__':
