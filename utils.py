@@ -1,12 +1,9 @@
-import logging
 import math
 import pickle
 
 import numpy as np
 import torch
 from torch.optim.lr_scheduler import LambdaLR
-
-logger = logging.getLogger(__name__)
 
 
 class ConstantLRSchedule(LambdaLR):

@@ -16,8 +16,6 @@ from scipy import ndimage
 from torch.nn import Dropout, Softmax, Linear, Conv2d, LayerNorm
 from torch.nn.modules.utils import _pair
 
-logger = logging.getLogger(__name__)
-
 ATTENTION_Q = "MultiHeadDotProductAttention_1/query"
 ATTENTION_K = "MultiHeadDotProductAttention_1/key"
 ATTENTION_V = "MultiHeadDotProductAttention_1/value"
@@ -305,7 +303,7 @@ class VisionTransformer(nn.Module):
             if posemb.size() == posemb_new.size():
                 self.transformer.embeddings.position_embeddings.copy_(posemb)
             else:
-                logger.info("load_pretrained: resized variant: %s to %s" % (posemb.size(), posemb_new.size()))
+                logging.info("load_pretrained: resized variant: %s to %s" % (posemb.size(), posemb_new.size()))
                 ntok_new = posemb_new.size(1)
 
                 if self.classifier == "token":
