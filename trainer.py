@@ -64,8 +64,8 @@ class VisionTransformerTrainer:
         criterion = nn.CrossEntropyLoss()
         optimizer, scheduler = self.build_optimizer(self.pipe_model)
 
-        print("device_first = " + str(self.device_first))
-        print("device_last = " + str(self.device_last))
+        logging.info("device_first = " + str(self.device_first))
+        logging.info("device_last = " + str(self.device_last))
 
         # measure latency with cuda event:
         # https://discuss.pytorch.org/t/distributed-training-slower-than-dataparallel/81539/4

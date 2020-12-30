@@ -76,12 +76,12 @@ if __name__ == "__main__":
                         help="is_debug_mode")
 
     args = parser.parse_args()
-    print(args)
+    logging.info(args)
 
     # customize the log format
     logging.basicConfig(level=logging.INFO,
-                        format=' - %(asctime)s %(filename)s[line:%(lineno)d] %(levelname)s %(message)s',
-                        datefmt='%a, %d %b %Y %H:%M:%S')
+                        format='%(asctime)s.%(msecs)03d %(levelname)s {%(module)s} [%(funcName)s] %(message)s',
+                        datefmt='%Y-%m-%d,%H:%M:%S')
     hostname = socket.gethostname()
     logging.info("#############process ID = " +
                  ", host name = " + hostname + "########" +
@@ -97,7 +97,7 @@ if __name__ == "__main__":
 
     if args.global_rank == 0:
         wandb.init(project="pipe_and_ddp",
-                   name="pipe_and_ddp(c)" + str(args.epochs) + "-lr" + str(args.lr),
+                   name="PipeTransformer""-" + str(args.dataset),
                    config=args)
 
     # create dataset
@@ -110,16 +110,16 @@ if __name__ == "__main__":
     # model_type = 'vit-H_14'
     config = CONFIGS[model_type]
 
-    print("Vision Transformer Configuration: " + str(config))
+    logging.info("Vision Transformer Configuration: " + str(config))
     model = VisionTransformer(config, args.img_size, zero_head=True, num_classes=output_dim, vis=False)
     model.load_from(np.load(args.pretrained_dir))
     model_size = sum(p.numel() for p in model.parameters() if p.requires_grad) / 1e6
-    print("model_size = " + str(model_size))
+    logging.info("model_size = " + str(model_size))
 
     output_head = OutputHead(config.hidden_size, output_dim)
 
     num_layers = config.transformer.num_layers
-    print("num_layers = %d" % num_layers)
+    logging.info("num_layers = %d" % num_layers)
 
     # create AutoFreeze algorithm
     auto_freeze = AutoFreeze()

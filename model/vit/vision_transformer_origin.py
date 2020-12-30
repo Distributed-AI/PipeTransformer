@@ -6,21 +6,17 @@ from __future__ import print_function
 import copy
 import logging
 import math
-
 from os.path import join as pjoin
 
 import ml_collections
+import numpy as np
 import torch
 import torch.nn as nn
-import numpy as np
-
-from torch.nn import CrossEntropyLoss, Dropout, Softmax, Linear, Conv2d, LayerNorm
-from torch.nn.modules.utils import _pair
 from scipy import ndimage
-
+from torch.nn import Dropout, Softmax, Linear, Conv2d, LayerNorm
+from torch.nn.modules.utils import _pair
 
 logger = logging.getLogger(__name__)
-
 
 ATTENTION_Q = "MultiHeadDotProductAttention_1/query"
 ATTENTION_K = "MultiHeadDotProductAttention_1/key"
@@ -121,17 +117,18 @@ class Mlp(nn.Module):
 class Embeddings(nn.Module):
     """Construct the embeddings from patch, position embeddings.
     """
+
     def __init__(self, config, img_size, in_channels=3):
         super(Embeddings, self).__init__()
         img_size = _pair(img_size)
         patch_size = _pair(config.patches["size"])
-        n_patches = (img_size[0]//patch_size[0]) * (img_size[1]//patch_size[1])
+        n_patches = (img_size[0] // patch_size[0]) * (img_size[1] // patch_size[1])
 
         self.patch_embeddings = Conv2d(in_channels=in_channels,
                                        out_channels=config.hidden_size,
                                        kernel_size=patch_size,
                                        stride=patch_size)
-        self.position_embeddings = nn.Parameter(torch.zeros(1, n_patches+1, config.hidden_size))
+        self.position_embeddings = nn.Parameter(torch.zeros(1, n_patches + 1, config.hidden_size))
         self.cls_token = nn.Parameter(torch.zeros(1, 1, config.hidden_size))
 
         self.dropout = Dropout(config.transformer["dropout_rate"])
@@ -198,10 +195,13 @@ class Block(nn.Module):
     def load_from(self, weights, n_block):
         ROOT = f"Transformer/encoderblock_{n_block}"
         with torch.no_grad():
-            query_weight = np2th(weights[pjoin(ROOT, ATTENTION_Q, "kernel")]).view(self.hidden_size, self.hidden_size).t()
+            query_weight = np2th(weights[pjoin(ROOT, ATTENTION_Q, "kernel")]).view(self.hidden_size,
+                                                                                   self.hidden_size).t()
             key_weight = np2th(weights[pjoin(ROOT, ATTENTION_K, "kernel")]).view(self.hidden_size, self.hidden_size).t()
-            value_weight = np2th(weights[pjoin(ROOT, ATTENTION_V, "kernel")]).view(self.hidden_size, self.hidden_size).t()
-            out_weight = np2th(weights[pjoin(ROOT, ATTENTION_OUT, "kernel")]).view(self.hidden_size, self.hidden_size).t()
+            value_weight = np2th(weights[pjoin(ROOT, ATTENTION_V, "kernel")]).view(self.hidden_size,
+                                                                                   self.hidden_size).t()
+            out_weight = np2th(weights[pjoin(ROOT, ATTENTION_OUT, "kernel")]).view(self.hidden_size,
+                                                                                   self.hidden_size).t()
 
             query_bias = np2th(weights[pjoin(ROOT, ATTENTION_Q, "bias")]).view(-1)
             key_bias = np2th(weights[pjoin(ROOT, ATTENTION_K, "bias")]).view(-1)
@@ -248,7 +248,7 @@ class Encoder(nn.Module):
         for layer_block in self.layer:
             hidden_states = layer_block(hidden_states)
             # logging.info("hidden_states.shape = " + str(hidden_states.shape))
-#        logging.info("Encoder.encoder_norm")
+        #        logging.info("Encoder.encoder_norm")
         encoded = self.encoder_norm(hidden_states)
         # logging.info("encoded.shape = " + str(encoded.shape))
         return encoded, attn_weights
@@ -279,7 +279,7 @@ class VisionTransformer(nn.Module):
 
     def forward(self, x):
         x, attn_weights = self.transformer(x)
-        logits = self.head(x[:,0])
+        logits = self.head(x[:, 0])
         return logits
 
     def load_from(self, weights):
@@ -316,7 +316,7 @@ class VisionTransformer(nn.Module):
 
                 gs_old = int(np.sqrt(len(posemb_grid)))
                 gs_new = int(np.sqrt(ntok_new))
-                print('load_pretrained: grid-size from %s to %s' % (gs_old, gs_new))
+                logging.info('load_pretrained: grid-size from %s to %s' % (gs_old, gs_new))
                 posemb_grid = posemb_grid.reshape(gs_old, gs_old, -1)
 
                 zoom = (gs_new / gs_old, gs_new / gs_old, 1)
@@ -328,7 +328,6 @@ class VisionTransformer(nn.Module):
             for bname, block in self.transformer.encoder.named_children():
                 for uname, unit in block.named_children():
                     unit.load_from(weights, n_block=uname)
-
 
 
 def get_testing():
@@ -418,8 +417,7 @@ CONFIGS = {
     'testing': get_testing(),
 }
 
-
 if __name__ == "__main__":
     # 518
     config = get_h14_config()
-    print(config)
+    logging.info(config)

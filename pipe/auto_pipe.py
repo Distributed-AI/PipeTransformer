@@ -1,3 +1,5 @@
+import logging
+
 import torch
 from torch.distributed.pipeline.sync import Pipe
 
@@ -43,7 +45,7 @@ class AutoElasticPipe:
 
     def transform(self, num_frozen_layers):
         # traceback.print_stack()
-        print("---local_rank = %d, global_rank = %d -------------freeze layer number = %d---------------" % (
+        logging.info("---local_rank = %d, global_rank = %d -------------freeze layer number = %d---------------" % (
             self.local_rank,
             self.global_rank,
             num_frozen_layers))
@@ -56,15 +58,15 @@ class AutoElasticPipe:
         frozen_model, parameters_size_frozen, \
         model, self.pipe_model_params_size_list = create_pipe_styled_model(self.model_backbone, self.output_head,
                                                                            self.num_layer_in_total, num_frozen_layers)
-        print("len(pipe_model) = %d" % len(model))
-        print("len(pipe_model paras_size) = %d" % len(self.pipe_model_params_size_list))
+        logging.info("len(pipe_model) = %d" % len(model))
+        logging.info("len(pipe_model paras_size) = %d" % len(self.pipe_model_params_size_list))
 
         if num_frozen_layers == 0:
             # set the num_frozen_layers = 0 because we put all frozen layers into frozen_model
             balanced_sub_layer_distribution, balanced_params_size_distribution = self._auto_balanced_elastic_partition(
                 0)
             self.max_parameter_per_gpu_at_beginning = max(balanced_params_size_distribution.values())
-            print("self.max_parameter_per_gpu_at_beginning = %f" % self.max_parameter_per_gpu_at_beginning)
+            logging.info("self.max_parameter_per_gpu_at_beginning = %f" % self.max_parameter_per_gpu_at_beginning)
         else:
             self._auto_pipe_length(num_frozen_layers)
             # set the num_frozen_layers = 0 because we put all frozen layers into frozen_model
@@ -94,12 +96,12 @@ class AutoElasticPipe:
 
     def get_device_first(self):
         device_first = torch.device("cuda:" + str(self.local_rank * self.pipe_len))
-        print(device_first)
+        logging.info(device_first)
         return device_first
 
     def get_device_last(self):
         device_last = torch.device("cuda:" + str((self.local_rank + 1) * self.pipe_len - 1))
-        print(device_last)
+        logging.info(device_last)
         return device_last
 
     def get_max_parameter_per_gpu_at_beginning(self):
@@ -114,8 +116,8 @@ class AutoElasticPipe:
             self.pipe_model_params_size_list,
             num_frozen_layers)
 
-        print(balanced_sub_layer_distribution)
-        print(balanced_params_size_distribution)
+        logging.info(balanced_sub_layer_distribution)
+        logging.info(balanced_params_size_distribution)
         return balanced_sub_layer_distribution, balanced_params_size_distribution
 
     def _auto_pipe_length(self, num_frozen_layers):
@@ -127,21 +129,21 @@ class AutoElasticPipe:
         # 8 (pipe) -> 4 (pipe) -> 2 (pipe) -> 1(DP)
         while self.pipe_len >= 2:
             # detect the max parameter size per GPU after shrink device number
-            print("----------start to detection---------")
+            logging.info("----------start to detection---------")
             balanced_sub_layer_distribution, balanced_params_size_distribution, self.frozen_params = generate_parameter_size_wise_balance(
                 int(self.pipe_len / 2),
                 self.pipe_model_params_size_list, 0)
             balanced_params_size_distribution[0] -= self.frozen_params * (5.0 / 6.0)
             max_parameter_per_gpu = max(balanced_params_size_distribution.values())
-            print("max_parameter_per_gpu = %f" % max_parameter_per_gpu)
-            print("self.max_parameter_per_gpu_at_beginning = %f" % self.max_parameter_per_gpu_at_beginning)
+            logging.info("max_parameter_per_gpu = %f" % max_parameter_per_gpu)
+            logging.info("self.max_parameter_per_gpu_at_beginning = %f" % self.max_parameter_per_gpu_at_beginning)
             if max_parameter_per_gpu <= self.max_parameter_per_gpu_at_beginning:
-                print("#########    add pipe    #######")
+                logging.info("#########    add pipe    #######")
                 self.pipe_len = int(self.pipe_len / 2)
             else:
                 break
 
-        print("current_num_device = %d" % self.pipe_len)
+        logging.info("current_num_device = %d" % self.pipe_len)
 
     def _get_pipe(self, model):
         if self.pipe is not None:

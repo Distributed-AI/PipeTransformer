@@ -195,26 +195,26 @@ if __name__ == '__main__':
                                      partition_method=None, partition_alpha=None, client_number=client_number,
                                      batch_size=10)
 
-    print(train_data_num, test_data_num, class_num)
-    print(data_local_num_dict)
+    logging.info(train_data_num, test_data_num, class_num)
+    logging.info(data_local_num_dict)
 
-    print(train_data_num, test_data_num, class_num)
-    print(data_local_num_dict)
+    logging.info(train_data_num, test_data_num, class_num)
+    logging.info(data_local_num_dict)
 
     i = 0
     for data, label in train_data_global:
-        print(data)
-        print(label)
+        logging.info(data)
+        logging.info(label)
         i += 1
         if i > 5:
             break
-    print("=============================\n")
+    logging.info("=============================\n")
 
     for client_idx in range(client_number):
         i = 0
         for data, label in train_data_local_dict[client_idx]:
-            print(data)
-            print(label)
+            logging.info(data)
+            logging.info(label)
             i += 1
             if i > 5:
                 break

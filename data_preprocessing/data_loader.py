@@ -1,3 +1,4 @@
+import logging
 import traceback
 
 import torch
@@ -23,7 +24,7 @@ class CVDataset:
     def get_data(self, args, dataset):
         self.args = args
         self.dataset = dataset
-        print("load_data. dataset_name = %s" % dataset)
+        logging.info("load_data. dataset_name = %s" % dataset)
         if dataset == "cifar10":
             train_dataset, test_dataset, output_dim = self.load_cifar_centralized_training_for_vit(args)
         elif dataset == "cifar100":
@@ -143,7 +144,7 @@ class CVDataset:
 
     def get_data_loader(self, batch_size, num_replicas, rank):
         traceback.print_stack()
-        print("---num_replicas = %d, rank = %d --------------" % (num_replicas, rank))
+        logging.info("---num_replicas = %d, rank = %d --------------" % (num_replicas, rank))
         del self.train_dataset
         del self.test_dataset
         self.get_data(self.args, self.dataset)
@@ -164,16 +165,16 @@ class CVDataset:
         if self.train_loader is not None:
             del self.train_loader
         self.train_loader = DataLoader(self.train_dataset,
-                                  sampler=self.train_sampler,
-                                  batch_size=batch_size,
-                                  num_workers=4,
-                                  pin_memory=True)
+                                       sampler=self.train_sampler,
+                                       batch_size=batch_size,
+                                       num_workers=4,
+                                       pin_memory=True)
 
         if self.test_loader is not None:
             del self.test_loader
         self.test_loader = DataLoader(self.test_dataset,
-                                 sampler=self.test_sampler,
-                                 batch_size=batch_size,
-                                 num_workers=4,
-                                 pin_memory=True)
+                                      sampler=self.test_sampler,
+                                      batch_size=batch_size,
+                                      num_workers=4,
+                                      pin_memory=True)
         return self.train_loader, self.test_loader

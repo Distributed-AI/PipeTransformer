@@ -1,3 +1,4 @@
+import logging
 import math
 
 import numpy as np
@@ -32,17 +33,17 @@ def generate_parameter_size_wise_balance(num_devices, param_list, num_frozen_lay
             balanced_params_size[0] += p
             assigned_layer_cnt += 1
             frozen_params += p
-        print("frozen_params = %f" % frozen_params)
+        logging.info("frozen_params = %f" % frozen_params)
 
     total_param_size_to_be_assigned = sum(param_list) - balanced_params_size[0]
-    print("total_param_size_to_be_assigned = %f" % total_param_size_to_be_assigned)
+    logging.info("total_param_size_to_be_assigned = %f" % total_param_size_to_be_assigned)
 
     # search a better partition
     for i in range(num_devices):
         mean = total_param_size_to_be_assigned / (num_devices - i)
-        # print("mean = %f" % mean)
+        # logging.info("mean = %f" % mean)
         variance = np.var(param_list[assigned_layer_cnt:]) / (num_devices - i)
-        # print("variance = %f" % variance)
+        # logging.info("variance = %f" % variance)
 
         for idx in range(assigned_layer_cnt, len(param_list)):
             p = param_list[idx]
@@ -77,7 +78,7 @@ def check_gap_all(balanced_params_size, frozen_params, frozen_layer_cost_factor)
     max_params_in_balanced_partition = max(list_except_frozen_layers)
     min_params_in_balanced_partition = min(list_except_frozen_layers)
     gap = abs(max_params_in_balanced_partition - min_params_in_balanced_partition)
-    print("max_params_in_balanced_partition - min_params_in_balanced_partition = %f" % gap)
+    logging.info("max_params_in_balanced_partition - min_params_in_balanced_partition = %f" % gap)
     # if gap > min_params_in_balanced_partition:
     #   raise Exception("Error: the partition should meet the theory of 'Block Partitions of Sequences'")
 
@@ -93,7 +94,7 @@ def check_gap_except_1st_layer(balanced_params_size):
     max_params_in_balanced_partition = max(list_except_frozen_layers)
     min_params_in_balanced_partition = min(list_except_frozen_layers)
     gap = abs(max_params_in_balanced_partition - min_params_in_balanced_partition)
-    print("max_params_in_balanced_partition - min_params_in_balanced_partition = %f" % gap)
+    logging.info("max_params_in_balanced_partition - min_params_in_balanced_partition = %f" % gap)
     # if gap > min_params_in_balanced_partition:
     #     raise Exception("Error: the gap is too big!")
 

@@ -40,7 +40,7 @@ class AutoDataParallel:
 
     def init_ddp(self, args):
         self.local_rank = args.local_rank
-        print(f"Running basic DDP example on local rank {self.local_rank}.")
+        logging.info(f"Running basic DDP example on local rank {self.local_rank}.")
 
         self.global_port += 1
         if args.is_infiniband:
@@ -68,16 +68,16 @@ class AutoDataParallel:
 
         # This the global rank: 0, 1, 2, ..., 15
         self.global_rank = int(os.environ['RANK'])
-        print("int(os.environ['RANK']) = %d" % self.global_rank)
+        logging.info("int(os.environ['RANK']) = %d" % self.global_rank)
 
         # This the globak world_size
         self.world_size = int(os.environ['WORLD_SIZE'])
-        print("world_size = %d" % self.world_size)
+        logging.info("world_size = %d" % self.world_size)
 
         # initialize the process group (this must be GLOO)
         dist.init_process_group(init_method='tcp://' + self.master_addr + ':' + str(self.global_port),
                                 backend=Backend.GLOO, rank=self.global_rank, world_size=self.world_size)
-        print("init_process_group. local_rank = %d, global_rank = %d" % (self.local_rank, self.global_rank))
+        logging.info("init_process_group. local_rank = %d, global_rank = %d" % (self.local_rank, self.global_rank))
 
     def get_local_rank(self):
         return self.local_rank
@@ -100,7 +100,7 @@ class AutoDataParallel:
             world_size=self.world_size,
             rpc_backend_options=rpc_backend_options,
         )
-        print("init_rpc")
+        logging.info("init_rpc")
 
     def warm_up(self):
         class WarmupModel(torch.nn.Module):
@@ -114,7 +114,7 @@ class AutoDataParallel:
 
         warmup_model = WarmupModel()
         warmup_model.to(self.local_rank)
-        print("local_rank = %d, global_rank = %d" % (self.local_rank, self.global_rank))
+        logging.info("local_rank = %d, global_rank = %d" % (self.local_rank, self.global_rank))
 
     def is_active(self):
         return True if self.global_rank in self.active_ranks else False
@@ -138,7 +138,7 @@ class AutoDataParallel:
                 new_active_ranks.append(active_rank)
                 self.active_data_ranks[active_rank] = data_rank
                 data_rank += 1
-        print("active ranks = " + str(self.active_ranks))
+        logging.info("active ranks = " + str(self.active_ranks))
         self.newly_added_active_ranks = self._diff_list(new_active_ranks, self.active_ranks)
         self.active_ranks.clear()
         self.active_ranks = new_active_ranks
@@ -150,16 +150,17 @@ class AutoDataParallel:
         if self.active_process_group is None:
             del self.active_process_group
         self.update_active_ranks()
-        print("get_active_process_group - auto_pipe.get_active_ranks() = " + str(self.active_ranks))
-        print("local_rank = %d, global_rank = %d - *************************create_active_process_group*********"
-              % (self.local_rank, self.global_rank))
+        logging.info("get_active_process_group - auto_pipe.get_active_ranks() = " + str(self.active_ranks))
+        logging.info("local_rank = %d, global_rank = %d - *************************create_active_process_group*********"
+                     % (self.local_rank, self.global_rank))
         self.active_process_group = dist.new_group(ranks=self.active_ranks, backend=Backend.NCCL,
                                                    timeout=timedelta(days=365))
 
     def create_broadcast_process_group(self):
-        print("create_broadcast_process_group - auto_pipe.get_active_ranks() = " + str(self.active_ranks))
-        print("local_rank = %d, global_rank = %d - *************************create_broadcast_process_group*********"
-              % (self.local_rank, self.global_rank))
+        logging.info("create_broadcast_process_group - auto_pipe.get_active_ranks() = " + str(self.active_ranks))
+        logging.info(
+            "local_rank = %d, global_rank = %d - *************************create_broadcast_process_group*********"
+            % (self.local_rank, self.global_rank))
         self.comm_broadcast_group = dist.new_group(ranks=[i for i in range(self.world_size)], backend=Backend.GLOO,
                                                    timeout=timedelta(days=365))
 
@@ -184,7 +185,7 @@ class AutoDataParallel:
 
     def get_data_rank(self):
         self.update_active_ranks()
-        print("self.active_data_ranks = " + str(self.active_data_ranks))
+        logging.info("self.active_data_ranks = " + str(self.active_data_ranks))
         return self.active_data_ranks[self.global_rank]
 
     def get_data_duplicate_num(self):
@@ -207,9 +208,11 @@ class AutoDataParallel:
             self.first_run = False
 
         if self.is_active():
-            frozen_model, pipe_model, is_pipe_len_changed, is_frozen_layer_changed = self._active_process_impl(auto_pipe, num_frozen_layers)
+            frozen_model, pipe_model, is_pipe_len_changed, is_frozen_layer_changed = self._active_process_impl(
+                auto_pipe, num_frozen_layers)
         else:
-            frozen_model, pipe_model, is_pipe_len_changed, is_frozen_layer_changed = self._inactive_process_impl(auto_pipe)
+            frozen_model, pipe_model, is_pipe_len_changed, is_frozen_layer_changed = self._inactive_process_impl(
+                auto_pipe)
         return frozen_model, pipe_model, is_pipe_len_changed, is_frozen_layer_changed
 
     def _active_process_impl(self, auto_pipe, num_frozen_layers):
@@ -223,16 +226,16 @@ class AutoDataParallel:
             self.update_active_ranks()
 
             # broadcast control messages
-            print("####### broad cast control message (num_frozen_layers, pipe_len) to all processes #######")
+            logging.info("####### broad cast control message (num_frozen_layers, pipe_len) to all processes #######")
             max_parameter_per_gpu_at_beginning = auto_pipe.get_max_parameter_per_gpu_at_beginning()
             broad_cast_msg = self._build_broad_cast_message(num_frozen_layers, pipe_len,
                                                             max_parameter_per_gpu_at_beginning, self.freeze_point)
             if self.global_rank == 0:
-                print("local_rank = %d, global_rank = %d - *************************dist_send send(START) "
-                      % (self.local_rank, self.global_rank))
+                logging.info("local_rank = %d, global_rank = %d - *************************dist_send send(START) "
+                             % (self.local_rank, self.global_rank))
                 dist_broadcast(broad_cast_msg, 0, self.comm_broadcast_group)
-                print("local_rank = %d, global_rank = %d - *************************dist_send send(END)"
-                      % (self.local_rank, self.global_rank))
+                logging.info("local_rank = %d, global_rank = %d - *************************dist_send send(END)"
+                             % (self.local_rank, self.global_rank))
             else:
                 dist_broadcast(broad_cast_msg, 0, self.comm_broadcast_group)
 
@@ -258,16 +261,17 @@ class AutoDataParallel:
         self.clear_memory()
 
         if self.global_rank in newly_added_active_ranks:
-            print("global_rank %d is activated!" % self.global_rank)
+            logging.info("global_rank %d is activated!" % self.global_rank)
 
             frozen_model, pipe_model, pipe_len = auto_pipe.transform(num_frozen_layers)
             pipe_model = self.generate_ddp_model(pipe_model, pipe_len)
         else:
-            frozen_model, pipe_model, is_pipe_len_changed, is_frozen_layer_changed = self._inactive_process_impl(auto_pipe)
+            frozen_model, pipe_model, is_pipe_len_changed, is_frozen_layer_changed = self._inactive_process_impl(
+                auto_pipe)
         return frozen_model, pipe_model, is_pipe_len_changed, is_frozen_layer_changed
 
     def _build_broad_cast_message(self, num_frozen_layers, pipe_len, max_parameter_per_gpu_at_beginning, freeze_point):
-        print("self.newly_added_active_ranks = " + str(self.newly_added_active_ranks))
+        logging.info("self.newly_added_active_ranks = " + str(self.newly_added_active_ranks))
         broad_cast_msg = [float(i * 0.0) for i in range(20)]
         broad_cast_msg[0] = float(num_frozen_layers)
         broad_cast_msg[1] = float(pipe_len)
@@ -279,16 +283,17 @@ class AutoDataParallel:
         return broad_cast_msg
 
     def _parse_broad_cast_message(self, frozen_message):
-        print("local_rank = %d, global_rank = %d - frozen_message = %s" % (
+        logging.info("local_rank = %d, global_rank = %d - frozen_message = %s" % (
             self.local_rank, self.global_rank, frozen_message))
 
         num_frozen_layers = int(frozen_message[0])
-        print("_parse_broad_cast_message. num_frozen_layers = %d" % num_frozen_layers)
+        logging.info("_parse_broad_cast_message. num_frozen_layers = %d" % num_frozen_layers)
         pipe_len = int(frozen_message[1])
         max_parameter_per_gpu_at_beginning = frozen_message[2]
-        print("local_rank = %d, global_rank = %d - frozen_layer_num = %s" % (
+        logging.info("local_rank = %d, global_rank = %d - frozen_layer_num = %s" % (
             self.local_rank, self.global_rank, num_frozen_layers))
-        print("local_rank = %d, global_rank = %d - pipe_len = %s" % (self.local_rank, self.global_rank, pipe_len))
+        logging.info(
+            "local_rank = %d, global_rank = %d - pipe_len = %s" % (self.local_rank, self.global_rank, pipe_len))
 
         epoch_start = int(frozen_message[3])
         freeze_point = dict()
@@ -300,7 +305,7 @@ class AutoDataParallel:
         for i in range(size_of_newly_added_active_ranks):
             newly_added_active_ranks.append(int(frozen_message[i + 5]))
 
-        print("newly_added_active_ranks = " + str(newly_added_active_ranks))
+        logging.info("newly_added_active_ranks = " + str(newly_added_active_ranks))
         return num_frozen_layers, pipe_len, max_parameter_per_gpu_at_beginning, newly_added_active_ranks, freeze_point
 
     def observe_params_communicated(self, model):

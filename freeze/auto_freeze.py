@@ -1,3 +1,5 @@
+import logging
+
 import numpy as np
 import torch
 
@@ -59,7 +61,8 @@ class AutoFreeze:
                 try:
                     layer_num = int(split_param)
                     if "encoder" in name:
-                        current_grad_dict[layer_num] += torch.norm(self.grad_tensor_dict[name].cpu().detach(), p=1).item()
+                        current_grad_dict[layer_num] += torch.norm(self.grad_tensor_dict[name].cpu().detach(),
+                                                                   p=1).item()
                 except ValueError:
                     pass
 
@@ -87,5 +90,5 @@ class AutoFreeze:
                     start_layer = key
                     break
             self.prev_intermediate_grad_dict = current_grad_dict
-            print("threshold: ", threshold_dict)
-            print("layer num: ", self.num_freeze_layers)
+            logging.info("threshold: ", threshold_dict)
+            logging.info("layer num: ", self.num_freeze_layers)

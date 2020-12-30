@@ -1,3 +1,4 @@
+import logging
 import time
 
 import torch
@@ -126,25 +127,25 @@ def create_pipe_styled_model(model_backbone, output_model, num_layer_in_total, n
     size_output_model = count_parameters(output_model, False)
     parameters_list_pipe.append(size_output_model)
 
-    # print(frozen_model)
-    # print(parameters_size_frozen)
-    # print(pipe_model)
-    # print(parameters_list_pipe)
+    # logging.info(frozen_model)
+    # logging.info(parameters_size_frozen)
+    # logging.info(pipe_model)
+    # logging.info(parameters_list_pipe)
 
     return frozen_model, parameters_size_frozen, pipe_model, parameters_list_pipe
 
 
 def convert_to_balanced_model(local_rank, global_rank,
                               device_idx_start, pipe: nn.Sequential, balance):
-    # print("device_idx_start = %d" % device_idx_start)
-    # print(pipe)
-    # print(balance)
+    # logging.info("device_idx_start = %d" % device_idx_start)
+    # logging.info(pipe)
+    # logging.info(balance)
     """
     Optimization:
         Pin Memory: https://pytorch.org/docs/stable/notes/cuda.html#use-pinned-memory-buffers
         Prepare a Pin Memory model
     """
-    print("convert_to_balanced_model. local_rank = %d, global_rank = %d" % (local_rank, global_rank))
+    logging.info("convert_to_balanced_model. local_rank = %d, global_rank = %d" % (local_rank, global_rank))
     time_start_loading = time.time()
     pipe_layer_idx = 0
     balanced_pipe = []
@@ -156,14 +157,14 @@ def convert_to_balanced_model(local_rank, global_rank,
             pipe_layer_idx += 1
         if torch.cuda.is_available():
             device = torch.device("cuda:" + str(device_id + device_idx_start))
-            print("######################local_rank = %d, global_rank = %d, device id: %d" % (local_rank,
-                                                                                              global_rank,
-                                                                                              device_id + device_idx_start))
+            logging.info("######################local_rank = %d, global_rank = %d, device id: %d" % (local_rank,
+                                                                                                     global_rank,
+                                                                                                     device_id + device_idx_start))
             balanced_pipe.append(nn.Sequential(*layers).to(device, non_blocking=False))
         else:
             balanced_pipe.append(nn.Sequential(*layers))
     time_end_loading = time.time()
-    print("CPU->GPU time cost = " + str(time_end_loading - time_start_loading))
+    logging.info("CPU->GPU time cost = " + str(time_end_loading - time_start_loading))
     return nn.Sequential(*balanced_pipe)
 
 
@@ -182,7 +183,7 @@ def freeze_layers_for_pipe_model(model, num_frozen_layers):
 
         sub_layer_idx += 1
 
-    print(ddp_ignore_name_list)
+    logging.info(ddp_ignore_name_list)
     return ddp_ignore_name_list
 
 
@@ -226,10 +227,10 @@ def get_ddp_ignored_params_name(model, num_frozen_layers):
             sub_layer_idx = 0
 
         name_list = get_name_list_to_ignore_comm_in_ddp(model, model.partitions[partition_idx][sub_layer_idx])
-        # print(name_list)
+        # logging.info(name_list)
         ddp_ignore_name_list += name_list
 
         sub_layer_idx += 1
 
-    print(ddp_ignore_name_list)
+    logging.info(ddp_ignore_name_list)
     return ddp_ignore_name_list
