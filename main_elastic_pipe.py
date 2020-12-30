@@ -44,6 +44,7 @@ def train(args, auto_pipe, auto_dp, frozen_model, pipe_model, epoch, cv_data, tr
         if is_frozen_layer_changed:
             auto_cache.update_num_frozen_layers(auto_pipe.get_num_frozen_layers())
         if is_pipe_len_changed:
+
             new_train_dl, new_test_dl = cv_data.get_data_loader(args.batch_size, auto_dp.get_data_duplicate_num(),
                                                                 auto_dp.get_data_rank())
         else:
@@ -85,6 +86,7 @@ def train(args, auto_pipe, auto_dp, frozen_model, pipe_model, epoch, cv_data, tr
     # sync_all_devices(0, auto_pipe.get_pipe_len())
 
     iteration_num = 0
+    logging.info("global_rank = %d. data_loader id = %d/" % (auto_dp.get_global_rank(), id(new_train_dl)))
     for batch_idx, (x, target) in enumerate(new_train_dl):
         # torch.cuda.empty_cache()
 
@@ -93,7 +95,7 @@ def train(args, auto_pipe, auto_dp, frozen_model, pipe_model, epoch, cv_data, tr
         logging.info("--------------global_rank = %d. Epoch %d, batch index %d Statistics: " % (
             auto_dp.get_global_rank(), epoch, batch_idx))
         logging.info("global_rank = %d. epoch = %d, batch index = %d/%d" % (
-            auto_dp.get_global_rank(), epoch, batch_idx, len(train_dl)))
+            auto_dp.get_global_rank(), epoch, batch_idx, len(new_train_dl)))
         num_sample_processed_in_total += len(x)
         communication_count += 1
         iteration_num += 1
