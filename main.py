@@ -80,9 +80,8 @@ if __name__ == "__main__":
 
     # customize the log format
     logging.basicConfig(level=logging.INFO,
-                        format='%(asctime)s.%(msecs)03d %(levelname)s {%(module)s} [%(funcName)s] %(message)s',
-                        datefmt='%Y-%m-%d,%H:%M:%S')
-    logging.getLogger(__name__).setLevel(logging.INFO)
+                        format='%(process)d - %(asctime)s.%(msecs)03d %(levelname)s {%(module)s} [%(funcName)s] %(message)s')
+    logging.getLogger().setLevel(logging.INFO)
 
     hostname = socket.gethostname()
     logging.info("#############process ID = " +
