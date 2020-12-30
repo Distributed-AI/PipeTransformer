@@ -46,15 +46,15 @@ nohup sh run_ddp.sh 8 2 1 192.168.11.1 11111 > ./machine2.txt 2>&1 &
 
 ## Pipe and DDP (Elastic)
 ```
-nohup sh run_elastic_pipe.sh 2 2 0 192.168.11.1 11111 1 0.03 320 cifar10 ./data/cifar10/ 2 > ./machine1.txt 2>&1 &
-nohup sh run_elastic_pipe.sh 2 2 1 192.168.11.1 11111 1 0.03 320 cifar10 ./data/cifar10/ 2 > ./machine2.txt 2>&1 &
+nohup sh run_elastic_pipe.sh 8 2 0 192.168.11.1 11111 1 0.03 320 cifar10 ./data/cifar10/ 8 > ./PipeTransformer-CIFAR10-node0.log 2>&1 &
+nohup sh run_elastic_pipe.sh 8 2 1 192.168.11.1 11111 1 0.03 320 cifar10 ./data/cifar10/ 8 > ./PipeTransformer-CIFAR10-node1.txt 2>&1 &
 ```
 
 
 CIFAR 10
 ```
-nohup sh run_elastic_pipe.sh 8 2 0 192.168.11.2 22222 1 0.03 320 cifar10 ./data/cifar10/ 8 > ./machine1-imagenet.txt 2>&1 &
-nohup sh run_elastic_pipe.sh 8 2 1 192.168.11.2 22222 1 0.03 320 cifar10 ./data/cifar10/ 8 > ./machine1-imagenet.txt 2>&1 &
+nohup sh run_elastic_pipe.sh 8 2 0 192.168.11.2 22222 1 0.03 320 cifar10 ./data/cifar10/ 8 > ./PipeTransformer-CIFAR10-node0.log 2>&1 &
+nohup sh run_elastic_pipe.sh 8 2 1 192.168.11.2 22222 1 0.03 320 cifar10 ./data/cifar10/ 8 > ./PipeTransformer-CIFAR10-node1.log 2>&1 &
 ```
 
 CIFAR 100
