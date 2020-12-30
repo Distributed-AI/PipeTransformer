@@ -92,8 +92,8 @@ class CVDataset:
         return trainset, testset, output_dim
 
     def load_imagenet_centralized_training_for_vit(self, args):
-        if args.is_distributed == 1:
-            torch.distributed.barrier()
+        # if args.is_distributed == 1:
+        #     torch.distributed.barrier()
 
         """
         the std 0.5 normalization is proposed by BiT (Big Transfer), which can increase the accuracy around 3%
