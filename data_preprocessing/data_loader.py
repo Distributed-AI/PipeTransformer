@@ -143,7 +143,7 @@ class CVDataset:
         return trainset, testset, output_dim
 
     def get_data_loader(self, batch_size, num_replicas, rank):
-        traceback.print_stack()
+        # traceback.print_stack()
         logging.info("---num_replicas = %d, rank = %d --------------" % (num_replicas, rank))
         del self.train_dataset
         del self.test_dataset
