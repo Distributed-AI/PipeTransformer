@@ -79,7 +79,7 @@ if __name__ == "__main__":
 
     # customize the log format
     logging.basicConfig(level=logging.INFO,
-                        format='%(asctime)s.%(msecs)03d {%(module)s} [%(funcName)s] %(message)s',
+                        format='%(asctime)s.%(msecs)03d {%(module)s.py} [%(funcName)s()] %(message)s',
                         datefmt='%Y-%m-%d,%H:%M:%S')
     logging.info(args)
 
