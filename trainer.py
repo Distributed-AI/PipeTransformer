@@ -120,6 +120,9 @@ class VisionTransformerTrainer:
                     self.auto_dp.get_global_rank(),
                     comm_freq))
 
+            if batch_idx == len(self.train_dl):
+                wandb.log({"comm_frequency": comm_freq, "epoch": epoch})
+                wandb.log({"sample_throughput": sample_num_throughput, "epoch": epoch})
             logging.info("-------------------------------------")
             if iteration_num == 2 and self.args.is_debug_mode:
                 break
