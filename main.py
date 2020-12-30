@@ -76,12 +76,11 @@ if __name__ == "__main__":
                         help="is_debug_mode")
 
     args = parser.parse_args()
-    logging.info(args)
 
     # customize the log format
-    logging.basicConfig(level=logging.INFO,
-                        format='%(process)d - {%(module)s} [%(funcName)s] %(message)s')
-    logging.getLogger().setLevel(logging.INFO)
+    logging.basicConfig(format='%(asctime)s - %(message)s', datefmt='%d-%b-%y %H:%M:%S')
+    logging.info(args)
+
 
     hostname = socket.gethostname()
     logging.info("#############process ID = " +
