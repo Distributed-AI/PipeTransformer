@@ -101,7 +101,7 @@ if __name__ == "__main__":
     args.global_rank = auto_dp.get_global_rank()
 
     if args.global_rank == 0:
-        wandb.init(project="pipe_and_ddp",
+        run = wandb.init(project="pipe_and_ddp",
                    name="PipeTransformer""-" + str(args.dataset),
                    config=args)
 
@@ -149,3 +149,6 @@ if __name__ == "__main__":
     trainer = VisionTransformerTrainer(args, auto_freeze, auto_pipe, auto_dp, auto_cache,
                                        frozen_model, pipe_model, cv_data_manager)
     trainer.train_and_eval(freeze_point)
+
+    if args.global_rank == 0:
+        run.finish()

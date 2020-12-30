@@ -64,6 +64,11 @@ nohup sh run_elastic_pipe.sh 8 2 0 192.168.11.2 22222 1 0.03 320 imagenet /home/
 nohup sh run_elastic_pipe.sh 8 2 1 192.168.11.2 22222 1 0.03 320 imagenet /home/chaoyanghe/dataset/cv/imagenet 8 1 > ./PipeTransformer-imagenet-node1.log 2>&1 &
 ```
 
+```
+nohup sh run_cifar100_batch_experiment_node0.sh > ./PipeTransformer-cifar100-node0.log 2>&1 &
+nohup sh run_cifar100_batch_experiment_node1.sh > ./PipeTransformer-cifar100-node1.log 2>&1 &
+```
+
 ## DDP 
 ```
 nohup sh run_ddp.sh 4 2 0 192.168.11.1 11111 1 0.03 64 cifar10 ./data/cifar10/ > ./machine1_ddp.txt 2>&1 &
