@@ -45,28 +45,23 @@ nohup sh run_ddp.sh 8 2 1 192.168.11.1 11111 > ./machine2.txt 2>&1 &
 ```
 
 ## Pipe and DDP (Elastic)
-```
-nohup sh run_elastic_pipe.sh 8 2 0 192.168.11.1 11111 1 0.03 320 cifar10 ./data/cifar10/ 8 > ./PipeTransformer-CIFAR10-node0.log 2>&1 &
-nohup sh run_elastic_pipe.sh 8 2 1 192.168.11.1 11111 1 0.03 320 cifar10 ./data/cifar10/ 8 > ./PipeTransformer-CIFAR10-node1.txt 2>&1 &
-```
-
-
 CIFAR 10
 ```
 nohup sh run_elastic_pipe.sh 8 2 0 192.168.11.2 22222 1 0.03 320 cifar10 ./data/cifar10/ 8 > ./PipeTransformer-CIFAR10-node0.log 2>&1 &
 nohup sh run_elastic_pipe.sh 8 2 1 192.168.11.2 22222 1 0.03 320 cifar10 ./data/cifar10/ 8 > ./PipeTransformer-CIFAR10-node1.log 2>&1 &
 ```
+Result:
 
 CIFAR 100
 ```
-sh run_elastic_pipe.sh 8 2 0 192.168.11.2 22222 1 0.03 320 cifar10 ./data/cifar10/ 8
-sh run_elastic_pipe.sh 8 2 1 192.168.11.2 22222 1 0.03 320 cifar10 ./data/cifar10/ 8
+nohup sh run_elastic_pipe.sh 8 2 0 192.168.11.2 22222 1 0.03 320 cifar100 ./data/cifar100/ 8 > ./PipeTransformer-CIFAR100-node0.log 2>&1 &
+nohup sh run_elastic_pipe.sh 8 2 1 192.168.11.2 22222 1 0.03 320 cifar100 ./data/cifar100/ 8 > ./PipeTransformer-CIFAR100-node1.log 2>&1 &
 ```
 
 ImageNet. Batch Size = 320
 ```
-nohup sh run_elastic_pipe.sh 8 2 0 192.168.11.2 22222 1 0.03 320 imagenet /home/chaoyanghe/dataset/cv/imagenet 8 > ./machine1-imagenet.txt 2>&1 &
-nohup sh run_elastic_pipe.sh 8 2 1 192.168.11.2 22222 1 0.03 320 imagenet /home/chaoyanghe/dataset/cv/imagenet 8 > ./machine2-imagenet.txt 2>&1 &
+nohup sh run_elastic_pipe.sh 8 2 0 192.168.11.2 22222 1 0.03 320 imagenet /home/chaoyanghe/dataset/cv/imagenet 8 > ./PipeTransformer-imagenet-node0.log 2>&1 &
+nohup sh run_elastic_pipe.sh 8 2 1 192.168.11.2 22222 1 0.03 320 imagenet /home/chaoyanghe/dataset/cv/imagenet 8 > ./PipeTransformer-imagenet-node1.log 2>&1 &
 ```
 
 ## DDP 
