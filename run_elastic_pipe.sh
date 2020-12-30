@@ -12,6 +12,7 @@ BS=$8
 DATASET=$9
 DATADIR=${10}
 PIPE_LEN=${11}
+FREEZE=${12}
 
 python -m torch.distributed.launch \
 --nproc_per_node=$NPROC_PER_NODE --nnodes=$NNODE --node_rank=$NODE_RANK \
@@ -23,4 +24,5 @@ main.py \
 --batch_size $BS \
 --dataset $DATASET \
 --data_dir $DATADIR \
---pipe_len_at_the_beginning $PIPE_LEN
+--pipe_len_at_the_beginning $PIPE_LEN \
+--do_freeze $FREEZE

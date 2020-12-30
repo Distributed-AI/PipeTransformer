@@ -75,6 +75,9 @@ if __name__ == "__main__":
     parser.add_argument("--is_debug_mode", default=0, type=int,
                         help="is_debug_mode")
 
+    parser.add_argument("--do_freeze", default=1, type=int,
+                        help="do freeze")
+
     args = parser.parse_args()
 
     # customize the log format
@@ -125,7 +128,8 @@ if __name__ == "__main__":
 
     # create AutoFreeze algorithm
     auto_freeze = AutoFreeze()
-    # auto_freeze.do_not_freeze()
+    if args.do_freeze == 0:
+        auto_freeze.do_not_freeze()
 
     # create pipe and DDP
     auto_pipe = AutoElasticPipe(auto_dp.get_world_size(), args.local_rank, args.global_rank, model,
