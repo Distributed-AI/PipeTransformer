@@ -82,7 +82,11 @@ if __name__ == "__main__":
     logging.basicConfig(level=logging.INFO,
                         format='%(asctime)s.%(msecs)03d %(levelname)s {%(module)s} [%(funcName)s] %(message)s',
                         datefmt='%Y-%m-%d,%H:%M:%S')
-    logging.getLogger().setLevel(logging.INFO)
+    console = logging.StreamHandler()
+    console.setLevel(logging.INFO)
+    # add the handler to the root logger
+    logging.getLogger('').addHandler(console)
+
     hostname = socket.gethostname()
     logging.info("#############process ID = " +
                  ", host name = " + hostname + "########" +
