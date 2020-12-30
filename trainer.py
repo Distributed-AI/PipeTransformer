@@ -129,7 +129,9 @@ class VisionTransformerTrainer:
 
     def eval(self, epoch):
         # train data
-        if epoch == self.args.epochs - 1:
+        # if epoch == self.args.epochs - 1:
+        if (epoch + 1) % self.args.freq_eval_train_acc == 0 or epoch == self.args.epochs - 1:
+
             train_tot_correct, train_num_sample, train_loss = self._infer(self.train_dl, is_train=True)
             # test on training dataset
             train_acc = train_tot_correct / train_num_sample
@@ -142,8 +144,9 @@ class VisionTransformerTrainer:
                 logging.info(stats)
 
         # test data
-        # if (epoch + 1) % args.freq_eval_test_acc == 0:
-        if epoch == self.args.epochs - 1:
+        # if epoch == self.args.epochs - 1:
+        if (epoch + 1) % self.args.freq_eval_test_acc == 0 or epoch == self.args.epochs - 1:
+
             test_tot_correct, test_num_sample, test_loss = self._infer(self.test_dl, is_train=False)
 
             # test on test dataset
