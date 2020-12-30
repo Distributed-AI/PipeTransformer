@@ -17,7 +17,7 @@ python -m torch.distributed.launch \
 --nproc_per_node=$NPROC_PER_NODE --nnodes=$NNODE --node_rank=$NODE_RANK \
 --master_addr $MASTER_ADDR \
 --master_port $MASTER_PORT \
-main_elastic_pipe.py \
+main.py \
 --is_infiniband $IB \
 --lr $LR \
 --batch_size $BS \

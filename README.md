@@ -92,8 +92,6 @@ nohup sh run_ddp.sh 8 2 1 192.168.11.1 11111 > ./machine2.txt 2>&1 &
 ```
 # kill all processes
 kill $(ps aux | grep "main.py" | grep -v grep | awk '{print $2}')
-kill $(ps aux | grep "main_elastic_pipe.py" | grep -v grep | awk '{print $2}')
-kill $(ps aux | grep "main_fedseg.py" | grep -v grep | awk '{print $2}')
 ```
 
 # Single GPU training (for performance evaluation)

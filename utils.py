@@ -94,3 +94,7 @@ def save_as_pickle_file(path, data):
 
 def load_from_pickle_file(path):
     return pickle.load(open(path, "rb"))
+
+def count_parameters(self, model):
+    params = sum(p.numel() for p in model.parameters() if p.requires_grad)
+    return params / 1000000
