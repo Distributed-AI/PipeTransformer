@@ -16,7 +16,6 @@ from model.vit.vision_transformer_task_specific_layer import CONFIGS
 from pipe.auto_pipe import AutoElasticPipe
 from pipe.pipe_model_builder import OutputHead
 from trainer import VisionTransformerTrainer
-from utils import count_parameters
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="PyTorch DDP Demo")
@@ -114,7 +113,7 @@ if __name__ == "__main__":
     print("Vision Transformer Configuration: " + str(config))
     model = VisionTransformer(config, args.img_size, zero_head=True, num_classes=output_dim, vis=False)
     model.load_from(np.load(args.pretrained_dir))
-    model_size = count_parameters(model)
+    model_size = sum(p.numel() for p in model.parameters() if p.requires_grad) / 1e6
     print("model_size = " + str(model_size))
 
     output_head = OutputHead(config.hidden_size, output_dim)
