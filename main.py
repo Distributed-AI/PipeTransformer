@@ -78,7 +78,7 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     # customize the log format
-    logging.basicConfig(format='%(asctime)s - %(message)s', datefmt='%d-%b-%y %H:%M:%S')
+    logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(message)s', datefmt='%d-%b-%y %H:%M:%S')
     logging.info(args)
 
 
