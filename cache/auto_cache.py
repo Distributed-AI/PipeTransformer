@@ -57,7 +57,7 @@ class AutoCache:
                 dict.clear()
             self.test_extracted_features.clear()
 
-        manager = Manager()
+        self.manager = Manager()
         if batch_size_train < self.chunk_num:
             train_extracted_dict = self.manager.dict()
             train_extracted_dict[0] = None
