@@ -49,6 +49,7 @@ class AutoCache:
 
         if len(self.test_extracted_features.keys()) > 0:
             for key in self.test_extracted_features.keys():
+                logging.info(self.test_extracted_features.keys())
                 dict = self.test_extracted_features[key]
                 for key in dict.keys():
                     del dict[key]
