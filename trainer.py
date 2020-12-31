@@ -58,7 +58,7 @@ class VisionTransformerTrainer:
                 self.device_first = self.auto_pipe.get_device_first()
                 self.device_last = self.auto_pipe.get_device_last()
 
-            logging.info("is_frozen_layer_changed---------" + str(is_frozen_layer_changed))
+            logging.info("global_rank = %d. is_frozen_layer_changed: %s" % (self.auto_dp.get_global_rank(), str(is_frozen_layer_changed)))
             if is_frozen_layer_changed:
                 self.auto_cache.update_num_frozen_layers(self.auto_pipe.get_num_frozen_layers(),
                                                          len(self.train_dl),
