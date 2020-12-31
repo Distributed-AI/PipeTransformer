@@ -41,6 +41,7 @@ class AutoCache:
 
         if len(self.train_extracted_features.keys()) > 0:
             for key in self.train_extracted_features.keys():
+                logging.info(self.train_extracted_features.keys())
                 dict = self.train_extracted_features[key]
                 for key in dict.keys():
                     del dict[key]
