@@ -16,9 +16,9 @@ class AutoCache:
         self.batch_size_train = 0
         self.chunk_num = 10
 
-        manager = Manager()
-        self.train_extracted_features = manager.dict()
-        self.test_extracted_features = manager.dict()
+        self.manager = Manager()
+        self.train_extracted_features = self.manager.dict()
+        self.test_extracted_features = self.manager.dict()
 
         self.is_enable = False
 
@@ -59,22 +59,22 @@ class AutoCache:
 
         manager = Manager()
         if batch_size_train < self.chunk_num:
-            train_extracted_dict = manager.dict()
+            train_extracted_dict = self.manager.dict()
             train_extracted_dict[0] = None
             self.train_extracted_features[0] = train_extracted_dict
         else:
             for chunk_idx in range(self.chunk_num):
-                dict_chunk_i = manager.dict()
+                dict_chunk_i = self.manager.dict()
                 dict_chunk_i[0] = None
                 self.train_extracted_features[chunk_idx] = dict_chunk_i
 
         if batch_size_test < self.chunk_num:
-            test_extracted_dict = manager.dict()
+            test_extracted_dict = self.manager.dict()
             test_extracted_dict[0] = None
             self.test_extracted_features[0] = test_extracted_dict
         else:
             for chunk_idx in range(self.chunk_num):
-                dict_chunk_i = manager.dict()
+                dict_chunk_i = self.manager.dict()
                 dict_chunk_i[0] = None
                 self.test_extracted_features[chunk_idx] = dict_chunk_i
 
