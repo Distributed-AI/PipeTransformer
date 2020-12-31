@@ -28,9 +28,10 @@ class AutoCache:
             logging.info("disk_process_run")
             logging.info("train_extracted_features len = %d" % len(train_extracted_features.keys()))
             logging.info("test_extracted_features len = %d" % len(test_extracted_features.keys()))
-            sleep(5)
+            sleep(3)
 
     def update_num_frozen_layers(self, num_frozen_layers, batch_size_train, batch_size_test):
+        logging.info("update_num_frozen_layers. batch_size_train = %d, batch_size_test = %d" % (batch_size_train, batch_size_test))
         self.num_frozen_layers = num_frozen_layers
         self.batch_size_train = batch_size_train
         self.batch_size_test = batch_size_test
