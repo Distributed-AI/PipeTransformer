@@ -21,10 +21,7 @@ class AutoCache:
         self.is_enable = False
 
         # disk storage
-        self.disk_storage_process = Process(target=self.disk_process_run,
-                                            args=(self.train_extracted_features,
-                                                  self.test_extracted_features))
-        self.disk_storage_process.start()
+        self.disk_storage_process = None
 
     def disk_process_run(self, train_extracted_features, test_extracted_features):
         while True:
@@ -70,6 +67,12 @@ class AutoCache:
             for chunk_idx in range(self.chunk_num):
                 dict_chunk_i = manager.dict()
                 self.test_extracted_features[chunk_idx] = dict_chunk_i
+
+        if self.disk_storage_process is None:
+            self.disk_storage_process = Process(target=self.disk_process_run,
+                    args=(self.train_extracted_features,
+                          self.test_extracted_features))
+            self.disk_storage_process.start()
 
     def enable(self):
         self.is_enable = True
