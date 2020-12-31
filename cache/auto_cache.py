@@ -1,4 +1,6 @@
 import logging
+import trace
+import traceback
 from multiprocessing import Process, Manager
 from time import sleep
 
@@ -31,6 +33,7 @@ class AutoCache:
             sleep(3)
 
     def update_num_frozen_layers(self, num_frozen_layers, batch_size_train, batch_size_test):
+        traceback.print_stack()
         logging.info("update_num_frozen_layers. batch_size_train = %d, batch_size_test = %d" % (batch_size_train, batch_size_test))
         self.num_frozen_layers = num_frozen_layers
         self.batch_size_train = batch_size_train
