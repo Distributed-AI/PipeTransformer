@@ -200,7 +200,7 @@ class AutoDataParallel:
                 "(%d)!!! no need to transform since auto_pipe.get_num_frozen_layers() == num_frozen_layers" % self.global_rank)
             # raise Exception("!!! no need to transform since auto_pipe.get_num_frozen_layers() == num_frozen_layers")
             return frozen_model, pipe_model, False, False
-        
+
         if num_frozen_layers == 0 and auto_pipe.get_pipe_len() == 1:
             raise Exception("unexpected trace")
 
