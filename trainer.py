@@ -53,15 +53,17 @@ class VisionTransformerTrainer:
                                                                                   new_freeze_point)
             # TODO: load the saved weights
             new_freeze_point = self.auto_dp.get_freeze_point()
-            if is_frozen_layer_changed:
-                self.auto_cache.update_num_frozen_layers(self.auto_pipe.get_num_frozen_layers())
-
             if is_pipe_len_changed:
                 self.train_dl, self.test_dl = self.cv_data_manager.get_data_loader(self.args.batch_size,
                                                                                  self.auto_dp.get_data_duplicate_num(),
                                                                                  self.auto_dp.get_data_rank())
                 self.device_first = self.auto_pipe.get_device_first()
                 self.device_last = self.auto_pipe.get_device_last()
+
+            if is_frozen_layer_changed:
+                self.auto_cache.update_num_frozen_layers(self.auto_pipe.get_num_frozen_layers(),
+                                                         len(self.train_dl),
+                                                         len(self.test_dl))
 
         criterion = nn.CrossEntropyLoss()
         optimizer, scheduler = self.build_optimizer(self.pipe_model)
