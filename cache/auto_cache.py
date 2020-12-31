@@ -25,12 +25,12 @@ class AutoCache:
         # disk storage
         self.disk_storage_process = None
 
-    def disk_process_run(self, train_extracted_features, test_extracted_features):
-        while True:
-            logging.info("disk_process_run")
-            logging.info("train_extracted_features len = %d" % len(train_extracted_features.keys()))
-            logging.info("test_extracted_features len = %d" % len(test_extracted_features.keys()))
-            sleep(3)
+    # def disk_process_run(self, train_extracted_features, test_extracted_features):
+    #     while True:
+    #         logging.info("disk_process_run")
+    #         logging.info("train_extracted_features len = %d" % len(train_extracted_features.keys()))
+    #         logging.info("test_extracted_features len = %d" % len(test_extracted_features.keys()))
+    #         sleep(3)
 
     def update_num_frozen_layers(self, num_frozen_layers, batch_size_train, batch_size_test):
         traceback.print_stack()
@@ -73,11 +73,11 @@ class AutoCache:
                 dict_chunk_i = self.manager.dict()
                 self.test_extracted_features[chunk_idx] = dict_chunk_i
 
-        if self.disk_storage_process is None:
-            self.disk_storage_process = Process(target=self.disk_process_run,
-                    args=(self.train_extracted_features,
-                          self.test_extracted_features))
-            self.disk_storage_process.start()
+        # if self.disk_storage_process is None:
+        #     self.disk_storage_process = Process(target=self.disk_process_run,
+        #             args=(self.train_extracted_features,
+        #                   self.test_extracted_features))
+        #     self.disk_storage_process.start()
 
     def enable(self):
         self.is_enable = True

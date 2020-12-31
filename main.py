@@ -137,7 +137,7 @@ if __name__ == "__main__":
 
     # create FP cache with CPU memory
     auto_cache = AutoCache(auto_dp, auto_pipe)
-    auto_cache.disable()
+    auto_cache.enable()
 
     # start training
     freeze_point = dict()
