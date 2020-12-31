@@ -175,23 +175,26 @@ class AutoCache:
         if not self.is_enable:
             return None
         # the hidden features are always in device 0
-        if batch_idx not in self.train_extracted_features.keys():
+        chunk_idx = int(batch_idx / self.chunk_num)
+        chunk_batch_idx = batch_idx % self.chunk_num
+        if chunk_idx not in self.train_extracted_features.keys():
+            return None
+        if chunk_batch_idx not in self.train_extracted_features[chunk_idx].keys():
             return None
         logging.info("--------get_train_extracted_hidden_feature------------")
         device_idx_start = self.auto_dp.get_local_rank() * self.auto_pipe.get_pipe_len()
-
-        chunk_idx = int(batch_idx / self.chunk_num)
-        chunk_batch_idx = batch_idx % self.chunk_num
         return self.train_extracted_features[chunk_idx][chunk_batch_idx].to(device_idx_start)
 
     def get_test_extracted_hidden_feature(self, batch_idx):
         if not self.is_enable:
             return None
-        if batch_idx not in self.test_extracted_features.keys():
-            return None
         # the hidden features are always in device 0
-        logging.info("--------get_test_extracted_hidden_feature------------")
-        device_idx_start = self.auto_dp.get_local_rank() * self.auto_pipe.get_pipe_len()
         chunk_idx = int(batch_idx / self.chunk_num)
         chunk_batch_idx = batch_idx % self.chunk_num
+        if chunk_idx not in self.test_extracted_features.keys():
+            return None
+        if chunk_batch_idx not in self.test_extracted_features[chunk_idx].keys():
+            return None
+        logging.info("--------get_train_extracted_hidden_feature------------")
+        device_idx_start = self.auto_dp.get_local_rank() * self.auto_pipe.get_pipe_len()
         return self.test_extracted_features[chunk_idx][chunk_batch_idx].to(device_idx_start)
