@@ -44,14 +44,12 @@ class VisionTransformerTrainer:
             new_freeze_point['epoch'] = epoch
 
             # self, auto_pipe, frozen_model, pipe_model, num_frozen_layers, freeze_point
-            # TODO: save the weight
             self.frozen_model, self.pipe_model, \
             is_pipe_len_changed, is_frozen_layer_changed = self.auto_dp.transform(self.auto_pipe,
                                                                                   self.frozen_model,
                                                                                   self.pipe_model,
                                                                                   self.auto_freeze.get_hand_crafted_frozen_layers_by_epoch(epoch),
                                                                                   new_freeze_point)
-            # TODO: load the saved weights
             new_freeze_point = self.auto_dp.get_freeze_point()
             if is_pipe_len_changed:
                 self.train_dl, self.test_dl = self.cv_data_manager.get_data_loader(self.args.batch_size,
