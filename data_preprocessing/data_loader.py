@@ -166,7 +166,10 @@ class CVDataset:
             del self.train_loader
 
         num_workers = 4
-        # for imagenet, we need to reduce the memory cost
+        """
+        for imagenet, we need to reduce the memory cost:
+        https://github.com/prlz77/ResNeXt.pytorch/issues/5
+        """
         if self.dataset == "imagenet":
             num_workers = 1
         self.train_loader = DataLoader(self.train_dataset,
