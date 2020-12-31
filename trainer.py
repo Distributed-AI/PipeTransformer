@@ -34,9 +34,27 @@ class VisionTransformerTrainer:
 
     def train_and_eval(self, freeze_point):
         epoch_start = freeze_point['epoch']
+        self.update_data_and_cache(True, True)
         for epoch in range(epoch_start, self.args.epochs):
             self.train(epoch)
             self.eval(epoch)
+
+    def update_data_and_cache(self, is_pipe_len_changed, is_frozen_layer_changed):
+        if is_pipe_len_changed:
+            self.train_dl, self.test_dl = self.cv_data_manager.get_data_loader(self.args.batch_size,
+                                                                               self.auto_dp.get_data_duplicate_num(),
+                                                                               self.auto_dp.get_data_rank())
+            self.device_first = self.auto_pipe.get_device_first()
+            self.device_last = self.auto_pipe.get_device_last()
+
+        logging.info("global_rank = %d. is_frozen_layer_changed: %s" % (self.auto_dp.get_global_rank(), str(is_frozen_layer_changed)))
+        """
+        one case is that pipe len is not changed but the frozen layer number is changed, so we need to update the cache
+        """
+        if is_frozen_layer_changed:
+            self.auto_cache.update_num_frozen_layers(self.auto_pipe.get_num_frozen_layers(),
+                                                     len(self.train_dl),
+                                                     len(self.test_dl))
 
     def train(self, epoch):
         if self.auto_freeze.is_freeze_open():
@@ -51,18 +69,8 @@ class VisionTransformerTrainer:
                                                                                   self.auto_freeze.get_hand_crafted_frozen_layers_by_epoch(epoch),
                                                                                   new_freeze_point)
             new_freeze_point = self.auto_dp.get_freeze_point()
-            if is_pipe_len_changed:
-                self.train_dl, self.test_dl = self.cv_data_manager.get_data_loader(self.args.batch_size,
-                                                                                 self.auto_dp.get_data_duplicate_num(),
-                                                                                 self.auto_dp.get_data_rank())
-                self.device_first = self.auto_pipe.get_device_first()
-                self.device_last = self.auto_pipe.get_device_last()
+            self.update_data_and_cache(is_pipe_len_changed, is_frozen_layer_changed)
 
-            logging.info("global_rank = %d. is_frozen_layer_changed: %s" % (self.auto_dp.get_global_rank(), str(is_frozen_layer_changed)))
-            if is_frozen_layer_changed:
-                self.auto_cache.update_num_frozen_layers(self.auto_pipe.get_num_frozen_layers(),
-                                                         len(self.train_dl),
-                                                         len(self.test_dl))
 
         criterion = nn.CrossEntropyLoss()
         optimizer, scheduler = self.build_optimizer(self.pipe_model)
