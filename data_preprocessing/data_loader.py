@@ -164,10 +164,15 @@ class CVDataset:
 
         if self.train_loader is not None:
             del self.train_loader
+
+        num_workers = 4
+        # for imagenet, we need to reduce the memory cost
+        if self.dataset == "imagenet":
+            num_workers = 1
         self.train_loader = DataLoader(self.train_dataset,
                                        sampler=self.train_sampler,
                                        batch_size=batch_size,
-                                       num_workers=4,
+                                       num_workers=num_workers,
                                        pin_memory=True)
 
         if self.test_loader is not None:
@@ -175,6 +180,6 @@ class CVDataset:
         self.test_loader = DataLoader(self.test_dataset,
                                       sampler=self.test_sampler,
                                       batch_size=batch_size,
-                                      num_workers=4,
+                                      num_workers=num_workers,
                                       pin_memory=True)
         return self.train_loader, self.test_loader

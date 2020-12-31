@@ -1,6 +1,9 @@
 import logging
+from multiprocessing import Process, Queue
 
 import torch
+
+from cache.disk_storage_process import DiskStorageProcess
 
 
 class AutoCache:
@@ -12,6 +15,12 @@ class AutoCache:
         self.test_extracted_features = dict()
 
         self.is_enable = False
+
+        # # disk storage
+        # pqueue = Queue()
+        # self.disk_storage_thread = DiskStorageProcess(pqueue, self.train_extracted_features,
+        #                                              self.test_extracted_features)
+        # self.disk_storage_thread.start()
 
     def update_num_frozen_layers(self, num_frozen_layers):
         self.num_frozen_layers = num_frozen_layers

@@ -9,7 +9,10 @@ conda activate pipe_ditributed
 ```
 
 2.install the latest nightly Pytorch, in which DPipe (torchpipe) is supported.
+
 ```
+torch.__version__
+'1.8.0.dev20201219
 conda install pytorch torchvision torchaudio cudatoolkit=10.2 -c pytorch-nightly
 ```
 
