@@ -142,7 +142,7 @@ class AutoCache:
                 self.chunk_idx = chunk_idx
                 self.msg_q.put((is_writing, chunk_idx, self.chunk_num))
 
-            hidden_feature = torch.rand([1000, 7680, 197])
+            hidden_feature = torch.rand([512, 768, 197])
             self.data_q[chunk_idx].put(hidden_feature)
             # ime.sleep(0.1)
 
@@ -155,7 +155,7 @@ class AutoCache:
         for batch_idx in range(self.batch_size_train):
             logging.info("main process - main process reading. batch_idx = " + str(batch_idx))
 
-            chunk_idx = math.floor(batch_idx / chunk_size)
+            chunk_idx = math.floor(batch_idx / self.chunk_size)
             logging.info("main process - chunk_idx = %d" % chunk_idx)
 
             if self.chunk_idx != chunk_idx:
