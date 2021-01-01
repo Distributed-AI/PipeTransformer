@@ -126,7 +126,7 @@ class AutoCache:
         self.msg_q = mp.Queue()
         self.disk_storage_process = mp.Process(target=disk_cache_process_impl, args=(self.data_q, self.msg_q))
         self.disk_storage_process.daemon = True
-        # self.disk_storage_process.start()
+        self.disk_storage_process.start()
 
         is_writing = True
         chunk_size = math.ceil(self.batch_size_train / self.chunk_num)
