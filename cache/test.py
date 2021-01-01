@@ -112,7 +112,7 @@ class AutoCache:
         self.batch_size_train = 2000
         self.batch_size_test = 200
 
-        self.chunk_size = 1
+        self.chunk_size = math.floor(4e9/(512*769*197))
         self.chunk_num = math.ceil(self.batch_size_train/self.chunk_size)
         self.window_len = math.ceil(self.chunk_num/4)
 
