@@ -10,8 +10,8 @@ import os
 import wandb
 
 
-def disk_cache_process_impl(data_queue_list, msg_q):
-    window_len = 3
+def disk_cache_process_impl(window_len, data_queue_list, msg_q):
+    window_len = window_len
     path = "./hidden_feature_cache"
     while True:
         # print("disk_process - MyProcess. run()")
@@ -114,6 +114,7 @@ class AutoCache:
 
         self.chunk_size = 1
         self.chunk_num = math.ceil(self.batch_size_train/self.chunk_size)
+        self.window_len = math.ceil(self.chunk_num/4)
 
         self.chunk_idx = -1
         self.chunk_batch_idx = -1
@@ -125,7 +126,7 @@ class AutoCache:
             self.data_q[c_i] = data_q_i
 
         self.msg_q = mp.Queue()
-        self.disk_storage_process = mp.Process(target=disk_cache_process_impl, args=(self.data_q, self.msg_q))
+        self.disk_storage_process = mp.Process(target=disk_cache_process_impl, args=(self.window_len, self.data_q, self.msg_q))
         self.disk_storage_process.daemon = True
         self.disk_storage_process.start()
 
