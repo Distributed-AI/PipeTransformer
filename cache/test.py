@@ -141,7 +141,7 @@ class AutoCache:
 
             hidden_feature = torch.rand([400, 768, 197])
             self.data_q[chunk_idx].put(hidden_feature)
-            time.sleep(0.1)
+            # ime.sleep(0.1)
 
         time.sleep(5)
 
@@ -163,7 +163,7 @@ class AutoCache:
                 logging.info("empty")
             hidden_feature = self.data_q[chunk_idx].get()
             logging.info("main process - " + str(hidden_feature))
-            time.sleep(0.1)
+            # time.sleep(0.1)
 
         time.sleep(1000)
 
