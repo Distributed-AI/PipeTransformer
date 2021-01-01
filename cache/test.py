@@ -112,7 +112,7 @@ class AutoCache:
         self.batch_size_train = 80
         self.batch_size_test = 10
 
-        self.chunk_num = 10
+        self.chunk_num = 200
 
         self.chunk_idx = -1
         self.chunk_batch_idx = -1
