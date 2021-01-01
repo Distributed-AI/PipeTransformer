@@ -9,6 +9,29 @@ import os
 
 import wandb
 
+"""
+When disk is OOM:
+
+Traceback (most recent call last):
+  File "/home/chaoyanghe/anaconda3/envs/pipe_ditributed/lib/python3.7/multiprocessing/queues.py", line 236, in _feed
+  File "/home/chaoyanghe/anaconda3/envs/pipe_ditributed/lib/python3.7/multiprocessing/reduction.py", line 51, in dumps
+    cls(buf, protocol).dump(obj)
+  File "/home/chaoyanghe/anaconda3/envs/pipe_ditributed/lib/python3.7/site-packages/torch/multiprocessing/reductions.py", line 321, in reduce_storage
+RuntimeError: unable to open shared memory object </torch_52868_1950128645> in read-write mode
+
+When a chunk is too big to hold by a pickle file:
+
+Traceback (most recent call last):
+  File "/home/chaoyanghe/anaconda3/envs/pipe_ditributed/lib/python3.7/multiprocessing/process.py", line 297, in _bootstrap
+    self.run()
+  File "/home/chaoyanghe/anaconda3/envs/pipe_ditributed/lib/python3.7/multiprocessing/process.py", line 99, in run
+    self._target(*self._args, **self._kwargs)
+  File "test.py", line 28, in disk_cache_process_impl
+    save_as_pickle_file(path, chunk_idx, data_queue_list, chunk_index_list_to_be_cached)
+  File "test.py", line 91, in save_as_pickle_file
+    pickle.dump(numpy_queue, open(path + str(chunk_idx) + ".fea", "wb"))
+OverflowError: cannot serialize a bytes object larger than 4 GiB
+"""
 
 def disk_cache_process_impl(window_len, data_queue_list, msg_q):
     window_len = window_len
@@ -109,12 +132,12 @@ class AutoCache:
 
         self.num_frozen_layers = 0
 
-        self.batch_size_train = 2000
+        self.batch_size_train = math.ceil(1290000/512)
         self.batch_size_test = 200
 
         self.chunk_size = math.floor(1e9/(512*769*197))
         self.chunk_num = math.ceil(self.batch_size_train/self.chunk_size)
-        self.window_len = math.ceil(self.chunk_num/4)
+        self.window_len = math.ceil(self.chunk_num*0.5)
         logging.info("self.chunk_size = %d, self.chunk_num  = %d, self.window_len = %d" % (self.chunk_size, self.chunk_num, self.window_len))
 
         self.chunk_idx = -1
