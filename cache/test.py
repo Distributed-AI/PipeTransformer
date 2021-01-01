@@ -7,6 +7,8 @@ import torch
 import torch.multiprocessing as mp
 import os
 
+import wandb
+
 
 def disk_cache_process_impl(data_queue_list, msg_q):
     window_len = 3
@@ -169,9 +171,12 @@ class AutoCache:
 
 
 if __name__ == '__main__':
+    wandb.init(project="pipe_and_ddp",
+                     name="PipeTransformer-Cache Test")
     # customize the log format
     logging.basicConfig(level=logging.INFO,
                         format='%(processName)s - %(asctime)s.%(msecs)03d - {%(module)s.py (%(lineno)d)} - %(funcName)s(): %(message)s',
                         datefmt='%Y-%m-%d,%H:%M:%S')
 
     auto_cache = AutoCache()
+
