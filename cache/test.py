@@ -109,8 +109,8 @@ class AutoCache:
 
         self.num_frozen_layers = 0
 
-        self.batch_size_train = 80
-        self.batch_size_test = 10
+        self.batch_size_train = 2000
+        self.batch_size_test = 200
 
         self.chunk_size = 1
         self.chunk_num = math.ceil(self.batch_size_train/self.chunk_size)
