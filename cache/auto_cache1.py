@@ -1,4 +1,8 @@
 import logging
+import trace
+import traceback
+from multiprocessing import Process, Manager
+from time import sleep
 
 import torch
 
@@ -8,19 +12,72 @@ class AutoCache:
         self.auto_dp = auto_dp
         self.auto_pipe = auto_pipe
         self.num_frozen_layers = 0
-        self.train_extracted_features = dict()
-        self.test_extracted_features = dict()
-        self.batch_num_train = 0
-        self.batch_num_test = 0
+
+        self.batch_size_train = 0
+        self.chunk_num = 10
+
+        self.manager = Manager()
+        self.train_extracted_features = self.manager.dict()
+        self.test_extracted_features = self.manager.dict()
 
         self.is_enable = False
 
-    def update_num_frozen_layers(self, num_frozen_layers, batch_num_train, batch_num_test):
+        # disk storage
+        self.disk_storage_process = None
+
+    # def disk_process_run(self, train_extracted_features, test_extracted_features):
+    #     while True:
+    #         logging.info("disk_process_run")
+    #         logging.info("train_extracted_features len = %d" % len(train_extracted_features.keys()))
+    #         logging.info("test_extracted_features len = %d" % len(test_extracted_features.keys()))
+    #         sleep(3)
+
+    def update_num_frozen_layers(self, num_frozen_layers, batch_size_train, batch_size_test):
+        traceback.print_stack()
+        logging.info("update_num_frozen_layers. batch_size_train = %d, batch_size_test = %d" % (batch_size_train, batch_size_test))
         self.num_frozen_layers = num_frozen_layers
-        self.train_extracted_features.clear()
-        self.test_extracted_features.clear()
-        self.batch_num_train = batch_num_train
-        self.batch_num_test = batch_num_test
+        self.batch_size_train = batch_size_train
+        self.batch_size_test = batch_size_test
+
+        if len(self.train_extracted_features.keys()) > 0:
+            for key in self.train_extracted_features.keys():
+                logging.info(self.train_extracted_features.keys())
+                dict = self.train_extracted_features[key]
+                for key in dict.keys():
+                    del dict[key]
+                dict.clear()
+            self.train_extracted_features.clear()
+
+        if len(self.test_extracted_features.keys()) > 0:
+            for key in self.test_extracted_features.keys():
+                logging.info(self.test_extracted_features.keys())
+                dict = self.test_extracted_features[key]
+                for key in dict.keys():
+                    del dict[key]
+                dict.clear()
+            self.test_extracted_features.clear()
+
+        if batch_size_train < self.chunk_num:
+            train_extracted_dict = self.manager.dict()
+            self.train_extracted_features[0] = train_extracted_dict
+        else:
+            for chunk_idx in range(self.chunk_num):
+                dict_chunk_i = self.manager.dict()
+                self.train_extracted_features[chunk_idx] = dict_chunk_i
+
+        if batch_size_test < self.chunk_num:
+            test_extracted_dict = self.manager.dict()
+            self.test_extracted_features[0] = test_extracted_dict
+        else:
+            for chunk_idx in range(self.chunk_num):
+                dict_chunk_i = self.manager.dict()
+                self.test_extracted_features[chunk_idx] = dict_chunk_i
+
+        # if self.disk_storage_process is None:
+        #     self.disk_storage_process = Process(target=self.disk_process_run,
+        #             args=(self.train_extracted_features,
+        #                   self.test_extracted_features))
+        #     self.disk_storage_process.start()
 
     def enable(self):
         self.is_enable = True
@@ -84,12 +141,18 @@ class AutoCache:
     def cache_train_extracted_hidden_feature(self, batch_idx, extracted_feature):
         if not self.is_enable:
             return
-        self.train_extracted_features[batch_idx] = extracted_feature.cpu()
+        chunk_idx = int(batch_idx / self.chunk_num)
+        chunk_batch_idx = batch_idx % self.chunk_num
+        self.train_extracted_features[chunk_idx][chunk_batch_idx] = extracted_feature.cpu()
+        # self.train_extracted_features[batch_idx] = extracted_feature.cpu()
 
     def cache_test_extracted_hidden_feature(self, batch_idx, extracted_feature):
         if not self.is_enable:
             return
-        self.test_extracted_features[batch_idx] = extracted_feature.cpu()
+        chunk_idx = int(batch_idx / self.chunk_num)
+        chunk_batch_idx = batch_idx % self.chunk_num
+        self.test_extracted_features[chunk_idx][chunk_batch_idx] = extracted_feature.cpu()
+        # self.train_extracted_features[batch_idx] = extracted_feature.cpu()
 
     # def get_train_extracted_hidden_feature(self, batch_idx):
     #     if not self.is_enable:
@@ -113,18 +176,26 @@ class AutoCache:
         if not self.is_enable:
             return None
         # the hidden features are always in device 0
-        if batch_idx not in self.train_extracted_features.keys():
+        chunk_idx = int(batch_idx / self.chunk_num)
+        chunk_batch_idx = batch_idx % self.chunk_num
+        if chunk_idx not in self.train_extracted_features.keys():
+            return None
+        if chunk_batch_idx not in self.train_extracted_features[chunk_idx].keys():
             return None
         logging.info("--------get_train_extracted_hidden_feature------------")
         device_idx_start = self.auto_dp.get_local_rank() * self.auto_pipe.get_pipe_len()
-        return self.train_extracted_features[batch_idx].to(device_idx_start)
+        return self.train_extracted_features[chunk_idx][chunk_batch_idx].to(device_idx_start)
 
     def get_test_extracted_hidden_feature(self, batch_idx):
         if not self.is_enable:
             return None
-        if batch_idx not in self.test_extracted_features.keys():
-            return None
         # the hidden features are always in device 0
-        logging.info("--------get_test_extracted_hidden_feature------------")
+        chunk_idx = int(batch_idx / self.chunk_num)
+        chunk_batch_idx = batch_idx % self.chunk_num
+        if chunk_idx not in self.test_extracted_features.keys():
+            return None
+        if chunk_batch_idx not in self.test_extracted_features[chunk_idx].keys():
+            return None
+        logging.info("--------get_train_extracted_hidden_feature------------")
         device_idx_start = self.auto_dp.get_local_rank() * self.auto_pipe.get_pipe_len()
-        return self.test_extracted_features[batch_idx].to(device_idx_start)
+        return self.test_extracted_features[chunk_idx][chunk_batch_idx].to(device_idx_start)
