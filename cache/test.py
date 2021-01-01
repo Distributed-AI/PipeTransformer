@@ -130,12 +130,11 @@ class AutoCache:
         self.disk_storage_process.start()
 
         is_writing = True
-        chunk_size = math.ceil(self.batch_size_train / self.chunk_num)
-        logging.info("main process - chunk_size = %d" % chunk_size)
+        logging.info("main process - chunk_size = %d" % self.chunk_size)
         for batch_idx in range(self.batch_size_train):
             logging.info("main process - main process writing. batch_idx = " + str(batch_idx))
 
-            chunk_idx = math.floor(batch_idx / chunk_size)
+            chunk_idx = math.floor(batch_idx / self.chunk_size)
             logging.info("main process - chunk_idx = %d" % chunk_idx)
 
             if self.chunk_idx != chunk_idx:
