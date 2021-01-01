@@ -109,8 +109,8 @@ class AutoCache:
 
         self.num_frozen_layers = 0
 
-        self.batch_size_train = 800
-        self.batch_size_test = 100
+        self.batch_size_train = 80
+        self.batch_size_test = 10
 
         self.chunk_num = 10
 
@@ -141,7 +141,7 @@ class AutoCache:
                 self.chunk_idx = chunk_idx
                 self.msg_q.put((is_writing, chunk_idx, self.chunk_num))
 
-            hidden_feature = torch.rand([400, 768, 197])
+            hidden_feature = torch.rand([1000, 7680, 197])
             self.data_q[chunk_idx].put(hidden_feature)
             # ime.sleep(0.1)
 
