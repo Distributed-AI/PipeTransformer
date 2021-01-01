@@ -115,6 +115,7 @@ class AutoCache:
         self.chunk_size = math.floor(1e9/(512*769*197))
         self.chunk_num = math.ceil(self.batch_size_train/self.chunk_size)
         self.window_len = math.ceil(self.chunk_num/4)
+        logging.info("self.chunk_size = %d, self.chunk_num  = %d, self.window_len = %d" % (self.chunk_size, self.chunk_num, self.window_len))
 
         self.chunk_idx = -1
         self.chunk_batch_idx = -1
