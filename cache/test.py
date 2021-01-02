@@ -8,6 +8,9 @@ import torch.multiprocessing as mp
 import os
 
 import wandb
+import psutil
+
+
 
 """
 When disk is OOM:
@@ -40,9 +43,13 @@ def disk_cache_process_impl(window_len, data_queue_list, msg_q):
         # print("disk_process - MyProcess. run()")
         (is_writing, chunk_idx, chunk_num) = msg_q.get()
 
+        # memory_percent. When larger than 0.9, we will cache host memory to disk storage.
+        memory_percent = psutil.virtual_memory().percent
+
         # print("disk_process - is_writing = " + str(is_writing))
         # print("disk_process - chunk_idx = " + str(chunk_idx))
         if is_writing:
+
             # 1. find the chunk index list which can be cached into the disk storage
             chunk_index_list_to_be_cached = find_the_chunks_to_be_cache(window_len, chunk_idx, chunk_num)
             logging.info("chunk_index_list_to_be_cached = %s" % str(chunk_index_list_to_be_cached))
@@ -202,11 +209,26 @@ class AutoCache:
 
 
 if __name__ == '__main__':
-    wandb.init(project="pipe_and_ddp",
-                     name="PipeTransformer-Cache Test")
-    # customize the log format
-    logging.basicConfig(level=logging.INFO,
-                        format='%(processName)s - %(asctime)s.%(msecs)03d - {%(module)s.py (%(lineno)d)} - %(funcName)s(): %(message)s',
-                        datefmt='%Y-%m-%d,%H:%M:%S')
+    # wandb.init(project="pipe_and_ddp",
+    #                  name="PipeTransformer-Cache Test")
+    # # customize the log format
+    # logging.basicConfig(level=logging.INFO,
+    #                     format='%(processName)s - %(asctime)s.%(msecs)03d - {%(module)s.py (%(lineno)d)} - %(funcName)s(): %(message)s',
+    #                     datefmt='%Y-%m-%d,%H:%M:%S')
+    #
+    # auto_cache = AutoCache()
 
-    auto_cache = AutoCache()
+    psutil.cpu_percent()
+
+    psutil.virtual_memory()
+
+    mem_dict = dict(psutil.virtual_memory()._asdict())
+    print(mem_dict)
+
+    virual_mem_p = psutil.virtual_memory().percent
+    print(virual_mem_p)
+
+    print('memory % used:', psutil.virtual_memory()[2])
+
+    virual_mem_p = psutil.virtual_memory().available * 100 / psutil.virtual_memory().total
+    print(virual_mem_p)
