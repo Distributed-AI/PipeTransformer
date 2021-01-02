@@ -151,4 +151,4 @@ if __name__ == "__main__":
     trainer.train_and_eval(freeze_point)
 
     if args.global_rank == 0:
-        run.finish()
+        wandb.finish()
