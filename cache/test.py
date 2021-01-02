@@ -65,6 +65,9 @@ def disk_cache_process_impl(window_len, data_queue_list, msg_q):
 
 
 def find_the_chunks_to_be_cache(window_len, current_chunk_index, chunk_num):
+    """
+    The first 'window_len' chunks are always in memory, the rest chunks are saved in files.
+    """
     chunk_list_to_be_cache = []
     if current_chunk_index < window_len:
         chunk_list_to_be_cache = []
@@ -75,6 +78,9 @@ def find_the_chunks_to_be_cache(window_len, current_chunk_index, chunk_num):
 
 
 def find_the_chunks_for_reading(data_queue_list, window_len, chunk_idx, chunk_num):
+    """
+    The first 'window_len' chunks are always in memory, the rest chunks are saved in files.
+    """
     chunk_index_list_to_be_loaded = []
     for idx in range(window_len):
         loaded_idx = chunk_idx + idx + 1
@@ -132,7 +138,7 @@ class AutoCache:
 
         self.num_frozen_layers = 0
 
-        self.batch_size_train = math.ceil(1290000/512)
+        self.batch_size_train = math.ceil(1280000/512)
         self.batch_size_test = 200
 
         self.chunk_size = math.floor(1e9/(512*769*197))
