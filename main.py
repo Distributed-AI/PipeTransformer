@@ -23,9 +23,9 @@ if __name__ == "__main__":
 
     parser.add_argument("--global_rank", type=int, default=0)
 
-    parser.add_argument("--master_addr", type=str, default="127.0.0.1")
+    parser.add_argument("--master_addr", type=str, default="192.168.11.2")
 
-    parser.add_argument("--master_port", type=int, default=11111)
+    parser.add_argument("--master_port", type=int, default=22222)
 
     parser.add_argument("--if_name", type=str, default="lo")
 
