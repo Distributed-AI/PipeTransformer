@@ -267,6 +267,7 @@ class Transformer(nn.Module):
 class VisionTransformer(nn.Module):
     def __init__(self, config, img_size=224, num_classes=21843, zero_head=False, vis=False):
         super(VisionTransformer, self).__init__()
+        self.config = config
         self.num_classes = num_classes
         self.zero_head = zero_head
         self.classifier = config.classifier
@@ -279,6 +280,9 @@ class VisionTransformer(nn.Module):
         x, attn_weights = self.transformer(x)
         logits = self.head(x[:, 0])
         return logits
+
+    def get_hidden_feature_size(self):
+        return self.config.hidden_size * 197
 
     def load_from(self, weights):
         with torch.no_grad():

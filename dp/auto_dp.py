@@ -14,16 +14,15 @@ from dp.distributed_communicator import dist_broadcast
 
 class AutoDataParallel:
 
-    def __init__(self, initial_pipe_len):
+    def __init__(self, args):
+        self.args = args
         self.local_rank = -1
         self.global_rank = -1
         self.world_size = -1
-        self.master_addr = "127.0.0.1"
-        self.global_port = 11111
         self.active_process_group = None
 
-        self.initial_pipe_len = initial_pipe_len
-        self.compressed_pipe_len = initial_pipe_len
+        self.initial_pipe_len = args.pipe_len_at_the_beginning
+        self.compressed_pipe_len = args.pipe_len_at_the_beginning
 
         self.first_run = True
 
@@ -42,15 +41,9 @@ class AutoDataParallel:
         self.local_rank = args.local_rank
         logging.info(f"Running basic DDP example on local rank {self.local_rank}.")
 
-        self.global_port += 1
-        if args.is_infiniband:
-            # self.master_addr = "192.168.11.1"
-            self.master_addr = "192.168.11.2"
-        else:
-            # self.master_addr = "192.168.1.1"
-            self.master_addr = "192.168.11.2"
-        os.environ.update({"MASTER_ADDR": self.master_addr})
-        os.environ.update({"MASTER_PORT": str(self.global_port)})
+        self.args.master_port += 1
+        os.environ.update({"MASTER_ADDR": self.args.master_addr})
+        os.environ.update({"MASTER_PORT": str(self.args.master_port)})
 
         # use InfiniBand
         # os.environ['NCCL_DEBUG'] = 'INFO'
@@ -62,9 +55,9 @@ class AutoDataParallel:
         else:
             os.environ['NCCL_IB_DISABLE'] = '1'
             os.environ['NCCL_TREE_THRESHOLD'] = '0'
-            os.environ['NCCL_SOCKET_IFNAME'] = 'eno2'
-            os.environ['GLOO_SOCKET_IFNAME'] = 'eno2'
-            os.environ['TP_SOCKET_IFNAME'] = 'eno2'
+            os.environ['NCCL_SOCKET_IFNAME'] = self.args.if_name
+            os.environ['GLOO_SOCKET_IFNAME'] = self.args.if_name
+            os.environ['TP_SOCKET_IFNAME'] = self.args.if_name
 
         # This the global rank: 0, 1, 2, ..., 15
         self.global_rank = int(os.environ['RANK'])
@@ -75,7 +68,7 @@ class AutoDataParallel:
         logging.info("world_size = %d" % self.world_size)
 
         # initialize the process group (this must be GLOO)
-        dist.init_process_group(init_method='tcp://' + self.master_addr + ':' + str(self.global_port),
+        dist.init_process_group(init_method='tcp://' + str(self.args.master_addr) + ':' + str(self.args.master_port),
                                 backend=Backend.GLOO, rank=self.global_rank, world_size=self.world_size)
         logging.info("init_process_group. local_rank = %d, global_rank = %d" % (self.local_rank, self.global_rank))
 
@@ -93,7 +86,7 @@ class AutoDataParallel:
 
     def init_rpc(self):
         rpc_backend_options = TensorPipeRpcBackendOptions()
-        rpc_backend_options.init_method = 'tcp://' + self.master_addr + ':10000'
+        rpc_backend_options.init_method = 'tcp://' + self.args.master_addr + ':10000'
         rpc.init_rpc(
             "worker:" + str(self.global_rank),
             rank=self.global_rank,

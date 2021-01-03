@@ -2,25 +2,32 @@ import logging
 
 import torch
 
+from cache.two_level_cache import TwoLevelCache
+
 
 class AutoCache:
-    def __init__(self, auto_dp, auto_pipe):
+    def __init__(self, auto_dp, auto_pipe, hidden_feature_size):
         self.auto_dp = auto_dp
         self.auto_pipe = auto_pipe
+
         self.num_frozen_layers = 0
-        self.train_extracted_features = dict()
-        self.test_extracted_features = dict()
         self.batch_num_train = 0
         self.batch_num_test = 0
+        self.hidden_feature_size = hidden_feature_size
+
+        self.two_level_cache_train = TwoLevelCache()
+        self.two_level_cache_test = TwoLevelCache()
 
         self.is_enable = False
 
-    def update_num_frozen_layers(self, num_frozen_layers, batch_num_train, batch_num_test):
+    def reset(self, num_frozen_layers, batch_num_train, batch_num_test):
         self.num_frozen_layers = num_frozen_layers
-        self.train_extracted_features.clear()
-        self.test_extracted_features.clear()
         self.batch_num_train = batch_num_train
         self.batch_num_test = batch_num_test
+        self.two_level_cache_train.reset_status(False, self.batch_num_train,
+                                                self.hidden_feature_size, self.auto_dp.get_active_world_size())
+        self.two_level_cache_test.reset_status(False, self.batch_num_test,
+                                               self.hidden_feature_size, self.auto_dp.get_active_world_size())
 
     def enable(self):
         self.is_enable = True
@@ -31,12 +38,11 @@ class AutoCache:
     def infer_train(self, frozen_model, pipe_model, x, batch_idx):
         if self.is_enable:
             if frozen_model is not None:
-                if self.get_train_extracted_hidden_feature(batch_idx) is None:
-                    with torch.no_grad():
-                        hidden_feature = frozen_model(x)
-                    self.cache_train_extracted_hidden_feature(batch_idx, hidden_feature)
-                else:
-                    hidden_feature = self.get_train_extracted_hidden_feature(batch_idx)
+                logging.debug("infer_train. batch_idx = %d" % batch_idx)
+                with torch.no_grad():
+                    device_idx_start = self.auto_dp.get_local_rank() * self.auto_pipe.get_pipe_len()
+                    hidden_feature = self.two_level_cache_train.get_hidden_feature(batch_idx, x, frozen_model).to(
+                        device_idx_start)
                 log_probs = pipe_model(hidden_feature)
             else:
                 log_probs = pipe_model(x)
@@ -52,12 +58,10 @@ class AutoCache:
     def infer_test(self, frozen_model, pipe_model, x, batch_idx):
         if self.is_enable:
             if frozen_model is not None:
-                if self.get_test_extracted_hidden_feature(batch_idx) is None:
-                    with torch.no_grad():
-                        hidden_feature = frozen_model(x)
-                    self.cache_test_extracted_hidden_feature(batch_idx, hidden_feature)
-                else:
-                    hidden_feature = self.get_test_extracted_hidden_feature(batch_idx)
+                with torch.no_grad():
+                    device_idx_start = self.auto_dp.get_local_rank() * self.auto_pipe.get_pipe_len()
+                    hidden_feature = self.two_level_cache_test.get_hidden_feature(batch_idx, x, frozen_model).to(
+                        device_idx_start)
                 log_probs = pipe_model(hidden_feature)
             else:
                 log_probs = pipe_model(x)
@@ -69,62 +73,3 @@ class AutoCache:
                     hidden_feature = frozen_model(x)
                 log_probs = pipe_model(hidden_feature)
         return log_probs
-
-    #
-    # def cache_train_extracted_hidden_feature(self, batch_idx, extracted_feature):
-    #     if not self.is_enable:
-    #         return
-    #     self.train_extracted_features[batch_idx] = extracted_feature
-    #
-    # def cache_test_extracted_hidden_feature(self, batch_idx, extracted_feature):
-    #     if not self.is_enable:
-    #         return
-    #     self.test_extracted_features[batch_idx] = extracted_feature
-
-    def cache_train_extracted_hidden_feature(self, batch_idx, extracted_feature):
-        if not self.is_enable:
-            return
-        self.train_extracted_features[batch_idx] = extracted_feature.cpu()
-
-    def cache_test_extracted_hidden_feature(self, batch_idx, extracted_feature):
-        if not self.is_enable:
-            return
-        self.test_extracted_features[batch_idx] = extracted_feature.cpu()
-
-    # def get_train_extracted_hidden_feature(self, batch_idx):
-    #     if not self.is_enable:
-    #         return None
-    #     # the hidden features are always in device 0
-    #     if batch_idx not in self.train_extracted_features.keys():
-    #         return None
-    #     logging.info("--------get_train_extracted_hidden_feature------------")
-    #     return self.train_extracted_features[batch_idx]
-    #
-    # def get_test_extracted_hidden_feature(self, batch_idx):
-    #     if not self.is_enable:
-    #         return None
-    #     if batch_idx not in self.test_extracted_features.keys():
-    #         return None
-    #     # the hidden features are always in device 0
-    #     logging.info("--------get_test_extracted_hidden_feature------------")
-    #     return self.test_extracted_features[batch_idx]
-
-    def get_train_extracted_hidden_feature(self, batch_idx):
-        if not self.is_enable:
-            return None
-        # the hidden features are always in device 0
-        if batch_idx not in self.train_extracted_features.keys():
-            return None
-        logging.info("--------get_train_extracted_hidden_feature------------")
-        device_idx_start = self.auto_dp.get_local_rank() * self.auto_pipe.get_pipe_len()
-        return self.train_extracted_features[batch_idx].to(device_idx_start)
-
-    def get_test_extracted_hidden_feature(self, batch_idx):
-        if not self.is_enable:
-            return None
-        if batch_idx not in self.test_extracted_features.keys():
-            return None
-        # the hidden features are always in device 0
-        logging.info("--------get_test_extracted_hidden_feature------------")
-        device_idx_start = self.auto_dp.get_local_rank() * self.auto_pipe.get_pipe_len()
-        return self.test_extracted_features[batch_idx].to(device_idx_start)

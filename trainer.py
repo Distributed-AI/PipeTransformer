@@ -52,9 +52,9 @@ class VisionTransformerTrainer:
         one case is that pipe len is not changed but the frozen layer number is changed, so we need to update the cache
         """
         if is_frozen_layer_changed:
-            self.auto_cache.update_num_frozen_layers(self.auto_pipe.get_num_frozen_layers(),
-                                                     len(self.train_dl),
-                                                     len(self.test_dl))
+            self.auto_cache.reset(self.auto_pipe.get_num_frozen_layers(),
+                                  len(self.train_dl),
+                                  len(self.test_dl))
 
     def train(self, epoch):
         if self.auto_freeze.is_freeze_open():

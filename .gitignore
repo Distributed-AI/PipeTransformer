@@ -1,2 +1,7 @@
 .idea
 *.pyc
+*.gz
+
+data/*
+wandb
+*.npz

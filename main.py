@@ -23,6 +23,12 @@ if __name__ == "__main__":
 
     parser.add_argument("--global_rank", type=int, default=0)
 
+    parser.add_argument("--master_addr", type=str, default="127.0.0.1")
+
+    parser.add_argument("--master_port", type=int, default=11111)
+
+    parser.add_argument("--if_name", type=str, default="lo")
+
     parser.add_argument('--model', type=str, default='transformer', metavar='N',
                         help='neural network used in training')
 
@@ -72,11 +78,15 @@ if __name__ == "__main__":
     parser.add_argument("--is_infiniband", default=1, type=int,
                         help="is_infiniband")
 
+    parser.add_argument("--do_freeze", default=1, type=int,
+                        help="do freeze")
+
+    parser.add_argument("--do_cache", default=1, type=int,
+                        help="do cache")
+
     parser.add_argument("--is_debug_mode", default=0, type=int,
                         help="is_debug_mode")
 
-    parser.add_argument("--do_freeze", default=1, type=int,
-                        help="do freeze")
 
     args = parser.parse_args()
 
@@ -94,7 +104,7 @@ if __name__ == "__main__":
                  ", process Name = " + str(psutil.Process(os.getpid())))
 
     # init ddp global group
-    auto_dp = AutoDataParallel(args.pipe_len_at_the_beginning)
+    auto_dp = AutoDataParallel(args)
     auto_dp.init_ddp(args)
     auto_dp.init_rpc()
     # auto_dp.warm_up()
@@ -136,8 +146,11 @@ if __name__ == "__main__":
                                 output_head, args.pipe_len_at_the_beginning, num_layers)
 
     # create FP cache with CPU memory
-    auto_cache = AutoCache(auto_dp, auto_pipe)
-    auto_cache.disable()
+    auto_cache = AutoCache(auto_dp, auto_pipe, model.get_hidden_feature_size() * args.batch_size)
+    if args.do_cache:
+        auto_cache.enable()
+    else:
+        auto_cache.disable()
 
     # start training
     freeze_point = dict()

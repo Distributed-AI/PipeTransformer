@@ -7,12 +7,13 @@ NODE_RANK=$3
 MASTER_ADDR=$4
 MASTER_PORT=$5
 IB=$6
-LR=$7
-BS=$8
-DATASET=$9
-DATADIR=${10}
-PIPE_LEN=${11}
-FREEZE=${12}
+IF_NAME=$7
+LR=$8
+BS=$9
+DATASET=$10
+DATADIR=${11}
+PIPE_LEN=${12}
+FREEZE=${13}
 
 python -m torch.distributed.launch \
 --nproc_per_node=$NPROC_PER_NODE --nnodes=$NNODE --node_rank=$NODE_RANK \
@@ -20,6 +21,7 @@ python -m torch.distributed.launch \
 --master_port $MASTER_PORT \
 main.py \
 --is_infiniband $IB \
+--if_name $IF_NAME \
 --lr $LR \
 --batch_size $BS \
 --dataset $DATASET \

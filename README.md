@@ -4,8 +4,8 @@
 
 1.create conda environment
 ```
-conda create --name pipe_ditributed python=3.7.4
-conda activate pipe_ditributed
+conda create --name pipe_distributed python=3.7.4
+conda activate pipe_distributed
 ```
 
 2.install the latest nightly Pytorch, in which DPipe (torchpipe) is supported.
@@ -13,7 +13,9 @@ conda activate pipe_ditributed
 ```
 torch.__version__
 '1.8.0.dev20201219
-conda install pytorch torchvision torchaudio cudatoolkit=10.2 -c pytorch-nightly
+conda install pytorch==1.8.0.dev20201219 torchvision torchaudio cudatoolkit=10.2 -c pytorch-nightly
+
+
 ```
 
 3.install other packages
@@ -48,6 +50,15 @@ nohup sh run_ddp.sh 8 2 1 192.168.11.1 11111 > ./machine2.txt 2>&1 &
 ```
 
 ## Pipe and DDP (Elastic)
+
+debug at 4GPUs:
+```
+sh run_elastic_pipe.sh 4 1 0 192.168.1.73 22222 0 "wlx9cefd5fb3821" 0.03 120 cifar10 ./data/cifar10/ 4 1
+
+sh run_elastic_pipe.sh 4 1 0 192.168.1.73 22222 0 "wlx9cefd5fb3821" 0.03 120 imagenet /home/chaoyanghe/sourcecode/dataset/cv/ImageNet 4 1
+
+
+```
 CIFAR 10
 ```
 nohup sh run_elastic_pipe.sh 8 2 0 192.168.11.2 22222 1 0.03 320 cifar10 ./data/cifar10/ 8 1 > ./PipeTransformer-CIFAR10-node0.log 2>&1 &
