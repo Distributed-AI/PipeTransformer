@@ -237,8 +237,8 @@ class TwoLevelCache:
             data_q_i = mp.Queue()
             self.data_q[c_i] = data_q_i
 
-        self.host_memory_percentage = 0.8/processes_num
-        self.disk_memroy_percentage = 0.8/processes_num
+        self.host_memory_percentage = 0.8
+        self.disk_memroy_percentage = 0.8
 
     def get_hidden_feature(self, batch_idx, x, model):
         if not self.is_cache_ready:
