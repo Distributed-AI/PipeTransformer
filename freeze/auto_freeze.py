@@ -94,5 +94,17 @@ class AutoFreeze:
             logging.info("layer num: ", self.num_freeze_layers)
 
 
+class TestModel(torch.nn.Module):
+    def __init__(self):
+        super(TestModel, self).__init__()
+        self.net1 = torch.nn.Linear(10, 10)
+        self.relu = torch.nn.ReLU()
+        self.net2 = torch.nn.Linear(10, 5)
+
+    def forward(self, x):
+        x = self.relu(self.net1(x))
+        return self.net2(x)
+
+
 if __name__ == "__main__":
-    pass
+    auto_freeze = AutoFreeze()
