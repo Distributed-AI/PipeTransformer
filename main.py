@@ -81,7 +81,7 @@ if __name__ == "__main__":
     parser.add_argument("--do_freeze", default=1, type=int,
                         help="do freeze")
 
-    parser.add_argument("--do_cache", default=1, type=int,
+    parser.add_argument("--do_cache", default=0, type=int,
                         help="do cache")
 
     parser.add_argument("--is_debug_mode", default=0, type=int,
