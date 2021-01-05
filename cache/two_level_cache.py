@@ -192,6 +192,7 @@ class TwoLevelCache:
         self.disk_memory_percentage = 0.2
 
         self.chunk_idx = 0
+        self.chunk_batch_idx = 0
 
         self.manager = mp.Manager()
         self.data_dict = self.manager.dict()
@@ -234,6 +235,27 @@ class TwoLevelCache:
         return hidden_feature
 
     def write_one_batch(self, batch_idx, x, model):
+        logging.info("self.chunk_size = %d, self.chunk_num  = %d, batch_idx = %d" % (
+            self.chunk_size, self.chunk_num, batch_idx))
+
+        chunk_idx = math.floor(batch_idx / self.chunk_size)
+        chunk_batch_idx = batch_idx % self.chunk_size
+        logging.info("main process - chunk_idx = %d" % chunk_idx)
+
+        hidden_feature = model(x).detach().cpu()
+
+        # one case is that the disk memory is full but the host memory is still available
+        if not self.is_host_memory_full():
+            logging.info("####################both are not full. chunk_idx = %d" % chunk_idx)
+            self.data_dict[chunk_idx][chunk_batch_idx] = hidden_feature
+        else:
+            if self.chunk_idx_starting_recompute == -1:
+                self.chunk_idx = chunk_idx
+                self.chunk_batch_idx = chunk_batch_idx
+                self.chunk_idx_starting_recompute = 0
+        return hidden_feature
+
+    def write_one_batch_backup(self, batch_idx, x, model):
         logging.info("self.chunk_size = %d, self.chunk_num  = %d, batch_idx = %d" % (
             self.chunk_size, self.chunk_num, batch_idx))
 
@@ -309,6 +331,17 @@ class TwoLevelCache:
         return hidden_feature
 
     def read_one_batch(self, batch_idx, x, model):
+
+        chunk_idx = math.floor(batch_idx / self.chunk_size)
+        chunk_batch_idx = batch_idx % self.chunk_size
+        logging.info("main process - chunk_idx = %d, batch_idx = %d" % (chunk_idx, batch_idx))
+        if chunk_idx < self.chunk_idx and chunk_batch_idx < self.chunk_batch_idx:
+            hidden_feature = self.data_dict[chunk_idx][chunk_batch_idx]
+        else:
+            hidden_feature = model(x)
+        return hidden_feature
+
+    def read_one_batch_backup(self, batch_idx, x, model):
         if batch_idx == 0:
             self.chunk_idx = -1
         chunk_idx = math.floor(batch_idx / self.chunk_size)
