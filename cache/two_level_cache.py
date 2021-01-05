@@ -213,7 +213,7 @@ class TwoLevelCache:
         self.chunk_num = math.ceil(self.batch_size / self.chunk_size)
         logging.info("self.chunk_size = %d, self.chunk_num  = %d" % (self.chunk_size, self.chunk_num))
 
-        self.host_memory_percentage = 0.25
+        self.host_memory_percentage = 0.80
         self.disk_memory_percentage = 0.95
 
         for c_i in range(self.chunk_num):
