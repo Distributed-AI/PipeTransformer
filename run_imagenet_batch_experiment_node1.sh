@@ -1,4 +1,4 @@
-sh run_elastic_pipe.sh 8 2 1 192.168.11.2 22222 1 "ib0" 0.06 400 imagenet /home/chaoyanghe/dataset/cv/imagenet 8 1
+sh run_elastic_pipe.sh 8 2 1 192.168.11.2 11122 1 "ib0" 0.06 400 imagenet /home/chaoyanghe/dataset/cv/imagenet 8 1
 
 sh run_elastic_pipe.sh 8 2 1 192.168.11.2 22222 1 "ib0" 0.003 400 imagenet /home/chaoyanghe/dataset/cv/imagenet 8 1
 
