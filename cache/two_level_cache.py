@@ -13,6 +13,40 @@ import torch.multiprocessing as mp
 import wandb
 
 """
+Traceback (most recent call last):
+  File "main.py", line 164, in <module>
+    trainer.train_and_eval(freeze_point)
+  File "/home/chaoyanghe/PipeTransformer/trainer.py", line 39, in train_and_eval
+    self.train(epoch)
+  File "/home/chaoyanghe/PipeTransformer/trainer.py", line 108, in train
+    log_probs = self.auto_cache.infer_train(self.frozen_model, self.pipe_model, x, batch_idx)
+  File "/home/chaoyanghe/PipeTransformer/cache/auto_cache.py", line 44, in infer_train
+    hidden_feature = self.two_level_cache_train.get_hidden_feature(batch_idx, x, frozen_model).to(
+  File "/home/chaoyanghe/PipeTransformer/cache/two_level_cache.py", line 232, in get_hidden_feature
+    hidden_feature = self.write_one_batch(batch_idx, x, model)
+  File "/home/chaoyanghe/PipeTransformer/cache/two_level_cache.py", line 251, in write_one_batch
+    self.data_dict[chunk_idx][chunk_batch_idx] = hidden_feature
+  File "<string>", line 2, in __setitem__
+  File "/home/chaoyanghe/anaconda3/envs/pipe_ditributed/lib/python3.7/multiprocessing/managers.py", line 834, in _callmethod
+    raise convert_to_error(kind, result)
+multiprocessing.managers.RemoteError: 
+---------------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/chaoyanghe/anaconda3/envs/pipe_ditributed/lib/python3.7/multiprocessing/managers.py", line 234, in serve_client
+    request = recv()
+  File "/home/chaoyanghe/anaconda3/envs/pipe_ditributed/lib/python3.7/multiprocessing/connection.py", line 251, in recv
+    return _ForkingPickler.loads(buf.getbuffer())
+  File "/home/chaoyanghe/anaconda3/envs/pipe_ditributed/lib/python3.7/site-packages/torch/multiprocessing/reductions.py", line 282, in rebuild_storage_fd
+    fd = df.detach()
+  File "/home/chaoyanghe/anaconda3/envs/pipe_ditributed/lib/python3.7/multiprocessing/resource_sharer.py", line 58, in detach
+    return reduction.recv_handle(conn)
+  File "/home/chaoyanghe/anaconda3/envs/pipe_ditributed/lib/python3.7/multiprocessing/reduction.py", line 185, in recv_handle
+    return recvfds(s, 1)[0]
+  File "/home/chaoyanghe/anaconda3/envs/pipe_ditributed/lib/python3.7/multiprocessing/reduction.py", line 161, in recvfds
+    len(ancdata))
+RuntimeError: received 0 items of ancdata
+
+
 When disk is OOM:
 
 Traceback (most recent call last):

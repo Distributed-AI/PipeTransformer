@@ -4,6 +4,7 @@ import numpy as np
 import torch
 
 from model.vit.vision_transformer_origin import CONFIGS, VisionTransformer
+from pipe.auto_pipe import AutoElasticPipe
 from pipe.pipe_model_builder import OutputHead
 
 
@@ -13,6 +14,7 @@ class AutoFreeze:
         self.num_freeze_layers = 0
         self.is_freeze = True
 
+        self.grad_tensor_dict = {}
         self.prev_intermediate_grad_dict = None
         self.grad_eval_iteration = 500
         self.percentile = 50
@@ -128,4 +130,26 @@ if __name__ == "__main__":
     num_layers = config.transformer.num_layers
     logging.info("num_layers = %d" % num_layers)
 
+    print(model)
+
+    # create pipe and DDP
+    auto_pipe = AutoElasticPipe(auto_dp.get_world_size(), args.local_rank, args.global_rank, model,
+                                output_head, args.pipe_len_at_the_beginning, num_layers)
+
+    # create FP cache with CPU memory
+    auto_cache = AutoCache(auto_dp, auto_pipe, model.get_hidden_feature_size() * args.batch_size)
+    if args.do_cache:
+        auto_cache.enable()
+    else:
+        auto_cache.disable()
+
+    # start training
+    freeze_point = dict()
+    freeze_point['epoch'] = 0
+    frozen_model, pipe_model, is_pipe_len_changed, is_frozen_layer_changed = auto_dp.transform(auto_pipe, None, model,
+                                                                                               0, freeze_point)
+    freeze_point = auto_dp.get_freeze_point()
+
+
     auto_freeze = AutoFreeze()
+    auto_freeze.accumulate(model)
