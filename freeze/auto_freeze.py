@@ -15,8 +15,10 @@ class AutoFreeze:
     def __init__(self):
         self.model = None
         self.num_freeze_layers = 0
-        self.is_freeze = True
+        self.is_freeze = False
         self.is_hand_crafted = False
+
+        self.is_grad_norm_analysis = True
 
         self.num_layer = 12
         self.grad_accumulated_by_layer = dict()
@@ -78,6 +80,8 @@ class AutoFreeze:
 
         if not self.is_grad_accumulated_by_layer_updated:
             return self.num_freeze_layers
+        if self.num_freeze_layers == self.num_layer:
+            return self.num_freeze_layers
 
         # Calculate layer-wise gradient changing ratio
         grad_norm_by_layer = dict()
@@ -126,6 +130,9 @@ class AutoFreeze:
 
             self.last_grad_norm_by_layer = grad_norm_by_layer
         logging.info("epoch = %d, frozen_layer_idx = %s" % (epoch, str(frozen_layer_idx)))
+        # only analyze the grad norm
+        if self.is_grad_norm_analysis:
+            return 0
         if frozen_layer_idx != -1:
             self.num_freeze_layers = frozen_layer_idx + 1
         logging.info("epoch = %d, num_frozen_layer = %s" % (epoch, str(self.num_freeze_layers)))

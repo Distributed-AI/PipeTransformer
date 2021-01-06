@@ -79,7 +79,7 @@ if __name__ == "__main__":
     parser.add_argument("--is_infiniband", default=1, type=int,
                         help="is_infiniband")
 
-    parser.add_argument("--do_freeze", default=1, type=int,
+    parser.add_argument("--do_freeze", default=0, type=int,
                         help="do freeze")
 
     parser.add_argument("--do_cache", default=0, type=int,
@@ -137,7 +137,9 @@ if __name__ == "__main__":
 
     # create AutoFreeze algorithm
     auto_freeze = AutoFreeze()
-    if args.do_freeze == 0:
+    if args.do_freeze == 1:
+        auto_freeze.do_freeze()
+    else:
         auto_freeze.do_not_freeze()
 
     # create pipe and DDP
