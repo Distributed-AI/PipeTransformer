@@ -3,6 +3,9 @@ import logging
 import numpy as np
 import torch
 
+from model.vit.vision_transformer_origin import CONFIGS, VisionTransformer
+from pipe.pipe_model_builder import OutputHead
+
 
 class AutoFreeze:
     def __init__(self):
@@ -26,7 +29,7 @@ class AutoFreeze:
     def get_hand_crafted_frozen_layers_by_epoch(self, epoch):
         num_freeze_layers = 0
         if epoch == 0:
-            num_freeze_layers = 0
+            num_freeze_layers = 6
         elif epoch > 1 and epoch <= 2:
             num_freeze_layers = 6
         elif epoch > 2 and epoch <= 5:
@@ -109,4 +112,20 @@ class TestModel(torch.nn.Module):
 
 
 if __name__ == "__main__":
+    # create model
+    model_type = 'vit-B_16'
+    # model_type = 'vit-L_32'
+    # model_type = 'vit-H_14'
+    config = CONFIGS[model_type]
+
+    logging.info("Vision Transformer Configuration: " + str(config))
+    model = VisionTransformer(config, 224, zero_head=True, num_classes=10, vis=False)
+    model_size = sum(p.numel() for p in model.parameters() if p.requires_grad) / 1e6
+    logging.info("model_size = " + str(model_size))
+
+    output_head = OutputHead(config.hidden_size, 10)
+
+    num_layers = config.transformer.num_layers
+    logging.info("num_layers = %d" % num_layers)
+
     auto_freeze = AutoFreeze()

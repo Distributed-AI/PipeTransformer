@@ -12,7 +12,7 @@ from data_preprocessing.data_loader import CVDataset
 from dp.auto_dp import AutoDataParallel
 from freeze.auto_freeze import AutoFreeze
 from model.vit.vision_transformer_origin import VisionTransformer
-from model.vit.vision_transformer_task_specific_layer import CONFIGS
+from model.vit.vision_transformer_origin import CONFIGS
 from pipe.auto_pipe import AutoElasticPipe
 from pipe.pipe_model_builder import OutputHead
 from trainer import VisionTransformerTrainer

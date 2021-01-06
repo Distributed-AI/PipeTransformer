@@ -242,11 +242,12 @@ class TwoLevelCache:
         chunk_batch_idx = batch_idx % self.chunk_size
         logging.info("main process - chunk_idx = %d" % chunk_idx)
 
-        hidden_feature = model(x).detach().cpu()
+        # hidden_feature = model(x).detach().cpu()
+        hidden_feature = torch.randn([500, 768, 196])
 
         # one case is that the disk memory is full but the host memory is still available
         if not self.is_host_memory_full():
-            logging.info("####################both are not full. chunk_idx = %d" % chunk_idx)
+            logging.info("####################host memory is not full. chunk_idx = %d" % chunk_idx)
             self.data_dict[chunk_idx][chunk_batch_idx] = hidden_feature
         else:
             if self.chunk_idx_starting_recompute == -1:
@@ -551,7 +552,7 @@ if __name__ == '__main__':
                         format='%(processName)s - %(asctime)s.%(msecs)03d - {%(module)s.py (%(lineno)d)} - %(funcName)s(): %(message)s',
                         datefmt='%Y-%m-%d,%H:%M:%S')
     # from data loader
-    batch_size = 100
+    batch_size = 800
 
     hidden_feature_size = 512 * 769 * 197 * 4
 
