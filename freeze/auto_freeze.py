@@ -18,7 +18,7 @@ class AutoFreeze:
         self.is_freeze = False
         self.is_hand_crafted = False
 
-        self.is_grad_norm_analysis = True
+        self.is_grad_norm_analysis = False
 
         self.num_layer = 12
         self.grad_accumulated_by_layer = dict()
