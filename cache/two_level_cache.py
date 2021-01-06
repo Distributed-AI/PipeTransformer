@@ -261,7 +261,7 @@ class TwoLevelCache:
         self.disk_storage_process.daemon = True
         self.disk_storage_process.start()
 
-    def get_hidden_feature(self, batch_idx, x, model):
+    def get_hidden_feature(self, epoch, batch_idx, x, model):
         if not self.is_cache_ready:
             hidden_feature = self.write_one_batch(batch_idx, x, model)
         else:

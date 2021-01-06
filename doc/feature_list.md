@@ -1,3 +1,9 @@
+System-wise benefits:
+
+1. computation can be reused
+2. communication is not required
+3. memory cost is reduced
+
 # System-wise Optimization:
 
 1. DPipe: a pytorch compatible pipe parallelism for large model like BERT, Vision Transformer.
@@ -10,17 +16,20 @@
 (1) make the newly created parallel processes in DP can communicate with the existing DP processes.
 (2) skip parameters during cross-pipe synchronization, largely reducing the communication cost.
 
-5. Forward Cache: Overlap frozen bp and pipe bubble are suitable for the time when the fp time in the early stage is small, or when it is equivalent to the bp time
+5. Dynamic Cache: 
+Two-level shared memory: each frozen layer only computes the forward propagation once!
+
+https://docs.python.org/3/library/multiprocessing.shared_memory.html
 
 6. When the cache is responsible for a lot of frozen layers in the later stage, because the fp time is much longer than bp.
+Overlap frozen bp and pipe bubble are suitable for the time when the fp time in the early stage is small, or when it is equivalent to the bp time
 
 (5 and 6 are combination of two swords)
 
-7. Depending on the model size, adaptively choose DP or Pipe in a single machine.
+7. Model-size adaptive: depending on the model size, adaptively choose DP or Pipe in a single machine.
 (1) Single GPU
 (2) Single Machine, Multiple GPUs
 (3) Multiple Machines, Multiple GPUs
-
 
 
 # Machine Learning-wise Optimization

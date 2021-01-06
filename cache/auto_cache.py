@@ -2,7 +2,7 @@ import logging
 
 import torch
 
-from cache.two_level_cache import TwoLevelCache
+from cache.one_level_cache import OneLevelCache
 
 
 class AutoCache:
@@ -15,8 +15,8 @@ class AutoCache:
         self.batch_num_test = 0
         self.hidden_feature_size = hidden_feature_size
 
-        self.two_level_cache_train = TwoLevelCache()
-        self.two_level_cache_test = TwoLevelCache()
+        self.two_level_cache_train = OneLevelCache()
+        self.two_level_cache_test = OneLevelCache()
 
         self.is_enable = False
 
@@ -35,13 +35,13 @@ class AutoCache:
     def disable(self):
         self.is_enable = False
 
-    def infer_train(self, frozen_model, pipe_model, x, batch_idx):
+    def infer_train(self, frozen_model, pipe_model, x, batch_idx, epoch):
         if self.is_enable:
             if frozen_model is not None:
                 logging.debug("infer_train. batch_idx = %d" % batch_idx)
                 with torch.no_grad():
                     device_idx_start = self.auto_dp.get_local_rank() * self.auto_pipe.get_pipe_len()
-                    hidden_feature = self.two_level_cache_train.get_hidden_feature(batch_idx, x, frozen_model).to(
+                    hidden_feature = self.two_level_cache_train.get_hidden_feature(epoch, batch_idx, x, frozen_model).to(
                         device_idx_start)
                 log_probs = pipe_model(hidden_feature)
             else:
@@ -55,12 +55,12 @@ class AutoCache:
                 log_probs = pipe_model(hidden_feature)
         return log_probs
 
-    def infer_test(self, frozen_model, pipe_model, x, batch_idx):
+    def infer_test(self, frozen_model, pipe_model, x, batch_idx, epoch):
         if self.is_enable:
             if frozen_model is not None:
                 with torch.no_grad():
                     device_idx_start = self.auto_dp.get_local_rank() * self.auto_pipe.get_pipe_len()
-                    hidden_feature = self.two_level_cache_test.get_hidden_feature(batch_idx, x, frozen_model).to(
+                    hidden_feature = self.two_level_cache_test.get_hidden_feature(epoch, batch_idx, x, frozen_model).to(
                         device_idx_start)
                 log_probs = pipe_model(hidden_feature)
             else:

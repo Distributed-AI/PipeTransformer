@@ -106,7 +106,7 @@ class VisionTransformerTrainer:
             target = target.to(self.device_last)
 
             optimizer.zero_grad()
-            log_probs = self.auto_cache.infer_train(self.frozen_model, self.pipe_model, x, batch_idx)
+            log_probs = self.auto_cache.infer_train(self.frozen_model, self.pipe_model, x, batch_idx, epoch)
 
             loss = criterion(log_probs, target)
             loss.backward()
@@ -139,7 +139,7 @@ class VisionTransformerTrainer:
                 wandb.log({"comm_frequency": comm_freq, "epoch": epoch})
                 wandb.log({"sample_throughput": sample_num_throughput, "epoch": epoch})
             logging.info("-------------------------------------")
-            if iteration_num == 2 and self.args.is_debug_mode:
+            if iteration_num == 3 and self.args.is_debug_mode:
                 break
 
     def eval(self, epoch):
@@ -147,7 +147,7 @@ class VisionTransformerTrainer:
         # if epoch == self.args.epochs - 1:
         if (epoch + 1) % self.args.freq_eval_train_acc == 0 or epoch == self.args.epochs - 1:
 
-            train_tot_correct, train_num_sample, train_loss = self._infer(self.train_dl, is_train=True)
+            train_tot_correct, train_num_sample, train_loss = self._infer(self.train_dl, epoch, is_train=True)
             # test on training dataset
             train_acc = train_tot_correct / train_num_sample
             train_loss = train_loss / train_num_sample
@@ -162,7 +162,7 @@ class VisionTransformerTrainer:
         # if epoch == self.args.epochs - 1:
         if (epoch + 1) % self.args.freq_eval_test_acc == 0 or epoch == self.args.epochs - 1:
 
-            test_tot_correct, test_num_sample, test_loss = self._infer(self.test_dl, is_train=False)
+            test_tot_correct, test_num_sample, test_loss = self._infer(self.test_dl, epoch, is_train=False)
 
             # test on test dataset
             test_acc = test_tot_correct / test_num_sample
@@ -175,7 +175,7 @@ class VisionTransformerTrainer:
                 logging.info(stats)
 
 
-    def _infer(self, test_data, is_train):
+    def _infer(self, test_data, epoch, is_train):
         if self.frozen_model is not None:
             self.frozen_model.eval()
         self.pipe_model.eval()
@@ -190,9 +190,9 @@ class VisionTransformerTrainer:
                 target = target.to(self.device_last)
 
                 if is_train:
-                    log_probs = self.auto_cache.infer_train(self.frozen_model, self.pipe_model, x, batch_idx)
+                    log_probs = self.auto_cache.infer_train(self.frozen_model, self.pipe_model, x, batch_idx, epoch)
                 else:
-                    log_probs = self.auto_cache.infer_test(self.frozen_model, self.pipe_model, x, batch_idx)
+                    log_probs = self.auto_cache.infer_test(self.frozen_model, self.pipe_model, x, batch_idx, epoch)
 
                 loss = criterion(log_probs, target)
                 _, predicted = torch.max(log_probs, -1)
@@ -200,7 +200,7 @@ class VisionTransformerTrainer:
                 test_acc += correct.item()
                 test_loss += loss.item() * target.size(0)
                 test_total += target.size(0)
-                if iteration_num == 2 and self.args.is_debug_mode:
+                if iteration_num == 3 and self.args.is_debug_mode:
                     break
 
         return test_acc, test_total, test_loss
