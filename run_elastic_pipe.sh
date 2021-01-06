@@ -10,7 +10,7 @@ IB=$6
 IF_NAME=$7
 LR=$8
 BS=$9
-DATASET=$10
+DATASET=${10}
 DATADIR=${11}
 PIPE_LEN=${12}
 FREEZE=${13}
@@ -21,6 +21,7 @@ python -m torch.distributed.launch \
 --master_port $MASTER_PORT \
 main.py \
 --is_infiniband $IB \
+--master_addr $MASTER_ADDR \
 --if_name $IF_NAME \
 --lr $LR \
 --batch_size $BS \

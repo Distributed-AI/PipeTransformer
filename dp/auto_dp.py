@@ -31,6 +31,7 @@ class AutoDataParallel:
         # key: rank; value: data_rank
         self.active_data_ranks = dict()
         self.freeze_point = None
+        self.message_len = 50
 
         self.comm_broadcast_group = None
 
@@ -185,7 +186,7 @@ class AutoDataParallel:
         self.update_active_ranks()
         return len(self.active_data_ranks)
 
-    def transform(self, auto_pipe, frozen_model, pipe_model, num_frozen_layers, freeze_point):
+    def transform(self, auto_pipe, auto_freeze, frozen_model, pipe_model, num_frozen_layers, freeze_point):
         self.freeze_point = freeze_point
         if auto_pipe.get_num_frozen_layers() == num_frozen_layers:
             # make sure the AutoCache can reuse the preceding epoch's cache
@@ -206,13 +207,13 @@ class AutoDataParallel:
 
         if self.is_active():
             frozen_model, pipe_model, is_pipe_len_changed, is_frozen_layer_changed = self._active_process_impl(
-                auto_pipe, num_frozen_layers)
+                auto_pipe, auto_freeze, num_frozen_layers)
         else:
             frozen_model, pipe_model, is_pipe_len_changed, is_frozen_layer_changed = self._inactive_process_impl(
-                auto_pipe)
+                auto_pipe, auto_freeze)
         return frozen_model, pipe_model, is_pipe_len_changed, is_frozen_layer_changed
 
-    def _active_process_impl(self, auto_pipe, num_frozen_layers):
+    def _active_process_impl(self, auto_pipe, auto_freeze, num_frozen_layers):
         is_pipe_len_changed = False
         is_frozen_layer_changed = False
         if auto_pipe.get_num_frozen_layers() != num_frozen_layers:
@@ -225,11 +226,14 @@ class AutoDataParallel:
             # broadcast control messages
             logging.info("####### broad cast control message (num_frozen_layers, pipe_len) to all processes #######")
             max_parameter_per_gpu_at_beginning = auto_pipe.get_max_parameter_per_gpu_at_beginning()
+            num_freeze_layers, last_grad_norm_by_layer = auto_freeze.get_status()
+
             broad_cast_msg = self._build_broad_cast_message(num_frozen_layers, pipe_len,
-                                                            max_parameter_per_gpu_at_beginning, self.freeze_point)
+                                                            max_parameter_per_gpu_at_beginning, self.freeze_point,
+                                                            last_grad_norm_by_layer)
             if self.global_rank == 0:
-                logging.info("local_rank = %d, global_rank = %d - *************************dist_send send(START) "
-                             % (self.local_rank, self.global_rank))
+                logging.info("local_rank = %d, global_rank = %d - *************************dist_send send(START): %s"
+                             % (self.local_rank, self.global_rank, str(broad_cast_msg)))
                 dist_broadcast(broad_cast_msg, 0, self.comm_broadcast_group)
                 logging.info("local_rank = %d, global_rank = %d - *************************dist_send send(END)"
                              % (self.local_rank, self.global_rank))
@@ -242,18 +246,20 @@ class AutoDataParallel:
         pipe_model = self.generate_ddp_model(pipe_model, pipe_len)
         return frozen_model, pipe_model, is_pipe_len_changed, is_frozen_layer_changed
 
-    def _inactive_process_impl(self, auto_pipe):
+    def _inactive_process_impl(self, auto_pipe, auto_freeze):
 
-        broad_cast_msg = [float(i * 0.0) for i in range(20)]
+        broad_cast_msg = [float(i * 0.0) for i in range(self.message_len)]
         frozen_message = dist_broadcast(broad_cast_msg, 0, self.comm_broadcast_group)
         num_frozen_layers, pipe_len, max_parameter_per_gpu_at_beginning, \
-        newly_added_active_ranks, freeze_point = self._parse_broad_cast_message(frozen_message)
+        newly_added_active_ranks, freeze_point, last_grad_norm_by_layer = self._parse_broad_cast_message(frozen_message)
 
         is_pipe_len_changed = True
         is_frozen_layer_changed = True
         self.compressed_pipe_len = pipe_len
         auto_pipe.set_pipe_len(pipe_len)
         auto_pipe.set_max_parameter_per_gpu_at_beginning(max_parameter_per_gpu_at_beginning)
+        auto_freeze.update_status(num_frozen_layers, last_grad_norm_by_layer)
+
         self.create_active_process_group()
         self.clear_memory()
 
@@ -264,12 +270,13 @@ class AutoDataParallel:
             pipe_model = self.generate_ddp_model(pipe_model, pipe_len)
         else:
             frozen_model, pipe_model, is_pipe_len_changed, is_frozen_layer_changed = self._inactive_process_impl(
-                auto_pipe)
+                auto_pipe, auto_freeze)
         return frozen_model, pipe_model, is_pipe_len_changed, is_frozen_layer_changed
 
-    def _build_broad_cast_message(self, num_frozen_layers, pipe_len, max_parameter_per_gpu_at_beginning, freeze_point):
+    def _build_broad_cast_message(self, num_frozen_layers, pipe_len, max_parameter_per_gpu_at_beginning,
+                                  freeze_point, last_grad_norm_by_layer):
         logging.info("self.newly_added_active_ranks = " + str(self.newly_added_active_ranks))
-        broad_cast_msg = [float(i * 0.0) for i in range(20)]
+        broad_cast_msg = [float(i * 0.0) for i in range(self.message_len)]
         broad_cast_msg[0] = float(num_frozen_layers)
         broad_cast_msg[1] = float(pipe_len)
         broad_cast_msg[2] = max_parameter_per_gpu_at_beginning
@@ -277,6 +284,8 @@ class AutoDataParallel:
         broad_cast_msg[4] = float(len(self.newly_added_active_ranks))
         for idx, new_active_rank in enumerate(self.newly_added_active_ranks):
             broad_cast_msg[idx + 5] = float(new_active_rank)
+        for layer_idx in last_grad_norm_by_layer.keys():
+            broad_cast_msg[layer_idx + 5 + len(self.newly_added_active_ranks)] = last_grad_norm_by_layer[layer_idx]
         return broad_cast_msg
 
     def _parse_broad_cast_message(self, frozen_message):
@@ -301,9 +310,15 @@ class AutoDataParallel:
         newly_added_active_ranks = []
         for i in range(size_of_newly_added_active_ranks):
             newly_added_active_ranks.append(int(frozen_message[i + 5]))
-
         logging.info("newly_added_active_ranks = " + str(newly_added_active_ranks))
-        return num_frozen_layers, pipe_len, max_parameter_per_gpu_at_beginning, newly_added_active_ranks, freeze_point
+
+        last_grad_norm_by_layer = dict()
+        for layer_idx in range(self.args.num_layer):
+            last_grad_norm_by_layer[layer_idx] = float(frozen_message[layer_idx + 5 + size_of_newly_added_active_ranks])
+
+        logging.info("last_grad_norm_by_layer = " + str(last_grad_norm_by_layer))
+        return num_frozen_layers, pipe_len, max_parameter_per_gpu_at_beginning, \
+               newly_added_active_ranks, freeze_point, last_grad_norm_by_layer
 
     def observe_params_communicated(self, model):
         def my_hook(state, bucket):

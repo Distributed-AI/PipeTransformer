@@ -53,7 +53,7 @@ nohup sh run_ddp.sh 8 2 1 192.168.11.1 11111 > ./machine2.txt 2>&1 &
 
 debug at 4GPUs:
 ```
-sh run_elastic_pipe.sh 4 1 0 192.168.1.73 22222 0 "wlx9cefd5fb3821" 0.03 120 cifar10 ./data/cifar10/ 4 1
+nohup sh run_elastic_pipe.sh 4 1 0 192.168.1.73 11111 0 "wlx9cefd5fb3821" 0.03 60 cifar10 ./data/cifar10/ 4 1 > ./PipeTransformer-CIFAR10-freeze.log 2>&1 &
 
 sh run_elastic_pipe.sh 4 1 0 192.168.1.73 22222 0 "wlx9cefd5fb3821" 0.03 120 imagenet /home/chaoyanghe/sourcecode/dataset/cv/ImageNet 4 1
 

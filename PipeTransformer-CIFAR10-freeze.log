@@ -1,0 +1,1170 @@
+nohup: ignoring input
+MainProcess 2021-01-06,01:40:09.947 - {main.py (97)} - <module>(): Namespace(batch_size=60, client_optimizer='sgd', data_dir='./data/cifar10/', dataset='cifar10', decay_type='cosine', do_cache=0, do_freeze=1, epochs=10, freq_eval_test_acc=1, freq_eval_train_acc=4, global_rank=0, if_name='wlx9cefd5fb3821', img_size=224, is_debug_mode=0, is_distributed=1, is_infiniband=0, local_rank=0, lr=0.03, master_addr='192.168.1.73', master_port=22222, model='transformer', pipe_len_at_the_beginning=4, pretrained_dir='./model/vit/pretrained/ViT-B_16.npz', warmup_steps=2, wd=0)
+MainProcess 2021-01-06,01:40:09.948 - {main.py (103)} - <module>(): #############process ID = , host name = ChaoyangHe-GPU-RTX2080Tix4########, process ID = 51650, process Name = psutil.Process(pid=51650, name='python', status='running', started='01:40:08')
+MainProcess 2021-01-06,01:40:09.948 - {auto_dp.py (43)} - init_ddp(): Running basic DDP example on local rank 0.
+MainProcess 2021-01-06,01:40:09.948 - {auto_dp.py (65)} - init_ddp(): int(os.environ['RANK']) = 0
+MainProcess 2021-01-06,01:40:09.948 - {auto_dp.py (69)} - init_ddp(): world_size = 4
+MainProcess 2021-01-06,01:40:09.961 - {main.py (97)} - <module>(): Namespace(batch_size=60, client_optimizer='sgd', data_dir='./data/cifar10/', dataset='cifar10', decay_type='cosine', do_cache=0, do_freeze=1, epochs=10, freq_eval_test_acc=1, freq_eval_train_acc=4, global_rank=0, if_name='wlx9cefd5fb3821', img_size=224, is_debug_mode=0, is_distributed=1, is_infiniband=0, local_rank=3, lr=0.03, master_addr='192.168.1.73', master_port=22222, model='transformer', pipe_len_at_the_beginning=4, pretrained_dir='./model/vit/pretrained/ViT-B_16.npz', warmup_steps=2, wd=0)
+MainProcess 2021-01-06,01:40:09.962 - {main.py (103)} - <module>(): #############process ID = , host name = ChaoyangHe-GPU-RTX2080Tix4########, process ID = 51653, process Name = psutil.Process(pid=51653, name='python', status='running', started='01:40:08')
+MainProcess 2021-01-06,01:40:09.962 - {auto_dp.py (43)} - init_ddp(): Running basic DDP example on local rank 3.
+MainProcess 2021-01-06,01:40:09.962 - {auto_dp.py (65)} - init_ddp(): int(os.environ['RANK']) = 3
+MainProcess 2021-01-06,01:40:09.962 - {auto_dp.py (69)} - init_ddp(): world_size = 4
+MainProcess 2021-01-06,01:40:09.988 - {main.py (97)} - <module>(): Namespace(batch_size=60, client_optimizer='sgd', data_dir='./data/cifar10/', dataset='cifar10', decay_type='cosine', do_cache=0, do_freeze=1, epochs=10, freq_eval_test_acc=1, freq_eval_train_acc=4, global_rank=0, if_name='wlx9cefd5fb3821', img_size=224, is_debug_mode=0, is_distributed=1, is_infiniband=0, local_rank=2, lr=0.03, master_addr='192.168.1.73', master_port=22222, model='transformer', pipe_len_at_the_beginning=4, pretrained_dir='./model/vit/pretrained/ViT-B_16.npz', warmup_steps=2, wd=0)
+MainProcess 2021-01-06,01:40:09.988 - {main.py (103)} - <module>(): #############process ID = , host name = ChaoyangHe-GPU-RTX2080Tix4########, process ID = 51652, process Name = psutil.Process(pid=51652, name='python', status='running', started='01:40:08')
+MainProcess 2021-01-06,01:40:09.992 - {main.py (97)} - <module>(): Namespace(batch_size=60, client_optimizer='sgd', data_dir='./data/cifar10/', dataset='cifar10', decay_type='cosine', do_cache=0, do_freeze=1, epochs=10, freq_eval_test_acc=1, freq_eval_train_acc=4, global_rank=0, if_name='wlx9cefd5fb3821', img_size=224, is_debug_mode=0, is_distributed=1, is_infiniband=0, local_rank=1, lr=0.03, master_addr='192.168.1.73', master_port=22222, model='transformer', pipe_len_at_the_beginning=4, pretrained_dir='./model/vit/pretrained/ViT-B_16.npz', warmup_steps=2, wd=0)
+MainProcess 2021-01-06,01:40:10.002 - {auto_dp.py (43)} - init_ddp(): Running basic DDP example on local rank 2.
+MainProcess 2021-01-06,01:40:10.002 - {auto_dp.py (65)} - init_ddp(): int(os.environ['RANK']) = 2
+MainProcess 2021-01-06,01:40:10.002 - {auto_dp.py (69)} - init_ddp(): world_size = 4
+MainProcess 2021-01-06,01:40:10.003 - {main.py (103)} - <module>(): #############process ID = , host name = ChaoyangHe-GPU-RTX2080Tix4########, process ID = 51651, process Name = psutil.Process(pid=51651, name='python', status='running', started='01:40:08')
+MainProcess 2021-01-06,01:40:10.003 - {auto_dp.py (43)} - init_ddp(): Running basic DDP example on local rank 1.
+MainProcess 2021-01-06,01:40:10.003 - {auto_dp.py (65)} - init_ddp(): int(os.environ['RANK']) = 1
+MainProcess 2021-01-06,01:40:10.003 - {auto_dp.py (69)} - init_ddp(): world_size = 4
+MainProcess 2021-01-06,01:40:10.046 - {auto_dp.py (74)} - init_ddp(): init_process_group. local_rank = 2, global_rank = 2
+MainProcess 2021-01-06,01:40:10.046 - {auto_dp.py (74)} - init_ddp(): init_process_group. local_rank = 0, global_rank = 0
+MainProcess 2021-01-06,01:40:10.046 - {auto_dp.py (74)} - init_ddp(): init_process_group. local_rank = 1, global_rank = 1
+MainProcess 2021-01-06,01:40:10.046 - {auto_dp.py (74)} - init_ddp(): init_process_group. local_rank = 3, global_rank = 3
+MainProcess 2021-01-06,01:40:11.150 - {auto_dp.py (97)} - init_rpc(): init_rpc
+MainProcess 2021-01-06,01:40:11.150 - {auto_dp.py (97)} - init_rpc(): init_rpc
+MainProcess 2021-01-06,01:40:11.150 - {auto_dp.py (97)} - init_rpc(): init_rpc
+MainProcess 2021-01-06,01:40:11.150 - {data_loader.py (27)} - get_data(): load_data. dataset_name = cifar10
+MainProcess 2021-01-06,01:40:11.150 - {data_loader.py (27)} - get_data(): load_data. dataset_name = cifar10
+MainProcess 2021-01-06,01:40:11.150 - {data_loader.py (27)} - get_data(): load_data. dataset_name = cifar10
+MainProcess 2021-01-06,01:40:11.150 - {auto_dp.py (97)} - init_rpc(): init_rpc
+wandb: Currently logged in as: automl (use `wandb login --relogin` to force relogin)
+Files already downloaded and verifiedFiles already downloaded and verified
+
+Files already downloaded and verified
+Files already downloaded and verified
+Files already downloaded and verified
+Files already downloaded and verified
+wandb: Tracking run with wandb version 0.10.12
+wandb: Syncing run PipeTransformer-cifar10
+wandb: ⭐️ View project at https://wandb.ai/automl/pipe_and_ddp
+wandb: 🚀 View run at https://wandb.ai/automl/pipe_and_ddp/runs/w7myy3qz
+wandb: Run data is saved locally in /home/chaoyanghe/sourcecode/PipeTransformer/wandb/run-20210106_014011-w7myy3qz
+wandb: Run `wandb offline` to turn off syncing.
+
+MainProcess 2021-01-06,01:40:12.248 - {data_loader.py (27)} - get_data(): load_data. dataset_name = cifar10
+MainProcess 2021-01-06,01:40:12.341 - {main.py (127)} - <module>(): Vision Transformer Configuration: classifier: token
+hidden_size: 768
+patches:
+  size: !!python/tuple
+  - 16
+  - 16
+representation_size: null
+transformer:
+  attention_dropout_rate: 0.0
+  dropout_rate: 0.1
+  mlp_dim: 3072
+  num_heads: 12
+  num_layers: 12
+
+MainProcess 2021-01-06,01:40:12.341 - {main.py (127)} - <module>(): Vision Transformer Configuration: classifier: token
+hidden_size: 768
+patches:
+  size: !!python/tuple
+  - 16
+  - 16
+representation_size: null
+transformer:
+  attention_dropout_rate: 0.0
+  dropout_rate: 0.1
+  mlp_dim: 3072
+  num_heads: 12
+  num_layers: 12
+
+MainProcess 2021-01-06,01:40:12.362 - {main.py (127)} - <module>(): Vision Transformer Configuration: classifier: token
+hidden_size: 768
+patches:
+  size: !!python/tuple
+  - 16
+  - 16
+representation_size: null
+transformer:
+  attention_dropout_rate: 0.0
+  dropout_rate: 0.1
+  mlp_dim: 3072
+  num_heads: 12
+  num_layers: 12
+
+Files already downloaded and verified
+MainProcess 2021-01-06,01:40:13.017 - {vision_transformer_origin.py (290)} - load_from(): TODO: initialize the weights
+MainProcess 2021-01-06,01:40:13.019 - {vision_transformer_origin.py (290)} - load_from(): TODO: initialize the weights
+MainProcess 2021-01-06,01:40:13.040 - {vision_transformer_origin.py (290)} - load_from(): TODO: initialize the weights
+Files already downloaded and verified
+MainProcess 2021-01-06,01:40:13.426 - {main.py (127)} - <module>(): Vision Transformer Configuration: classifier: token
+hidden_size: 768
+patches:
+  size: !!python/tuple
+  - 16
+  - 16
+representation_size: null
+transformer:
+  attention_dropout_rate: 0.0
+  dropout_rate: 0.1
+  mlp_dim: 3072
+  num_heads: 12
+  num_layers: 12
+
+MainProcess 2021-01-06,01:40:13.589 - {main.py (131)} - <module>(): model_size = 85.806346
+MainProcess 2021-01-06,01:40:13.589 - {main.py (136)} - <module>(): num_layers = 12
+MainProcess 2021-01-06,01:40:13.594 - {main.py (131)} - <module>(): model_size = 85.806346
+MainProcess 2021-01-06,01:40:13.594 - {main.py (136)} - <module>(): num_layers = 12
+MainProcess 2021-01-06,01:40:13.617 - {main.py (131)} - <module>(): model_size = 85.806346
+MainProcess 2021-01-06,01:40:13.618 - {main.py (136)} - <module>(): num_layers = 12
+MainProcess 2021-01-06,01:40:13.627 - {two_level_cache.py (240)} - __init__(): main process - chunk_size = -1
+MainProcess 2021-01-06,01:40:13.629 - {two_level_cache.py (240)} - __init__(): main process - chunk_size = -1
+MainProcess 2021-01-06,01:40:13.643 - {two_level_cache.py (240)} - __init__(): main process - chunk_size = -1
+MainProcess 2021-01-06,01:40:13.658 - {two_level_cache.py (240)} - __init__(): main process - chunk_size = -1
+MainProcess 2021-01-06,01:40:13.658 - {auto_dp.py (135)} - update_active_ranks(): active ranks = []
+MainProcess 2021-01-06,01:40:13.658 - {auto_dp.py (147)} - create_active_process_group(): get_active_process_group - auto_pipe.get_active_ranks() = [0]
+MainProcess 2021-01-06,01:40:13.658 - {auto_dp.py (149)} - create_active_process_group(): local_rank = 3, global_rank = 3 - *************************create_active_process_group*********
+MainProcess 2021-01-06,01:40:13.658 - {two_level_cache.py (240)} - __init__(): main process - chunk_size = -1
+MainProcess 2021-01-06,01:40:13.659 - {auto_dp.py (135)} - update_active_ranks(): active ranks = []
+MainProcess 2021-01-06,01:40:13.659 - {auto_dp.py (147)} - create_active_process_group(): get_active_process_group - auto_pipe.get_active_ranks() = [0]
+MainProcess 2021-01-06,01:40:13.659 - {auto_dp.py (149)} - create_active_process_group(): local_rank = 1, global_rank = 1 - *************************create_active_process_group*********
+MainProcess 2021-01-06,01:40:13.665 - {two_level_cache.py (240)} - __init__(): main process - chunk_size = -1
+MainProcess 2021-01-06,01:40:13.665 - {auto_dp.py (135)} - update_active_ranks(): active ranks = []
+MainProcess 2021-01-06,01:40:13.665 - {auto_dp.py (147)} - create_active_process_group(): get_active_process_group - auto_pipe.get_active_ranks() = [0]
+MainProcess 2021-01-06,01:40:13.665 - {auto_dp.py (149)} - create_active_process_group(): local_rank = 2, global_rank = 2 - *************************create_active_process_group*********
+MainProcess 2021-01-06,01:40:14.080 - {vision_transformer_origin.py (290)} - load_from(): TODO: initialize the weights
+MainProcess 2021-01-06,01:40:14.612 - {main.py (131)} - <module>(): model_size = 85.806346
+MainProcess 2021-01-06,01:40:14.612 - {main.py (136)} - <module>(): num_layers = 12
+MainProcess 2021-01-06,01:40:14.645 - {two_level_cache.py (240)} - __init__(): main process - chunk_size = -1
+MainProcess 2021-01-06,01:40:14.662 - {two_level_cache.py (240)} - __init__(): main process - chunk_size = -1
+MainProcess 2021-01-06,01:40:14.662 - {auto_dp.py (135)} - update_active_ranks(): active ranks = []
+MainProcess 2021-01-06,01:40:14.662 - {auto_dp.py (147)} - create_active_process_group(): get_active_process_group - auto_pipe.get_active_ranks() = [0]
+MainProcess 2021-01-06,01:40:14.662 - {auto_dp.py (149)} - create_active_process_group(): local_rank = 0, global_rank = 0 - *************************create_active_process_group*********
+MainProcess 2021-01-06,01:40:14.783 - {auto_dp.py (154)} - create_broadcast_process_group(): create_broadcast_process_group - auto_pipe.get_active_ranks() = [0]
+MainProcess 2021-01-06,01:40:14.783 - {auto_dp.py (157)} - create_broadcast_process_group(): local_rank = 0, global_rank = 0 - *************************create_broadcast_process_group*********
+MainProcess 2021-01-06,01:40:14.783 - {auto_dp.py (154)} - create_broadcast_process_group(): create_broadcast_process_group - auto_pipe.get_active_ranks() = [0]
+MainProcess 2021-01-06,01:40:14.783 - {auto_dp.py (154)} - create_broadcast_process_group(): create_broadcast_process_group - auto_pipe.get_active_ranks() = [0]
+MainProcess 2021-01-06,01:40:14.783 - {auto_dp.py (154)} - create_broadcast_process_group(): create_broadcast_process_group - auto_pipe.get_active_ranks() = [0]
+MainProcess 2021-01-06,01:40:14.783 - {auto_dp.py (157)} - create_broadcast_process_group(): local_rank = 1, global_rank = 1 - *************************create_broadcast_process_group*********
+MainProcess 2021-01-06,01:40:14.783 - {auto_dp.py (157)} - create_broadcast_process_group(): local_rank = 2, global_rank = 2 - *************************create_broadcast_process_group*********
+MainProcess 2021-01-06,01:40:14.783 - {auto_dp.py (157)} - create_broadcast_process_group(): local_rank = 3, global_rank = 3 - *************************create_broadcast_process_group*********
+MainProcess 2021-01-06,01:40:14.899 - {auto_pipe.py (51)} - transform(): ---local_rank = 0, global_rank = 0 -------------freeze layer number = 0---------------
+MainProcess 2021-01-06,01:40:14.901 - {auto_pipe.py (61)} - transform(): len(pipe_model) = 27
+MainProcess 2021-01-06,01:40:14.901 - {auto_pipe.py (62)} - transform(): len(pipe_model paras_size) = 27
+MainProcess 2021-01-06,01:40:14.901 - {load_balance.py (39)} - generate_parameter_size_wise_balance(): total_param_size_to_be_assigned = 85.806346
+MainProcess 2021-01-06,01:40:14.901 - {load_balance.py (81)} - check_gap_all(): max_params_in_balanced_partition - min_params_in_balanced_partition = 0.742656
+MainProcess 2021-01-06,01:40:14.901 - {load_balance.py (97)} - check_gap_except_1st_layer(): max_params_in_balanced_partition - min_params_in_balanced_partition = 0.009226
+MainProcess 2021-01-06,01:40:14.901 - {auto_pipe.py (122)} - _auto_balanced_elastic_partition(): {0: 7, 1: 6, 2: 6, 3: 8}
+MainProcess 2021-01-06,01:40:14.901 - {auto_pipe.py (123)} - _auto_balanced_elastic_partition(): {0: 22.006271999999996, 1: 21.263616, 2: 21.263616, 3: 21.272842}
+MainProcess 2021-01-06,01:40:14.901 - {auto_pipe.py (69)} - transform(): self.max_parameter_per_gpu_at_beginning = 22.006272
+MainProcess 2021-01-06,01:40:14.901 - {pipe_model_builder.py (148)} - convert_to_balanced_model(): convert_to_balanced_model. local_rank = 0, global_rank = 0
+MainProcess 2021-01-06,01:40:14.901 - {pipe_model_builder.py (162)} - convert_to_balanced_model(): ######################local_rank = 0, global_rank = 0, device id: 0
+MainProcess 2021-01-06,01:40:16.451 - {pipe_model_builder.py (162)} - convert_to_balanced_model(): ######################local_rank = 0, global_rank = 0, device id: 1
+MainProcess 2021-01-06,01:40:17.827 - {pipe_model_builder.py (162)} - convert_to_balanced_model(): ######################local_rank = 0, global_rank = 0, device id: 2
+MainProcess 2021-01-06,01:40:19.226 - {pipe_model_builder.py (162)} - convert_to_balanced_model(): ######################local_rank = 0, global_rank = 0, device id: 3
+MainProcess 2021-01-06,01:40:20.672 - {pipe_model_builder.py (167)} - convert_to_balanced_model(): CPU->GPU time cost = 5.771162986755371
+MainProcess 2021-01-06,01:40:20.854 - {auto_pipe.py (102)} - get_device_first(): cuda:0
+MainProcess 2021-01-06,01:40:20.854 - {auto_pipe.py (107)} - get_device_last(): cuda:3
+MainProcess 2021-01-06,01:40:20.854 - {auto_dp.py (135)} - update_active_ranks(): active ranks = [0]
+MainProcess 2021-01-06,01:40:20.854 - {auto_dp.py (135)} - update_active_ranks(): active ranks = [0]
+MainProcess 2021-01-06,01:40:20.854 - {auto_dp.py (182)} - get_data_rank(): self.active_data_ranks = {0: 0}
+MainProcess 2021-01-06,01:40:20.854 - {data_loader.py (147)} - get_data_loader(): ---num_replicas = 1, rank = 0 --------------
+MainProcess 2021-01-06,01:40:20.854 - {data_loader.py (27)} - get_data(): load_data. dataset_name = cifar10
+Files already downloaded and verified
+Files already downloaded and verified
+MainProcess 2021-01-06,01:40:21.979 - {auto_dp.py (135)} - update_active_ranks(): active ranks = [0]
+MainProcess 2021-01-06,01:40:21.979 - {auto_dp.py (135)} - update_active_ranks(): active ranks = [0]
+MainProcess 2021-01-06,01:40:21.979 - {auto_dp.py (182)} - get_data_rank(): self.active_data_ranks = {0: 0}
+MainProcess 2021-01-06,01:40:21.979 - {data_loader.py (147)} - get_data_loader(): ---num_replicas = 1, rank = 0 --------------
+MainProcess 2021-01-06,01:40:21.979 - {data_loader.py (27)} - get_data(): load_data. dataset_name = cifar10
+Files already downloaded and verified
+Files already downloaded and verified
+MainProcess 2021-01-06,01:40:23.094 - {auto_pipe.py (102)} - get_device_first(): cuda:0
+MainProcess 2021-01-06,01:40:23.094 - {auto_pipe.py (107)} - get_device_last(): cuda:3
+MainProcess 2021-01-06,01:40:23.094 - {trainer.py (50)} - update_data_and_cache(): global_rank = 0. is_frozen_layer_changed: True
+MainProcess 2021-01-06,01:40:23.094 - {two_level_cache.py (248)} - reset_status(): self.chunk_size = 440, self.chunk_num  = 2
+MainProcess 2021-01-06,01:40:23.146 - {two_level_cache.py (248)} - reset_status(): self.chunk_size = 440, self.chunk_num  = 1
+MainProcess 2021-01-06,01:40:23.189 - {auto_freeze.py (73)} - freeze(): -----------------------------140425569859664
+MainProcess 2021-01-06,01:40:23.190 - {auto_dp.py (194)} - transform(): (0)!!! no need to transform since auto_pipe.get_num_frozen_layers() == num_frozen_layers
+MainProcess 2021-01-06,01:40:23.190 - {trainer.py (50)} - update_data_and_cache(): global_rank = 0. is_frozen_layer_changed: False
+MainProcess 2021-01-06,01:40:23.197 - {trainer.py (79)} - train(): device_first = cuda:0
+MainProcess 2021-01-06,01:40:23.197 - {trainer.py (80)} - train(): device_last = cuda:3
+MainProcess 2021-01-06,01:40:23.199 - {trainer.py (91)} - train(): global_rank = 0. data_loader id = 140425569051216/
+MainProcess 2021-01-06,01:40:23.521 - {trainer.py (98)} - train(): --------------global_rank = 0. Epoch 0, batch index 0 Statistics: 
+MainProcess 2021-01-06,01:40:23.521 - {trainer.py (100)} - train(): global_rank = 0. epoch = 0, batch index = 0/834
+MainProcess 2021-01-06,01:40:24.681 - {trainer.py (124)} - train(): global_rank = 0. data loading cost = 1.160778284072876
+MainProcess 2021-01-06,01:40:24.681 - {trainer.py (130)} - train(): global_rank = 0. sample_num_throughput (images/second): 521031
+MainProcess 2021-01-06,01:40:24.681 - {trainer.py (136)} - train(): global_rank = 0. communication frequency (cross machine sync/second): 6775.935380
+MainProcess 2021-01-06,01:40:24.681 - {trainer.py (141)} - train(): -------------------------------------
+MainProcess 2021-01-06,01:40:24.682 - {trainer.py (98)} - train(): --------------global_rank = 0. Epoch 0, batch index 1 Statistics: 
+MainProcess 2021-01-06,01:40:24.682 - {trainer.py (100)} - train(): global_rank = 0. epoch = 0, batch index = 1/834
+MainProcess 2021-01-06,01:40:25.021 - {trainer.py (130)} - train(): global_rank = 0. sample_num_throughput (images/second): 353
+MainProcess 2021-01-06,01:40:25.021 - {trainer.py (136)} - train(): global_rank = 0. communication frequency (cross machine sync/second): 5.885214
+MainProcess 2021-01-06,01:40:25.021 - {trainer.py (141)} - train(): -------------------------------------
+MainProcess 2021-01-06,01:40:25.021 - {trainer.py (98)} - train(): --------------global_rank = 0. Epoch 0, batch index 2 Statistics: 
+MainProcess 2021-01-06,01:40:25.021 - {trainer.py (100)} - train(): global_rank = 0. epoch = 0, batch index = 2/834
+MainProcess 2021-01-06,01:40:25.342 - {trainer.py (130)} - train(): global_rank = 0. sample_num_throughput (images/second): 272
+MainProcess 2021-01-06,01:40:25.342 - {trainer.py (136)} - train(): global_rank = 0. communication frequency (cross machine sync/second): 4.540702
+MainProcess 2021-01-06,01:40:25.342 - {trainer.py (141)} - train(): -------------------------------------
+MainProcess 2021-01-06,01:40:25.342 - {trainer.py (98)} - train(): --------------global_rank = 0. Epoch 0, batch index 3 Statistics: 
+MainProcess 2021-01-06,01:40:25.342 - {trainer.py (100)} - train(): global_rank = 0. epoch = 0, batch index = 3/834
+MainProcess 2021-01-06,01:40:25.675 - {trainer.py (130)} - train(): global_rank = 0. sample_num_throughput (images/second): 241
+MainProcess 2021-01-06,01:40:25.675 - {trainer.py (136)} - train(): global_rank = 0. communication frequency (cross machine sync/second): 4.023977
+MainProcess 2021-01-06,01:40:25.675 - {trainer.py (141)} - train(): -------------------------------------
+MainProcess 2021-01-06,01:40:25.675 - {trainer.py (98)} - train(): --------------global_rank = 0. Epoch 0, batch index 4 Statistics: 
+MainProcess 2021-01-06,01:40:25.675 - {trainer.py (100)} - train(): global_rank = 0. epoch = 0, batch index = 4/834
+MainProcess 2021-01-06,01:40:26.000 - {trainer.py (130)} - train(): global_rank = 0. sample_num_throughput (images/second): 227
+MainProcess 2021-01-06,01:40:26.000 - {trainer.py (136)} - train(): global_rank = 0. communication frequency (cross machine sync/second): 3.791912
+MainProcess 2021-01-06,01:40:26.000 - {trainer.py (141)} - train(): -------------------------------------
+MainProcess 2021-01-06,01:40:26.000 - {trainer.py (98)} - train(): --------------global_rank = 0. Epoch 0, batch index 5 Statistics: 
+MainProcess 2021-01-06,01:40:26.000 - {trainer.py (100)} - train(): global_rank = 0. epoch = 0, batch index = 5/834
+MainProcess 2021-01-06,01:40:26.319 - {trainer.py (130)} - train(): global_rank = 0. sample_num_throughput (images/second): 219
+MainProcess 2021-01-06,01:40:26.319 - {trainer.py (136)} - train(): global_rank = 0. communication frequency (cross machine sync/second): 3.664272
+MainProcess 2021-01-06,01:40:26.319 - {trainer.py (141)} - train(): -------------------------------------
+MainProcess 2021-01-06,01:40:26.319 - {trainer.py (98)} - train(): --------------global_rank = 0. Epoch 0, batch index 6 Statistics: 
+MainProcess 2021-01-06,01:40:26.319 - {trainer.py (100)} - train(): global_rank = 0. epoch = 0, batch index = 6/834
+MainProcess 2021-01-06,01:40:26.642 - {trainer.py (130)} - train(): global_rank = 0. sample_num_throughput (images/second): 214
+MainProcess 2021-01-06,01:40:26.643 - {trainer.py (136)} - train(): global_rank = 0. communication frequency (cross machine sync/second): 3.569151
+MainProcess 2021-01-06,01:40:26.643 - {trainer.py (141)} - train(): -------------------------------------
+MainProcess 2021-01-06,01:40:26.643 - {trainer.py (98)} - train(): --------------global_rank = 0. Epoch 0, batch index 7 Statistics: 
+MainProcess 2021-01-06,01:40:26.643 - {trainer.py (100)} - train(): global_rank = 0. epoch = 0, batch index = 7/834
+MainProcess 2021-01-06,01:40:26.971 - {trainer.py (130)} - train(): global_rank = 0. sample_num_throughput (images/second): 209
+MainProcess 2021-01-06,01:40:26.971 - {trainer.py (136)} - train(): global_rank = 0. communication frequency (cross machine sync/second): 3.493364
+MainProcess 2021-01-06,01:40:26.971 - {trainer.py (141)} - train(): -------------------------------------
+MainProcess 2021-01-06,01:40:26.971 - {trainer.py (98)} - train(): --------------global_rank = 0. Epoch 0, batch index 8 Statistics: 
+MainProcess 2021-01-06,01:40:26.971 - {trainer.py (100)} - train(): global_rank = 0. epoch = 0, batch index = 8/834
+MainProcess 2021-01-06,01:40:27.293 - {trainer.py (130)} - train(): global_rank = 0. sample_num_throughput (images/second): 206
+MainProcess 2021-01-06,01:40:27.293 - {trainer.py (136)} - train(): global_rank = 0. communication frequency (cross machine sync/second): 3.445355
+MainProcess 2021-01-06,01:40:27.294 - {trainer.py (141)} - train(): -------------------------------------
+MainProcess 2021-01-06,01:40:27.294 - {trainer.py (98)} - train(): --------------global_rank = 0. Epoch 0, batch index 9 Statistics: 
+MainProcess 2021-01-06,01:40:27.294 - {trainer.py (100)} - train(): global_rank = 0. epoch = 0, batch index = 9/834
+MainProcess 2021-01-06,01:40:27.622 - {trainer.py (130)} - train(): global_rank = 0. sample_num_throughput (images/second): 204
+MainProcess 2021-01-06,01:40:27.622 - {trainer.py (136)} - train(): global_rank = 0. communication frequency (cross machine sync/second): 3.400198
+MainProcess 2021-01-06,01:40:27.622 - {trainer.py (141)} - train(): -------------------------------------
+MainProcess 2021-01-06,01:40:27.622 - {trainer.py (98)} - train(): --------------global_rank = 0. Epoch 0, batch index 10 Statistics: 
+MainProcess 2021-01-06,01:40:27.622 - {trainer.py (100)} - train(): global_rank = 0. epoch = 0, batch index = 10/834
+MainProcess 2021-01-06,01:40:27.950 - {trainer.py (130)} - train(): global_rank = 0. sample_num_throughput (images/second): 201
+MainProcess 2021-01-06,01:40:27.950 - {trainer.py (136)} - train(): global_rank = 0. communication frequency (cross machine sync/second): 3.365172
+MainProcess 2021-01-06,01:40:27.950 - {trainer.py (141)} - train(): -------------------------------------
+MainProcess 2021-01-06,01:40:27.950 - {trainer.py (98)} - train(): --------------global_rank = 0. Epoch 0, batch index 11 Statistics: 
+MainProcess 2021-01-06,01:40:27.950 - {trainer.py (100)} - train(): global_rank = 0. epoch = 0, batch index = 11/834
+MainProcess 2021-01-06,01:40:28.275 - {trainer.py (130)} - train(): global_rank = 0. sample_num_throughput (images/second): 200
+MainProcess 2021-01-06,01:40:28.275 - {trainer.py (136)} - train(): global_rank = 0. communication frequency (cross machine sync/second): 3.338736
+MainProcess 2021-01-06,01:40:28.275 - {trainer.py (141)} - train(): -------------------------------------
+MainProcess 2021-01-06,01:40:28.276 - {trainer.py (98)} - train(): --------------global_rank = 0. Epoch 0, batch index 12 Statistics: 
+MainProcess 2021-01-06,01:40:28.276 - {trainer.py (100)} - train(): global_rank = 0. epoch = 0, batch index = 12/834
+MainProcess 2021-01-06,01:40:28.609 - {trainer.py (130)} - train(): global_rank = 0. sample_num_throughput (images/second): 198
+MainProcess 2021-01-06,01:40:28.609 - {trainer.py (136)} - train(): global_rank = 0. communication frequency (cross machine sync/second): 3.310058
+MainProcess 2021-01-06,01:40:28.609 - {trainer.py (141)} - train(): -------------------------------------
+MainProcess 2021-01-06,01:40:28.609 - {trainer.py (98)} - train(): --------------global_rank = 0. Epoch 0, batch index 13 Statistics: 
+MainProcess 2021-01-06,01:40:28.609 - {trainer.py (100)} - train(): global_rank = 0. epoch = 0, batch index = 13/834
+MainProcess 2021-01-06,01:40:28.933 - {trainer.py (130)} - train(): global_rank = 0. sample_num_throughput (images/second): 197
+MainProcess 2021-01-06,01:40:28.933 - {trainer.py (136)} - train(): global_rank = 0. communication frequency (cross machine sync/second): 3.292585
+MainProcess 2021-01-06,01:40:28.933 - {trainer.py (141)} - train(): -------------------------------------
+MainProcess 2021-01-06,01:40:28.933 - {trainer.py (98)} - train(): --------------global_rank = 0. Epoch 0, batch index 14 Statistics: 
+MainProcess 2021-01-06,01:40:28.933 - {trainer.py (100)} - train(): global_rank = 0. epoch = 0, batch index = 14/834
+MainProcess 2021-01-06,01:40:29.261 - {trainer.py (130)} - train(): global_rank = 0. sample_num_throughput (images/second): 196
+MainProcess 2021-01-06,01:40:29.261 - {trainer.py (136)} - train(): global_rank = 0. communication frequency (cross machine sync/second): 3.275236
+MainProcess 2021-01-06,01:40:29.261 - {trainer.py (141)} - train(): -------------------------------------
+MainProcess 2021-01-06,01:40:29.261 - {trainer.py (98)} - train(): --------------global_rank = 0. Epoch 0, batch index 15 Statistics: 
+MainProcess 2021-01-06,01:40:29.261 - {trainer.py (100)} - train(): global_rank = 0. epoch = 0, batch index = 15/834
+MainProcess 2021-01-06,01:40:29.599 - {trainer.py (130)} - train(): global_rank = 0. sample_num_throughput (images/second): 195
+MainProcess 2021-01-06,01:40:29.599 - {trainer.py (136)} - train(): global_rank = 0. communication frequency (cross machine sync/second): 3.253231
+MainProcess 2021-01-06,01:40:29.599 - {trainer.py (141)} - train(): -------------------------------------
+MainProcess 2021-01-06,01:40:29.600 - {trainer.py (98)} - train(): --------------global_rank = 0. Epoch 0, batch index 16 Statistics: 
+MainProcess 2021-01-06,01:40:29.600 - {trainer.py (100)} - train(): global_rank = 0. epoch = 0, batch index = 16/834
+MainProcess 2021-01-06,01:40:29.927 - {trainer.py (130)} - train(): global_rank = 0. sample_num_throughput (images/second): 194
+MainProcess 2021-01-06,01:40:29.927 - {trainer.py (136)} - train(): global_rank = 0. communication frequency (cross machine sync/second): 3.240610
+MainProcess 2021-01-06,01:40:29.927 - {trainer.py (141)} - train(): -------------------------------------
+MainProcess 2021-01-06,01:40:29.927 - {trainer.py (98)} - train(): --------------global_rank = 0. Epoch 0, batch index 17 Statistics: 
+MainProcess 2021-01-06,01:40:29.927 - {trainer.py (100)} - train(): global_rank = 0. epoch = 0, batch index = 17/834
+MainProcess 2021-01-06,01:40:30.259 - {trainer.py (130)} - train(): global_rank = 0. sample_num_throughput (images/second): 193
+MainProcess 2021-01-06,01:40:30.259 - {trainer.py (136)} - train(): global_rank = 0. communication frequency (cross machine sync/second): 3.226929
+MainProcess 2021-01-06,01:40:30.259 - {trainer.py (141)} - train(): -------------------------------------
+MainProcess 2021-01-06,01:40:30.259 - {trainer.py (98)} - train(): --------------global_rank = 0. Epoch 0, batch index 18 Statistics: 
+MainProcess 2021-01-06,01:40:30.259 - {trainer.py (100)} - train(): global_rank = 0. epoch = 0, batch index = 18/834
+MainProcess 2021-01-06,01:40:30.581 - {trainer.py (130)} - train(): global_rank = 0. sample_num_throughput (images/second): 193
+MainProcess 2021-01-06,01:40:30.582 - {trainer.py (136)} - train(): global_rank = 0. communication frequency (cross machine sync/second): 3.220204
+MainProcess 2021-01-06,01:40:30.582 - {trainer.py (141)} - train(): -------------------------------------
+MainProcess 2021-01-06,01:40:30.582 - {trainer.py (98)} - train(): --------------global_rank = 0. Epoch 0, batch index 19 Statistics: 
+MainProcess 2021-01-06,01:40:30.582 - {trainer.py (100)} - train(): global_rank = 0. epoch = 0, batch index = 19/834
+MainProcess 2021-01-06,01:40:30.903 - {trainer.py (130)} - train(): global_rank = 0. sample_num_throughput (images/second): 192
+MainProcess 2021-01-06,01:40:30.903 - {trainer.py (136)} - train(): global_rank = 0. communication frequency (cross machine sync/second): 3.214374
+MainProcess 2021-01-06,01:40:30.903 - {trainer.py (141)} - train(): -------------------------------------
+MainProcess 2021-01-06,01:40:30.903 - {trainer.py (98)} - train(): --------------global_rank = 0. Epoch 0, batch index 20 Statistics: 
+MainProcess 2021-01-06,01:40:30.903 - {trainer.py (100)} - train(): global_rank = 0. epoch = 0, batch index = 20/834
+MainProcess 2021-01-06,01:40:31.232 - {trainer.py (130)} - train(): global_rank = 0. sample_num_throughput (images/second): 192
+MainProcess 2021-01-06,01:40:31.232 - {trainer.py (136)} - train(): global_rank = 0. communication frequency (cross machine sync/second): 3.205720
+MainProcess 2021-01-06,01:40:31.232 - {trainer.py (141)} - train(): -------------------------------------
+MainProcess 2021-01-06,01:40:31.232 - {trainer.py (98)} - train(): --------------global_rank = 0. Epoch 0, batch index 21 Statistics: 
+MainProcess 2021-01-06,01:40:31.232 - {trainer.py (100)} - train(): global_rank = 0. epoch = 0, batch index = 21/834
+MainProcess 2021-01-06,01:40:31.560 - {trainer.py (130)} - train(): global_rank = 0. sample_num_throughput (images/second): 191
+MainProcess 2021-01-06,01:40:31.560 - {trainer.py (136)} - train(): global_rank = 0. communication frequency (cross machine sync/second): 3.198060
+MainProcess 2021-01-06,01:40:31.560 - {trainer.py (141)} - train(): -------------------------------------
+MainProcess 2021-01-06,01:40:31.561 - {trainer.py (98)} - train(): --------------global_rank = 0. Epoch 0, batch index 22 Statistics: 
+MainProcess 2021-01-06,01:40:31.561 - {trainer.py (100)} - train(): global_rank = 0. epoch = 0, batch index = 22/834
+MainProcess 2021-01-06,01:40:31.885 - {trainer.py (130)} - train(): global_rank = 0. sample_num_throughput (images/second): 191
+MainProcess 2021-01-06,01:40:31.886 - {trainer.py (136)} - train(): global_rank = 0. communication frequency (cross machine sync/second): 3.192561
+MainProcess 2021-01-06,01:40:31.886 - {trainer.py (141)} - train(): -------------------------------------
+MainProcess 2021-01-06,01:40:31.886 - {trainer.py (98)} - train(): --------------global_rank = 0. Epoch 0, batch index 23 Statistics: 
+MainProcess 2021-01-06,01:40:31.886 - {trainer.py (100)} - train(): global_rank = 0. epoch = 0, batch index = 23/834
+MainProcess 2021-01-06,01:40:32.215 - {trainer.py (130)} - train(): global_rank = 0. sample_num_throughput (images/second): 191
+MainProcess 2021-01-06,01:40:32.216 - {trainer.py (136)} - train(): global_rank = 0. communication frequency (cross machine sync/second): 3.185410
+MainProcess 2021-01-06,01:40:32.216 - {trainer.py (141)} - train(): -------------------------------------
+MainProcess 2021-01-06,01:40:32.216 - {trainer.py (98)} - train(): --------------global_rank = 0. Epoch 0, batch index 24 Statistics: 
+MainProcess 2021-01-06,01:40:32.216 - {trainer.py (100)} - train(): global_rank = 0. epoch = 0, batch index = 24/834
+MainProcess 2021-01-06,01:40:32.542 - {trainer.py (130)} - train(): global_rank = 0. sample_num_throughput (images/second): 190
+MainProcess 2021-01-06,01:40:32.542 - {trainer.py (136)} - train(): global_rank = 0. communication frequency (cross machine sync/second): 3.180345
+MainProcess 2021-01-06,01:40:32.542 - {trainer.py (141)} - train(): -------------------------------------
+MainProcess 2021-01-06,01:40:32.542 - {trainer.py (98)} - train(): --------------global_rank = 0. Epoch 0, batch index 25 Statistics: 
+MainProcess 2021-01-06,01:40:32.542 - {trainer.py (100)} - train(): global_rank = 0. epoch = 0, batch index = 25/834
+MainProcess 2021-01-06,01:40:32.868 - {trainer.py (130)} - train(): global_rank = 0. sample_num_throughput (images/second): 190
+MainProcess 2021-01-06,01:40:32.869 - {trainer.py (136)} - train(): global_rank = 0. communication frequency (cross machine sync/second): 3.175650
+MainProcess 2021-01-06,01:40:32.869 - {trainer.py (141)} - train(): -------------------------------------
+MainProcess 2021-01-06,01:40:32.869 - {trainer.py (98)} - train(): --------------global_rank = 0. Epoch 0, batch index 26 Statistics: 
+MainProcess 2021-01-06,01:40:32.869 - {trainer.py (100)} - train(): global_rank = 0. epoch = 0, batch index = 26/834
+MainProcess 2021-01-06,01:40:33.187 - {trainer.py (130)} - train(): global_rank = 0. sample_num_throughput (images/second): 190
+MainProcess 2021-01-06,01:40:33.187 - {trainer.py (136)} - train(): global_rank = 0. communication frequency (cross machine sync/second): 3.174399
+MainProcess 2021-01-06,01:40:33.187 - {trainer.py (141)} - train(): -------------------------------------
+MainProcess 2021-01-06,01:40:33.187 - {trainer.py (98)} - train(): --------------global_rank = 0. Epoch 0, batch index 27 Statistics: 
+MainProcess 2021-01-06,01:40:33.187 - {trainer.py (100)} - train(): global_rank = 0. epoch = 0, batch index = 27/834
+MainProcess 2021-01-06,01:40:33.520 - {trainer.py (130)} - train(): global_rank = 0. sample_num_throughput (images/second): 190
+MainProcess 2021-01-06,01:40:33.520 - {trainer.py (136)} - train(): global_rank = 0. communication frequency (cross machine sync/second): 3.167901
+MainProcess 2021-01-06,01:40:33.520 - {trainer.py (141)} - train(): -------------------------------------
+MainProcess 2021-01-06,01:40:33.520 - {trainer.py (98)} - train(): --------------global_rank = 0. Epoch 0, batch index 28 Statistics: 
+MainProcess 2021-01-06,01:40:33.520 - {trainer.py (100)} - train(): global_rank = 0. epoch = 0, batch index = 28/834
+MainProcess 2021-01-06,01:40:33.851 - {trainer.py (130)} - train(): global_rank = 0. sample_num_throughput (images/second): 189
+MainProcess 2021-01-06,01:40:33.851 - {trainer.py (136)} - train(): global_rank = 0. communication frequency (cross machine sync/second): 3.162691
+MainProcess 2021-01-06,01:40:33.851 - {trainer.py (141)} - train(): -------------------------------------
+MainProcess 2021-01-06,01:40:33.851 - {trainer.py (98)} - train(): --------------global_rank = 0. Epoch 0, batch index 29 Statistics: 
+MainProcess 2021-01-06,01:40:33.851 - {trainer.py (100)} - train(): global_rank = 0. epoch = 0, batch index = 29/834
+MainProcess 2021-01-06,01:40:34.181 - {trainer.py (130)} - train(): global_rank = 0. sample_num_throughput (images/second): 189
+MainProcess 2021-01-06,01:40:34.181 - {trainer.py (136)} - train(): global_rank = 0. communication frequency (cross machine sync/second): 3.158042
+MainProcess 2021-01-06,01:40:34.181 - {trainer.py (141)} - train(): -------------------------------------
+MainProcess 2021-01-06,01:40:34.181 - {trainer.py (98)} - train(): --------------global_rank = 0. Epoch 0, batch index 30 Statistics: 
+MainProcess 2021-01-06,01:40:34.181 - {trainer.py (100)} - train(): global_rank = 0. epoch = 0, batch index = 30/834
+MainProcess 2021-01-06,01:40:34.521 - {trainer.py (130)} - train(): global_rank = 0. sample_num_throughput (images/second): 189
+MainProcess 2021-01-06,01:40:34.521 - {trainer.py (136)} - train(): global_rank = 0. communication frequency (cross machine sync/second): 3.150345
+MainProcess 2021-01-06,01:40:34.522 - {trainer.py (141)} - train(): -------------------------------------
+MainProcess 2021-01-06,01:40:34.522 - {trainer.py (98)} - train(): --------------global_rank = 0. Epoch 0, batch index 31 Statistics: 
+MainProcess 2021-01-06,01:40:34.522 - {trainer.py (100)} - train(): global_rank = 0. epoch = 0, batch index = 31/834
+MainProcess 2021-01-06,01:40:34.880 - {trainer.py (130)} - train(): global_rank = 0. sample_num_throughput (images/second): 188
+MainProcess 2021-01-06,01:40:34.880 - {trainer.py (136)} - train(): global_rank = 0. communication frequency (cross machine sync/second): 3.137498
+MainProcess 2021-01-06,01:40:34.881 - {trainer.py (141)} - train(): -------------------------------------
+MainProcess 2021-01-06,01:40:34.881 - {trainer.py (98)} - train(): --------------global_rank = 0. Epoch 0, batch index 32 Statistics: 
+MainProcess 2021-01-06,01:40:34.881 - {trainer.py (100)} - train(): global_rank = 0. epoch = 0, batch index = 32/834
+MainProcess 2021-01-06,01:40:35.207 - {trainer.py (130)} - train(): global_rank = 0. sample_num_throughput (images/second): 188
+MainProcess 2021-01-06,01:40:35.207 - {trainer.py (136)} - train(): global_rank = 0. communication frequency (cross machine sync/second): 3.135161
+MainProcess 2021-01-06,01:40:35.207 - {trainer.py (141)} - train(): -------------------------------------
+MainProcess 2021-01-06,01:40:35.207 - {trainer.py (98)} - train(): --------------global_rank = 0. Epoch 0, batch index 33 Statistics: 
+MainProcess 2021-01-06,01:40:35.207 - {trainer.py (100)} - train(): global_rank = 0. epoch = 0, batch index = 33/834
+MainProcess 2021-01-06,01:40:35.536 - {trainer.py (130)} - train(): global_rank = 0. sample_num_throughput (images/second): 187
+MainProcess 2021-01-06,01:40:35.536 - {trainer.py (136)} - train(): global_rank = 0. communication frequency (cross machine sync/second): 3.132200
+MainProcess 2021-01-06,01:40:35.536 - {trainer.py (141)} - train(): -------------------------------------
+MainProcess 2021-01-06,01:40:35.536 - {trainer.py (98)} - train(): --------------global_rank = 0. Epoch 0, batch index 34 Statistics: 
+MainProcess 2021-01-06,01:40:35.536 - {trainer.py (100)} - train(): global_rank = 0. epoch = 0, batch index = 34/834
+MainProcess 2021-01-06,01:40:35.867 - {trainer.py (130)} - train(): global_rank = 0. sample_num_throughput (images/second): 187
+MainProcess 2021-01-06,01:40:35.867 - {trainer.py (136)} - train(): global_rank = 0. communication frequency (cross machine sync/second): 3.128920
+MainProcess 2021-01-06,01:40:35.867 - {trainer.py (141)} - train(): -------------------------------------
+MainProcess 2021-01-06,01:40:35.867 - {trainer.py (98)} - train(): --------------global_rank = 0. Epoch 0, batch index 35 Statistics: 
+MainProcess 2021-01-06,01:40:35.867 - {trainer.py (100)} - train(): global_rank = 0. epoch = 0, batch index = 35/834
+MainProcess 2021-01-06,01:40:36.222 - {trainer.py (130)} - train(): global_rank = 0. sample_num_throughput (images/second): 187
+MainProcess 2021-01-06,01:40:36.222 - {trainer.py (136)} - train(): global_rank = 0. communication frequency (cross machine sync/second): 3.119308
+MainProcess 2021-01-06,01:40:36.222 - {trainer.py (141)} - train(): -------------------------------------
+MainProcess 2021-01-06,01:40:36.222 - {trainer.py (98)} - train(): --------------global_rank = 0. Epoch 0, batch index 36 Statistics: 
+MainProcess 2021-01-06,01:40:36.222 - {trainer.py (100)} - train(): global_rank = 0. epoch = 0, batch index = 36/834
+MainProcess 2021-01-06,01:40:36.574 - {trainer.py (130)} - train(): global_rank = 0. sample_num_throughput (images/second): 186
+MainProcess 2021-01-06,01:40:36.574 - {trainer.py (136)} - train(): global_rank = 0. communication frequency (cross machine sync/second): 3.111057
+MainProcess 2021-01-06,01:40:36.574 - {trainer.py (141)} - train(): -------------------------------------
+MainProcess 2021-01-06,01:40:36.574 - {trainer.py (98)} - train(): --------------global_rank = 0. Epoch 0, batch index 37 Statistics: 
+MainProcess 2021-01-06,01:40:36.575 - {trainer.py (100)} - train(): global_rank = 0. epoch = 0, batch index = 37/834
+MainProcess 2021-01-06,01:40:36.923 - {trainer.py (130)} - train(): global_rank = 0. sample_num_throughput (images/second): 186
+MainProcess 2021-01-06,01:40:36.923 - {trainer.py (136)} - train(): global_rank = 0. communication frequency (cross machine sync/second): 3.104077
+MainProcess 2021-01-06,01:40:36.923 - {trainer.py (141)} - train(): -------------------------------------
+MainProcess 2021-01-06,01:40:36.923 - {trainer.py (98)} - train(): --------------global_rank = 0. Epoch 0, batch index 38 Statistics: 
+MainProcess 2021-01-06,01:40:36.923 - {trainer.py (100)} - train(): global_rank = 0. epoch = 0, batch index = 38/834
+MainProcess 2021-01-06,01:40:37.345 - {trainer.py (130)} - train(): global_rank = 0. sample_num_throughput (images/second): 184
+MainProcess 2021-01-06,01:40:37.345 - {trainer.py (136)} - train(): global_rank = 0. communication frequency (cross machine sync/second): 3.079608
+MainProcess 2021-01-06,01:40:37.345 - {trainer.py (141)} - train(): -------------------------------------
+MainProcess 2021-01-06,01:40:37.345 - {trainer.py (98)} - train(): --------------global_rank = 0. Epoch 0, batch index 39 Statistics: 
+MainProcess 2021-01-06,01:40:37.345 - {trainer.py (100)} - train(): global_rank = 0. epoch = 0, batch index = 39/834
+MainProcess 2021-01-06,01:40:37.728 - {trainer.py (130)} - train(): global_rank = 0. sample_num_throughput (images/second): 183
+MainProcess 2021-01-06,01:40:37.728 - {trainer.py (136)} - train(): global_rank = 0. communication frequency (cross machine sync/second): 3.065842
+MainProcess 2021-01-06,01:40:37.728 - {trainer.py (141)} - train(): -------------------------------------
+MainProcess 2021-01-06,01:40:37.728 - {trainer.py (98)} - train(): --------------global_rank = 0. Epoch 0, batch index 40 Statistics: 
+MainProcess 2021-01-06,01:40:37.728 - {trainer.py (100)} - train(): global_rank = 0. epoch = 0, batch index = 40/834
+MainProcess 2021-01-06,01:40:38.068 - {trainer.py (130)} - train(): global_rank = 0. sample_num_throughput (images/second): 183
+MainProcess 2021-01-06,01:40:38.068 - {trainer.py (136)} - train(): global_rank = 0. communication frequency (cross machine sync/second): 3.062778
+MainProcess 2021-01-06,01:40:38.068 - {trainer.py (141)} - train(): -------------------------------------
+MainProcess 2021-01-06,01:40:38.068 - {trainer.py (98)} - train(): --------------global_rank = 0. Epoch 0, batch index 41 Statistics: 
+MainProcess 2021-01-06,01:40:38.068 - {trainer.py (100)} - train(): global_rank = 0. epoch = 0, batch index = 41/834
+MainProcess 2021-01-06,01:40:38.459 - {trainer.py (130)} - train(): global_rank = 0. sample_num_throughput (images/second): 182
+MainProcess 2021-01-06,01:40:38.459 - {trainer.py (136)} - train(): global_rank = 0. communication frequency (cross machine sync/second): 3.048379
+MainProcess 2021-01-06,01:40:38.459 - {trainer.py (141)} - train(): -------------------------------------
+MainProcess 2021-01-06,01:40:38.459 - {trainer.py (98)} - train(): --------------global_rank = 0. Epoch 0, batch index 42 Statistics: 
+MainProcess 2021-01-06,01:40:38.459 - {trainer.py (100)} - train(): global_rank = 0. epoch = 0, batch index = 42/834
+MainProcess 2021-01-06,01:40:38.908 - {trainer.py (130)} - train(): global_rank = 0. sample_num_throughput (images/second): 181
+MainProcess 2021-01-06,01:40:38.909 - {trainer.py (136)} - train(): global_rank = 0. communication frequency (cross machine sync/second): 3.022357
+MainProcess 2021-01-06,01:40:38.909 - {trainer.py (141)} - train(): -------------------------------------
+MainProcess 2021-01-06,01:40:38.909 - {trainer.py (98)} - train(): --------------global_rank = 0. Epoch 0, batch index 43 Statistics: 
+MainProcess 2021-01-06,01:40:38.909 - {trainer.py (100)} - train(): global_rank = 0. epoch = 0, batch index = 43/834
+MainProcess 2021-01-06,01:40:39.258 - {trainer.py (130)} - train(): global_rank = 0. sample_num_throughput (images/second): 181
+MainProcess 2021-01-06,01:40:39.258 - {trainer.py (136)} - train(): global_rank = 0. communication frequency (cross machine sync/second): 3.018449
+MainProcess 2021-01-06,01:40:39.258 - {trainer.py (141)} - train(): -------------------------------------
+MainProcess 2021-01-06,01:40:39.258 - {trainer.py (98)} - train(): --------------global_rank = 0. Epoch 0, batch index 44 Statistics: 
+MainProcess 2021-01-06,01:40:39.258 - {trainer.py (100)} - train(): global_rank = 0. epoch = 0, batch index = 44/834
+MainProcess 2021-01-06,01:40:39.597 - {trainer.py (130)} - train(): global_rank = 0. sample_num_throughput (images/second): 181
+MainProcess 2021-01-06,01:40:39.597 - {trainer.py (136)} - train(): global_rank = 0. communication frequency (cross machine sync/second): 3.016892
+MainProcess 2021-01-06,01:40:39.597 - {trainer.py (141)} - train(): -------------------------------------
+MainProcess 2021-01-06,01:40:39.597 - {trainer.py (98)} - train(): --------------global_rank = 0. Epoch 0, batch index 45 Statistics: 
+MainProcess 2021-01-06,01:40:39.597 - {trainer.py (100)} - train(): global_rank = 0. epoch = 0, batch index = 45/834
+MainProcess 2021-01-06,01:40:39.927 - {trainer.py (130)} - train(): global_rank = 0. sample_num_throughput (images/second): 181
+MainProcess 2021-01-06,01:40:39.927 - {trainer.py (136)} - train(): global_rank = 0. communication frequency (cross machine sync/second): 3.017285
+MainProcess 2021-01-06,01:40:39.927 - {trainer.py (141)} - train(): -------------------------------------
+MainProcess 2021-01-06,01:40:39.927 - {trainer.py (98)} - train(): --------------global_rank = 0. Epoch 0, batch index 46 Statistics: 
+MainProcess 2021-01-06,01:40:39.927 - {trainer.py (100)} - train(): global_rank = 0. epoch = 0, batch index = 46/834
+MainProcess 2021-01-06,01:40:40.276 - {trainer.py (130)} - train(): global_rank = 0. sample_num_throughput (images/second): 180
+MainProcess 2021-01-06,01:40:40.276 - {trainer.py (136)} - train(): global_rank = 0. communication frequency (cross machine sync/second): 3.013895
+MainProcess 2021-01-06,01:40:40.276 - {trainer.py (141)} - train(): -------------------------------------
+MainProcess 2021-01-06,01:40:40.276 - {trainer.py (98)} - train(): --------------global_rank = 0. Epoch 0, batch index 47 Statistics: 
+MainProcess 2021-01-06,01:40:40.276 - {trainer.py (100)} - train(): global_rank = 0. epoch = 0, batch index = 47/834
+MainProcess 2021-01-06,01:40:40.606 - {trainer.py (130)} - train(): global_rank = 0. sample_num_throughput (images/second): 180
+MainProcess 2021-01-06,01:40:40.606 - {trainer.py (136)} - train(): global_rank = 0. communication frequency (cross machine sync/second): 3.014234
+MainProcess 2021-01-06,01:40:40.606 - {trainer.py (141)} - train(): -------------------------------------
+MainProcess 2021-01-06,01:40:40.606 - {trainer.py (98)} - train(): --------------global_rank = 0. Epoch 0, batch index 48 Statistics: 
+MainProcess 2021-01-06,01:40:40.606 - {trainer.py (100)} - train(): global_rank = 0. epoch = 0, batch index = 48/834
+MainProcess 2021-01-06,01:40:40.943 - {trainer.py (130)} - train(): global_rank = 0. sample_num_throughput (images/second): 180
+MainProcess 2021-01-06,01:40:40.943 - {trainer.py (136)} - train(): global_rank = 0. communication frequency (cross machine sync/second): 3.013170
+MainProcess 2021-01-06,01:40:40.943 - {trainer.py (141)} - train(): -------------------------------------
+MainProcess 2021-01-06,01:40:40.943 - {trainer.py (98)} - train(): --------------global_rank = 0. Epoch 0, batch index 49 Statistics: 
+MainProcess 2021-01-06,01:40:40.943 - {trainer.py (100)} - train(): global_rank = 0. epoch = 0, batch index = 49/834
+MainProcess 2021-01-06,01:40:41.275 - {trainer.py (130)} - train(): global_rank = 0. sample_num_throughput (images/second): 180
+MainProcess 2021-01-06,01:40:41.276 - {trainer.py (136)} - train(): global_rank = 0. communication frequency (cross machine sync/second): 3.013071
+MainProcess 2021-01-06,01:40:41.276 - {trainer.py (141)} - train(): -------------------------------------
+MainProcess 2021-01-06,01:40:41.276 - {trainer.py (98)} - train(): --------------global_rank = 0. Epoch 0, batch index 50 Statistics: 
+MainProcess 2021-01-06,01:40:41.276 - {trainer.py (100)} - train(): global_rank = 0. epoch = 0, batch index = 50/834
+MainProcess 2021-01-06,01:40:41.611 - {trainer.py (130)} - train(): global_rank = 0. sample_num_throughput (images/second): 180
+MainProcess 2021-01-06,01:40:41.611 - {trainer.py (136)} - train(): global_rank = 0. communication frequency (cross machine sync/second): 3.012507
+MainProcess 2021-01-06,01:40:41.611 - {trainer.py (141)} - train(): -------------------------------------
+MainProcess 2021-01-06,01:40:41.611 - {trainer.py (98)} - train(): --------------global_rank = 0. Epoch 0, batch index 51 Statistics: 
+MainProcess 2021-01-06,01:40:41.611 - {trainer.py (100)} - train(): global_rank = 0. epoch = 0, batch index = 51/834
+MainProcess 2021-01-06,01:40:41.940 - {trainer.py (130)} - train(): global_rank = 0. sample_num_throughput (images/second): 180
+MainProcess 2021-01-06,01:40:41.940 - {trainer.py (136)} - train(): global_rank = 0. communication frequency (cross machine sync/second): 3.012923
+MainProcess 2021-01-06,01:40:41.940 - {trainer.py (141)} - train(): -------------------------------------
+MainProcess 2021-01-06,01:40:41.940 - {trainer.py (98)} - train(): --------------global_rank = 0. Epoch 0, batch index 52 Statistics: 
+MainProcess 2021-01-06,01:40:41.940 - {trainer.py (100)} - train(): global_rank = 0. epoch = 0, batch index = 52/834
+MainProcess 2021-01-06,01:40:42.263 - {trainer.py (130)} - train(): global_rank = 0. sample_num_throughput (images/second): 180
+MainProcess 2021-01-06,01:40:42.264 - {trainer.py (136)} - train(): global_rank = 0. communication frequency (cross machine sync/second): 3.014398
+MainProcess 2021-01-06,01:40:42.264 - {trainer.py (141)} - train(): -------------------------------------
+MainProcess 2021-01-06,01:40:42.264 - {trainer.py (98)} - train(): --------------global_rank = 0. Epoch 0, batch index 53 Statistics: 
+MainProcess 2021-01-06,01:40:42.264 - {trainer.py (100)} - train(): global_rank = 0. epoch = 0, batch index = 53/834
+MainProcess 2021-01-06,01:40:42.588 - {trainer.py (130)} - train(): global_rank = 0. sample_num_throughput (images/second): 180
+MainProcess 2021-01-06,01:40:42.588 - {trainer.py (136)} - train(): global_rank = 0. communication frequency (cross machine sync/second): 3.015588
+MainProcess 2021-01-06,01:40:42.588 - {trainer.py (141)} - train(): -------------------------------------
+MainProcess 2021-01-06,01:40:42.588 - {trainer.py (98)} - train(): --------------global_rank = 0. Epoch 0, batch index 54 Statistics: 
+MainProcess 2021-01-06,01:40:42.588 - {trainer.py (100)} - train(): global_rank = 0. epoch = 0, batch index = 54/834
+MainProcess 2021-01-06,01:40:42.922 - {trainer.py (130)} - train(): global_rank = 0. sample_num_throughput (images/second): 180
+MainProcess 2021-01-06,01:40:42.922 - {trainer.py (136)} - train(): global_rank = 0. communication frequency (cross machine sync/second): 3.015267
+MainProcess 2021-01-06,01:40:42.922 - {trainer.py (141)} - train(): -------------------------------------
+MainProcess 2021-01-06,01:40:42.922 - {trainer.py (98)} - train(): --------------global_rank = 0. Epoch 0, batch index 55 Statistics: 
+MainProcess 2021-01-06,01:40:42.922 - {trainer.py (100)} - train(): global_rank = 0. epoch = 0, batch index = 55/834
+MainProcess 2021-01-06,01:40:43.248 - {trainer.py (130)} - train(): global_rank = 0. sample_num_throughput (images/second): 180
+MainProcess 2021-01-06,01:40:43.248 - {trainer.py (136)} - train(): global_rank = 0. communication frequency (cross machine sync/second): 3.016096
+MainProcess 2021-01-06,01:40:43.248 - {trainer.py (141)} - train(): -------------------------------------
+MainProcess 2021-01-06,01:40:43.248 - {trainer.py (98)} - train(): --------------global_rank = 0. Epoch 0, batch index 56 Statistics: 
+MainProcess 2021-01-06,01:40:43.248 - {trainer.py (100)} - train(): global_rank = 0. epoch = 0, batch index = 56/834
+MainProcess 2021-01-06,01:40:43.598 - {trainer.py (130)} - train(): global_rank = 0. sample_num_throughput (images/second): 180
+MainProcess 2021-01-06,01:40:43.599 - {trainer.py (136)} - train(): global_rank = 0. communication frequency (cross machine sync/second): 3.013110
+MainProcess 2021-01-06,01:40:43.599 - {trainer.py (141)} - train(): -------------------------------------
+MainProcess 2021-01-06,01:40:43.599 - {trainer.py (98)} - train(): --------------global_rank = 0. Epoch 0, batch index 57 Statistics: 
+MainProcess 2021-01-06,01:40:43.599 - {trainer.py (100)} - train(): global_rank = 0. epoch = 0, batch index = 57/834
+MainProcess 2021-01-06,01:40:43.946 - {trainer.py (130)} - train(): global_rank = 0. sample_num_throughput (images/second): 180
+MainProcess 2021-01-06,01:40:43.946 - {trainer.py (136)} - train(): global_rank = 0. communication frequency (cross machine sync/second): 3.010706
+MainProcess 2021-01-06,01:40:43.946 - {trainer.py (141)} - train(): -------------------------------------
+MainProcess 2021-01-06,01:40:43.946 - {trainer.py (98)} - train(): --------------global_rank = 0. Epoch 0, batch index 58 Statistics: 
+MainProcess 2021-01-06,01:40:43.946 - {trainer.py (100)} - train(): global_rank = 0. epoch = 0, batch index = 58/834
+MainProcess 2021-01-06,01:40:44.278 - {trainer.py (130)} - train(): global_rank = 0. sample_num_throughput (images/second): 180
+MainProcess 2021-01-06,01:40:44.278 - {trainer.py (136)} - train(): global_rank = 0. communication frequency (cross machine sync/second): 3.010655
+MainProcess 2021-01-06,01:40:44.278 - {trainer.py (141)} - train(): -------------------------------------
+MainProcess 2021-01-06,01:40:44.278 - {trainer.py (98)} - train(): --------------global_rank = 0. Epoch 0, batch index 59 Statistics: 
+MainProcess 2021-01-06,01:40:44.278 - {trainer.py (100)} - train(): global_rank = 0. epoch = 0, batch index = 59/834
+MainProcess 2021-01-06,01:40:44.604 - {trainer.py (130)} - train(): global_rank = 0. sample_num_throughput (images/second): 180
+MainProcess 2021-01-06,01:40:44.604 - {trainer.py (136)} - train(): global_rank = 0. communication frequency (cross machine sync/second): 3.011562
+MainProcess 2021-01-06,01:40:44.605 - {trainer.py (141)} - train(): -------------------------------------
+MainProcess 2021-01-06,01:40:44.605 - {trainer.py (98)} - train(): --------------global_rank = 0. Epoch 0, batch index 60 Statistics: 
+MainProcess 2021-01-06,01:40:44.605 - {trainer.py (100)} - train(): global_rank = 0. epoch = 0, batch index = 60/834
+MainProcess 2021-01-06,01:40:44.923 - {trainer.py (130)} - train(): global_rank = 0. sample_num_throughput (images/second): 180
+MainProcess 2021-01-06,01:40:44.923 - {trainer.py (136)} - train(): global_rank = 0. communication frequency (cross machine sync/second): 3.013616
+MainProcess 2021-01-06,01:40:44.923 - {trainer.py (141)} - train(): -------------------------------------
+MainProcess 2021-01-06,01:40:44.923 - {trainer.py (98)} - train(): --------------global_rank = 0. Epoch 0, batch index 61 Statistics: 
+MainProcess 2021-01-06,01:40:44.923 - {trainer.py (100)} - train(): global_rank = 0. epoch = 0, batch index = 61/834
+MainProcess 2021-01-06,01:40:45.244 - {trainer.py (130)} - train(): global_rank = 0. sample_num_throughput (images/second): 180
+MainProcess 2021-01-06,01:40:45.245 - {trainer.py (136)} - train(): global_rank = 0. communication frequency (cross machine sync/second): 3.015090
+MainProcess 2021-01-06,01:40:45.245 - {trainer.py (141)} - train(): -------------------------------------
+MainProcess 2021-01-06,01:40:45.245 - {trainer.py (98)} - train(): --------------global_rank = 0. Epoch 0, batch index 62 Statistics: 
+MainProcess 2021-01-06,01:40:45.245 - {trainer.py (100)} - train(): global_rank = 0. epoch = 0, batch index = 62/834
+MainProcess 2021-01-06,01:40:45.578 - {trainer.py (130)} - train(): global_rank = 0. sample_num_throughput (images/second): 180
+MainProcess 2021-01-06,01:40:45.578 - {trainer.py (136)} - train(): global_rank = 0. communication frequency (cross machine sync/second): 3.014774
+MainProcess 2021-01-06,01:40:45.578 - {trainer.py (141)} - train(): -------------------------------------
+MainProcess 2021-01-06,01:40:45.578 - {trainer.py (98)} - train(): --------------global_rank = 0. Epoch 0, batch index 63 Statistics: 
+MainProcess 2021-01-06,01:40:45.579 - {trainer.py (100)} - train(): global_rank = 0. epoch = 0, batch index = 63/834
+MainProcess 2021-01-06,01:40:45.901 - {trainer.py (130)} - train(): global_rank = 0. sample_num_throughput (images/second): 180
+MainProcess 2021-01-06,01:40:45.901 - {trainer.py (136)} - train(): global_rank = 0. communication frequency (cross machine sync/second): 3.016058
+MainProcess 2021-01-06,01:40:45.901 - {trainer.py (141)} - train(): -------------------------------------
+MainProcess 2021-01-06,01:40:45.901 - {trainer.py (98)} - train(): --------------global_rank = 0. Epoch 0, batch index 64 Statistics: 
+MainProcess 2021-01-06,01:40:45.901 - {trainer.py (100)} - train(): global_rank = 0. epoch = 0, batch index = 64/834
+MainProcess 2021-01-06,01:40:46.220 - {trainer.py (130)} - train(): global_rank = 0. sample_num_throughput (images/second): 181
+MainProcess 2021-01-06,01:40:46.220 - {trainer.py (136)} - train(): global_rank = 0. communication frequency (cross machine sync/second): 3.017752
+MainProcess 2021-01-06,01:40:46.221 - {trainer.py (141)} - train(): -------------------------------------
+MainProcess 2021-01-06,01:40:46.221 - {trainer.py (98)} - train(): --------------global_rank = 0. Epoch 0, batch index 65 Statistics: 
+MainProcess 2021-01-06,01:40:46.221 - {trainer.py (100)} - train(): global_rank = 0. epoch = 0, batch index = 65/834
+MainProcess 2021-01-06,01:40:46.550 - {trainer.py (130)} - train(): global_rank = 0. sample_num_throughput (images/second): 181
+MainProcess 2021-01-06,01:40:46.550 - {trainer.py (136)} - train(): global_rank = 0. communication frequency (cross machine sync/second): 3.017961
+MainProcess 2021-01-06,01:40:46.550 - {trainer.py (141)} - train(): -------------------------------------
+MainProcess 2021-01-06,01:40:46.550 - {trainer.py (98)} - train(): --------------global_rank = 0. Epoch 0, batch index 66 Statistics: 
+MainProcess 2021-01-06,01:40:46.551 - {trainer.py (100)} - train(): global_rank = 0. epoch = 0, batch index = 66/834
+MainProcess 2021-01-06,01:40:46.876 - {trainer.py (130)} - train(): global_rank = 0. sample_num_throughput (images/second): 181
+MainProcess 2021-01-06,01:40:46.876 - {trainer.py (136)} - train(): global_rank = 0. communication frequency (cross machine sync/second): 3.018776
+MainProcess 2021-01-06,01:40:46.876 - {trainer.py (141)} - train(): -------------------------------------
+MainProcess 2021-01-06,01:40:46.876 - {trainer.py (98)} - train(): --------------global_rank = 0. Epoch 0, batch index 67 Statistics: 
+MainProcess 2021-01-06,01:40:46.876 - {trainer.py (100)} - train(): global_rank = 0. epoch = 0, batch index = 67/834
+MainProcess 2021-01-06,01:40:47.197 - {trainer.py (130)} - train(): global_rank = 0. sample_num_throughput (images/second): 181
+MainProcess 2021-01-06,01:40:47.197 - {trainer.py (136)} - train(): global_rank = 0. communication frequency (cross machine sync/second): 3.020109
+MainProcess 2021-01-06,01:40:47.197 - {trainer.py (141)} - train(): -------------------------------------
+MainProcess 2021-01-06,01:40:47.197 - {trainer.py (98)} - train(): --------------global_rank = 0. Epoch 0, batch index 68 Statistics: 
+MainProcess 2021-01-06,01:40:47.197 - {trainer.py (100)} - train(): global_rank = 0. epoch = 0, batch index = 68/834
+MainProcess 2021-01-06,01:40:47.529 - {trainer.py (130)} - train(): global_rank = 0. sample_num_throughput (images/second): 181
+MainProcess 2021-01-06,01:40:47.529 - {trainer.py (136)} - train(): global_rank = 0. communication frequency (cross machine sync/second): 3.020023
+MainProcess 2021-01-06,01:40:47.529 - {trainer.py (141)} - train(): -------------------------------------
+MainProcess 2021-01-06,01:40:47.529 - {trainer.py (98)} - train(): --------------global_rank = 0. Epoch 0, batch index 69 Statistics: 
+MainProcess 2021-01-06,01:40:47.529 - {trainer.py (100)} - train(): global_rank = 0. epoch = 0, batch index = 69/834
+MainProcess 2021-01-06,01:40:47.853 - {trainer.py (130)} - train(): global_rank = 0. sample_num_throughput (images/second): 181
+MainProcess 2021-01-06,01:40:47.853 - {trainer.py (136)} - train(): global_rank = 0. communication frequency (cross machine sync/second): 3.020889
+MainProcess 2021-01-06,01:40:47.853 - {trainer.py (141)} - train(): -------------------------------------
+MainProcess 2021-01-06,01:40:47.853 - {trainer.py (98)} - train(): --------------global_rank = 0. Epoch 0, batch index 70 Statistics: 
+MainProcess 2021-01-06,01:40:47.853 - {trainer.py (100)} - train(): global_rank = 0. epoch = 0, batch index = 70/834
+MainProcess 2021-01-06,01:40:48.183 - {trainer.py (130)} - train(): global_rank = 0. sample_num_throughput (images/second): 181
+MainProcess 2021-01-06,01:40:48.183 - {trainer.py (136)} - train(): global_rank = 0. communication frequency (cross machine sync/second): 3.021036
+MainProcess 2021-01-06,01:40:48.183 - {trainer.py (141)} - train(): -------------------------------------
+MainProcess 2021-01-06,01:40:48.183 - {trainer.py (98)} - train(): --------------global_rank = 0. Epoch 0, batch index 71 Statistics: 
+MainProcess 2021-01-06,01:40:48.183 - {trainer.py (100)} - train(): global_rank = 0. epoch = 0, batch index = 71/834
+MainProcess 2021-01-06,01:40:48.508 - {trainer.py (130)} - train(): global_rank = 0. sample_num_throughput (images/second): 181
+MainProcess 2021-01-06,01:40:48.508 - {trainer.py (136)} - train(): global_rank = 0. communication frequency (cross machine sync/second): 3.021853
+MainProcess 2021-01-06,01:40:48.508 - {trainer.py (141)} - train(): -------------------------------------
+MainProcess 2021-01-06,01:40:48.508 - {trainer.py (98)} - train(): --------------global_rank = 0. Epoch 0, batch index 72 Statistics: 
+MainProcess 2021-01-06,01:40:48.508 - {trainer.py (100)} - train(): global_rank = 0. epoch = 0, batch index = 72/834
+MainProcess 2021-01-06,01:40:48.841 - {trainer.py (130)} - train(): global_rank = 0. sample_num_throughput (images/second): 181
+MainProcess 2021-01-06,01:40:48.841 - {trainer.py (136)} - train(): global_rank = 0. communication frequency (cross machine sync/second): 3.021550
+MainProcess 2021-01-06,01:40:48.841 - {trainer.py (141)} - train(): -------------------------------------
+MainProcess 2021-01-06,01:40:48.841 - {trainer.py (98)} - train(): --------------global_rank = 0. Epoch 0, batch index 73 Statistics: 
+MainProcess 2021-01-06,01:40:48.841 - {trainer.py (100)} - train(): global_rank = 0. epoch = 0, batch index = 73/834
+MainProcess 2021-01-06,01:40:49.174 - {trainer.py (130)} - train(): global_rank = 0. sample_num_throughput (images/second): 181
+MainProcess 2021-01-06,01:40:49.174 - {trainer.py (136)} - train(): global_rank = 0. communication frequency (cross machine sync/second): 3.021291
+MainProcess 2021-01-06,01:40:49.174 - {trainer.py (141)} - train(): -------------------------------------
+MainProcess 2021-01-06,01:40:49.174 - {trainer.py (98)} - train(): --------------global_rank = 0. Epoch 0, batch index 74 Statistics: 
+MainProcess 2021-01-06,01:40:49.174 - {trainer.py (100)} - train(): global_rank = 0. epoch = 0, batch index = 74/834
+MainProcess 2021-01-06,01:40:49.516 - {trainer.py (130)} - train(): global_rank = 0. sample_num_throughput (images/second): 181
+MainProcess 2021-01-06,01:40:49.516 - {trainer.py (136)} - train(): global_rank = 0. communication frequency (cross machine sync/second): 3.020002
+MainProcess 2021-01-06,01:40:49.516 - {trainer.py (141)} - train(): -------------------------------------
+MainProcess 2021-01-06,01:40:49.516 - {trainer.py (98)} - train(): --------------global_rank = 0. Epoch 0, batch index 75 Statistics: 
+MainProcess 2021-01-06,01:40:49.516 - {trainer.py (100)} - train(): global_rank = 0. epoch = 0, batch index = 75/834
+MainProcess 2021-01-06,01:40:49.853 - {trainer.py (130)} - train(): global_rank = 0. sample_num_throughput (images/second): 181
+MainProcess 2021-01-06,01:40:49.853 - {trainer.py (136)} - train(): global_rank = 0. communication frequency (cross machine sync/second): 3.019203
+MainProcess 2021-01-06,01:40:49.854 - {trainer.py (141)} - train(): -------------------------------------
+MainProcess 2021-01-06,01:40:49.854 - {trainer.py (98)} - train(): --------------global_rank = 0. Epoch 0, batch index 76 Statistics: 
+MainProcess 2021-01-06,01:40:49.854 - {trainer.py (100)} - train(): global_rank = 0. epoch = 0, batch index = 76/834
+MainProcess 2021-01-06,01:40:50.183 - {trainer.py (130)} - train(): global_rank = 0. sample_num_throughput (images/second): 181
+MainProcess 2021-01-06,01:40:50.183 - {trainer.py (136)} - train(): global_rank = 0. communication frequency (cross machine sync/second): 3.019374
+MainProcess 2021-01-06,01:40:50.183 - {trainer.py (141)} - train(): -------------------------------------
+MainProcess 2021-01-06,01:40:50.183 - {trainer.py (98)} - train(): --------------global_rank = 0. Epoch 0, batch index 77 Statistics: 
+MainProcess 2021-01-06,01:40:50.183 - {trainer.py (100)} - train(): global_rank = 0. epoch = 0, batch index = 77/834
+MainProcess 2021-01-06,01:40:50.510 - {trainer.py (130)} - train(): global_rank = 0. sample_num_throughput (images/second): 181
+MainProcess 2021-01-06,01:40:50.511 - {trainer.py (136)} - train(): global_rank = 0. communication frequency (cross machine sync/second): 3.019830
+MainProcess 2021-01-06,01:40:50.511 - {trainer.py (141)} - train(): -------------------------------------
+MainProcess 2021-01-06,01:40:50.511 - {trainer.py (98)} - train(): --------------global_rank = 0. Epoch 0, batch index 78 Statistics: 
+MainProcess 2021-01-06,01:40:50.511 - {trainer.py (100)} - train(): global_rank = 0. epoch = 0, batch index = 78/834
+MainProcess 2021-01-06,01:40:50.842 - {trainer.py (130)} - train(): global_rank = 0. sample_num_throughput (images/second): 181
+MainProcess 2021-01-06,01:40:50.842 - {trainer.py (136)} - train(): global_rank = 0. communication frequency (cross machine sync/second): 3.019778
+MainProcess 2021-01-06,01:40:50.842 - {trainer.py (141)} - train(): -------------------------------------
+MainProcess 2021-01-06,01:40:50.842 - {trainer.py (98)} - train(): --------------global_rank = 0. Epoch 0, batch index 79 Statistics: 
+MainProcess 2021-01-06,01:40:50.842 - {trainer.py (100)} - train(): global_rank = 0. epoch = 0, batch index = 79/834
+MainProcess 2021-01-06,01:40:51.164 - {trainer.py (130)} - train(): global_rank = 0. sample_num_throughput (images/second): 181
+MainProcess 2021-01-06,01:40:51.164 - {trainer.py (136)} - train(): global_rank = 0. communication frequency (cross machine sync/second): 3.020784
+MainProcess 2021-01-06,01:40:51.165 - {trainer.py (141)} - train(): -------------------------------------
+MainProcess 2021-01-06,01:40:51.165 - {trainer.py (98)} - train(): --------------global_rank = 0. Epoch 0, batch index 80 Statistics: 
+MainProcess 2021-01-06,01:40:51.165 - {trainer.py (100)} - train(): global_rank = 0. epoch = 0, batch index = 80/834
+MainProcess 2021-01-06,01:40:51.487 - {trainer.py (130)} - train(): global_rank = 0. sample_num_throughput (images/second): 181
+MainProcess 2021-01-06,01:40:51.487 - {trainer.py (136)} - train(): global_rank = 0. communication frequency (cross machine sync/second): 3.021753
+MainProcess 2021-01-06,01:40:51.487 - {trainer.py (141)} - train(): -------------------------------------
+MainProcess 2021-01-06,01:40:51.487 - {trainer.py (98)} - train(): --------------global_rank = 0. Epoch 0, batch index 81 Statistics: 
+MainProcess 2021-01-06,01:40:51.487 - {trainer.py (100)} - train(): global_rank = 0. epoch = 0, batch index = 81/834
+MainProcess 2021-01-06,01:40:51.819 - {trainer.py (130)} - train(): global_rank = 0. sample_num_throughput (images/second): 181
+MainProcess 2021-01-06,01:40:51.820 - {trainer.py (136)} - train(): global_rank = 0. communication frequency (cross machine sync/second): 3.021561
+MainProcess 2021-01-06,01:40:51.820 - {trainer.py (141)} - train(): -------------------------------------
+MainProcess 2021-01-06,01:40:51.820 - {trainer.py (98)} - train(): --------------global_rank = 0. Epoch 0, batch index 82 Statistics: 
+MainProcess 2021-01-06,01:40:51.820 - {trainer.py (100)} - train(): global_rank = 0. epoch = 0, batch index = 82/834
+MainProcess 2021-01-06,01:40:52.154 - {trainer.py (130)} - train(): global_rank = 0. sample_num_throughput (images/second): 181
+MainProcess 2021-01-06,01:40:52.154 - {trainer.py (136)} - train(): global_rank = 0. communication frequency (cross machine sync/second): 3.021198
+MainProcess 2021-01-06,01:40:52.154 - {trainer.py (141)} - train(): -------------------------------------
+MainProcess 2021-01-06,01:40:52.154 - {trainer.py (98)} - train(): --------------global_rank = 0. Epoch 0, batch index 83 Statistics: 
+MainProcess 2021-01-06,01:40:52.154 - {trainer.py (100)} - train(): global_rank = 0. epoch = 0, batch index = 83/834
+MainProcess 2021-01-06,01:40:52.482 - {trainer.py (130)} - train(): global_rank = 0. sample_num_throughput (images/second): 181
+MainProcess 2021-01-06,01:40:52.482 - {trainer.py (136)} - train(): global_rank = 0. communication frequency (cross machine sync/second): 3.021480
+MainProcess 2021-01-06,01:40:52.482 - {trainer.py (141)} - train(): -------------------------------------
+MainProcess 2021-01-06,01:40:52.482 - {trainer.py (98)} - train(): --------------global_rank = 0. Epoch 0, batch index 84 Statistics: 
+MainProcess 2021-01-06,01:40:52.482 - {trainer.py (100)} - train(): global_rank = 0. epoch = 0, batch index = 84/834
+MainProcess 2021-01-06,01:40:52.811 - {trainer.py (130)} - train(): global_rank = 0. sample_num_throughput (images/second): 181
+MainProcess 2021-01-06,01:40:52.811 - {trainer.py (136)} - train(): global_rank = 0. communication frequency (cross machine sync/second): 3.021690
+MainProcess 2021-01-06,01:40:52.811 - {trainer.py (141)} - train(): -------------------------------------
+MainProcess 2021-01-06,01:40:52.811 - {trainer.py (98)} - train(): --------------global_rank = 0. Epoch 0, batch index 85 Statistics: 
+MainProcess 2021-01-06,01:40:52.811 - {trainer.py (100)} - train(): global_rank = 0. epoch = 0, batch index = 85/834
+MainProcess 2021-01-06,01:40:53.140 - {trainer.py (130)} - train(): global_rank = 0. sample_num_throughput (images/second): 181
+MainProcess 2021-01-06,01:40:53.140 - {trainer.py (136)} - train(): global_rank = 0. communication frequency (cross machine sync/second): 3.021909
+MainProcess 2021-01-06,01:40:53.140 - {trainer.py (141)} - train(): -------------------------------------
+MainProcess 2021-01-06,01:40:53.140 - {trainer.py (98)} - train(): --------------global_rank = 0. Epoch 0, batch index 86 Statistics: 
+MainProcess 2021-01-06,01:40:53.140 - {trainer.py (100)} - train(): global_rank = 0. epoch = 0, batch index = 86/834
+MainProcess 2021-01-06,01:40:53.474 - {trainer.py (130)} - train(): global_rank = 0. sample_num_throughput (images/second): 181
+MainProcess 2021-01-06,01:40:53.475 - {trainer.py (136)} - train(): global_rank = 0. communication frequency (cross machine sync/second): 3.021532
+MainProcess 2021-01-06,01:40:53.475 - {trainer.py (141)} - train(): -------------------------------------
+MainProcess 2021-01-06,01:40:53.475 - {trainer.py (98)} - train(): --------------global_rank = 0. Epoch 0, batch index 87 Statistics: 
+MainProcess 2021-01-06,01:40:53.475 - {trainer.py (100)} - train(): global_rank = 0. epoch = 0, batch index = 87/834
+MainProcess 2021-01-06,01:40:53.794 - {trainer.py (130)} - train(): global_rank = 0. sample_num_throughput (images/second): 181
+MainProcess 2021-01-06,01:40:53.794 - {trainer.py (136)} - train(): global_rank = 0. communication frequency (cross machine sync/second): 3.022716
+MainProcess 2021-01-06,01:40:53.794 - {trainer.py (141)} - train(): -------------------------------------
+MainProcess 2021-01-06,01:40:53.794 - {trainer.py (98)} - train(): --------------global_rank = 0. Epoch 0, batch index 88 Statistics: 
+MainProcess 2021-01-06,01:40:53.794 - {trainer.py (100)} - train(): global_rank = 0. epoch = 0, batch index = 88/834
+MainProcess 2021-01-06,01:40:54.110 - {trainer.py (130)} - train(): global_rank = 0. sample_num_throughput (images/second): 181
+MainProcess 2021-01-06,01:40:54.110 - {trainer.py (136)} - train(): global_rank = 0. communication frequency (cross machine sync/second): 3.024287
+MainProcess 2021-01-06,01:40:54.110 - {trainer.py (141)} - train(): -------------------------------------
+MainProcess 2021-01-06,01:40:54.110 - {trainer.py (98)} - train(): --------------global_rank = 0. Epoch 0, batch index 89 Statistics: 
+MainProcess 2021-01-06,01:40:54.110 - {trainer.py (100)} - train(): global_rank = 0. epoch = 0, batch index = 89/834
+MainProcess 2021-01-06,01:40:54.444 - {trainer.py (130)} - train(): global_rank = 0. sample_num_throughput (images/second): 181
+MainProcess 2021-01-06,01:40:54.444 - {trainer.py (136)} - train(): global_rank = 0. communication frequency (cross machine sync/second): 3.023926
+MainProcess 2021-01-06,01:40:54.444 - {trainer.py (141)} - train(): -------------------------------------
+MainProcess 2021-01-06,01:40:54.444 - {trainer.py (98)} - train(): --------------global_rank = 0. Epoch 0, batch index 90 Statistics: 
+MainProcess 2021-01-06,01:40:54.444 - {trainer.py (100)} - train(): global_rank = 0. epoch = 0, batch index = 90/834
+MainProcess 2021-01-06,01:40:54.759 - {trainer.py (130)} - train(): global_rank = 0. sample_num_throughput (images/second): 181
+MainProcess 2021-01-06,01:40:54.759 - {trainer.py (136)} - train(): global_rank = 0. communication frequency (cross machine sync/second): 3.025516
+MainProcess 2021-01-06,01:40:54.759 - {trainer.py (141)} - train(): -------------------------------------
+MainProcess 2021-01-06,01:40:54.759 - {trainer.py (98)} - train(): --------------global_rank = 0. Epoch 0, batch index 91 Statistics: 
+MainProcess 2021-01-06,01:40:54.759 - {trainer.py (100)} - train(): global_rank = 0. epoch = 0, batch index = 91/834
+MainProcess 2021-01-06,01:40:55.083 - {trainer.py (130)} - train(): global_rank = 0. sample_num_throughput (images/second): 181
+MainProcess 2021-01-06,01:40:55.083 - {trainer.py (136)} - train(): global_rank = 0. communication frequency (cross machine sync/second): 3.026161
+MainProcess 2021-01-06,01:40:55.083 - {trainer.py (141)} - train(): -------------------------------------
+MainProcess 2021-01-06,01:40:55.083 - {trainer.py (98)} - train(): --------------global_rank = 0. Epoch 0, batch index 92 Statistics: 
+MainProcess 2021-01-06,01:40:55.083 - {trainer.py (100)} - train(): global_rank = 0. epoch = 0, batch index = 92/834
+MainProcess 2021-01-06,01:40:55.415 - {trainer.py (130)} - train(): global_rank = 0. sample_num_throughput (images/second): 181
+MainProcess 2021-01-06,01:40:55.415 - {trainer.py (136)} - train(): global_rank = 0. communication frequency (cross machine sync/second): 3.025986
+MainProcess 2021-01-06,01:40:55.415 - {trainer.py (141)} - train(): -------------------------------------
+MainProcess 2021-01-06,01:40:55.415 - {trainer.py (98)} - train(): --------------global_rank = 0. Epoch 0, batch index 93 Statistics: 
+MainProcess 2021-01-06,01:40:55.415 - {trainer.py (100)} - train(): global_rank = 0. epoch = 0, batch index = 93/834
+MainProcess 2021-01-06,01:40:55.731 - {trainer.py (130)} - train(): global_rank = 0. sample_num_throughput (images/second): 181
+MainProcess 2021-01-06,01:40:55.731 - {trainer.py (136)} - train(): global_rank = 0. communication frequency (cross machine sync/second): 3.027425
+MainProcess 2021-01-06,01:40:55.731 - {trainer.py (141)} - train(): -------------------------------------
+MainProcess 2021-01-06,01:40:55.731 - {trainer.py (98)} - train(): --------------global_rank = 0. Epoch 0, batch index 94 Statistics: 
+MainProcess 2021-01-06,01:40:55.731 - {trainer.py (100)} - train(): global_rank = 0. epoch = 0, batch index = 94/834
+MainProcess 2021-01-06,01:40:56.048 - {trainer.py (130)} - train(): global_rank = 0. sample_num_throughput (images/second): 181
+MainProcess 2021-01-06,01:40:56.048 - {trainer.py (136)} - train(): global_rank = 0. communication frequency (cross machine sync/second): 3.028643
+MainProcess 2021-01-06,01:40:56.048 - {trainer.py (141)} - train(): -------------------------------------
+MainProcess 2021-01-06,01:40:56.049 - {trainer.py (98)} - train(): --------------global_rank = 0. Epoch 0, batch index 95 Statistics: 
+MainProcess 2021-01-06,01:40:56.049 - {trainer.py (100)} - train(): global_rank = 0. epoch = 0, batch index = 95/834
+MainProcess 2021-01-06,01:40:56.377 - {trainer.py (130)} - train(): global_rank = 0. sample_num_throughput (images/second): 181
+MainProcess 2021-01-06,01:40:56.377 - {trainer.py (136)} - train(): global_rank = 0. communication frequency (cross machine sync/second): 3.028762
+MainProcess 2021-01-06,01:40:56.377 - {trainer.py (141)} - train(): -------------------------------------
+MainProcess 2021-01-06,01:40:56.378 - {trainer.py (98)} - train(): --------------global_rank = 0. Epoch 0, batch index 96 Statistics: 
+MainProcess 2021-01-06,01:40:56.378 - {trainer.py (100)} - train(): global_rank = 0. epoch = 0, batch index = 96/834
+MainProcess 2021-01-06,01:40:56.705 - {trainer.py (130)} - train(): global_rank = 0. sample_num_throughput (images/second): 181
+MainProcess 2021-01-06,01:40:56.706 - {trainer.py (136)} - train(): global_rank = 0. communication frequency (cross machine sync/second): 3.028954
+MainProcess 2021-01-06,01:40:56.706 - {trainer.py (141)} - train(): -------------------------------------
+MainProcess 2021-01-06,01:40:56.706 - {trainer.py (98)} - train(): --------------global_rank = 0. Epoch 0, batch index 97 Statistics: 
+MainProcess 2021-01-06,01:40:56.706 - {trainer.py (100)} - train(): global_rank = 0. epoch = 0, batch index = 97/834
+MainProcess 2021-01-06,01:40:57.037 - {trainer.py (130)} - train(): global_rank = 0. sample_num_throughput (images/second): 181
+MainProcess 2021-01-06,01:40:57.037 - {trainer.py (136)} - train(): global_rank = 0. communication frequency (cross machine sync/second): 3.028824
+MainProcess 2021-01-06,01:40:57.037 - {trainer.py (141)} - train(): -------------------------------------
+MainProcess 2021-01-06,01:40:57.037 - {trainer.py (98)} - train(): --------------global_rank = 0. Epoch 0, batch index 98 Statistics: 
+MainProcess 2021-01-06,01:40:57.037 - {trainer.py (100)} - train(): global_rank = 0. epoch = 0, batch index = 98/834
+MainProcess 2021-01-06,01:40:57.370 - {trainer.py (130)} - train(): global_rank = 0. sample_num_throughput (images/second): 181
+MainProcess 2021-01-06,01:40:57.370 - {trainer.py (136)} - train(): global_rank = 0. communication frequency (cross machine sync/second): 3.028564
+MainProcess 2021-01-06,01:40:57.370 - {trainer.py (141)} - train(): -------------------------------------
+MainProcess 2021-01-06,01:40:57.370 - {trainer.py (98)} - train(): --------------global_rank = 0. Epoch 0, batch index 99 Statistics: 
+MainProcess 2021-01-06,01:40:57.370 - {trainer.py (100)} - train(): global_rank = 0. epoch = 0, batch index = 99/834
+MainProcess 2021-01-06,01:40:57.710 - {trainer.py (130)} - train(): global_rank = 0. sample_num_throughput (images/second): 181
+MainProcess 2021-01-06,01:40:57.710 - {trainer.py (136)} - train(): global_rank = 0. communication frequency (cross machine sync/second): 3.027657
+MainProcess 2021-01-06,01:40:57.710 - {trainer.py (141)} - train(): -------------------------------------
+MainProcess 2021-01-06,01:40:57.710 - {trainer.py (98)} - train(): --------------global_rank = 0. Epoch 0, batch index 100 Statistics: 
+MainProcess 2021-01-06,01:40:57.710 - {trainer.py (100)} - train(): global_rank = 0. epoch = 0, batch index = 100/834
+MainProcess 2021-01-06,01:40:58.066 - {trainer.py (130)} - train(): global_rank = 0. sample_num_throughput (images/second): 181
+MainProcess 2021-01-06,01:40:58.066 - {trainer.py (136)} - train(): global_rank = 0. communication frequency (cross machine sync/second): 3.025311
+MainProcess 2021-01-06,01:40:58.066 - {trainer.py (141)} - train(): -------------------------------------
+MainProcess 2021-01-06,01:40:58.066 - {trainer.py (98)} - train(): --------------global_rank = 0. Epoch 0, batch index 101 Statistics: 
+MainProcess 2021-01-06,01:40:58.066 - {trainer.py (100)} - train(): global_rank = 0. epoch = 0, batch index = 101/834
+MainProcess 2021-01-06,01:40:58.385 - {trainer.py (130)} - train(): global_rank = 0. sample_num_throughput (images/second): 181
+MainProcess 2021-01-06,01:40:58.385 - {trainer.py (136)} - train(): global_rank = 0. communication frequency (cross machine sync/second): 3.026396
+MainProcess 2021-01-06,01:40:58.385 - {trainer.py (141)} - train(): -------------------------------------
+MainProcess 2021-01-06,01:40:58.385 - {trainer.py (98)} - train(): --------------global_rank = 0. Epoch 0, batch index 102 Statistics: 
+MainProcess 2021-01-06,01:40:58.385 - {trainer.py (100)} - train(): global_rank = 0. epoch = 0, batch index = 102/834
+MainProcess 2021-01-06,01:40:58.709 - {trainer.py (130)} - train(): global_rank = 0. sample_num_throughput (images/second): 181
+MainProcess 2021-01-06,01:40:58.710 - {trainer.py (136)} - train(): global_rank = 0. communication frequency (cross machine sync/second): 3.026888
+MainProcess 2021-01-06,01:40:58.710 - {trainer.py (141)} - train(): -------------------------------------
+MainProcess 2021-01-06,01:40:58.710 - {trainer.py (98)} - train(): --------------global_rank = 0. Epoch 0, batch index 103 Statistics: 
+MainProcess 2021-01-06,01:40:58.710 - {trainer.py (100)} - train(): global_rank = 0. epoch = 0, batch index = 103/834
+MainProcess 2021-01-06,01:40:59.038 - {trainer.py (130)} - train(): global_rank = 0. sample_num_throughput (images/second): 181
+MainProcess 2021-01-06,01:40:59.038 - {trainer.py (136)} - train(): global_rank = 0. communication frequency (cross machine sync/second): 3.027073
+MainProcess 2021-01-06,01:40:59.038 - {trainer.py (141)} - train(): -------------------------------------
+MainProcess 2021-01-06,01:40:59.038 - {trainer.py (98)} - train(): --------------global_rank = 0. Epoch 0, batch index 104 Statistics: 
+MainProcess 2021-01-06,01:40:59.038 - {trainer.py (100)} - train(): global_rank = 0. epoch = 0, batch index = 104/834
+MainProcess 2021-01-06,01:40:59.376 - {trainer.py (130)} - train(): global_rank = 0. sample_num_throughput (images/second): 181
+MainProcess 2021-01-06,01:40:59.377 - {trainer.py (136)} - train(): global_rank = 0. communication frequency (cross machine sync/second): 3.026349
+MainProcess 2021-01-06,01:40:59.377 - {trainer.py (141)} - train(): -------------------------------------
+MainProcess 2021-01-06,01:40:59.377 - {trainer.py (98)} - train(): --------------global_rank = 0. Epoch 0, batch index 105 Statistics: 
+MainProcess 2021-01-06,01:40:59.377 - {trainer.py (100)} - train(): global_rank = 0. epoch = 0, batch index = 105/834
+MainProcess 2021-01-06,01:40:59.726 - {trainer.py (130)} - train(): global_rank = 0. sample_num_throughput (images/second): 181
+MainProcess 2021-01-06,01:40:59.726 - {trainer.py (136)} - train(): global_rank = 0. communication frequency (cross machine sync/second): 3.024734
+MainProcess 2021-01-06,01:40:59.726 - {trainer.py (141)} - train(): -------------------------------------
+MainProcess 2021-01-06,01:40:59.726 - {trainer.py (98)} - train(): --------------global_rank = 0. Epoch 0, batch index 106 Statistics: 
+MainProcess 2021-01-06,01:40:59.726 - {trainer.py (100)} - train(): global_rank = 0. epoch = 0, batch index = 106/834
+MainProcess 2021-01-06,01:41:00.051 - {trainer.py (130)} - train(): global_rank = 0. sample_num_throughput (images/second): 181
+MainProcess 2021-01-06,01:41:00.051 - {trainer.py (136)} - train(): global_rank = 0. communication frequency (cross machine sync/second): 3.025202
+MainProcess 2021-01-06,01:41:00.051 - {trainer.py (141)} - train(): -------------------------------------
+MainProcess 2021-01-06,01:41:00.051 - {trainer.py (98)} - train(): --------------global_rank = 0. Epoch 0, batch index 107 Statistics: 
+MainProcess 2021-01-06,01:41:00.051 - {trainer.py (100)} - train(): global_rank = 0. epoch = 0, batch index = 107/834
+MainProcess 2021-01-06,01:41:00.380 - {trainer.py (130)} - train(): global_rank = 0. sample_num_throughput (images/second): 181
+MainProcess 2021-01-06,01:41:00.380 - {trainer.py (136)} - train(): global_rank = 0. communication frequency (cross machine sync/second): 3.025339
+MainProcess 2021-01-06,01:41:00.380 - {trainer.py (141)} - train(): -------------------------------------
+MainProcess 2021-01-06,01:41:00.380 - {trainer.py (98)} - train(): --------------global_rank = 0. Epoch 0, batch index 108 Statistics: 
+MainProcess 2021-01-06,01:41:00.380 - {trainer.py (100)} - train(): global_rank = 0. epoch = 0, batch index = 108/834
+MainProcess 2021-01-06,01:41:00.708 - {trainer.py (130)} - train(): global_rank = 0. sample_num_throughput (images/second): 181
+MainProcess 2021-01-06,01:41:00.708 - {trainer.py (136)} - train(): global_rank = 0. communication frequency (cross machine sync/second): 3.025515
+MainProcess 2021-01-06,01:41:00.708 - {trainer.py (141)} - train(): -------------------------------------
+MainProcess 2021-01-06,01:41:00.708 - {trainer.py (98)} - train(): --------------global_rank = 0. Epoch 0, batch index 109 Statistics: 
+MainProcess 2021-01-06,01:41:00.708 - {trainer.py (100)} - train(): global_rank = 0. epoch = 0, batch index = 109/834
+MainProcess 2021-01-06,01:41:01.036 - {trainer.py (130)} - train(): global_rank = 0. sample_num_throughput (images/second): 181
+MainProcess 2021-01-06,01:41:01.036 - {trainer.py (136)} - train(): global_rank = 0. communication frequency (cross machine sync/second): 3.025755
+MainProcess 2021-01-06,01:41:01.036 - {trainer.py (141)} - train(): -------------------------------------
+MainProcess 2021-01-06,01:41:01.036 - {trainer.py (98)} - train(): --------------global_rank = 0. Epoch 0, batch index 110 Statistics: 
+MainProcess 2021-01-06,01:41:01.036 - {trainer.py (100)} - train(): global_rank = 0. epoch = 0, batch index = 110/834
+MainProcess 2021-01-06,01:41:01.355 - {trainer.py (130)} - train(): global_rank = 0. sample_num_throughput (images/second): 181
+MainProcess 2021-01-06,01:41:01.355 - {trainer.py (136)} - train(): global_rank = 0. communication frequency (cross machine sync/second): 3.026652
+MainProcess 2021-01-06,01:41:01.356 - {trainer.py (141)} - train(): -------------------------------------
+MainProcess 2021-01-06,01:41:01.356 - {trainer.py (98)} - train(): --------------global_rank = 0. Epoch 0, batch index 111 Statistics: 
+MainProcess 2021-01-06,01:41:01.356 - {trainer.py (100)} - train(): global_rank = 0. epoch = 0, batch index = 111/834
+MainProcess 2021-01-06,01:41:01.673 - {trainer.py (130)} - train(): global_rank = 0. sample_num_throughput (images/second): 181
+MainProcess 2021-01-06,01:41:01.673 - {trainer.py (136)} - train(): global_rank = 0. communication frequency (cross machine sync/second): 3.027688
+MainProcess 2021-01-06,01:41:01.673 - {trainer.py (141)} - train(): -------------------------------------
+MainProcess 2021-01-06,01:41:01.673 - {trainer.py (98)} - train(): --------------global_rank = 0. Epoch 0, batch index 112 Statistics: 
+MainProcess 2021-01-06,01:41:01.673 - {trainer.py (100)} - train(): global_rank = 0. epoch = 0, batch index = 112/834
+MainProcess 2021-01-06,01:41:02.004 - {trainer.py (130)} - train(): global_rank = 0. sample_num_throughput (images/second): 181
+MainProcess 2021-01-06,01:41:02.005 - {trainer.py (136)} - train(): global_rank = 0. communication frequency (cross machine sync/second): 3.027601
+MainProcess 2021-01-06,01:41:02.005 - {trainer.py (141)} - train(): -------------------------------------
+MainProcess 2021-01-06,01:41:02.005 - {trainer.py (98)} - train(): --------------global_rank = 0. Epoch 0, batch index 113 Statistics: 
+MainProcess 2021-01-06,01:41:02.005 - {trainer.py (100)} - train(): global_rank = 0. epoch = 0, batch index = 113/834
+MainProcess 2021-01-06,01:41:02.344 - {trainer.py (130)} - train(): global_rank = 0. sample_num_throughput (images/second): 181
+MainProcess 2021-01-06,01:41:02.344 - {trainer.py (136)} - train(): global_rank = 0. communication frequency (cross machine sync/second): 3.026837
+MainProcess 2021-01-06,01:41:02.344 - {trainer.py (141)} - train(): -------------------------------------
+MainProcess 2021-01-06,01:41:02.344 - {trainer.py (98)} - train(): --------------global_rank = 0. Epoch 0, batch index 114 Statistics: 
+MainProcess 2021-01-06,01:41:02.345 - {trainer.py (100)} - train(): global_rank = 0. epoch = 0, batch index = 114/834
+MainProcess 2021-01-06,01:41:02.680 - {trainer.py (130)} - train(): global_rank = 0. sample_num_throughput (images/second): 181
+MainProcess 2021-01-06,01:41:02.680 - {trainer.py (136)} - train(): global_rank = 0. communication frequency (cross machine sync/second): 3.026401
+MainProcess 2021-01-06,01:41:02.680 - {trainer.py (141)} - train(): -------------------------------------
+MainProcess 2021-01-06,01:41:02.680 - {trainer.py (98)} - train(): --------------global_rank = 0. Epoch 0, batch index 115 Statistics: 
+MainProcess 2021-01-06,01:41:02.680 - {trainer.py (100)} - train(): global_rank = 0. epoch = 0, batch index = 115/834
+MainProcess 2021-01-06,01:41:03.002 - {trainer.py (130)} - train(): global_rank = 0. sample_num_throughput (images/second): 181
+MainProcess 2021-01-06,01:41:03.002 - {trainer.py (136)} - train(): global_rank = 0. communication frequency (cross machine sync/second): 3.027098
+MainProcess 2021-01-06,01:41:03.002 - {trainer.py (141)} - train(): -------------------------------------
+MainProcess 2021-01-06,01:41:03.002 - {trainer.py (98)} - train(): --------------global_rank = 0. Epoch 0, batch index 116 Statistics: 
+MainProcess 2021-01-06,01:41:03.002 - {trainer.py (100)} - train(): global_rank = 0. epoch = 0, batch index = 116/834
+MainProcess 2021-01-06,01:41:03.330 - {trainer.py (130)} - train(): global_rank = 0. sample_num_throughput (images/second): 181
+MainProcess 2021-01-06,01:41:03.330 - {trainer.py (136)} - train(): global_rank = 0. communication frequency (cross machine sync/second): 3.027237
+MainProcess 2021-01-06,01:41:03.330 - {trainer.py (141)} - train(): -------------------------------------
+MainProcess 2021-01-06,01:41:03.331 - {trainer.py (98)} - train(): --------------global_rank = 0. Epoch 0, batch index 117 Statistics: 
+MainProcess 2021-01-06,01:41:03.331 - {trainer.py (100)} - train(): global_rank = 0. epoch = 0, batch index = 117/834
+MainProcess 2021-01-06,01:41:03.660 - {trainer.py (130)} - train(): global_rank = 0. sample_num_throughput (images/second): 181
+MainProcess 2021-01-06,01:41:03.660 - {trainer.py (136)} - train(): global_rank = 0. communication frequency (cross machine sync/second): 3.027290
+MainProcess 2021-01-06,01:41:03.660 - {trainer.py (141)} - train(): -------------------------------------
+MainProcess 2021-01-06,01:41:03.660 - {trainer.py (98)} - train(): --------------global_rank = 0. Epoch 0, batch index 118 Statistics: 
+MainProcess 2021-01-06,01:41:03.660 - {trainer.py (100)} - train(): global_rank = 0. epoch = 0, batch index = 118/834
+MainProcess 2021-01-06,01:41:03.988 - {trainer.py (130)} - train(): global_rank = 0. sample_num_throughput (images/second): 181
+MainProcess 2021-01-06,01:41:03.988 - {trainer.py (136)} - train(): global_rank = 0. communication frequency (cross machine sync/second): 3.027465
+MainProcess 2021-01-06,01:41:03.988 - {trainer.py (141)} - train(): -------------------------------------
+MainProcess 2021-01-06,01:41:03.988 - {trainer.py (98)} - train(): --------------global_rank = 0. Epoch 0, batch index 119 Statistics: 
+MainProcess 2021-01-06,01:41:03.988 - {trainer.py (100)} - train(): global_rank = 0. epoch = 0, batch index = 119/834
+MainProcess 2021-01-06,01:41:04.318 - {trainer.py (130)} - train(): global_rank = 0. sample_num_throughput (images/second): 181
+MainProcess 2021-01-06,01:41:04.318 - {trainer.py (136)} - train(): global_rank = 0. communication frequency (cross machine sync/second): 3.027518
+MainProcess 2021-01-06,01:41:04.318 - {trainer.py (141)} - train(): -------------------------------------
+MainProcess 2021-01-06,01:41:04.318 - {trainer.py (98)} - train(): --------------global_rank = 0. Epoch 0, batch index 120 Statistics: 
+MainProcess 2021-01-06,01:41:04.318 - {trainer.py (100)} - train(): global_rank = 0. epoch = 0, batch index = 120/834
+MainProcess 2021-01-06,01:41:04.649 - {trainer.py (130)} - train(): global_rank = 0. sample_num_throughput (images/second): 181
+MainProcess 2021-01-06,01:41:04.649 - {trainer.py (136)} - train(): global_rank = 0. communication frequency (cross machine sync/second): 3.027445
+MainProcess 2021-01-06,01:41:04.649 - {trainer.py (141)} - train(): -------------------------------------
+MainProcess 2021-01-06,01:41:04.649 - {trainer.py (98)} - train(): --------------global_rank = 0. Epoch 0, batch index 121 Statistics: 
+MainProcess 2021-01-06,01:41:04.649 - {trainer.py (100)} - train(): global_rank = 0. epoch = 0, batch index = 121/834
+MainProcess 2021-01-06,01:41:04.998 - {trainer.py (130)} - train(): global_rank = 0. sample_num_throughput (images/second): 181
+MainProcess 2021-01-06,01:41:04.998 - {trainer.py (136)} - train(): global_rank = 0. communication frequency (cross machine sync/second): 3.026056
+MainProcess 2021-01-06,01:41:04.998 - {trainer.py (141)} - train(): -------------------------------------
+MainProcess 2021-01-06,01:41:04.998 - {trainer.py (98)} - train(): --------------global_rank = 0. Epoch 0, batch index 122 Statistics: 
+MainProcess 2021-01-06,01:41:04.998 - {trainer.py (100)} - train(): global_rank = 0. epoch = 0, batch index = 122/834
+MainProcess 2021-01-06,01:41:05.332 - {trainer.py (130)} - train(): global_rank = 0. sample_num_throughput (images/second): 181
+MainProcess 2021-01-06,01:41:05.333 - {trainer.py (136)} - train(): global_rank = 0. communication frequency (cross machine sync/second): 3.025730
+MainProcess 2021-01-06,01:41:05.333 - {trainer.py (141)} - train(): -------------------------------------
+MainProcess 2021-01-06,01:41:05.333 - {trainer.py (98)} - train(): --------------global_rank = 0. Epoch 0, batch index 123 Statistics: 
+MainProcess 2021-01-06,01:41:05.333 - {trainer.py (100)} - train(): global_rank = 0. epoch = 0, batch index = 123/834
+MainProcess 2021-01-06,01:41:05.663 - {trainer.py (130)} - train(): global_rank = 0. sample_num_throughput (images/second): 181
+MainProcess 2021-01-06,01:41:05.663 - {trainer.py (136)} - train(): global_rank = 0. communication frequency (cross machine sync/second): 3.025742
+MainProcess 2021-01-06,01:41:05.663 - {trainer.py (141)} - train(): -------------------------------------
+MainProcess 2021-01-06,01:41:05.663 - {trainer.py (98)} - train(): --------------global_rank = 0. Epoch 0, batch index 124 Statistics: 
+MainProcess 2021-01-06,01:41:05.663 - {trainer.py (100)} - train(): global_rank = 0. epoch = 0, batch index = 124/834
+MainProcess 2021-01-06,01:41:05.991 - {trainer.py (130)} - train(): global_rank = 0. sample_num_throughput (images/second): 181
+MainProcess 2021-01-06,01:41:05.991 - {trainer.py (136)} - train(): global_rank = 0. communication frequency (cross machine sync/second): 3.025891
+MainProcess 2021-01-06,01:41:05.991 - {trainer.py (141)} - train(): -------------------------------------
+MainProcess 2021-01-06,01:41:05.992 - {trainer.py (98)} - train(): --------------global_rank = 0. Epoch 0, batch index 125 Statistics: 
+MainProcess 2021-01-06,01:41:05.992 - {trainer.py (100)} - train(): global_rank = 0. epoch = 0, batch index = 125/834
+MainProcess 2021-01-06,01:41:06.343 - {trainer.py (130)} - train(): global_rank = 0. sample_num_throughput (images/second): 181
+MainProcess 2021-01-06,01:41:06.344 - {trainer.py (136)} - train(): global_rank = 0. communication frequency (cross machine sync/second): 3.024312
+MainProcess 2021-01-06,01:41:06.344 - {trainer.py (141)} - train(): -------------------------------------
+MainProcess 2021-01-06,01:41:06.344 - {trainer.py (98)} - train(): --------------global_rank = 0. Epoch 0, batch index 126 Statistics: 
+MainProcess 2021-01-06,01:41:06.344 - {trainer.py (100)} - train(): global_rank = 0. epoch = 0, batch index = 126/834
+MainProcess 2021-01-06,01:41:06.693 - {trainer.py (130)} - train(): global_rank = 0. sample_num_throughput (images/second): 181
+MainProcess 2021-01-06,01:41:06.693 - {trainer.py (136)} - train(): global_rank = 0. communication frequency (cross machine sync/second): 3.022931
+MainProcess 2021-01-06,01:41:06.694 - {trainer.py (141)} - train(): -------------------------------------
+MainProcess 2021-01-06,01:41:06.694 - {trainer.py (98)} - train(): --------------global_rank = 0. Epoch 0, batch index 127 Statistics: 
+MainProcess 2021-01-06,01:41:06.694 - {trainer.py (100)} - train(): global_rank = 0. epoch = 0, batch index = 127/834
+MainProcess 2021-01-06,01:41:07.027 - {trainer.py (130)} - train(): global_rank = 0. sample_num_throughput (images/second): 181
+MainProcess 2021-01-06,01:41:07.027 - {trainer.py (136)} - train(): global_rank = 0. communication frequency (cross machine sync/second): 3.022706
+MainProcess 2021-01-06,01:41:07.027 - {trainer.py (141)} - train(): -------------------------------------
+MainProcess 2021-01-06,01:41:07.028 - {trainer.py (98)} - train(): --------------global_rank = 0. Epoch 0, batch index 128 Statistics: 
+MainProcess 2021-01-06,01:41:07.028 - {trainer.py (100)} - train(): global_rank = 0. epoch = 0, batch index = 128/834
+MainProcess 2021-01-06,01:41:07.362 - {trainer.py (130)} - train(): global_rank = 0. sample_num_throughput (images/second): 181
+MainProcess 2021-01-06,01:41:07.362 - {trainer.py (136)} - train(): global_rank = 0. communication frequency (cross machine sync/second): 3.022458
+MainProcess 2021-01-06,01:41:07.362 - {trainer.py (141)} - train(): -------------------------------------
+MainProcess 2021-01-06,01:41:07.362 - {trainer.py (98)} - train(): --------------global_rank = 0. Epoch 0, batch index 129 Statistics: 
+MainProcess 2021-01-06,01:41:07.362 - {trainer.py (100)} - train(): global_rank = 0. epoch = 0, batch index = 129/834
+MainProcess 2021-01-06,01:41:07.697 - {trainer.py (130)} - train(): global_rank = 0. sample_num_throughput (images/second): 181
+MainProcess 2021-01-06,01:41:07.697 - {trainer.py (136)} - train(): global_rank = 0. communication frequency (cross machine sync/second): 3.022134
+MainProcess 2021-01-06,01:41:07.697 - {trainer.py (141)} - train(): -------------------------------------
+MainProcess 2021-01-06,01:41:07.697 - {trainer.py (98)} - train(): --------------global_rank = 0. Epoch 0, batch index 130 Statistics: 
+MainProcess 2021-01-06,01:41:07.697 - {trainer.py (100)} - train(): global_rank = 0. epoch = 0, batch index = 130/834
+MainProcess 2021-01-06,01:41:08.037 - {trainer.py (130)} - train(): global_rank = 0. sample_num_throughput (images/second): 181
+MainProcess 2021-01-06,01:41:08.037 - {trainer.py (136)} - train(): global_rank = 0. communication frequency (cross machine sync/second): 3.021501
+MainProcess 2021-01-06,01:41:08.037 - {trainer.py (141)} - train(): -------------------------------------
+MainProcess 2021-01-06,01:41:08.037 - {trainer.py (98)} - train(): --------------global_rank = 0. Epoch 0, batch index 131 Statistics: 
+MainProcess 2021-01-06,01:41:08.037 - {trainer.py (100)} - train(): global_rank = 0. epoch = 0, batch index = 131/834
+MainProcess 2021-01-06,01:41:08.384 - {trainer.py (130)} - train(): global_rank = 0. sample_num_throughput (images/second): 181
+MainProcess 2021-01-06,01:41:08.385 - {trainer.py (136)} - train(): global_rank = 0. communication frequency (cross machine sync/second): 3.020368
+MainProcess 2021-01-06,01:41:08.385 - {trainer.py (141)} - train(): -------------------------------------
+MainProcess 2021-01-06,01:41:08.385 - {trainer.py (98)} - train(): --------------global_rank = 0. Epoch 0, batch index 132 Statistics: 
+MainProcess 2021-01-06,01:41:08.385 - {trainer.py (100)} - train(): global_rank = 0. epoch = 0, batch index = 132/834
+MainProcess 2021-01-06,01:41:08.748 - {trainer.py (130)} - train(): global_rank = 0. sample_num_throughput (images/second): 181
+MainProcess 2021-01-06,01:41:08.748 - {trainer.py (136)} - train(): global_rank = 0. communication frequency (cross machine sync/second): 3.018153
+MainProcess 2021-01-06,01:41:08.748 - {trainer.py (141)} - train(): -------------------------------------
+MainProcess 2021-01-06,01:41:08.748 - {trainer.py (98)} - train(): --------------global_rank = 0. Epoch 0, batch index 133 Statistics: 
+MainProcess 2021-01-06,01:41:08.748 - {trainer.py (100)} - train(): global_rank = 0. epoch = 0, batch index = 133/834
+MainProcess 2021-01-06,01:41:09.078 - {trainer.py (130)} - train(): global_rank = 0. sample_num_throughput (images/second): 181
+MainProcess 2021-01-06,01:41:09.078 - {trainer.py (136)} - train(): global_rank = 0. communication frequency (cross machine sync/second): 3.018223
+MainProcess 2021-01-06,01:41:09.078 - {trainer.py (141)} - train(): -------------------------------------
+MainProcess 2021-01-06,01:41:09.078 - {trainer.py (98)} - train(): --------------global_rank = 0. Epoch 0, batch index 134 Statistics: 
+MainProcess 2021-01-06,01:41:09.078 - {trainer.py (100)} - train(): global_rank = 0. epoch = 0, batch index = 134/834
+MainProcess 2021-01-06,01:41:09.415 - {trainer.py (130)} - train(): global_rank = 0. sample_num_throughput (images/second): 181
+MainProcess 2021-01-06,01:41:09.415 - {trainer.py (136)} - train(): global_rank = 0. communication frequency (cross machine sync/second): 3.017824
+MainProcess 2021-01-06,01:41:09.416 - {trainer.py (141)} - train(): -------------------------------------
+MainProcess 2021-01-06,01:41:09.416 - {trainer.py (98)} - train(): --------------global_rank = 0. Epoch 0, batch index 135 Statistics: 
+MainProcess 2021-01-06,01:41:09.416 - {trainer.py (100)} - train(): global_rank = 0. epoch = 0, batch index = 135/834
+MainProcess 2021-01-06,01:41:09.741 - {trainer.py (130)} - train(): global_rank = 0. sample_num_throughput (images/second): 181
+MainProcess 2021-01-06,01:41:09.741 - {trainer.py (136)} - train(): global_rank = 0. communication frequency (cross machine sync/second): 3.018236
+MainProcess 2021-01-06,01:41:09.741 - {trainer.py (141)} - train(): -------------------------------------
+MainProcess 2021-01-06,01:41:09.741 - {trainer.py (98)} - train(): --------------global_rank = 0. Epoch 0, batch index 136 Statistics: 
+MainProcess 2021-01-06,01:41:09.741 - {trainer.py (100)} - train(): global_rank = 0. epoch = 0, batch index = 136/834
+MainProcess 2021-01-06,01:41:10.066 - {trainer.py (130)} - train(): global_rank = 0. sample_num_throughput (images/second): 181
+MainProcess 2021-01-06,01:41:10.066 - {trainer.py (136)} - train(): global_rank = 0. communication frequency (cross machine sync/second): 3.018658
+MainProcess 2021-01-06,01:41:10.066 - {trainer.py (141)} - train(): -------------------------------------
+MainProcess 2021-01-06,01:41:10.066 - {trainer.py (98)} - train(): --------------global_rank = 0. Epoch 0, batch index 137 Statistics: 
+MainProcess 2021-01-06,01:41:10.066 - {trainer.py (100)} - train(): global_rank = 0. epoch = 0, batch index = 137/834
+MainProcess 2021-01-06,01:41:10.401 - {trainer.py (130)} - train(): global_rank = 0. sample_num_throughput (images/second): 181
+MainProcess 2021-01-06,01:41:10.402 - {trainer.py (136)} - train(): global_rank = 0. communication frequency (cross machine sync/second): 3.018353
+MainProcess 2021-01-06,01:41:10.402 - {trainer.py (141)} - train(): -------------------------------------
+MainProcess 2021-01-06,01:41:10.402 - {trainer.py (98)} - train(): --------------global_rank = 0. Epoch 0, batch index 138 Statistics: 
+MainProcess 2021-01-06,01:41:10.402 - {trainer.py (100)} - train(): global_rank = 0. epoch = 0, batch index = 138/834
+MainProcess 2021-01-06,01:41:10.735 - {trainer.py (130)} - train(): global_rank = 0. sample_num_throughput (images/second): 181
+MainProcess 2021-01-06,01:41:10.735 - {trainer.py (136)} - train(): global_rank = 0. communication frequency (cross machine sync/second): 3.018198
+MainProcess 2021-01-06,01:41:10.735 - {trainer.py (141)} - train(): -------------------------------------
+MainProcess 2021-01-06,01:41:10.735 - {trainer.py (98)} - train(): --------------global_rank = 0. Epoch 0, batch index 139 Statistics: 
+MainProcess 2021-01-06,01:41:10.735 - {trainer.py (100)} - train(): global_rank = 0. epoch = 0, batch index = 139/834
+MainProcess 2021-01-06,01:41:11.058 - {trainer.py (130)} - train(): global_rank = 0. sample_num_throughput (images/second): 181
+MainProcess 2021-01-06,01:41:11.058 - {trainer.py (136)} - train(): global_rank = 0. communication frequency (cross machine sync/second): 3.018768
+MainProcess 2021-01-06,01:41:11.058 - {trainer.py (141)} - train(): -------------------------------------
+MainProcess 2021-01-06,01:41:11.058 - {trainer.py (98)} - train(): --------------global_rank = 0. Epoch 0, batch index 140 Statistics: 
+MainProcess 2021-01-06,01:41:11.058 - {trainer.py (100)} - train(): global_rank = 0. epoch = 0, batch index = 140/834
+MainProcess 2021-01-06,01:41:11.395 - {trainer.py (130)} - train(): global_rank = 0. sample_num_throughput (images/second): 181
+MainProcess 2021-01-06,01:41:11.395 - {trainer.py (136)} - train(): global_rank = 0. communication frequency (cross machine sync/second): 3.018366
+MainProcess 2021-01-06,01:41:11.395 - {trainer.py (141)} - train(): -------------------------------------
+MainProcess 2021-01-06,01:41:11.395 - {trainer.py (98)} - train(): --------------global_rank = 0. Epoch 0, batch index 141 Statistics: 
+MainProcess 2021-01-06,01:41:11.395 - {trainer.py (100)} - train(): global_rank = 0. epoch = 0, batch index = 141/834
+MainProcess 2021-01-06,01:41:11.733 - {trainer.py (130)} - train(): global_rank = 0. sample_num_throughput (images/second): 181
+MainProcess 2021-01-06,01:41:11.733 - {trainer.py (136)} - train(): global_rank = 0. communication frequency (cross machine sync/second): 3.017955
+MainProcess 2021-01-06,01:41:11.733 - {trainer.py (141)} - train(): -------------------------------------
+MainProcess 2021-01-06,01:41:11.733 - {trainer.py (98)} - train(): --------------global_rank = 0. Epoch 0, batch index 142 Statistics: 
+MainProcess 2021-01-06,01:41:11.733 - {trainer.py (100)} - train(): global_rank = 0. epoch = 0, batch index = 142/834
+MainProcess 2021-01-06,01:41:12.056 - {trainer.py (130)} - train(): global_rank = 0. sample_num_throughput (images/second): 181
+MainProcess 2021-01-06,01:41:12.056 - {trainer.py (136)} - train(): global_rank = 0. communication frequency (cross machine sync/second): 3.018472
+MainProcess 2021-01-06,01:41:12.056 - {trainer.py (141)} - train(): -------------------------------------
+MainProcess 2021-01-06,01:41:12.056 - {trainer.py (98)} - train(): --------------global_rank = 0. Epoch 0, batch index 143 Statistics: 
+MainProcess 2021-01-06,01:41:12.056 - {trainer.py (100)} - train(): global_rank = 0. epoch = 0, batch index = 143/834
+MainProcess 2021-01-06,01:41:12.395 - {trainer.py (130)} - train(): global_rank = 0. sample_num_throughput (images/second): 181
+MainProcess 2021-01-06,01:41:12.395 - {trainer.py (136)} - train(): global_rank = 0. communication frequency (cross machine sync/second): 3.018004
+MainProcess 2021-01-06,01:41:12.395 - {trainer.py (141)} - train(): -------------------------------------
+MainProcess 2021-01-06,01:41:12.395 - {trainer.py (98)} - train(): --------------global_rank = 0. Epoch 0, batch index 144 Statistics: 
+MainProcess 2021-01-06,01:41:12.395 - {trainer.py (100)} - train(): global_rank = 0. epoch = 0, batch index = 144/834
+MainProcess 2021-01-06,01:41:12.720 - {trainer.py (130)} - train(): global_rank = 0. sample_num_throughput (images/second): 181
+MainProcess 2021-01-06,01:41:12.720 - {trainer.py (136)} - train(): global_rank = 0. communication frequency (cross machine sync/second): 3.018388
+MainProcess 2021-01-06,01:41:12.720 - {trainer.py (141)} - train(): -------------------------------------
+MainProcess 2021-01-06,01:41:12.720 - {trainer.py (98)} - train(): --------------global_rank = 0. Epoch 0, batch index 145 Statistics: 
+MainProcess 2021-01-06,01:41:12.720 - {trainer.py (100)} - train(): global_rank = 0. epoch = 0, batch index = 145/834
+MainProcess 2021-01-06,01:41:13.050 - {trainer.py (130)} - train(): global_rank = 0. sample_num_throughput (images/second): 181
+MainProcess 2021-01-06,01:41:13.051 - {trainer.py (136)} - train(): global_rank = 0. communication frequency (cross machine sync/second): 3.018441
+MainProcess 2021-01-06,01:41:13.051 - {trainer.py (141)} - train(): -------------------------------------
+MainProcess 2021-01-06,01:41:13.051 - {trainer.py (98)} - train(): --------------global_rank = 0. Epoch 0, batch index 146 Statistics: 
+MainProcess 2021-01-06,01:41:13.051 - {trainer.py (100)} - train(): global_rank = 0. epoch = 0, batch index = 146/834
+MainProcess 2021-01-06,01:41:13.378 - {trainer.py (130)} - train(): global_rank = 0. sample_num_throughput (images/second): 181
+MainProcess 2021-01-06,01:41:13.378 - {trainer.py (136)} - train(): global_rank = 0. communication frequency (cross machine sync/second): 3.018664
+MainProcess 2021-01-06,01:41:13.378 - {trainer.py (141)} - train(): -------------------------------------
+MainProcess 2021-01-06,01:41:13.378 - {trainer.py (98)} - train(): --------------global_rank = 0. Epoch 0, batch index 147 Statistics: 
+MainProcess 2021-01-06,01:41:13.378 - {trainer.py (100)} - train(): global_rank = 0. epoch = 0, batch index = 147/834
+MainProcess 2021-01-06,01:41:13.705 - {trainer.py (130)} - train(): global_rank = 0. sample_num_throughput (images/second): 181
+MainProcess 2021-01-06,01:41:13.706 - {trainer.py (136)} - train(): global_rank = 0. communication frequency (cross machine sync/second): 3.018907
+MainProcess 2021-01-06,01:41:13.706 - {trainer.py (141)} - train(): -------------------------------------
+MainProcess 2021-01-06,01:41:13.706 - {trainer.py (98)} - train(): --------------global_rank = 0. Epoch 0, batch index 148 Statistics: 
+MainProcess 2021-01-06,01:41:13.706 - {trainer.py (100)} - train(): global_rank = 0. epoch = 0, batch index = 148/834
+MainProcess 2021-01-06,01:41:14.026 - {trainer.py (130)} - train(): global_rank = 0. sample_num_throughput (images/second): 181
+MainProcess 2021-01-06,01:41:14.026 - {trainer.py (136)} - train(): global_rank = 0. communication frequency (cross machine sync/second): 3.019572
+MainProcess 2021-01-06,01:41:14.026 - {trainer.py (141)} - train(): -------------------------------------
+MainProcess 2021-01-06,01:41:14.026 - {trainer.py (98)} - train(): --------------global_rank = 0. Epoch 0, batch index 149 Statistics: 
+MainProcess 2021-01-06,01:41:14.026 - {trainer.py (100)} - train(): global_rank = 0. epoch = 0, batch index = 149/834
+MainProcess 2021-01-06,01:41:14.360 - {trainer.py (130)} - train(): global_rank = 0. sample_num_throughput (images/second): 181
+MainProcess 2021-01-06,01:41:14.360 - {trainer.py (136)} - train(): global_rank = 0. communication frequency (cross machine sync/second): 3.019393
+MainProcess 2021-01-06,01:41:14.360 - {trainer.py (141)} - train(): -------------------------------------
+MainProcess 2021-01-06,01:41:14.360 - {trainer.py (98)} - train(): --------------global_rank = 0. Epoch 0, batch index 150 Statistics: 
+MainProcess 2021-01-06,01:41:14.360 - {trainer.py (100)} - train(): global_rank = 0. epoch = 0, batch index = 150/834
+MainProcess 2021-01-06,01:41:14.680 - {trainer.py (130)} - train(): global_rank = 0. sample_num_throughput (images/second): 181
+MainProcess 2021-01-06,01:41:14.680 - {trainer.py (136)} - train(): global_rank = 0. communication frequency (cross machine sync/second): 3.020064
+MainProcess 2021-01-06,01:41:14.680 - {trainer.py (141)} - train(): -------------------------------------
+MainProcess 2021-01-06,01:41:14.680 - {trainer.py (98)} - train(): --------------global_rank = 0. Epoch 0, batch index 151 Statistics: 
+MainProcess 2021-01-06,01:41:14.680 - {trainer.py (100)} - train(): global_rank = 0. epoch = 0, batch index = 151/834
+MainProcess 2021-01-06,01:41:15.015 - {trainer.py (130)} - train(): global_rank = 0. sample_num_throughput (images/second): 181
+MainProcess 2021-01-06,01:41:15.015 - {trainer.py (136)} - train(): global_rank = 0. communication frequency (cross machine sync/second): 3.019847
+MainProcess 2021-01-06,01:41:15.015 - {trainer.py (141)} - train(): -------------------------------------
+MainProcess 2021-01-06,01:41:15.015 - {trainer.py (98)} - train(): --------------global_rank = 0. Epoch 0, batch index 152 Statistics: 
+MainProcess 2021-01-06,01:41:15.015 - {trainer.py (100)} - train(): global_rank = 0. epoch = 0, batch index = 152/834
+MainProcess 2021-01-06,01:41:15.351 - {trainer.py (130)} - train(): global_rank = 0. sample_num_throughput (images/second): 181
+MainProcess 2021-01-06,01:41:15.351 - {trainer.py (136)} - train(): global_rank = 0. communication frequency (cross machine sync/second): 3.019533
+MainProcess 2021-01-06,01:41:15.351 - {trainer.py (141)} - train(): -------------------------------------
+MainProcess 2021-01-06,01:41:15.351 - {trainer.py (98)} - train(): --------------global_rank = 0. Epoch 0, batch index 153 Statistics: 
+MainProcess 2021-01-06,01:41:15.352 - {trainer.py (100)} - train(): global_rank = 0. epoch = 0, batch index = 153/834
+MainProcess 2021-01-06,01:41:15.688 - {trainer.py (130)} - train(): global_rank = 0. sample_num_throughput (images/second): 181
+MainProcess 2021-01-06,01:41:15.688 - {trainer.py (136)} - train(): global_rank = 0. communication frequency (cross machine sync/second): 3.019192
+MainProcess 2021-01-06,01:41:15.688 - {trainer.py (141)} - train(): -------------------------------------
+MainProcess 2021-01-06,01:41:15.688 - {trainer.py (98)} - train(): --------------global_rank = 0. Epoch 0, batch index 154 Statistics: 
+MainProcess 2021-01-06,01:41:15.688 - {trainer.py (100)} - train(): global_rank = 0. epoch = 0, batch index = 154/834
+MainProcess 2021-01-06,01:41:16.032 - {trainer.py (130)} - train(): global_rank = 0. sample_num_throughput (images/second): 181
+MainProcess 2021-01-06,01:41:16.032 - {trainer.py (136)} - train(): global_rank = 0. communication frequency (cross machine sync/second): 3.018466
+MainProcess 2021-01-06,01:41:16.032 - {trainer.py (141)} - train(): -------------------------------------
+MainProcess 2021-01-06,01:41:16.032 - {trainer.py (98)} - train(): --------------global_rank = 0. Epoch 0, batch index 155 Statistics: 
+MainProcess 2021-01-06,01:41:16.032 - {trainer.py (100)} - train(): global_rank = 0. epoch = 0, batch index = 155/834
+MainProcess 2021-01-06,01:41:16.374 - {trainer.py (130)} - train(): global_rank = 0. sample_num_throughput (images/second): 181
+MainProcess 2021-01-06,01:41:16.374 - {trainer.py (136)} - train(): global_rank = 0. communication frequency (cross machine sync/second): 3.017807
+MainProcess 2021-01-06,01:41:16.374 - {trainer.py (141)} - train(): -------------------------------------
+MainProcess 2021-01-06,01:41:16.375 - {trainer.py (98)} - train(): --------------global_rank = 0. Epoch 0, batch index 156 Statistics: 
+MainProcess 2021-01-06,01:41:16.375 - {trainer.py (100)} - train(): global_rank = 0. epoch = 0, batch index = 156/834
+MainProcess 2021-01-06,01:41:16.727 - {trainer.py (130)} - train(): global_rank = 0. sample_num_throughput (images/second): 180
+MainProcess 2021-01-06,01:41:16.727 - {trainer.py (136)} - train(): global_rank = 0. communication frequency (cross machine sync/second): 3.016575
+MainProcess 2021-01-06,01:41:16.727 - {trainer.py (141)} - train(): -------------------------------------
+MainProcess 2021-01-06,01:41:16.727 - {trainer.py (98)} - train(): --------------global_rank = 0. Epoch 0, batch index 157 Statistics: 
+MainProcess 2021-01-06,01:41:16.727 - {trainer.py (100)} - train(): global_rank = 0. epoch = 0, batch index = 157/834
+MainProcess 2021-01-06,01:41:17.073 - {trainer.py (130)} - train(): global_rank = 0. sample_num_throughput (images/second): 180
+MainProcess 2021-01-06,01:41:17.073 - {trainer.py (136)} - train(): global_rank = 0. communication frequency (cross machine sync/second): 3.015747
+MainProcess 2021-01-06,01:41:17.073 - {trainer.py (141)} - train(): -------------------------------------
+MainProcess 2021-01-06,01:41:17.073 - {trainer.py (98)} - train(): --------------global_rank = 0. Epoch 0, batch index 158 Statistics: 
+MainProcess 2021-01-06,01:41:17.073 - {trainer.py (100)} - train(): global_rank = 0. epoch = 0, batch index = 158/834
+MainProcess 2021-01-06,01:41:17.402 - {trainer.py (130)} - train(): global_rank = 0. sample_num_throughput (images/second): 180
+MainProcess 2021-01-06,01:41:17.402 - {trainer.py (136)} - train(): global_rank = 0. communication frequency (cross machine sync/second): 3.015889
+MainProcess 2021-01-06,01:41:17.402 - {trainer.py (141)} - train(): -------------------------------------
+MainProcess 2021-01-06,01:41:17.402 - {trainer.py (98)} - train(): --------------global_rank = 0. Epoch 0, batch index 159 Statistics: 
+MainProcess 2021-01-06,01:41:17.402 - {trainer.py (100)} - train(): global_rank = 0. epoch = 0, batch index = 159/834
+MainProcess 2021-01-06,01:41:17.736 - {trainer.py (130)} - train(): global_rank = 0. sample_num_throughput (images/second): 180
+MainProcess 2021-01-06,01:41:17.737 - {trainer.py (136)} - train(): global_rank = 0. communication frequency (cross machine sync/second): 3.015719
+MainProcess 2021-01-06,01:41:17.737 - {trainer.py (141)} - train(): -------------------------------------
+MainProcess 2021-01-06,01:41:17.737 - {trainer.py (98)} - train(): --------------global_rank = 0. Epoch 0, batch index 160 Statistics: 
+MainProcess 2021-01-06,01:41:17.737 - {trainer.py (100)} - train(): global_rank = 0. epoch = 0, batch index = 160/834
+MainProcess 2021-01-06,01:41:18.063 - {trainer.py (130)} - train(): global_rank = 0. sample_num_throughput (images/second): 180
+MainProcess 2021-01-06,01:41:18.064 - {trainer.py (136)} - train(): global_rank = 0. communication frequency (cross machine sync/second): 3.015985
+MainProcess 2021-01-06,01:41:18.064 - {trainer.py (141)} - train(): -------------------------------------
+MainProcess 2021-01-06,01:41:18.064 - {trainer.py (98)} - train(): --------------global_rank = 0. Epoch 0, batch index 161 Statistics: 
+MainProcess 2021-01-06,01:41:18.064 - {trainer.py (100)} - train(): global_rank = 0. epoch = 0, batch index = 161/834
+MainProcess 2021-01-06,01:41:18.395 - {trainer.py (130)} - train(): global_rank = 0. sample_num_throughput (images/second): 180
+MainProcess 2021-01-06,01:41:18.395 - {trainer.py (136)} - train(): global_rank = 0. communication frequency (cross machine sync/second): 3.016001
+MainProcess 2021-01-06,01:41:18.395 - {trainer.py (141)} - train(): -------------------------------------
+MainProcess 2021-01-06,01:41:18.395 - {trainer.py (98)} - train(): --------------global_rank = 0. Epoch 0, batch index 162 Statistics: 
+MainProcess 2021-01-06,01:41:18.395 - {trainer.py (100)} - train(): global_rank = 0. epoch = 0, batch index = 162/834
+MainProcess 2021-01-06,01:41:18.724 - {trainer.py (130)} - train(): global_rank = 0. sample_num_throughput (images/second): 180
+MainProcess 2021-01-06,01:41:18.724 - {trainer.py (136)} - train(): global_rank = 0. communication frequency (cross machine sync/second): 3.016106
+MainProcess 2021-01-06,01:41:18.724 - {trainer.py (141)} - train(): -------------------------------------
+MainProcess 2021-01-06,01:41:18.725 - {trainer.py (98)} - train(): --------------global_rank = 0. Epoch 0, batch index 163 Statistics: 
+MainProcess 2021-01-06,01:41:18.725 - {trainer.py (100)} - train(): global_rank = 0. epoch = 0, batch index = 163/834
+MainProcess 2021-01-06,01:41:19.062 - {trainer.py (130)} - train(): global_rank = 0. sample_num_throughput (images/second): 180
+MainProcess 2021-01-06,01:41:19.062 - {trainer.py (136)} - train(): global_rank = 0. communication frequency (cross machine sync/second): 3.015781
+MainProcess 2021-01-06,01:41:19.062 - {trainer.py (141)} - train(): -------------------------------------
+MainProcess 2021-01-06,01:41:19.062 - {trainer.py (98)} - train(): --------------global_rank = 0. Epoch 0, batch index 164 Statistics: 
+MainProcess 2021-01-06,01:41:19.062 - {trainer.py (100)} - train(): global_rank = 0. epoch = 0, batch index = 164/834
+MainProcess 2021-01-06,01:41:19.393 - {trainer.py (130)} - train(): global_rank = 0. sample_num_throughput (images/second): 180
+MainProcess 2021-01-06,01:41:19.393 - {trainer.py (136)} - train(): global_rank = 0. communication frequency (cross machine sync/second): 3.015783
+MainProcess 2021-01-06,01:41:19.393 - {trainer.py (141)} - train(): -------------------------------------
+MainProcess 2021-01-06,01:41:19.394 - {trainer.py (98)} - train(): --------------global_rank = 0. Epoch 0, batch index 165 Statistics: 
+MainProcess 2021-01-06,01:41:19.394 - {trainer.py (100)} - train(): global_rank = 0. epoch = 0, batch index = 165/834
+MainProcess 2021-01-06,01:41:19.732 - {trainer.py (130)} - train(): global_rank = 0. sample_num_throughput (images/second): 180
+MainProcess 2021-01-06,01:41:19.732 - {trainer.py (136)} - train(): global_rank = 0. communication frequency (cross machine sync/second): 3.015409
+MainProcess 2021-01-06,01:41:19.732 - {trainer.py (141)} - train(): -------------------------------------
+MainProcess 2021-01-06,01:41:19.732 - {trainer.py (98)} - train(): --------------global_rank = 0. Epoch 0, batch index 166 Statistics: 
+MainProcess 2021-01-06,01:41:19.732 - {trainer.py (100)} - train(): global_rank = 0. epoch = 0, batch index = 166/834
+MainProcess 2021-01-06,01:41:20.072 - {trainer.py (130)} - train(): global_rank = 0. sample_num_throughput (images/second): 180
+MainProcess 2021-01-06,01:41:20.072 - {trainer.py (136)} - train(): global_rank = 0. communication frequency (cross machine sync/second): 3.014945
+MainProcess 2021-01-06,01:41:20.072 - {trainer.py (141)} - train(): -------------------------------------
+MainProcess 2021-01-06,01:41:20.072 - {trainer.py (98)} - train(): --------------global_rank = 0. Epoch 0, batch index 167 Statistics: 
+MainProcess 2021-01-06,01:41:20.072 - {trainer.py (100)} - train(): global_rank = 0. epoch = 0, batch index = 167/834
+MainProcess 2021-01-06,01:41:20.392 - {trainer.py (130)} - train(): global_rank = 0. sample_num_throughput (images/second): 180
+MainProcess 2021-01-06,01:41:20.392 - {trainer.py (136)} - train(): global_rank = 0. communication frequency (cross machine sync/second): 3.015552
+MainProcess 2021-01-06,01:41:20.392 - {trainer.py (141)} - train(): -------------------------------------
+MainProcess 2021-01-06,01:41:20.393 - {trainer.py (98)} - train(): --------------global_rank = 0. Epoch 0, batch index 168 Statistics: 
+MainProcess 2021-01-06,01:41:20.393 - {trainer.py (100)} - train(): global_rank = 0. epoch = 0, batch index = 168/834
+MainProcess 2021-01-06,01:41:20.728 - {trainer.py (130)} - train(): global_rank = 0. sample_num_throughput (images/second): 180
+MainProcess 2021-01-06,01:41:20.728 - {trainer.py (136)} - train(): global_rank = 0. communication frequency (cross machine sync/second): 3.015314
+MainProcess 2021-01-06,01:41:20.729 - {trainer.py (141)} - train(): -------------------------------------
+MainProcess 2021-01-06,01:41:20.729 - {trainer.py (98)} - train(): --------------global_rank = 0. Epoch 0, batch index 169 Statistics: 
+MainProcess 2021-01-06,01:41:20.729 - {trainer.py (100)} - train(): global_rank = 0. epoch = 0, batch index = 169/834
+MainProcess 2021-01-06,01:41:21.073 - {trainer.py (130)} - train(): global_rank = 0. sample_num_throughput (images/second): 180
+MainProcess 2021-01-06,01:41:21.073 - {trainer.py (136)} - train(): global_rank = 0. communication frequency (cross machine sync/second): 3.014618
+MainProcess 2021-01-06,01:41:21.073 - {trainer.py (141)} - train(): -------------------------------------
+MainProcess 2021-01-06,01:41:21.073 - {trainer.py (98)} - train(): --------------global_rank = 0. Epoch 0, batch index 170 Statistics: 
+MainProcess 2021-01-06,01:41:21.073 - {trainer.py (100)} - train(): global_rank = 0. epoch = 0, batch index = 170/834
+MainProcess 2021-01-06,01:41:21.412 - {trainer.py (130)} - train(): global_rank = 0. sample_num_throughput (images/second): 180
+MainProcess 2021-01-06,01:41:21.412 - {trainer.py (136)} - train(): global_rank = 0. communication frequency (cross machine sync/second): 3.014251
+MainProcess 2021-01-06,01:41:21.412 - {trainer.py (141)} - train(): -------------------------------------
+MainProcess 2021-01-06,01:41:21.412 - {trainer.py (98)} - train(): --------------global_rank = 0. Epoch 0, batch index 171 Statistics: 
+MainProcess 2021-01-06,01:41:21.412 - {trainer.py (100)} - train(): global_rank = 0. epoch = 0, batch index = 171/834
+MainProcess 2021-01-06,01:41:21.745 - {trainer.py (130)} - train(): global_rank = 0. sample_num_throughput (images/second): 180
+MainProcess 2021-01-06,01:41:21.745 - {trainer.py (136)} - train(): global_rank = 0. communication frequency (cross machine sync/second): 3.014181
+MainProcess 2021-01-06,01:41:21.745 - {trainer.py (141)} - train(): -------------------------------------
+MainProcess 2021-01-06,01:41:21.745 - {trainer.py (98)} - train(): --------------global_rank = 0. Epoch 0, batch index 172 Statistics: 
+MainProcess 2021-01-06,01:41:21.745 - {trainer.py (100)} - train(): global_rank = 0. epoch = 0, batch index = 172/834
+MainProcess 2021-01-06,01:41:22.083 - {trainer.py (130)} - train(): global_rank = 0. sample_num_throughput (images/second): 180
+MainProcess 2021-01-06,01:41:22.083 - {trainer.py (136)} - train(): global_rank = 0. communication frequency (cross machine sync/second): 3.013847
+MainProcess 2021-01-06,01:41:22.083 - {trainer.py (141)} - train(): -------------------------------------
+MainProcess 2021-01-06,01:41:22.083 - {trainer.py (98)} - train(): --------------global_rank = 0. Epoch 0, batch index 173 Statistics: 
+MainProcess 2021-01-06,01:41:22.083 - {trainer.py (100)} - train(): global_rank = 0. epoch = 0, batch index = 173/834
+MainProcess 2021-01-06,01:41:22.419 - {trainer.py (130)} - train(): global_rank = 0. sample_num_throughput (images/second): 180
+MainProcess 2021-01-06,01:41:22.419 - {trainer.py (136)} - train(): global_rank = 0. communication frequency (cross machine sync/second): 3.013642
+MainProcess 2021-01-06,01:41:22.419 - {trainer.py (141)} - train(): -------------------------------------
+MainProcess 2021-01-06,01:41:22.419 - {trainer.py (98)} - train(): --------------global_rank = 0. Epoch 0, batch index 174 Statistics: 
+MainProcess 2021-01-06,01:41:22.419 - {trainer.py (100)} - train(): global_rank = 0. epoch = 0, batch index = 174/834
+MainProcess 2021-01-06,01:41:22.749 - {trainer.py (130)} - train(): global_rank = 0. sample_num_throughput (images/second): 180
+MainProcess 2021-01-06,01:41:22.749 - {trainer.py (136)} - train(): global_rank = 0. communication frequency (cross machine sync/second): 3.013733
+MainProcess 2021-01-06,01:41:22.749 - {trainer.py (141)} - train(): -------------------------------------
+MainProcess 2021-01-06,01:41:22.749 - {trainer.py (98)} - train(): --------------global_rank = 0. Epoch 0, batch index 175 Statistics: 
+MainProcess 2021-01-06,01:41:22.749 - {trainer.py (100)} - train(): global_rank = 0. epoch = 0, batch index = 175/834
+MainProcess 2021-01-06,01:41:23.093 - {trainer.py (130)} - train(): global_rank = 0. sample_num_throughput (images/second): 180
+MainProcess 2021-01-06,01:41:23.093 - {trainer.py (136)} - train(): global_rank = 0. communication frequency (cross machine sync/second): 3.013097
+MainProcess 2021-01-06,01:41:23.093 - {trainer.py (141)} - train(): -------------------------------------
+MainProcess 2021-01-06,01:41:23.093 - {trainer.py (98)} - train(): --------------global_rank = 0. Epoch 0, batch index 176 Statistics: 
+MainProcess 2021-01-06,01:41:23.093 - {trainer.py (100)} - train(): global_rank = 0. epoch = 0, batch index = 176/834
+MainProcess 2021-01-06,01:41:23.428 - {trainer.py (130)} - train(): global_rank = 0. sample_num_throughput (images/second): 180
+MainProcess 2021-01-06,01:41:23.428 - {trainer.py (136)} - train(): global_rank = 0. communication frequency (cross machine sync/second): 3.012947
+MainProcess 2021-01-06,01:41:23.428 - {trainer.py (141)} - train(): -------------------------------------
+MainProcess 2021-01-06,01:41:23.428 - {trainer.py (98)} - train(): --------------global_rank = 0. Epoch 0, batch index 177 Statistics: 
+MainProcess 2021-01-06,01:41:23.428 - {trainer.py (100)} - train(): global_rank = 0. epoch = 0, batch index = 177/834
+MainProcess 2021-01-06,01:41:23.769 - {trainer.py (130)} - train(): global_rank = 0. sample_num_throughput (images/second): 180
+MainProcess 2021-01-06,01:41:23.769 - {trainer.py (136)} - train(): global_rank = 0. communication frequency (cross machine sync/second): 3.012465
+MainProcess 2021-01-06,01:41:23.769 - {trainer.py (141)} - train(): -------------------------------------
+MainProcess 2021-01-06,01:41:23.769 - {trainer.py (98)} - train(): --------------global_rank = 0. Epoch 0, batch index 178 Statistics: 
+MainProcess 2021-01-06,01:41:23.769 - {trainer.py (100)} - train(): global_rank = 0. epoch = 0, batch index = 178/834
+MainProcess 2021-01-06,01:41:24.098 - {trainer.py (130)} - train(): global_rank = 0. sample_num_throughput (images/second): 180
+MainProcess 2021-01-06,01:41:24.098 - {trainer.py (136)} - train(): global_rank = 0. communication frequency (cross machine sync/second): 3.012602
+MainProcess 2021-01-06,01:41:24.098 - {trainer.py (141)} - train(): -------------------------------------
+MainProcess 2021-01-06,01:41:24.098 - {trainer.py (98)} - train(): --------------global_rank = 0. Epoch 0, batch index 179 Statistics: 
+MainProcess 2021-01-06,01:41:24.098 - {trainer.py (100)} - train(): global_rank = 0. epoch = 0, batch index = 179/834
+MainProcess 2021-01-06,01:41:24.433 - {trainer.py (130)} - train(): global_rank = 0. sample_num_throughput (images/second): 180
+MainProcess 2021-01-06,01:41:24.434 - {trainer.py (136)} - train(): global_rank = 0. communication frequency (cross machine sync/second): 3.012439
+MainProcess 2021-01-06,01:41:24.434 - {trainer.py (141)} - train(): -------------------------------------
+MainProcess 2021-01-06,01:41:24.434 - {trainer.py (98)} - train(): --------------global_rank = 0. Epoch 0, batch index 180 Statistics: 
+MainProcess 2021-01-06,01:41:24.434 - {trainer.py (100)} - train(): global_rank = 0. epoch = 0, batch index = 180/834
+MainProcess 2021-01-06,01:41:24.766 - {trainer.py (130)} - train(): global_rank = 0. sample_num_throughput (images/second): 180
+MainProcess 2021-01-06,01:41:24.766 - {trainer.py (136)} - train(): global_rank = 0. communication frequency (cross machine sync/second): 3.012398
+MainProcess 2021-01-06,01:41:24.766 - {trainer.py (141)} - train(): -------------------------------------
+MainProcess 2021-01-06,01:41:24.766 - {trainer.py (98)} - train(): --------------global_rank = 0. Epoch 0, batch index 181 Statistics: 
+MainProcess 2021-01-06,01:41:24.766 - {trainer.py (100)} - train(): global_rank = 0. epoch = 0, batch index = 181/834
+MainProcess 2021-01-06,01:41:25.094 - {trainer.py (130)} - train(): global_rank = 0. sample_num_throughput (images/second): 180
+MainProcess 2021-01-06,01:41:25.094 - {trainer.py (136)} - train(): global_rank = 0. communication frequency (cross machine sync/second): 3.012590
+MainProcess 2021-01-06,01:41:25.094 - {trainer.py (141)} - train(): -------------------------------------
+MainProcess 2021-01-06,01:41:25.095 - {trainer.py (98)} - train(): --------------global_rank = 0. Epoch 0, batch index 182 Statistics: 
+MainProcess 2021-01-06,01:41:25.095 - {trainer.py (100)} - train(): global_rank = 0. epoch = 0, batch index = 182/834
+MainProcess 2021-01-06,01:41:25.423 - {trainer.py (130)} - train(): global_rank = 0. sample_num_throughput (images/second): 180
+MainProcess 2021-01-06,01:41:25.423 - {trainer.py (136)} - train(): global_rank = 0. communication frequency (cross machine sync/second): 3.012753
+MainProcess 2021-01-06,01:41:25.423 - {trainer.py (141)} - train(): -------------------------------------
+MainProcess 2021-01-06,01:41:25.423 - {trainer.py (98)} - train(): --------------global_rank = 0. Epoch 0, batch index 183 Statistics: 
+MainProcess 2021-01-06,01:41:25.423 - {trainer.py (100)} - train(): global_rank = 0. epoch = 0, batch index = 183/834
+MainProcess 2021-01-06,01:41:25.760 - {trainer.py (130)} - train(): global_rank = 0. sample_num_throughput (images/second): 180
+MainProcess 2021-01-06,01:41:25.760 - {trainer.py (136)} - train(): global_rank = 0. communication frequency (cross machine sync/second): 3.012495
+MainProcess 2021-01-06,01:41:25.760 - {trainer.py (141)} - train(): -------------------------------------
+MainProcess 2021-01-06,01:41:25.760 - {trainer.py (98)} - train(): --------------global_rank = 0. Epoch 0, batch index 184 Statistics: 
+MainProcess 2021-01-06,01:41:25.760 - {trainer.py (100)} - train(): global_rank = 0. epoch = 0, batch index = 184/834
+MainProcess 2021-01-06,01:41:26.087 - {trainer.py (130)} - train(): global_rank = 0. sample_num_throughput (images/second): 180
+MainProcess 2021-01-06,01:41:26.087 - {trainer.py (136)} - train(): global_rank = 0. communication frequency (cross machine sync/second): 3.012751
+MainProcess 2021-01-06,01:41:26.087 - {trainer.py (141)} - train(): -------------------------------------
+MainProcess 2021-01-06,01:41:26.087 - {trainer.py (98)} - train(): --------------global_rank = 0. Epoch 0, batch index 185 Statistics: 
+MainProcess 2021-01-06,01:41:26.087 - {trainer.py (100)} - train(): global_rank = 0. epoch = 0, batch index = 185/834
+MainProcess 2021-01-06,01:41:26.418 - {trainer.py (130)} - train(): global_rank = 0. sample_num_throughput (images/second): 180
+MainProcess 2021-01-06,01:41:26.418 - {trainer.py (136)} - train(): global_rank = 0. communication frequency (cross machine sync/second): 3.012807
+MainProcess 2021-01-06,01:41:26.418 - {trainer.py (141)} - train(): -------------------------------------
+MainProcess 2021-01-06,01:41:26.418 - {trainer.py (98)} - train(): --------------global_rank = 0. Epoch 0, batch index 186 Statistics: 
+MainProcess 2021-01-06,01:41:26.418 - {trainer.py (100)} - train(): global_rank = 0. epoch = 0, batch index = 186/834
+MainProcess 2021-01-06,01:41:26.757 - {trainer.py (130)} - train(): global_rank = 0. sample_num_throughput (images/second): 180
+MainProcess 2021-01-06,01:41:26.757 - {trainer.py (136)} - train(): global_rank = 0. communication frequency (cross machine sync/second): 3.012439
+MainProcess 2021-01-06,01:41:26.757 - {trainer.py (141)} - train(): -------------------------------------
+MainProcess 2021-01-06,01:41:26.757 - {trainer.py (98)} - train(): --------------global_rank = 0. Epoch 0, batch index 187 Statistics: 
+MainProcess 2021-01-06,01:41:26.757 - {trainer.py (100)} - train(): global_rank = 0. epoch = 0, batch index = 187/834
+MainProcess 2021-01-06,01:41:27.087 - {trainer.py (130)} - train(): global_rank = 0. sample_num_throughput (images/second): 180
+MainProcess 2021-01-06,01:41:27.088 - {trainer.py (136)} - train(): global_rank = 0. communication frequency (cross machine sync/second): 3.012518
+MainProcess 2021-01-06,01:41:27.088 - {trainer.py (141)} - train(): -------------------------------------
+MainProcess 2021-01-06,01:41:27.088 - {trainer.py (98)} - train(): --------------global_rank = 0. Epoch 0, batch index 188 Statistics: 
+MainProcess 2021-01-06,01:41:27.088 - {trainer.py (100)} - train(): global_rank = 0. epoch = 0, batch index = 188/834
+MainProcess 2021-01-06,01:41:27.413 - {trainer.py (130)} - train(): global_rank = 0. sample_num_throughput (images/second): 180
+MainProcess 2021-01-06,01:41:27.413 - {trainer.py (136)} - train(): global_rank = 0. communication frequency (cross machine sync/second): 3.012833
+MainProcess 2021-01-06,01:41:27.413 - {trainer.py (141)} - train(): -------------------------------------
+MainProcess 2021-01-06,01:41:27.413 - {trainer.py (98)} - train(): --------------global_rank = 0. Epoch 0, batch index 189 Statistics: 
+MainProcess 2021-01-06,01:41:27.413 - {trainer.py (100)} - train(): global_rank = 0. epoch = 0, batch index = 189/834
+MainProcess 2021-01-06,01:41:27.761 - {trainer.py (130)} - train(): global_rank = 0. sample_num_throughput (images/second): 180
+MainProcess 2021-01-06,01:41:27.761 - {trainer.py (136)} - train(): global_rank = 0. communication frequency (cross machine sync/second): 3.012078
+MainProcess 2021-01-06,01:41:27.761 - {trainer.py (141)} - train(): -------------------------------------
+MainProcess 2021-01-06,01:41:27.761 - {trainer.py (98)} - train(): --------------global_rank = 0. Epoch 0, batch index 190 Statistics: 
+MainProcess 2021-01-06,01:41:27.761 - {trainer.py (100)} - train(): global_rank = 0. epoch = 0, batch index = 190/834
+MainProcess 2021-01-06,01:41:28.095 - {trainer.py (130)} - train(): global_rank = 0. sample_num_throughput (images/second): 180
+MainProcess 2021-01-06,01:41:28.095 - {trainer.py (136)} - train(): global_rank = 0. communication frequency (cross machine sync/second): 3.011960
+MainProcess 2021-01-06,01:41:28.095 - {trainer.py (141)} - train(): -------------------------------------
+MainProcess 2021-01-06,01:41:28.095 - {trainer.py (98)} - train(): --------------global_rank = 0. Epoch 0, batch index 191 Statistics: 
+MainProcess 2021-01-06,01:41:28.095 - {trainer.py (100)} - train(): global_rank = 0. epoch = 0, batch index = 191/834
+MainProcess 2021-01-06,01:41:28.427 - {trainer.py (130)} - train(): global_rank = 0. sample_num_throughput (images/second): 180
+MainProcess 2021-01-06,01:41:28.427 - {trainer.py (136)} - train(): global_rank = 0. communication frequency (cross machine sync/second): 3.011956
+MainProcess 2021-01-06,01:41:28.427 - {trainer.py (141)} - train(): -------------------------------------
+MainProcess 2021-01-06,01:41:28.427 - {trainer.py (98)} - train(): --------------global_rank = 0. Epoch 0, batch index 192 Statistics: 
+MainProcess 2021-01-06,01:41:28.427 - {trainer.py (100)} - train(): global_rank = 0. epoch = 0, batch index = 192/834
+MainProcess 2021-01-06,01:41:28.753 - {trainer.py (130)} - train(): global_rank = 0. sample_num_throughput (images/second): 180
+MainProcess 2021-01-06,01:41:28.753 - {trainer.py (136)} - train(): global_rank = 0. communication frequency (cross machine sync/second): 3.012242
+MainProcess 2021-01-06,01:41:28.753 - {trainer.py (141)} - train(): -------------------------------------
+MainProcess 2021-01-06,01:41:28.753 - {trainer.py (98)} - train(): --------------global_rank = 0. Epoch 0, batch index 193 Statistics: 
+MainProcess 2021-01-06,01:41:28.753 - {trainer.py (100)} - train(): global_rank = 0. epoch = 0, batch index = 193/834
+MainProcess 2021-01-06,01:41:29.096 - {trainer.py (130)} - train(): global_rank = 0. sample_num_throughput (images/second): 180
+MainProcess 2021-01-06,01:41:29.096 - {trainer.py (136)} - train(): global_rank = 0. communication frequency (cross machine sync/second): 3.011742
+MainProcess 2021-01-06,01:41:29.096 - {trainer.py (141)} - train(): -------------------------------------
+MainProcess 2021-01-06,01:41:29.096 - {trainer.py (98)} - train(): --------------global_rank = 0. Epoch 0, batch index 194 Statistics: 
+MainProcess 2021-01-06,01:41:29.096 - {trainer.py (100)} - train(): global_rank = 0. epoch = 0, batch index = 194/834
+MainProcess 2021-01-06,01:41:29.436 - {trainer.py (130)} - train(): global_rank = 0. sample_num_throughput (images/second): 180
+MainProcess 2021-01-06,01:41:29.436 - {trainer.py (136)} - train(): global_rank = 0. communication frequency (cross machine sync/second): 3.011350
+MainProcess 2021-01-06,01:41:29.436 - {trainer.py (141)} - train(): -------------------------------------
+MainProcess 2021-01-06,01:41:29.436 - {trainer.py (98)} - train(): --------------global_rank = 0. Epoch 0, batch index 195 Statistics: 
+MainProcess 2021-01-06,01:41:29.436 - {trainer.py (100)} - train(): global_rank = 0. epoch = 0, batch index = 195/834
+MainProcess 2021-01-06,01:41:29.775 - {trainer.py (130)} - train(): global_rank = 0. sample_num_throughput (images/second): 180
+MainProcess 2021-01-06,01:41:29.776 - {trainer.py (136)} - train(): global_rank = 0. communication frequency (cross machine sync/second): 3.011019
+MainProcess 2021-01-06,01:41:29.776 - {trainer.py (141)} - train(): -------------------------------------
+MainProcess 2021-01-06,01:41:29.776 - {trainer.py (98)} - train(): --------------global_rank = 0. Epoch 0, batch index 196 Statistics: 
+MainProcess 2021-01-06,01:41:29.776 - {trainer.py (100)} - train(): global_rank = 0. epoch = 0, batch index = 196/834

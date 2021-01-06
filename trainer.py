@@ -61,12 +61,13 @@ class VisionTransformerTrainer:
             new_freeze_point = dict()
             new_freeze_point['epoch'] = epoch
 
-            # self, auto_pipe, frozen_model, pipe_model, num_frozen_layers, freeze_point
+            frozen_layer_idx = self.auto_freeze.freeze(epoch)
             self.frozen_model, self.pipe_model, \
             is_pipe_len_changed, is_frozen_layer_changed = self.auto_dp.transform(self.auto_pipe,
+                                                                                  self.auto_freeze,
                                                                                   self.frozen_model,
                                                                                   self.pipe_model,
-                                                                                  self.auto_freeze.get_hand_crafted_frozen_layers_by_epoch(epoch),
+                                                                                  frozen_layer_idx,
                                                                                   new_freeze_point)
             new_freeze_point = self.auto_dp.get_freeze_point()
             self.update_data_and_cache(is_pipe_len_changed, is_frozen_layer_changed)
@@ -113,6 +114,9 @@ class VisionTransformerTrainer:
             torch.nn.utils.clip_grad_norm_(self.pipe_model.parameters(), 1.0)
             optimizer.step()
             scheduler.step()
+
+            if self.auto_freeze.is_freeze_open():
+                self.auto_freeze.accumulate(self.auto_pipe.get_origin_model())
 
             if batch_idx == 0:
                 time_finish_prepare_ddp = time.time()

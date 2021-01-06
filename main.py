@@ -11,14 +11,15 @@ from cache.auto_cache import AutoCache
 from data_preprocessing.data_loader import CVDataset
 from dp.auto_dp import AutoDataParallel
 from freeze.auto_freeze import AutoFreeze
-from model.vit.vision_transformer_origin import VisionTransformer
 from model.vit.vision_transformer_origin import CONFIGS
+from model.vit.vision_transformer_origin import VisionTransformer
 from pipe.auto_pipe import AutoElasticPipe
 from pipe.pipe_model_builder import OutputHead
 from trainer import VisionTransformerTrainer
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="PipeTransformer: Elastic and Automated Pipelining for Fast Distributed Training of Transformer Models")
+    parser = argparse.ArgumentParser(
+        description="PipeTransformer: Elastic and Automated Pipelining for Fast Distributed Training of Transformer Models")
     parser.add_argument("--local_rank", type=int, default=0)
 
     parser.add_argument("--global_rank", type=int, default=0)
@@ -87,15 +88,13 @@ if __name__ == "__main__":
     parser.add_argument("--is_debug_mode", default=0, type=int,
                         help="is_debug_mode")
 
-
     args = parser.parse_args()
 
     # customize the log format
     logging.basicConfig(level=logging.INFO,
-                        format='%(asctime)s.%(msecs)03d - {%(module)s.py (%(lineno)d)} - %(funcName)s(): %(message)s',
+                        format='%(processName)s %(asctime)s.%(msecs)03d - {%(module)s.py (%(lineno)d)} - %(funcName)s(): %(message)s',
                         datefmt='%Y-%m-%d,%H:%M:%S')
     logging.info(args)
-
 
     hostname = socket.gethostname()
     logging.info("#############process ID = " +
@@ -107,13 +106,12 @@ if __name__ == "__main__":
     auto_dp = AutoDataParallel(args)
     auto_dp.init_ddp(args)
     auto_dp.init_rpc()
-    # auto_dp.warm_up()
     args.global_rank = auto_dp.get_global_rank()
 
     if args.global_rank == 0:
         run = wandb.init(project="pipe_and_ddp",
-                   name="PipeTransformer""-" + str(args.dataset),
-                   config=args)
+                         name="PipeTransformer""-" + str(args.dataset),
+                         config=args)
 
     # create dataset
     cv_data_manager = CVDataset()
@@ -124,6 +122,7 @@ if __name__ == "__main__":
     # model_type = 'vit-L_32'
     # model_type = 'vit-H_14'
     config = CONFIGS[model_type]
+    args.num_layer = config.transformer.num_layers
 
     logging.info("Vision Transformer Configuration: " + str(config))
     model = VisionTransformer(config, args.img_size, zero_head=True, num_classes=output_dim, vis=False)
@@ -155,7 +154,7 @@ if __name__ == "__main__":
     # start training
     freeze_point = dict()
     freeze_point['epoch'] = 0
-    frozen_model, pipe_model, is_pipe_len_changed, is_frozen_layer_changed = auto_dp.transform(auto_pipe, None, model,
+    frozen_model, pipe_model, is_pipe_len_changed, is_frozen_layer_changed = auto_dp.transform(auto_pipe, auto_freeze, None, model,
                                                                                                0, freeze_point)
     freeze_point = auto_dp.get_freeze_point()
 

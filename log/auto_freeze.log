@@ -1,0 +1,246 @@
+MainProcess 2021-01-06,01:31:59.343 - {pipe_model_builder.py (148)} - convert_to_balanced_model(): convert_to_balanced_model. local_rank = 0, global_rank = 0
+MainProcess 2021-01-06,01:31:59.343 - {pipe_model_builder.py (162)} - convert_to_balanced_model(): ######################local_rank = 0, global_rank = 0, device id: 0
+MainProcess 2021-01-06,01:31:59.349 - {pipe_model_builder.py (162)} - convert_to_balanced_model(): ######################local_rank = 0, global_rank = 0, device id: 1
+MainProcess 2021-01-06,01:31:59.354 - {pipe_model_builder.py (162)} - convert_to_balanced_model(): ######################local_rank = 0, global_rank = 0, device id: 2
+MainProcess 2021-01-06,01:31:59.359 - {pipe_model_builder.py (162)} - convert_to_balanced_model(): ######################local_rank = 0, global_rank = 0, device id: 3
+MainProcess 2021-01-06,01:31:59.362 - {pipe_model_builder.py (167)} - convert_to_balanced_model(): CPU->GPU time cost = 0.01906585693359375
+MainProcess 2021-01-06,01:31:59.384 - {trainer.py (50)} - update_data_and_cache(): global_rank = 0. is_frozen_layer_changed: True
+MainProcess 2021-01-06,01:31:59.384 - {two_level_cache.py (248)} - reset_status(): self.chunk_size = 440, self.chunk_num  = 2
+MainProcess 2021-01-06,01:31:59.494 - {two_level_cache.py (248)} - reset_status(): self.chunk_size = 440, self.chunk_num  = 1
+MainProcess 2021-01-06,01:31:59.614 - {trainer.py (79)} - train(): device_first = cuda:0
+MainProcess 2021-01-06,01:31:59.615 - {trainer.py (80)} - train(): device_last = cuda:3
+MainProcess 2021-01-06,01:31:59.617 - {trainer.py (91)} - train(): global_rank = 0. data_loader id = 140472681090704/
+MainProcess 2021-01-06,01:31:59.887 - {trainer.py (98)} - train(): --------------global_rank = 0. Epoch 6, batch index 0 Statistics:
+MainProcess 2021-01-06,01:31:59.888 - {trainer.py (100)} - train(): global_rank = 0. epoch = 6, batch index = 0/834
+MainProcess 2021-01-06,01:32:00.195 - {trainer.py (124)} - train(): global_rank = 0. data loading cost = 0.30782413482666016
+MainProcess 2021-01-06,01:32:00.195 - {trainer.py (130)} - train(): global_rank = 0. sample_num_throughput (images/second): 432402
+MainProcess 2021-01-06,01:32:00.195 - {trainer.py (136)} - train(): global_rank = 0. communication frequency (cross machine sync/second): 5256.020050
+MainProcess 2021-01-06,01:32:00.195 - {trainer.py (141)} - train(): -------------------------------------
+MainProcess 2021-01-06,01:32:00.195 - {trainer.py (98)} - train(): --------------global_rank = 0. Epoch 6, batch index 1 Statistics:
+MainProcess 2021-01-06,01:32:00.195 - {trainer.py (100)} - train(): global_rank = 0. epoch = 6, batch index = 1/834
+MainProcess 2021-01-06,01:32:00.480 - {trainer.py (130)} - train(): global_rank = 0. sample_num_throughput (images/second): 420
+MainProcess 2021-01-06,01:32:00.480 - {trainer.py (136)} - train(): global_rank = 0. communication frequency (cross machine sync/second): 7.012010
+MainProcess 2021-01-06,01:32:00.480 - {trainer.py (141)} - train(): -------------------------------------
+MainProcess 2021-01-06,01:32:00.862 - {trainer.py (187)} - _infer(): evaluation - batch index = 0/167
+MainProcess 2021-01-06,01:32:01.022 - {trainer.py (187)} - _infer(): evaluation - batch index = 1/167
+MainProcess 2021-01-06,01:32:01.262 - {trainer.py (175)} - eval(): {'test_acc': 0.5583333333333333, 'test_loss': 2.166910767555237}
+MainProcess 2021-01-06,01:32:01.262 - {auto_freeze.py (77)} - freeze(): -----------------------------140472681813648
+MainProcess 2021-01-06,01:32:01.526 - {auto_freeze.py (98)} - freeze(): epoch = 7, grad_norm_by_layer = {0: 170.6883687829666, 1: 270.08006175479125, 2: 219.98785907336367, 3: 227.42497488068958, 4: 219.09389245869156, 5: 233.49541486291054, 6: 227.05522358441675, 7: 218.40450671644973, 8: 224.19928091779096, 9: 206.10113568182751, 10: 233.4483203745143, 11: 285.0460320485132}
+MainProcess 2021-01-06,01:32:01.526 - {auto_freeze.py (110)} - freeze(): {0: 0.0, 1: 0.0, 2: 0.0, 3: 0.0, 4: 0.0, 5: 0.06371959993891675, 6: 0.04466699741713748, 7: 0.025385870768586154, 8: 0.02126581146069131, 9: 0.024128904563215994, 10: 0.02670990864462588, 11: 0.024512636175599997}
+MainProcess 2021-01-06,01:32:01.526 - {auto_freeze.py (112)} - freeze(): [0.06371959993891675, 0.04466699741713748, 0.025385870768586154, 0.02126581146069131, 0.024128904563215994, 0.02670990864462588, 0.024512636175599997]
+MainProcess 2021-01-06,01:32:01.527 - {auto_freeze.py (113)} - freeze(): epoch = 7, grad_norm_diff (unfrozen_list) = [0.06371959993891675, 0.04466699741713748, 0.025385870768586154, 0.02126581146069131, 0.024128904563215994, 0.02670990864462588, 0.024512636175599997]
+MainProcess 2021-01-06,01:32:01.527 - {auto_freeze.py (115)} - freeze(): grad_norm_diff_percentile = 0.025385870768586154
+MainProcess 2021-01-06,01:32:01.527 - {auto_freeze.py (124)} - freeze(): epoch = 7, frozen_layer_idx = 5
+MainProcess 2021-01-06,01:32:01.527 - {auto_freeze.py (127)} - freeze(): epoch = 7, num_frozen_layer = 6
+MainProcess 2021-01-06,01:32:01.527 - {auto_pipe.py (51)} - transform(): ---local_rank = 0, global_rank = 0 -------------freeze layer number = 6---------------
+MainProcess 2021-01-06,01:32:01.529 - {auto_pipe.py (61)} - transform(): len(pipe_model) = 14
+MainProcess 2021-01-06,01:32:01.529 - {auto_pipe.py (62)} - transform(): len(pipe_model paras_size) = 14
+MainProcess 2021-01-06,01:32:01.529 - {auto_pipe.py (135)} - _auto_pipe_length(): ----------start to detection---------
+MainProcess 2021-01-06,01:32:01.529 - {load_balance.py (39)} - generate_parameter_size_wise_balance(): total_param_size_to_be_assigned = 42.536458
+MainProcess 2021-01-06,01:32:01.529 - {load_balance.py (81)} - check_gap_all(): max_params_in_balanced_partition - min_params_in_balanced_partition = 0.009226
+MainProcess 2021-01-06,01:32:01.529 - {load_balance.py (97)} - check_gap_except_1st_layer(): max_params_in_balanced_partition - min_params_in_balanced_partition = 0.000000
+MainProcess 2021-01-06,01:32:01.529 - {auto_pipe.py (141)} - _auto_pipe_length(): max_parameter_per_gpu = 21.272842
+MainProcess 2021-01-06,01:32:01.530 - {auto_pipe.py (142)} - _auto_pipe_length(): self.max_parameter_per_gpu_at_beginning = 22.006272
+MainProcess 2021-01-06,01:32:01.530 - {auto_pipe.py (144)} - _auto_pipe_length(): #########    add pipe    #######
+MainProcess 2021-01-06,01:32:01.530 - {auto_pipe.py (135)} - _auto_pipe_length(): ----------start to detection---------
+MainProcess 2021-01-06,01:32:01.530 - {load_balance.py (39)} - generate_parameter_size_wise_balance(): total_param_size_to_be_assigned = 42.536458
+MainProcess 2021-01-06,01:32:01.530 - {load_balance.py (81)} - check_gap_all(): max_params_in_balanced_partition - min_params_in_balanced_partition = 0.000000
+MainProcess 2021-01-06,01:32:01.530 - {auto_pipe.py (141)} - _auto_pipe_length(): max_parameter_per_gpu = 42.536458
+MainProcess 2021-01-06,01:32:01.530 - {auto_pipe.py (142)} - _auto_pipe_length(): self.max_parameter_per_gpu_at_beginning = 22.006272
+MainProcess 2021-01-06,01:32:01.530 - {auto_pipe.py (149)} - _auto_pipe_length(): current_num_device = 2
+MainProcess 2021-01-06,01:32:01.530 - {load_balance.py (39)} - generate_parameter_size_wise_balance(): total_param_size_to_be_assigned = 42.536458
+MainProcess 2021-01-06,01:32:01.530 - {load_balance.py (81)} - check_gap_all(): max_params_in_balanced_partition - min_params_in_balanced_partition = 0.009226
+MainProcess 2021-01-06,01:32:01.530 - {load_balance.py (97)} - check_gap_except_1st_layer(): max_params_in_balanced_partition - min_params_in_balanced_partition = 0.000000
+MainProcess 2021-01-06,01:32:01.530 - {auto_pipe.py (122)} - _auto_balanced_elastic_partition(): {0: 6, 1: 8}
+MainProcess 2021-01-06,01:32:01.530 - {auto_pipe.py (123)} - _auto_balanced_elastic_partition(): {0: 21.263616, 1: 21.272842}
+MainProcess 2021-01-06,01:32:01.530 - {pipe_model_builder.py (148)} - convert_to_balanced_model(): convert_to_balanced_model. local_rank = 0, global_rank = 0
+MainProcess 2021-01-06,01:32:01.530 - {pipe_model_builder.py (162)} - convert_to_balanced_model(): ######################local_rank = 0, global_rank = 0, device id: 0
+MainProcess 2021-01-06,01:32:01.535 - {pipe_model_builder.py (162)} - convert_to_balanced_model(): ######################local_rank = 0, global_rank = 0, device id: 1
+MainProcess 2021-01-06,01:32:01.540 - {pipe_model_builder.py (167)} - convert_to_balanced_model(): CPU->GPU time cost = 0.010460853576660156
+MainProcess 2021-01-06,01:32:01.545 - {auto_dp.py (135)} - update_active_ranks(): active ranks = [0]
+MainProcess 2021-01-06,01:32:01.545 - {auto_dp.py (227)} - _active_process_impl(): ####### broad cast control message (num_frozen_layers, pipe_len) to all processes #######
+MainProcess 2021-01-06,01:32:01.545 - {auto_dp.py (278)} - _build_broad_cast_message(): self.newly_added_active_ranks = [1]
+MainProcess 2021-01-06,01:32:01.545 - {auto_dp.py (236)} - _active_process_impl(): local_rank = 0, global_rank = 0 - *************************dist_send send(START): [6.0, 2.0, 22.006271999999996, 7.0, 1.0, 1.0, 170.6883687829666, 270.08006175479125, 219.98785907336367, 227.42497488068958, 219.09389245869156, 233.49541486291054, 227.05522358441675, 218.40450671644973, 224.19928091779096, 206.10113568182751, 233.4483203745143, 285.0460320485132, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+MainProcess 2021-01-06,01:32:01.547 - {auto_dp.py (239)} - _active_process_impl(): local_rank = 0, global_rank = 0 - *************************dist_send send(END)
+MainProcess 2021-01-06,01:32:01.547 - {auto_dp.py (135)} - update_active_ranks(): active ranks = [0, 1]
+MainProcess 2021-01-06,01:32:01.547 - {auto_dp.py (147)} - create_active_process_group(): get_active_process_group - auto_pipe.get_active_ranks() = [0, 1]
+MainProcess 2021-01-06,01:32:01.547 - {auto_dp.py (149)} - create_active_process_group(): local_rank = 0, global_rank = 0 - *************************create_active_process_group*********
+MainProcess 2021-01-06,01:32:01.548 - {auto_dp.py (293)} - _parse_broad_cast_message(): local_rank = 1, global_rank = 1 - frozen_message = [6.0, 2.0, 22.006271999999996, 7.0, 1.0, 1.0, 170.6883687829666, 270.08006175479125, 219.98785907336367, 227.42497488068958, 219.09389245869156, 233.49541486291054, 227.05522358441675, 218.40450671644973, 224.19928091779096, 206.10113568182751, 233.4483203745143, 285.0460320485132, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+MainProcess 2021-01-06,01:32:01.548 - {auto_dp.py (296)} - _parse_broad_cast_message(): _parse_broad_cast_message. num_frozen_layers = 6
+MainProcess 2021-01-06,01:32:01.548 - {auto_dp.py (300)} - _parse_broad_cast_message(): local_rank = 1, global_rank = 1 - frozen_layer_num = 6
+MainProcess 2021-01-06,01:32:01.548 - {auto_dp.py (302)} - _parse_broad_cast_message(): local_rank = 1, global_rank = 1 - pipe_len = 2
+MainProcess 2021-01-06,01:32:01.548 - {auto_dp.py (313)} - _parse_broad_cast_message(): newly_added_active_ranks = [1]
+MainProcess 2021-01-06,01:32:01.548 - {auto_dp.py (319)} - _parse_broad_cast_message(): last_grad_norm_by_layer = {0: 170.6883687829666, 1: 270.08006175479125, 2: 219.98785907336367, 3: 227.42497488068958, 4: 219.09389245869156, 5: 233.49541486291054, 6: 227.05522358441675, 7: 218.40450671644973, 8: 224.19928091779096, 9: 206.10113568182751, 10: 233.4483203745143, 11: 285.0460320485132}
+MainProcess 2021-01-06,01:32:01.548 - {auto_freeze.py (31)} - update_status(): (140275176476048) num_freeze_layers = 6, last_grad_norm_by_layer = {0: 170.6883687829666, 1: 270.08006175479125, 2: 219.98785907336367, 3: 227.42497488068958, 4: 219.09389245869156, 5: 233.49541486291054, 6: 227.05522358441675, 7: 218.40450671644973, 8: 224.19928091779096, 9: 206.10113568182751, 10: 233.4483203745143, 11: 285.0460320485132}
+MainProcess 2021-01-06,01:32:01.549 - {auto_dp.py (135)} - update_active_ranks(): active ranks = [0]
+MainProcess 2021-01-06,01:32:01.549 - {auto_dp.py (147)} - create_active_process_group(): get_active_process_group - auto_pipe.get_active_ranks() = [0, 1]
+MainProcess 2021-01-06,01:32:01.549 - {auto_dp.py (149)} - create_active_process_group(): local_rank = 1, global_rank = 1 - *************************create_active_process_group*********
+MainProcess 2021-01-06,01:32:01.550 - {auto_dp.py (293)} - _parse_broad_cast_message(): local_rank = 3, global_rank = 3 - frozen_message = [6.0, 2.0, 22.006271999999996, 7.0, 1.0, 1.0, 170.6883687829666, 270.08006175479125, 219.98785907336367, 227.42497488068958, 219.09389245869156, 233.49541486291054, 227.05522358441675, 218.40450671644973, 224.19928091779096, 206.10113568182751, 233.4483203745143, 285.0460320485132, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+MainProcess 2021-01-06,01:32:01.550 - {auto_dp.py (293)} - _parse_broad_cast_message(): local_rank = 2, global_rank = 2 - frozen_message = [6.0, 2.0, 22.006271999999996, 7.0, 1.0, 1.0, 170.6883687829666, 270.08006175479125, 219.98785907336367, 227.42497488068958, 219.09389245869156, 233.49541486291054, 227.05522358441675, 218.40450671644973, 224.19928091779096, 206.10113568182751, 233.4483203745143, 285.0460320485132, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+MainProcess 2021-01-06,01:32:01.550 - {auto_dp.py (296)} - _parse_broad_cast_message(): _parse_broad_cast_message. num_frozen_layers = 6
+MainProcess 2021-01-06,01:32:01.550 - {auto_dp.py (296)} - _parse_broad_cast_message(): _parse_broad_cast_message. num_frozen_layers = 6
+MainProcess 2021-01-06,01:32:01.550 - {auto_dp.py (300)} - _parse_broad_cast_message(): local_rank = 3, global_rank = 3 - frozen_layer_num = 6
+MainProcess 2021-01-06,01:32:01.550 - {auto_dp.py (300)} - _parse_broad_cast_message(): local_rank = 2, global_rank = 2 - frozen_layer_num = 6
+MainProcess 2021-01-06,01:32:01.550 - {auto_dp.py (302)} - _parse_broad_cast_message(): local_rank = 3, global_rank = 3 - pipe_len = 2
+MainProcess 2021-01-06,01:32:01.550 - {auto_dp.py (302)} - _parse_broad_cast_message(): local_rank = 2, global_rank = 2 - pipe_len = 2
+MainProcess 2021-01-06,01:32:01.550 - {auto_dp.py (313)} - _parse_broad_cast_message(): newly_added_active_ranks = [1]
+MainProcess 2021-01-06,01:32:01.550 - {auto_dp.py (313)} - _parse_broad_cast_message(): newly_added_active_ranks = [1]
+MainProcess 2021-01-06,01:32:01.550 - {auto_dp.py (319)} - _parse_broad_cast_message(): last_grad_norm_by_layer = {0: 170.6883687829666, 1: 270.08006175479125, 2: 219.98785907336367, 3: 227.42497488068958, 4: 219.09389245869156, 5: 233.49541486291054, 6: 227.05522358441675, 7: 218.40450671644973, 8: 224.19928091779096, 9: 206.10113568182751, 10: 233.4483203745143, 11: 285.0460320485132}
+MainProcess 2021-01-06,01:32:01.550 - {auto_dp.py (319)} - _parse_broad_cast_message(): last_grad_norm_by_layer = {0: 170.6883687829666, 1: 270.08006175479125, 2: 219.98785907336367, 3: 227.42497488068958, 4: 219.09389245869156, 5: 233.49541486291054, 6: 227.05522358441675, 7: 218.40450671644973, 8: 224.19928091779096, 9: 206.10113568182751, 10: 233.4483203745143, 11: 285.0460320485132}
+MainProcess 2021-01-06,01:32:01.550 - {auto_freeze.py (31)} - update_status(): (139842995871184) num_freeze_layers = 6, last_grad_norm_by_layer = {0: 170.6883687829666, 1: 270.08006175479125, 2: 219.98785907336367, 3: 227.42497488068958, 4: 219.09389245869156, 5: 233.49541486291054, 6: 227.05522358441675, 7: 218.40450671644973, 8: 224.19928091779096, 9: 206.10113568182751, 10: 233.4483203745143, 11: 285.0460320485132}
+MainProcess 2021-01-06,01:32:01.551 - {auto_freeze.py (31)} - update_status(): (140198608834512) num_freeze_layers = 6, last_grad_norm_by_layer = {0: 170.6883687829666, 1: 270.08006175479125, 2: 219.98785907336367, 3: 227.42497488068958, 4: 219.09389245869156, 5: 233.49541486291054, 6: 227.05522358441675, 7: 218.40450671644973, 8: 224.19928091779096, 9: 206.10113568182751, 10: 233.4483203745143, 11: 285.0460320485132}
+MainProcess 2021-01-06,01:32:01.551 - {auto_dp.py (135)} - update_active_ranks(): active ranks = [0]
+MainProcess 2021-01-06,01:32:01.551 - {auto_dp.py (135)} - update_active_ranks(): active ranks = [0]
+MainProcess 2021-01-06,01:32:01.551 - {auto_dp.py (147)} - create_active_process_group(): get_active_process_group - auto_pipe.get_active_ranks() = [0, 1]
+MainProcess 2021-01-06,01:32:01.551 - {auto_dp.py (147)} - create_active_process_group(): get_active_process_group - auto_pipe.get_active_ranks() = [0, 1]
+MainProcess 2021-01-06,01:32:01.551 - {auto_dp.py (149)} - create_active_process_group(): local_rank = 3, global_rank = 3 - *************************create_active_process_group*********
+MainProcess 2021-01-06,01:32:01.551 - {auto_dp.py (149)} - create_active_process_group(): local_rank = 2, global_rank = 2 - *************************create_active_process_group*********
+MainProcess 2021-01-06,01:32:01.623 - {auto_dp.py (267)} - _inactive_process_impl(): global_rank 1 is activated!
+MainProcess 2021-01-06,01:32:01.623 - {auto_pipe.py (51)} - transform(): ---local_rank = 1, global_rank = 1 -------------freeze layer number = 6---------------
+MainProcess 2021-01-06,01:32:01.625 - {auto_pipe.py (61)} - transform(): len(pipe_model) = 14
+MainProcess 2021-01-06,01:32:01.625 - {auto_pipe.py (62)} - transform(): len(pipe_model paras_size) = 14
+MainProcess 2021-01-06,01:32:01.625 - {auto_pipe.py (135)} - _auto_pipe_length(): ----------start to detection---------
+MainProcess 2021-01-06,01:32:01.625 - {load_balance.py (39)} - generate_parameter_size_wise_balance(): total_param_size_to_be_assigned = 42.536458
+MainProcess 2021-01-06,01:32:01.626 - {load_balance.py (81)} - check_gap_all(): max_params_in_balanced_partition - min_params_in_balanced_partition = 0.000000
+MainProcess 2021-01-06,01:32:01.626 - {auto_pipe.py (141)} - _auto_pipe_length(): max_parameter_per_gpu = 42.536458
+MainProcess 2021-01-06,01:32:01.626 - {auto_pipe.py (142)} - _auto_pipe_length(): self.max_parameter_per_gpu_at_beginning = 22.006272
+MainProcess 2021-01-06,01:32:01.626 - {auto_pipe.py (149)} - _auto_pipe_length(): current_num_device = 2
+MainProcess 2021-01-06,01:32:01.626 - {load_balance.py (39)} - generate_parameter_size_wise_balance(): total_param_size_to_be_assigned = 42.536458
+MainProcess 2021-01-06,01:32:01.626 - {load_balance.py (81)} - check_gap_all(): max_params_in_balanced_partition - min_params_in_balanced_partition = 0.009226
+MainProcess 2021-01-06,01:32:01.626 - {load_balance.py (97)} - check_gap_except_1st_layer(): max_params_in_balanced_partition - min_params_in_balanced_partition = 0.000000
+MainProcess 2021-01-06,01:32:01.626 - {auto_pipe.py (122)} - _auto_balanced_elastic_partition(): {0: 6, 1: 8}
+MainProcess 2021-01-06,01:32:01.626 - {auto_pipe.py (123)} - _auto_balanced_elastic_partition(): {0: 21.263616, 1: 21.272842}
+MainProcess 2021-01-06,01:32:01.626 - {pipe_model_builder.py (148)} - convert_to_balanced_model(): convert_to_balanced_model. local_rank = 1, global_rank = 1
+MainProcess 2021-01-06,01:32:01.626 - {pipe_model_builder.py (162)} - convert_to_balanced_model(): ######################local_rank = 1, global_rank = 1, device id: 2
+MainProcess 2021-01-06,01:32:03.049 - {pipe_model_builder.py (162)} - convert_to_balanced_model(): ######################local_rank = 1, global_rank = 1, device id: 3
+MainProcess 2021-01-06,01:32:04.409 - {pipe_model_builder.py (167)} - convert_to_balanced_model(): CPU->GPU time cost = 2.7833290100097656
+MainProcess 2021-01-06,01:32:04.547 - {auto_pipe.py (102)} - get_device_first(): cuda:2
+MainProcess 2021-01-06,01:32:04.547 - {auto_pipe.py (107)} - get_device_last(): cuda:3
+MainProcess 2021-01-06,01:32:04.547 - {auto_dp.py (135)} - update_active_ranks(): active ranks = [0, 1]
+MainProcess 2021-01-06,01:32:04.547 - {auto_dp.py (135)} - update_active_ranks(): active ranks = [0, 1]
+MainProcess 2021-01-06,01:32:04.548 - {auto_dp.py (182)} - get_data_rank(): self.active_data_ranks = {0: 0, 1: 1}
+MainProcess 2021-01-06,01:32:04.548 - {data_loader.py (147)} - get_data_loader(): ---num_replicas = 2, rank = 1 --------------
+MainProcess 2021-01-06,01:32:04.548 - {data_loader.py (27)} - get_data(): load_data. dataset_name = cifar10
+MainProcess 2021-01-06,01:32:04.547 - {auto_dp.py (135)} - update_active_ranks(): active ranks = [0, 1]
+MainProcess 2021-01-06,01:32:04.547 - {auto_dp.py (135)} - update_active_ranks(): active ranks = [0, 1]
+MainProcess 2021-01-06,01:32:04.547 - {auto_dp.py (182)} - get_data_rank(): self.active_data_ranks = {0: 0, 1: 1}
+MainProcess 2021-01-06,01:32:04.547 - {data_loader.py (147)} - get_data_loader(): ---num_replicas = 2, rank = 0 --------------
+MainProcess 2021-01-06,01:32:04.547 - {data_loader.py (27)} - get_data(): load_data. dataset_name = cifar10
+Files already downloaded and verified
+Files already downloaded and verified
+Files already downloaded and verified
+Files already downloaded and verified
+MainProcess 2021-01-06,01:32:05.703 - {auto_pipe.py (102)} - get_device_first(): cuda:0
+MainProcess 2021-01-06,01:32:05.703 - {auto_pipe.py (107)} - get_device_last(): cuda:1
+MainProcess 2021-01-06,01:32:05.704 - {auto_dp.py (135)} - update_active_ranks(): active ranks = [0, 1]
+MainProcess 2021-01-06,01:32:05.704 - {auto_dp.py (135)} - update_active_ranks(): active ranks = [0, 1]
+MainProcess 2021-01-06,01:32:05.704 - {auto_dp.py (182)} - get_data_rank(): self.active_data_ranks = {0: 0, 1: 1}
+MainProcess 2021-01-06,01:32:05.704 - {data_loader.py (147)} - get_data_loader(): ---num_replicas = 2, rank = 1 --------------
+MainProcess 2021-01-06,01:32:05.704 - {data_loader.py (27)} - get_data(): load_data. dataset_name = cifar10
+MainProcess 2021-01-06,01:32:05.703 - {trainer.py (50)} - update_data_and_cache(): global_rank = 0. is_frozen_layer_changed: True
+MainProcess 2021-01-06,01:32:05.703 - {two_level_cache.py (248)} - reset_status(): self.chunk_size = 440, self.chunk_num  = 1
+MainProcess 2021-01-06,01:32:05.810 - {two_level_cache.py (248)} - reset_status(): self.chunk_size = 440, self.chunk_num  = 1
+MainProcess 2021-01-06,01:32:05.914 - {trainer.py (79)} - train(): device_first = cuda:0
+MainProcess 2021-01-06,01:32:05.914 - {trainer.py (80)} - train(): device_last = cuda:1
+MainProcess 2021-01-06,01:32:05.915 - {trainer.py (91)} - train(): global_rank = 0. data_loader id = 140472409780880/
+Files already downloaded and verified
+MainProcess 2021-01-06,01:32:06.205 - {trainer.py (98)} - train(): --------------global_rank = 0. Epoch 7, batch index 0 Statistics:
+MainProcess 2021-01-06,01:32:06.206 - {trainer.py (100)} - train(): global_rank = 0. epoch = 7, batch index = 0/417
+Files already downloaded and verified
+MainProcess 2021-01-06,01:32:06.854 - {auto_pipe.py (102)} - get_device_first(): cuda:2
+MainProcess 2021-01-06,01:32:06.854 - {auto_pipe.py (107)} - get_device_last(): cuda:3
+MainProcess 2021-01-06,01:32:06.854 - {trainer.py (50)} - update_data_and_cache(): global_rank = 1. is_frozen_layer_changed: True
+MainProcess 2021-01-06,01:32:06.854 - {two_level_cache.py (248)} - reset_status(): self.chunk_size = 440, self.chunk_num  = 1
+MainProcess 2021-01-06,01:32:06.895 - {two_level_cache.py (248)} - reset_status(): self.chunk_size = 440, self.chunk_num  = 1
+MainProcess 2021-01-06,01:32:06.935 - {auto_freeze.py (77)} - freeze(): -----------------------------140275176476048
+MainProcess 2021-01-06,01:32:06.935 - {auto_dp.py (194)} - transform(): (1)!!! no need to transform since auto_pipe.get_num_frozen_layers() == num_frozen_layers
+MainProcess 2021-01-06,01:32:06.936 - {trainer.py (50)} - update_data_and_cache(): global_rank = 1. is_frozen_layer_changed: False
+MainProcess 2021-01-06,01:32:06.938 - {trainer.py (79)} - train(): device_first = cuda:2
+MainProcess 2021-01-06,01:32:06.938 - {trainer.py (80)} - train(): device_last = cuda:3
+MainProcess 2021-01-06,01:32:06.940 - {trainer.py (91)} - train(): global_rank = 1. data_loader id = 140274840176336/
+MainProcess 2021-01-06,01:32:07.137 - {trainer.py (98)} - train(): --------------global_rank = 1. Epoch 7, batch index 0 Statistics:
+MainProcess 2021-01-06,01:32:07.137 - {trainer.py (100)} - train(): global_rank = 1. epoch = 7, batch index = 0/417
+MainProcess 2021-01-06,01:32:07.977 - {trainer.py (124)} - train(): global_rank = 1. data loading cost = 0.8399031162261963
+MainProcess 2021-01-06,01:32:07.977 - {trainer.py (130)} - train(): global_rank = 1. sample_num_throughput (images/second): 1035630
+MainProcess 2021-01-06,01:32:07.977 - {trainer.py (136)} - train(): global_rank = 1. communication frequency (cross machine sync/second): 6615.621451
+MainProcess 2021-01-06,01:32:07.977 - {trainer.py (141)} - train(): -------------------------------------
+MainProcess 2021-01-06,01:32:07.977 - {trainer.py (98)} - train(): --------------global_rank = 1. Epoch 7, batch index 1 Statistics:
+MainProcess 2021-01-06,01:32:07.977 - {trainer.py (100)} - train(): global_rank = 1. epoch = 7, batch index = 1/417
+MainProcess 2021-01-06,01:32:07.978 - {trainer.py (124)} - train(): global_rank = 0. data loading cost = 1.7729122638702393
+MainProcess 2021-01-06,01:32:07.978 - {trainer.py (130)} - train(): global_rank = 0. sample_num_throughput (images/second): 802736
+MainProcess 2021-01-06,01:32:07.978 - {trainer.py (136)} - train(): global_rank = 0. communication frequency (cross machine sync/second): 5447.148052
+MainProcess 2021-01-06,01:32:07.978 - {trainer.py (141)} - train(): -------------------------------------
+MainProcess 2021-01-06,01:32:07.978 - {trainer.py (98)} - train(): --------------global_rank = 0. Epoch 7, batch index 1 Statistics:
+MainProcess 2021-01-06,01:32:07.978 - {trainer.py (100)} - train(): global_rank = 0. epoch = 7, batch index = 1/417
+MainProcess 2021-01-06,01:32:08.329 - {trainer.py (130)} - train(): global_rank = 1. sample_num_throughput (images/second): 680
+MainProcess 2021-01-06,01:32:08.329 - {trainer.py (136)} - train(): global_rank = 1. communication frequency (cross machine sync/second): 5.681010
+MainProcess 2021-01-06,01:32:08.329 - {trainer.py (141)} - train(): -------------------------------------
+MainProcess 2021-01-06,01:32:08.329 - {trainer.py (130)} - train(): global_rank = 0. sample_num_throughput (images/second): 682
+MainProcess 2021-01-06,01:32:08.329 - {trainer.py (136)} - train(): global_rank = 0. communication frequency (cross machine sync/second): 5.693263
+MainProcess 2021-01-06,01:32:08.329 - {trainer.py (141)} - train(): -------------------------------------
+MainProcess 2021-01-06,01:32:08.659 - {trainer.py (187)} - _infer(): evaluation - batch index = 0/417
+MainProcess 2021-01-06,01:32:08.734 - {trainer.py (187)} - _infer(): evaluation - batch index = 0/417
+MainProcess 2021-01-06,01:32:08.852 - {trainer.py (187)} - _infer(): evaluation - batch index = 1/417
+MainProcess 2021-01-06,01:32:08.926 - {trainer.py (187)} - _infer(): evaluation - batch index = 1/417
+MainProcess 2021-01-06,01:32:09.194 - {trainer.py (159)} - eval(): {'training_acc': 0.5583333333333333, 'training_loss': 2.1495355367660522}
+MainProcess 2021-01-06,01:32:09.323 - {trainer.py (187)} - _infer(): evaluation - batch index = 0/84
+MainProcess 2021-01-06,01:32:09.514 - {trainer.py (187)} - _infer(): evaluation - batch index = 0/84
+MainProcess 2021-01-06,01:32:09.519 - {trainer.py (187)} - _infer(): evaluation - batch index = 1/84
+MainProcess 2021-01-06,01:32:09.707 - {trainer.py (187)} - _infer(): evaluation - batch index = 1/84
+MainProcess 2021-01-06,01:32:09.774 - {auto_freeze.py (77)} - freeze(): -----------------------------140275176476048
+MainProcess 2021-01-06,01:32:09.905 - {auto_freeze.py (98)} - freeze(): epoch = 8, grad_norm_by_layer = {0: 0, 1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 197.39062194475454, 7: 189.70554327438165, 8: 194.0557521716753, 9: 182.75633298131817, 10: 207.36022930448567, 11: 259.69369171854675}
+MainProcess 2021-01-06,01:32:09.905 - {auto_freeze.py (110)} - freeze(): {6: 0.13064928069639067, 7: 0.13140279874960353, 8: 0.13444971198265637, 9: 0.11326867570758234, 10: 0.11175103349716237, 11: 0.08894121467950006}
+MainProcess 2021-01-06,01:32:09.905 - {auto_freeze.py (112)} - freeze(): []
+MainProcess 2021-01-06,01:32:09.905 - {auto_freeze.py (113)} - freeze(): epoch = 8, grad_norm_diff (unfrozen_list) = []
+Traceback (most recent call last):
+  File "main.py", line 163, in <module>
+    trainer.train_and_eval(freeze_point)
+  File "/home/chaoyanghe/sourcecode/PipeTransformer/trainer.py", line 39, in train_and_eval
+    self.train(epoch)
+  File "/home/chaoyanghe/sourcecode/PipeTransformer/trainer.py", line 64, in train
+    frozen_layer_idx = self.auto_freeze.freeze(epoch)
+  File "/home/chaoyanghe/sourcecode/PipeTransformer/freeze/auto_freeze.py", line 114, in freeze
+    logging.info("epoch = %d, grad_norm_diff (unfrozen_list) = %s" % (epoch, str(unfrozen_list)))
+  File "<__array_function__ internals>", line 6, in percentile
+  File "/home/chaoyanghe/miniconda/envs/pipe_ditributed/lib/python3.7/site-packages/numpy/lib/function_base.py", line 3733, in percentile
+    a, q, axis, out, overwrite_input, interpolation, keepdims)
+  File "/home/chaoyanghe/miniconda/envs/pipe_ditributed/lib/python3.7/site-packages/numpy/lib/function_base.py", line 3853, in _quantile_unchecked
+    interpolation=interpolation)
+  File "/home/chaoyanghe/miniconda/envs/pipe_ditributed/lib/python3.7/site-packages/numpy/lib/function_base.py", line 3429, in _ureduce
+    r = func(a, **kwargs)
+  File "/home/chaoyanghe/miniconda/envs/pipe_ditributed/lib/python3.7/site-packages/numpy/lib/function_base.py", line 3967, in _quantile_ureduce_func
+    x1 = take(ap, indices_below, axis=axis) * weights_below
+  File "<__array_function__ internals>", line 6, in take
+  File "/home/chaoyanghe/miniconda/envs/pipe_ditributed/lib/python3.7/site-packages/numpy/core/fromnumeric.py", line 191, in take
+    return _wrapfunc(a, 'take', indices, axis=axis, out=out, mode=mode)
+  File "/home/chaoyanghe/miniconda/envs/pipe_ditributed/lib/python3.7/site-packages/numpy/core/fromnumeric.py", line 58, in _wrapfunc
+    return bound(*args, **kwds)
+IndexError: cannot do a non-empty take from an empty axes.
+MainProcess 2021-01-06,01:32:09.967 - {trainer.py (175)} - eval(): {'test_acc': 0.5583333333333333, 'test_loss': 2.1580010652542114}
+MainProcess 2021-01-06,01:32:09.968 - {auto_freeze.py (77)} - freeze(): -----------------------------140472681813648
+MainProcess 2021-01-06,01:32:09.982 - {internal.py (138)} - handle_exit(): Internal process exited
+MainProcess 2021-01-06,01:32:10.227 - {auto_freeze.py (98)} - freeze(): epoch = 8, grad_norm_by_layer = {0: 170.6883687829666, 1: 270.08006175479125, 2: 219.98785907336367, 3: 227.42497488068958, 4: 219.09389245869156, 5: 233.49541486291054, 6: 197.39062194475454, 7: 189.70554327438165, 8: 194.0557521716753, 9: 182.75633298131817, 10: 207.36022930448567, 11: 259.69369171854675}
+MainProcess 2021-01-06,01:32:10.227 - {auto_freeze.py (110)} - freeze(): {0: 0.0, 1: 0.0, 2: 0.0, 3: 0.0, 4: 0.0, 5: 0.0, 6: 0.13064928069639067, 7: 0.13140279874960353, 8: 0.13444971198265637, 9: 0.11326867570758234, 10: 0.11175103349716237, 11: 0.08894121467950006}
+MainProcess 2021-01-06,01:32:10.228 - {auto_freeze.py (112)} - freeze(): [0.13064928069639067, 0.13140279874960353, 0.13444971198265637, 0.11326867570758234, 0.11175103349716237, 0.08894121467950006]
+MainProcess 2021-01-06,01:32:10.228 - {auto_freeze.py (113)} - freeze(): epoch = 8, grad_norm_diff (unfrozen_list) = [0.13064928069639067, 0.13140279874960353, 0.13444971198265637, 0.11326867570758234, 0.11175103349716237, 0.08894121467950006]
+MainProcess 2021-01-06,01:32:10.228 - {auto_freeze.py (115)} - freeze(): grad_norm_diff_percentile = 0.1219589782019865
+MainProcess 2021-01-06,01:32:10.228 - {auto_freeze.py (124)} - freeze(): epoch = 8, frozen_layer_idx = 6
+MainProcess 2021-01-06,01:32:10.228 - {auto_freeze.py (127)} - freeze(): epoch = 8, num_frozen_layer = 7
+MainProcess 2021-01-06,01:32:10.228 - {auto_pipe.py (51)} - transform(): ---local_rank = 0, global_rank = 0 -------------freeze layer number = 7---------------
+MainProcess 2021-01-06,01:32:10.230 - {auto_pipe.py (61)} - transform(): len(pipe_model) = 12
+MainProcess 2021-01-06,01:32:10.230 - {auto_pipe.py (62)} - transform(): len(pipe_model paras_size) = 12
+MainProcess 2021-01-06,01:32:10.230 - {auto_pipe.py (135)} - _auto_pipe_length(): ----------start to detection---------
+MainProcess 2021-01-06,01:32:10.230 - {load_balance.py (39)} - generate_parameter_size_wise_balance(): total_param_size_to_be_assigned = 35.448586
+MainProcess 2021-01-06,01:32:10.230 - {load_balance.py (81)} - check_gap_all(): max_params_in_balanced_partition - min_params_in_balanced_partition = 0.000000
+MainProcess 2021-01-06,01:32:10.230 - {auto_pipe.py (141)} - _auto_pipe_length(): max_parameter_per_gpu = 35.448586
+MainProcess 2021-01-06,01:32:10.230 - {auto_pipe.py (142)} - _auto_pipe_length(): self.max_parameter_per_gpu_at_beginning = 22.006272
+MainProcess 2021-01-06,01:32:10.230 - {auto_pipe.py (149)} - _auto_pipe_length(): current_num_device = 2
+MainProcess 2021-01-06,01:32:10.231 - {load_balance.py (39)} - generate_parameter_size_wise_balance(): total_param_size_to_be_assigned = 35.448586
+MainProcess 2021-01-06,01:32:10.231 - {load_balance.py (81)} - check_gap_all(): max_params_in_balanced_partition - min_params_in_balanced_partition = 2.369290
+MainProcess 2021-01-06,01:32:10.231 - {load_balance.py (97)} - check_gap_except_1st_layer(): max_params_in_balanced_partition - min_params_in_balanced_partition = 0.000000
+MainProcess 2021-01-06,01:32:10.231 - {auto_pipe.py (122)} - _auto_balanced_elastic_partition(): {0: 5, 1: 7}
+MainProcess 2021-01-06,01:32:10.231 - {auto_pipe.py (123)} - _auto_balanced_elastic_partition(): {0: 16.539648, 1: 18.908938000000003}
+MainProcess 2021-01-06,01:32:10.231 - {pipe_model_builder.py (148)} - convert_to_balanced_model(): convert_to_balanced_model. local_rank = 0, global_rank = 0
+MainProcess 2021-01-06,01:32:10.231 - {pipe_model_builder.py (162)} - convert_to_balanced_model(): ######################local_rank = 0, global_rank = 0, device id: 0
+MainProcess 2021-01-06,01:32:10.234 - {pipe_model_builder.py (162)} - convert_to_balanced_model(): ######################local_rank = 0, global_rank = 0, device id: 1
+MainProcess 2021-01-06,01:32:10.235 - {pipe_model_builder.py (167)} - convert_to_balanced_model(): CPU->GPU time cost = 0.004790782928466797

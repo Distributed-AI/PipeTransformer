@@ -85,6 +85,9 @@ class AutoElasticPipe:
 
         return frozen_model, PipeModelWrapper(pipe_model), self.pipe_len
 
+    def get_origin_model(self):
+        return self.model_backbone
+
     def get_num_frozen_layers(self):
         return self.num_frozen_layers
 
