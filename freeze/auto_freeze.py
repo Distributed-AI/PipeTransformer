@@ -16,7 +16,7 @@ class AutoFreeze:
         self.model = None
         self.num_freeze_layers = 0
         self.is_freeze = False
-        self.is_hand_crafted = True
+        self.is_hand_crafted = False
 
         self.is_grad_norm_analysis = False
 
