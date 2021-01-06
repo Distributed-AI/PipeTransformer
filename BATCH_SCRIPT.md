@@ -32,14 +32,15 @@ Time Cost: ? minutes
 
 1.Freeze (handcrafted)
 ```
-nohup sh run_elastic_pipe.sh 8 2 0 192.168.11.2 22222 1 0.03 400 imagenet /home/chaoyanghe/dataset/cv/imagenet 8 1 > ./PipeTransformer-imagenet-node0.log 2>&1 &
-nohup sh run_elastic_pipe.sh 8 2 1 192.168.11.2 22222 1 0.03 400 imagenet /home/chaoyanghe/dataset/cv/imagenet 8 1 > ./PipeTransformer-imagenet-node1.log 2>&1 &
+nohup sh run_elastic_pipe.sh 8 2 0 192.168.11.2 11122 1 "ib0" 0.06 400 imagenet /home/chaoyanghe/dataset/cv/imagenet 8 1 > ./PipeTransformer-imagenet-node0.log 2>&1 &
+nohup sh run_elastic_pipe.sh 8 2 1 192.168.11.2 11122 1 "ib0" 0.06 400 imagenet /home/chaoyanghe/dataset/cv/imagenet 8 1 > ./PipeTransformer-imagenet-node1.log 2>&1 &
+
 ```
 Time cost: 
 
 2.Freeze (AutoFreeze Algorithm)
 ```
-nohup sh run_elastic_pipe.sh 8 2 0 192.168.11.2 22222 1 0.03 400 imagenet /home/chaoyanghe/dataset/cv/imagenet 8 0 > ./PipeTransformer-imagenet-node0.log 2>&1 &
-nohup sh run_elastic_pipe.sh 8 2 1 192.168.11.2 22222 1 0.03 400 imagenet /home/chaoyanghe/dataset/cv/imagenet 8 0 > ./PipeTransformer-imagenet-node1.log 2>&1 &
+nohup sh run_elastic_pipe.sh 8 2 0 192.168.11.2 11122 1 "ib0" 0.06 400 imagenet /home/chaoyanghe/dataset/cv/imagenet 8 1 > ./PipeTransformer-imagenet-node0.log 2>&1 &
+nohup sh run_elastic_pipe.sh 8 2 1 192.168.11.2 11122 1 "ib0" 0.06 400 imagenet /home/chaoyanghe/dataset/cv/imagenet 8 1 > ./PipeTransformer-imagenet-node1.log 2>&1 &
 ```
 Time cost:

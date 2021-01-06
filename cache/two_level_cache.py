@@ -213,7 +213,7 @@ class TwoLevelCache:
         self.chunk_num = math.ceil(self.batch_size / self.chunk_size)
         logging.info("self.chunk_size = %d, self.chunk_num  = %d" % (self.chunk_size, self.chunk_num))
 
-        self.host_memory_percentage = 0.80
+        self.host_memory_percentage = 0.8
         self.disk_memory_percentage = 0.95
 
         for c_i in range(self.chunk_num):
@@ -242,8 +242,8 @@ class TwoLevelCache:
         chunk_batch_idx = batch_idx % self.chunk_size
         logging.info("main process - chunk_idx = %d" % chunk_idx)
 
-        # hidden_feature = model(x).detach().cpu()
-        hidden_feature = torch.randn([500, 768, 196])
+        hidden_feature = model(x).detach().cpu()
+        # hidden_feature = torch.randn([500, 768, 196])
 
         # one case is that the disk memory is full but the host memory is still available
         if not self.is_host_memory_full():
