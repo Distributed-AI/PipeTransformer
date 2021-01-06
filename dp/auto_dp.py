@@ -284,8 +284,11 @@ class AutoDataParallel:
         broad_cast_msg[4] = float(len(self.newly_added_active_ranks))
         for idx, new_active_rank in enumerate(self.newly_added_active_ranks):
             broad_cast_msg[idx + 5] = float(new_active_rank)
-        for layer_idx in last_grad_norm_by_layer.keys():
-            broad_cast_msg[layer_idx + 5 + len(self.newly_added_active_ranks)] = last_grad_norm_by_layer[layer_idx]
+        if last_grad_norm_by_layer is not None:
+            for layer_idx in last_grad_norm_by_layer.keys():
+                broad_cast_msg[layer_idx + 5 + len(self.newly_added_active_ranks)] = last_grad_norm_by_layer[layer_idx]
+        else:
+            broad_cast_msg[5 + len(self.newly_added_active_ranks)] = -1
         return broad_cast_msg
 
     def _parse_broad_cast_message(self, frozen_message):
@@ -312,11 +315,13 @@ class AutoDataParallel:
             newly_added_active_ranks.append(int(frozen_message[i + 5]))
         logging.info("newly_added_active_ranks = " + str(newly_added_active_ranks))
 
-        last_grad_norm_by_layer = dict()
-        for layer_idx in range(self.args.num_layer):
-            last_grad_norm_by_layer[layer_idx] = float(frozen_message[layer_idx + 5 + size_of_newly_added_active_ranks])
-
-        logging.info("last_grad_norm_by_layer = " + str(last_grad_norm_by_layer))
+        if frozen_message[5 + size_of_newly_added_active_ranks] != -1:
+            last_grad_norm_by_layer = dict()
+            for layer_idx in range(self.args.num_layer):
+                last_grad_norm_by_layer[layer_idx] = float(frozen_message[layer_idx + 5 + size_of_newly_added_active_ranks])
+            logging.info("last_grad_norm_by_layer = " + str(last_grad_norm_by_layer))
+        else:
+            last_grad_norm_by_layer = None
         return num_frozen_layers, pipe_len, max_parameter_per_gpu_at_beginning, \
                newly_added_active_ranks, freeze_point, last_grad_norm_by_layer
 

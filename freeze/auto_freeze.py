@@ -32,7 +32,8 @@ class AutoFreeze:
     def update_status(self, num_freeze_layers, last_grad_norm_by_layer):
         logging.info("(%s) num_freeze_layers = %d, last_grad_norm_by_layer = %s" % (str(id(self)), num_freeze_layers, str(last_grad_norm_by_layer)))
         self.num_freeze_layers = num_freeze_layers
-        self.last_grad_norm_by_layer = copy.deepcopy(last_grad_norm_by_layer)
+        if last_grad_norm_by_layer is not None:
+            self.last_grad_norm_by_layer = copy.deepcopy(last_grad_norm_by_layer)
 
     def get_status(self):
         return self.num_freeze_layers, self.last_grad_norm_by_layer
