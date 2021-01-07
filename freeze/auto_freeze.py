@@ -27,7 +27,7 @@ class AutoFreeze:
         self.is_grad_accumulated_by_layer_updated = False
 
         self.last_grad_norm_by_layer = None
-        self.percentile = 50
+        self.percentile = 70
 
     def update_status(self, num_freeze_layers, last_grad_norm_by_layer):
         logging.info("(%s) num_freeze_layers = %d, last_grad_norm_by_layer = %s" % (str(id(self)), num_freeze_layers, str(last_grad_norm_by_layer)))
