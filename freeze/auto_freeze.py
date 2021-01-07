@@ -26,6 +26,8 @@ class AutoFreeze:
             self.grad_accumulated_by_layer[layer_idx] = dict()
         self.is_grad_accumulated_by_layer_updated = False
 
+        self.freeze_interval = 2
+
         self.last_grad_norm_by_layer = None
         self.percentile = 70
 
@@ -84,58 +86,59 @@ class AutoFreeze:
         if self.num_freeze_layers == self.num_layer:
             return self.num_freeze_layers
 
-        # Calculate layer-wise gradient changing ratio
-        grad_norm_by_layer = dict()
-        for i in range(self.num_layer):
-            grad_norm_by_layer[i] = 0
+        if (epoch + 1) % self.freeze_interval == 0:
+            # Calculate layer-wise gradient changing ratio
+            grad_norm_by_layer = dict()
+            for i in range(self.num_layer):
+                grad_norm_by_layer[i] = 0
 
-        for layer_idx in self.grad_accumulated_by_layer.keys():
-            for name in self.grad_accumulated_by_layer[layer_idx].keys():
-                grad = self.grad_accumulated_by_layer[layer_idx][name]
-                grad_norm_by_layer[layer_idx] += torch.norm(grad.cpu().detach(), p=1).item()
+            for layer_idx in self.grad_accumulated_by_layer.keys():
+                for name in self.grad_accumulated_by_layer[layer_idx].keys():
+                    grad = self.grad_accumulated_by_layer[layer_idx][name]
+                    grad_norm_by_layer[layer_idx] += torch.norm(grad.cpu().detach(), p=1).item()
 
-        # Clear gradient accumulator
-        for layer_idx in self.grad_accumulated_by_layer.keys():
-            for name in self.grad_accumulated_by_layer[layer_idx].keys():
-                params = self.grad_accumulated_by_layer[layer_idx][name]
-                self.grad_accumulated_by_layer[layer_idx][name] = torch.zeros(params.shape)
-        self.is_grad_accumulated_by_layer_updated = False
+            # Clear gradient accumulator
+            for layer_idx in self.grad_accumulated_by_layer.keys():
+                for name in self.grad_accumulated_by_layer[layer_idx].keys():
+                    params = self.grad_accumulated_by_layer[layer_idx][name]
+                    self.grad_accumulated_by_layer[layer_idx][name] = torch.zeros(params.shape)
+            self.is_grad_accumulated_by_layer_updated = False
 
-        logging.info("epoch = %d, grad_norm_by_layer = %s" % (epoch, str(grad_norm_by_layer)))
-        frozen_layer_idx = -1
-        if self.last_grad_norm_by_layer is None:
-            # Set gradient dict to be compared with for the first time
-            self.last_grad_norm_by_layer = grad_norm_by_layer
-        else:
-            grad_norm_diff = dict()
-            # Calculate gradient changing threshold
-            for key in grad_norm_by_layer.keys():
-                if grad_norm_by_layer[key] > 0:
-                    grad_norm_diff[key] = abs(self.last_grad_norm_by_layer[key] - grad_norm_by_layer[key]) / \
-                                          self.last_grad_norm_by_layer[key]
-                else:
-                    grad_norm_diff[key] = 0
+            logging.info("epoch = %d, grad_norm_by_layer = %s" % (epoch, str(grad_norm_by_layer)))
+            frozen_layer_idx = -1
+            if self.last_grad_norm_by_layer is None:
+                # Set gradient dict to be compared with for the first time
+                self.last_grad_norm_by_layer = grad_norm_by_layer
+            else:
+                grad_norm_diff = dict()
+                # Calculate gradient changing threshold
+                for key in grad_norm_by_layer.keys():
+                    if grad_norm_by_layer[key] > 0:
+                        grad_norm_diff[key] = abs(self.last_grad_norm_by_layer[key] - grad_norm_by_layer[key]) / \
+                                              self.last_grad_norm_by_layer[key]
+                    else:
+                        grad_norm_diff[key] = 0
 
-            logging.info(grad_norm_diff)
-            unfrozen_list = list(grad_norm_diff.values())[self.num_freeze_layers:]
-            logging.info(unfrozen_list)
-            logging.info("epoch = %d, grad_norm_diff (unfrozen_list) = %s" % (epoch, str(unfrozen_list)))
-            grad_norm_diff_percentile = np.percentile(unfrozen_list, self.percentile)
-            logging.info("grad_norm_diff_percentile = " + str(grad_norm_diff_percentile))
+                logging.info(grad_norm_diff)
+                unfrozen_list = list(grad_norm_diff.values())[self.num_freeze_layers:]
+                logging.info(unfrozen_list)
+                logging.info("epoch = %d, grad_norm_diff (unfrozen_list) = %s" % (epoch, str(unfrozen_list)))
+                grad_norm_diff_percentile = np.percentile(unfrozen_list, self.percentile)
+                logging.info("grad_norm_diff_percentile = " + str(grad_norm_diff_percentile))
 
-            # Find out the first layer with ratio ge to the median value
-            for layer_idx in grad_norm_diff.keys():
-                if grad_norm_diff[layer_idx] >= grad_norm_diff_percentile:
-                    frozen_layer_idx = layer_idx
-                    break
+                # Find out the first layer with ratio ge to the median value
+                for layer_idx in grad_norm_diff.keys():
+                    if grad_norm_diff[layer_idx] >= grad_norm_diff_percentile:
+                        frozen_layer_idx = layer_idx
+                        break
 
-            self.last_grad_norm_by_layer = grad_norm_by_layer
-        logging.info("epoch = %d, frozen_layer_idx = %s" % (epoch, str(frozen_layer_idx)))
-        # only analyze the grad norm
-        if self.is_grad_norm_analysis:
-            return 0
-        if frozen_layer_idx != -1:
-            self.num_freeze_layers = frozen_layer_idx + 1
+                self.last_grad_norm_by_layer = grad_norm_by_layer
+            logging.info("epoch = %d, frozen_layer_idx = %s" % (epoch, str(frozen_layer_idx)))
+            # only analyze the grad norm
+            if self.is_grad_norm_analysis:
+                return 0
+            if frozen_layer_idx != -1:
+                self.num_freeze_layers = frozen_layer_idx + 1
         logging.info("epoch = %d, num_frozen_layer = %s" % (epoch, str(self.num_freeze_layers)))
         return self.num_freeze_layers
 
