@@ -16,7 +16,7 @@ class AutoFreeze:
         self.model = None
         self.num_freeze_layers = 0
         self.is_freeze = False
-        self.is_hand_crafted = True
+        self.is_hand_crafted = False
 
         self.is_grad_norm_analysis = False
 
@@ -26,7 +26,7 @@ class AutoFreeze:
             self.grad_accumulated_by_layer[layer_idx] = dict()
         self.is_grad_accumulated_by_layer_updated = False
 
-        self.freeze_interval = 2
+        self.freeze_interval = 1
 
         self.last_grad_norm_by_layer = None
         self.percentile = 50

@@ -21,6 +21,8 @@ Two-level shared memory: each frozen layer only computes the forward propagation
 
 https://docs.python.org/3/library/multiprocessing.shared_memory.html
 
+We use multiprocessing because it can avoid GIL (global interpreter lock) issue in python multi-threading
+
 6. When the cache is responsible for a lot of frozen layers in the later stage, because the fp time is much longer than bp.
 Overlap frozen bp and pipe bubble are suitable for the time when the fp time in the early stage is small, or when it is equivalent to the bp time
 

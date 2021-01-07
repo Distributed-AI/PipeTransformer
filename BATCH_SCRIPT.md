@@ -72,7 +72,7 @@ Time Cost: ? minutes
 
 # ImageNet. Batch Size = 400
 
-1.Freeze (handcrafted)
+1.Freeze (handcrafted) + no cache
 ```
 nohup sh run_elastic_pipe.sh 8 2 0 192.168.11.2 11122 1 "ib0" 0.06 400 imagenet /home/chaoyanghe/dataset/cv/imagenet 8 1 > ./PipeTransformer-imagenet-node0.log 2>&1 &
 nohup sh run_elastic_pipe.sh 8 2 1 192.168.11.2 11122 1 "ib0" 0.06 400 imagenet /home/chaoyanghe/dataset/cv/imagenet 8 1 > ./PipeTransformer-imagenet-node1.log 2>&1 &
@@ -80,7 +80,15 @@ nohup sh run_elastic_pipe.sh 8 2 1 192.168.11.2 11122 1 "ib0" 0.06 400 imagenet 
 ```
 Time cost: 
 
-2.Freeze (AutoFreeze Algorithm)
+2.Freeze (handcrafted) + cache
+```
+nohup sh run_elastic_pipe.sh 8 2 0 192.168.11.2 11122 1 "ib0" 0.06 400 imagenet /home/chaoyanghe/dataset/cv/imagenet 8 1 > ./PipeTransformer-imagenet-node0.log 2>&1 &
+nohup sh run_elastic_pipe.sh 8 2 1 192.168.11.2 11122 1 "ib0" 0.06 400 imagenet /home/chaoyanghe/dataset/cv/imagenet 8 1 > ./PipeTransformer-imagenet-node1.log 2>&1 &
+
+```
+Time cost: 
+
+3.Freeze (AutoFreeze Algorithm) + cache
 ```
 nohup sh run_elastic_pipe.sh 8 2 0 192.168.11.2 11122 1 "ib0" 0.06 400 imagenet /home/chaoyanghe/dataset/cv/imagenet 8 1 > ./PipeTransformer-imagenet-node0.log 2>&1 &
 nohup sh run_elastic_pipe.sh 8 2 1 192.168.11.2 11122 1 "ib0" 0.06 400 imagenet /home/chaoyanghe/dataset/cv/imagenet 8 1 > ./PipeTransformer-imagenet-node1.log 2>&1 &
