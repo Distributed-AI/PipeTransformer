@@ -16,7 +16,7 @@ class AutoFreeze:
         self.model = None
         self.num_freeze_layers = 0
         self.is_freeze = False
-        self.is_hand_crafted = False
+        self.is_hand_crafted = True
 
         self.is_grad_norm_analysis = False
 
@@ -29,7 +29,7 @@ class AutoFreeze:
         self.freeze_interval = 2
 
         self.last_grad_norm_by_layer = None
-        self.percentile = 70
+        self.percentile = 50
 
     def update_status(self, num_freeze_layers, last_grad_norm_by_layer):
         logging.info("(%s) num_freeze_layers = %d, last_grad_norm_by_layer = %s" % (str(id(self)), num_freeze_layers, str(last_grad_norm_by_layer)))
