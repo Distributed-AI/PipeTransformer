@@ -1,16 +1,19 @@
-import logging
-import traceback
+from torchvision import transforms, datasets
 
-import torch
-import torch.distributed as dist
-from torch.utils.data import DataLoader, DistributedSampler
+import logging
+import os
+import random
+
+from torch.utils.data import DataLoader, RandomSampler
+from torch.utils.data.distributed import DistributedSampler
 from torchvision import transforms, datasets
 
 from data_preprocessing.imagenet.ImageNet.datasets import ImageNet
+from utils import *
 
 
-class CVDataset:
-    def __init__(self):
+class CVDatasetManager:
+    def __init__(self, num_train_epochs):
         self.train_dataset = None
         self.test_dataset = None
         self.train_loader = None
@@ -20,6 +23,11 @@ class CVDataset:
 
         self.args = None
         self.dataset = "cifar10"
+
+        self.num_train_epochs = num_train_epochs
+        self.num_train_samples = 20
+        self.origin_sample_id_mapping_by_epoch = []
+        self.seeds = [i for i in range(self.num_train_epochs)]
 
     def get_data(self, args, dataset):
         self.args = args
@@ -106,15 +114,6 @@ class CVDataset:
         transforms.RandomSizedCrop() is deprecated.
         The following two transforms are equal.
         """
-        # transform_train = transforms.Compose([
-        #     # transforms.RandomSizedCrop((args.img_size, args.img_size), scale=(0.05, 1.0)),
-        #     transforms.RandomResizedCrop((args.img_size, args.img_size), scale=(0.05, 1.0)),
-        #     # transforms.Resize(args.img_size),
-        #     # transforms.RandomCrop(args.img_size),
-        #     transforms.RandomHorizontalFlip(),
-        #     transforms.ToTensor(),
-        #     transforms.Normalize(CIFAR_MEAN, CIFAR_STD),
-        # ])
         transform_train = transforms.Compose([
             # transforms.RandomSizedCrop((args.img_size, args.img_size), scale=(0.05, 1.0)),
             transforms.Resize(args.img_size),
@@ -186,3 +185,87 @@ class CVDataset:
                                       num_workers=num_workers,
                                       pin_memory=True)
         return self.train_loader, self.test_loader
+
+    def get_data_loader(self, batch_size, num_replicas, rank):
+        # traceback.print_stack()
+        logging.info("---num_replicas = %d, rank = %d --------------" % (num_replicas, rank))
+        del self.train_dataset
+        del self.test_dataset
+        self.get_data(self.args, self.dataset)
+        """
+        Optimization:
+            Pin Memory: https://pytorch.org/docs/stable/notes/cuda.html#use-pinned-memory-buffers
+        """
+        if self.train_sampler is not None:
+            del self.train_sampler
+        self.train_sampler = DistributedSampler(self.train_dataset, num_replicas=num_replicas, rank=rank)
+        #
+        # test_sampler = SequentialSampler(testset)
+
+        if self.test_sampler is not None:
+            del self.test_sampler
+        self.test_sampler = DistributedSampler(self.test_dataset, num_replicas=num_replicas, rank=rank)
+
+        if self.train_loader is not None:
+            del self.train_loader
+
+        num_workers = 4
+        """
+        for imagenet, we need to reduce the memory cost:
+        https://github.com/prlz77/ResNeXt.pytorch/issues/5
+        """
+        if self.dataset == "imagenet":
+            num_workers = 1
+        self.train_loader = DataLoader(self.train_dataset,
+                                       sampler=self.train_sampler,
+                                       batch_size=batch_size,
+                                       num_workers=num_workers,
+                                       pin_memory=True)
+
+        if self.test_loader is not None:
+            del self.test_loader
+        self.test_loader = DataLoader(self.test_dataset,
+                                      sampler=self.test_sampler,
+                                      batch_size=batch_size,
+                                      num_workers=num_workers,
+                                      pin_memory=True)
+        return self.train_loader, self.test_loader
+
+    def create_mapping_for_single_worker_training(self):
+        for i in range(int(self.num_train_epochs)):
+            self.set_seed(self.seeds[i])
+            tmp_indices = [i*10 for i in range(self.num_train_samples)]
+            random_to_original = {}
+            train_indices_dataloader = DataLoader(tmp_indices, sampler=RandomSampler(tmp_indices), num_workers=0)
+            for step, batch in enumerate(train_indices_dataloader):
+                random_to_original[step] = batch[0].item()
+            self.origin_sample_id_mapping_by_epoch.append(random_to_original)
+
+    def create_mapping_for_distributed_training(self):
+        for i in range(int(self.num_train_epochs)):
+            self.set_seed(self.seeds[i])
+            tmp_indices = [i*10 for i in range(self.num_train_samples)]
+            random_to_original = {}
+            train_indices_dataloader = DataLoader(tmp_indices, sampler=RandomSampler(tmp_indices), num_workers=0)
+            for step, batch in enumerate(train_indices_dataloader):
+                random_to_original[step] = batch[0].item()
+            self.origin_sample_id_mapping_by_epoch.append(random_to_original)
+
+    def get_seed_by_epoch(self, epoch):
+        return self.seeds[epoch]
+
+    def set_seed(self, seed):
+        random.seed(seed)
+        torch.manual_seed(seed)
+        torch.cuda.manual_seed_all(seed)
+        np.random.seed(seed)
+        os.environ['PYTHONHASHSEED'] = str(seed)
+        torch.backends.cudnn.deterministic = True
+        torch.backends.cudnn.benchmark = False
+
+
+if __name__ == "__main__":
+    data_manager = CVDatasetManager(2)
+    data_manager.create_mapping()
+    print(data_manager.origin_sample_id_mapping_by_epoch[0])
+

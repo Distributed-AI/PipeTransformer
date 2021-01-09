@@ -5,7 +5,7 @@ import logging
 import numpy as np
 import torch
 
-from data_preprocessing.data_loader import CVDataset
+from data_preprocessing.data_loader import CVDatasetManager
 from model.vit.vision_transformer_origin import CONFIGS, VisionTransformer
 from pipe.pipe_model_builder import OutputHead
 from utils import WarmupCosineSchedule, WarmupLinearSchedule
@@ -223,7 +223,7 @@ if __name__ == "__main__":
     logging.info(args)
 
     # create dataset
-    cv_data_manager = CVDataset()
+    cv_data_manager = CVDatasetManager()
     train_dataset, test_dataset, output_dim = cv_data_manager.get_data(args, args.dataset)
 
     # create model

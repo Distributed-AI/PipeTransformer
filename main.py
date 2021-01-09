@@ -8,7 +8,7 @@ import psutil
 import wandb
 
 from cache.auto_cache import AutoCache
-from data_preprocessing.data_loader import CVDataset
+from data_preprocessing.data_loader import CVDatasetManager
 from dp.auto_dp import AutoDataParallel
 from freeze.auto_freeze import AutoFreeze
 from model.vit.vision_transformer_origin import CONFIGS
@@ -114,7 +114,7 @@ if __name__ == "__main__":
                          config=args)
 
     # create dataset
-    cv_data_manager = CVDataset()
+    cv_data_manager = CVDatasetManager()
     train_dataset, test_dataset, output_dim = cv_data_manager.get_data(args, args.dataset)
 
     # create model
