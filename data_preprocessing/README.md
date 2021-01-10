@@ -9,7 +9,7 @@ Since the training requires shuffle each epoch, the cache order of hidden featur
 In order to identify which data point a hidden feature belongs to, we build a sample unique ID by returning "index" in the get_item() function of Dataset class.
 With this unique ID, we can find a sample's hidden feature with O(1) time complexity during training.
 
-3. When data is shuffled in each epoch, a data sample trained in the previous epoch may be moved to another machine for training. 
+3. When data is shuffled in each epoch, a data sample trained in the previous epoch may be moved to another machine for training in current epoch. 
 This makes the cache not reused across epochs. To address this issue, we fix a subset of entire samples in a machine and only do shuffle for this subset.
 This guarantees the shuffle during epochs is only executed inside a machine, thus hidden feature's cache can be reused deterministically.
 To achieve this, rather than maintaining a global rank for DistributedSampler, we introduce `node_rank` and `local_rank`. 
