@@ -114,7 +114,7 @@ if __name__ == "__main__":
                          config=args)
 
     # create dataset
-    cv_data_manager = CVDatasetManager()
+    cv_data_manager = CVDatasetManager(args)
     train_dataset, test_dataset, output_dim = cv_data_manager.get_data(args, args.dataset)
 
     # create model

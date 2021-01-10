@@ -78,7 +78,7 @@ class CacheProcessManager:
                 # 1. find the chunk index list that should be loaded into the host memory,
                 # and the chunk list that should be put into the disk storage
                 chunk_idx = msg_params['chunk_idx']
-                chunk_index_list_to_in_disk, chunk_index_list_to_in_memory = find_the_chunks_for_load_and_cache(
+                chunk_index_list_to_in_disk, chunk_index_list_to_in_memory = self.find_the_chunks_for_load_and_cache(
                     host_memory_window_len,
                     chunk_idx,
                     chunk_idx_starting_disk_cache,

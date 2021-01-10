@@ -147,7 +147,7 @@ class ImageNet(data.Dataset):
         if self.target_transform is not None:
             target = self.target_transform(target)
 
-        return img, target
+        return index, img, target
 
     def __len__(self):
         return len(self.local_data)
@@ -195,7 +195,7 @@ class ImageNet_truncated(data.Dataset):
         if self.target_transform is not None:
             target = self.target_transform(target)
 
-        return img, target
+        return index, img, target
 
     def __len__(self):
         return len(self.local_data)

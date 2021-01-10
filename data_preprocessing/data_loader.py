@@ -1,19 +1,20 @@
-from torchvision import transforms, datasets
-
+import argparse
 import logging
 import os
 import random
 
+import numpy as np
+import torch
 from torch.utils.data import DataLoader, RandomSampler
 from torch.utils.data.distributed import DistributedSampler
-from torchvision import transforms, datasets
+from torchvision import transforms
 
-from data_preprocessing.imagenet.ImageNet.datasets import ImageNet
-from utils import *
+from data_preprocessing.cifar.cifar_dataset import CIFAR10, CIFAR100
+from data_preprocessing.imagenet.imagenet_datasets import ImageNet
 
 
 class CVDatasetManager:
-    def __init__(self, num_train_epochs):
+    def __init__(self, args):
         self.train_dataset = None
         self.test_dataset = None
         self.train_loader = None
@@ -21,10 +22,13 @@ class CVDatasetManager:
         self.train_sampler = None
         self.test_sampler = None
 
-        self.args = None
-        self.dataset = "cifar10"
+        self.args = args
+        self.dataset = args.dataset
 
-        self.num_train_epochs = num_train_epochs
+        # only load dataset once
+        self.get_data(args, self.dataset)
+
+        self.num_train_epochs = args.epochs
         self.num_train_samples = 20
         self.origin_sample_id_mapping_by_epoch = []
         self.seeds = [i for i in range(self.num_train_epochs)]
@@ -63,8 +67,8 @@ class CVDatasetManager:
         transform_train = transforms.Compose([
             # transforms.RandomSizedCrop((args.img_size, args.img_size), scale=(0.05, 1.0)),
             transforms.Resize(args.img_size),
-            transforms.RandomCrop(args.img_size),
-            transforms.RandomHorizontalFlip(),
+            # transforms.RandomCrop(args.img_size),
+            # transforms.RandomHorizontalFlip(),
             transforms.ToTensor(),
             transforms.Normalize(CIFAR_MEAN, CIFAR_STD),
         ])
@@ -75,24 +79,24 @@ class CVDatasetManager:
         ])
 
         if args.dataset == "cifar10":
-            trainset = datasets.CIFAR10(root=args.data_dir,
-                                        train=True,
-                                        download=True,
-                                        transform=transform_train)
-            testset = datasets.CIFAR10(root=args.data_dir,
-                                       train=False,
-                                       download=True,
-                                       transform=transform_test)
+            trainset = CIFAR10(root=args.data_dir,
+                               train=True,
+                               download=True,
+                               transform=transform_train)
+            testset = CIFAR10(root=args.data_dir,
+                              train=False,
+                              download=True,
+                              transform=transform_test)
             output_dim = 10
         else:
-            trainset = datasets.CIFAR100(root=args.data_dir,
-                                         train=True,
-                                         download=True,
-                                         transform=transform_train)
-            testset = datasets.CIFAR100(root=args.data_dir,
-                                        train=False,
-                                        download=True,
-                                        transform=transform_test)
+            trainset = CIFAR100(root=args.data_dir,
+                                train=True,
+                                download=True,
+                                transform=transform_train)
+            testset = CIFAR100(root=args.data_dir,
+                               train=False,
+                               download=True,
+                               transform=transform_test)
             output_dim = 100
 
         # if args.is_distributed == 1:
@@ -144,9 +148,9 @@ class CVDatasetManager:
     def get_data_loader(self, batch_size, num_replicas, rank):
         # traceback.print_stack()
         logging.info("---num_replicas = %d, rank = %d --------------" % (num_replicas, rank))
-        del self.train_dataset
-        del self.test_dataset
-        self.get_data(self.args, self.dataset)
+        # del self.train_dataset
+        # del self.test_dataset
+        # self.get_data(self.args, self.dataset)
         """
         Optimization:
             Pin Memory: https://pytorch.org/docs/stable/notes/cuda.html#use-pinned-memory-buffers
@@ -164,13 +168,11 @@ class CVDatasetManager:
         if self.train_loader is not None:
             del self.train_loader
 
-        num_workers = 4
+        num_workers = 0
         """
         for imagenet, we need to reduce the memory cost:
         https://github.com/prlz77/ResNeXt.pytorch/issues/5
         """
-        if self.dataset == "imagenet":
-            num_workers = 1
         self.train_loader = DataLoader(self.train_dataset,
                                        sampler=self.train_sampler,
                                        batch_size=batch_size,
@@ -186,86 +188,174 @@ class CVDatasetManager:
                                       pin_memory=True)
         return self.train_loader, self.test_loader
 
-    def get_data_loader(self, batch_size, num_replicas, rank):
-        # traceback.print_stack()
-        logging.info("---num_replicas = %d, rank = %d --------------" % (num_replicas, rank))
-        del self.train_dataset
-        del self.test_dataset
-        self.get_data(self.args, self.dataset)
+    def get_data_loader_single_worker(self, batch_size):
         """
         Optimization:
             Pin Memory: https://pytorch.org/docs/stable/notes/cuda.html#use-pinned-memory-buffers
         """
         if self.train_sampler is not None:
             del self.train_sampler
-        self.train_sampler = DistributedSampler(self.train_dataset, num_replicas=num_replicas, rank=rank)
+        self.train_sampler = RandomSampler(self.train_dataset)
         #
         # test_sampler = SequentialSampler(testset)
 
         if self.test_sampler is not None:
             del self.test_sampler
-        self.test_sampler = DistributedSampler(self.test_dataset, num_replicas=num_replicas, rank=rank)
+        self.test_sampler = RandomSampler(self.test_dataset)
 
-        if self.train_loader is not None:
-            del self.train_loader
+        # if self.train_loader is not None:
+        #     del self.train_loader
 
-        num_workers = 4
+        num_workers = 0
         """
         for imagenet, we need to reduce the memory cost:
         https://github.com/prlz77/ResNeXt.pytorch/issues/5
         """
-        if self.dataset == "imagenet":
-            num_workers = 1
         self.train_loader = DataLoader(self.train_dataset,
                                        sampler=self.train_sampler,
                                        batch_size=batch_size,
                                        num_workers=num_workers,
                                        pin_memory=True)
 
-        if self.test_loader is not None:
-            del self.test_loader
+        # if self.test_loader is not None:
+        #     del self.test_loader
         self.test_loader = DataLoader(self.test_dataset,
                                       sampler=self.test_sampler,
                                       batch_size=batch_size,
                                       num_workers=num_workers,
                                       pin_memory=True)
         return self.train_loader, self.test_loader
-
-    def create_mapping_for_single_worker_training(self):
-        for i in range(int(self.num_train_epochs)):
-            self.set_seed(self.seeds[i])
-            tmp_indices = [i*10 for i in range(self.num_train_samples)]
-            random_to_original = {}
-            train_indices_dataloader = DataLoader(tmp_indices, sampler=RandomSampler(tmp_indices), num_workers=0)
-            for step, batch in enumerate(train_indices_dataloader):
-                random_to_original[step] = batch[0].item()
-            self.origin_sample_id_mapping_by_epoch.append(random_to_original)
-
-    def create_mapping_for_distributed_training(self):
-        for i in range(int(self.num_train_epochs)):
-            self.set_seed(self.seeds[i])
-            tmp_indices = [i*10 for i in range(self.num_train_samples)]
-            random_to_original = {}
-            train_indices_dataloader = DataLoader(tmp_indices, sampler=RandomSampler(tmp_indices), num_workers=0)
-            for step, batch in enumerate(train_indices_dataloader):
-                random_to_original[step] = batch[0].item()
-            self.origin_sample_id_mapping_by_epoch.append(random_to_original)
 
     def get_seed_by_epoch(self, epoch):
         return self.seeds[epoch]
 
     def set_seed(self, seed):
-        random.seed(seed)
+        torch.backends.cudnn.deterministic = True
+        torch.backends.cudnn.benchmark = False
         torch.manual_seed(seed)
         torch.cuda.manual_seed_all(seed)
         np.random.seed(seed)
-        os.environ['PYTHONHASHSEED'] = str(seed)
-        torch.backends.cudnn.deterministic = True
-        torch.backends.cudnn.benchmark = False
+        random.seed(seed)
+
+
+def test_single_worker():
+    args.epochs = 10
+    args.img_size = 224
+    args.dataset = "cifar10"
+    args.data_dir = "./data/cifar10"
+    data_manager = CVDatasetManager(args)
+
+    data_manager.set_seed(data_manager.seeds[0])
+    batch_size = 8
+
+    # train_indices_dataloader = data_manager.test_mapping_for_single_worker()
+    train_indices_dataloader, _ = data_manager.get_data_loader_single_worker(batch_size=batch_size)
+    sample_origin_list = {}
+    for batch_idx, batch in enumerate(train_indices_dataloader):
+        sample_uid_list, sample_origin, target_origin = batch
+        sample_uid_list = sample_uid_list.cpu().detach().numpy()
+        # logging.info("sample_uid_list = %s" % str(sample_uid_list))
+        for sample_i in range(len(sample_uid_list)):
+            # logging.info("sample_origin.shape = %s" % str(sample_origin.shape))
+            sample_origin_i = sample_origin[sample_i]
+            sample_uid = sample_uid_list[sample_i]
+            sample_origin_list[sample_uid] = sample_origin_i
+    logging.info("sample_origin_list.keys() = %s" + str(sample_origin_list.keys()))
+    logging.info("train_indices_dataloader.len = %s" % str(len(train_indices_dataloader)))
+
+    for epoch in range(data_manager.num_train_epochs):
+        if epoch == data_manager.num_train_epochs -1:
+            break
+        num_replicas = 8
+        data_manager.set_seed(data_manager.seeds[epoch+1])
+        train_loader, test_loader = data_manager.get_data_loader_single_worker(batch_size=batch_size)
+        # train_loader = data_manager.test_mapping_for_single_worker()
+        logging.info("train_loader.len = %s" % str(len(train_loader)))
+
+        for batch_idx, batch in enumerate(train_loader):
+            sample_uid_list, sample, target = batch
+            logging.info("---------------------------batch_idx = %d, sample_uid_list = %s" % (batch_idx, str(sample_uid_list)))
+            sample_uid_list = sample_uid_list.cpu().detach().numpy()
+            for sample_i in range(len(sample)):
+                logging.info("sample.len = %s" % str(len(sample)))
+                sample_batch_random = sample[sample_i]
+                logging.info("sample_batch_random.shape = " + str(sample_batch_random.shape))
+                logging.info("sample_uid_list = " + str(sample_uid_list))
+                sample_uid = sample_uid_list[sample_i]
+                sample_origin = sample_origin_list[sample_uid]
+                logging.info("sample_origin.shape = " + str(sample_origin.shape))
+                b_equal = torch.equal(sample_batch_random, sample_origin)
+                logging.info("b_equal = " + str(b_equal))
+                if not b_equal:
+                    raise Exception("not equal!")
+
+
+def test_distributed():
+    args.epochs = 10
+    args.img_size = 224
+    args.dataset = "cifar10"
+    args.data_dir = "./data/cifar10"
+    data_manager = CVDatasetManager(args)
+
+    data_manager.set_seed(data_manager.seeds[0])
+    batch_size = 8
+    num_replicas = [2, 2, 2, 2, 4, 4, 8, 8, 16, 16]
+    rank = 0
+
+    # train_indices_dataloader = data_manager.test_mapping_for_single_worker()
+    train_indices_dataloader, _ = data_manager.get_data_loader(batch_size=batch_size, num_replicas=num_replicas[0], rank=rank)
+    # train_indices_dataloader, _ = data_manager.get_data_loader_single_worker(batch_size=batch_size)
+    sample_origin_list = {}
+    for batch_idx, batch in enumerate(train_indices_dataloader):
+        sample_uid_list, sample_origin, target_origin = batch
+        sample_uid_list = sample_uid_list.cpu().detach().numpy()
+        # logging.info("sample_uid_list = %s" % str(sample_uid_list))
+        for sample_i in range(len(sample_uid_list)):
+            # logging.info("sample_origin.shape = %s" % str(sample_origin.shape))
+            sample_origin_i = sample_origin[sample_i]
+            sample_uid = sample_uid_list[sample_i]
+            sample_origin_list[sample_uid] = sample_origin_i
+    logging.info("sample_origin_list.keys() = %s" + str(sample_origin_list.keys()))
+    logging.info("train_indices_dataloader.len = %s" % str(len(train_indices_dataloader)))
+
+    for epoch in range(1, data_manager.num_train_epochs):
+
+        data_manager.set_seed(data_manager.seeds[epoch])
+        train_loader, test_loader = data_manager.get_data_loader(batch_size=batch_size, num_replicas=num_replicas[epoch], rank=rank)
+        # train_loader = data_manager.test_mapping_for_single_worker()
+        logging.info("train_loader.len = %s" % str(len(train_loader)))
+
+        for batch_idx, batch in enumerate(train_loader):
+            sample_uid_list, sample, target = batch
+            logging.info("---------------------------batch_idx = %d, sample_uid_list = %s" % (batch_idx, str(sample_uid_list)))
+            sample_uid_list = sample_uid_list.cpu().detach().numpy()
+            for sample_i in range(len(sample)):
+                logging.info("sample.len = %s" % str(len(sample)))
+                sample_batch_random = sample[sample_i]
+                logging.info("sample_batch_random.shape = " + str(sample_batch_random.shape))
+                logging.info("sample_uid_list = " + str(sample_uid_list))
+                sample_uid = sample_uid_list[sample_i]
+                sample_origin = sample_origin_list[sample_uid]
+                logging.info("sample_origin.shape = " + str(sample_origin.shape))
+                b_equal = torch.equal(sample_batch_random, sample_origin)
+                logging.info("b_equal = " + str(b_equal))
+                if not b_equal:
+                    raise Exception("not equal!")
 
 
 if __name__ == "__main__":
-    data_manager = CVDatasetManager(2)
-    data_manager.create_mapping()
-    print(data_manager.origin_sample_id_mapping_by_epoch[0])
+    parser = argparse.ArgumentParser(
+        description="PipeTransformer: Elastic and Automated Pipelining for Fast Distributed Training of Transformer Models")
+    parser.add_argument("--local_rank", type=int, default=0)
+    args = parser.parse_args()
 
+    # customize the log format
+    logging.basicConfig(level=logging.INFO,
+                        format='%(processName)s %(asctime)s.%(msecs)03d - {%(module)s.py (%(lineno)d)} - %(funcName)s(): %(message)s',
+                        datefmt='%Y-%m-%d,%H:%M:%S')
+    logging.info(args)
+
+    test_distributed()
+
+    logging.info("done.")
+    # logging.info(data_manager.origin_sample_id_mapping_by_epoch[0])

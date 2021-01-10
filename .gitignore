@@ -8,3 +8,5 @@ wandb
 
 freeze/data
 
+/data/
+data_preprocessing/data/cifar10/*
