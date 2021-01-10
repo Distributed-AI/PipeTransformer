@@ -6,7 +6,7 @@ In order to guarantee the data partition even after adding new pipes, the traini
 
 2. To reuse the computation of FP for frozen layers, we cached the hidden states in host memory and disk memory as well. 
 Since the training requires shuffle each epoch, the cache order of hidden features with respect to the order of original samples is different across different epochs.
-In order to identify which data point a hidden feature belongs, we build a sample unique ID by returning "index" in the get_item() function of Dataset class.
+In order to identify which data point a hidden feature belongs to, we build a sample unique ID by returning "index" in the get_item() function of Dataset class.
 With this unique ID, we can find a sample's hidden feature with O(1) time complexity during training.
 
 3. When data is shuffled in each epoch, a data sample trained in the previous epoch may be moved to another machine for training. 
