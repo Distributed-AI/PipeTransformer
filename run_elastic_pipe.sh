@@ -20,6 +20,7 @@ python -m torch.distributed.launch \
 --master_addr $MASTER_ADDR \
 --master_port $MASTER_PORT \
 main.py \
+--node_rank \
 --is_infiniband $IB \
 --master_addr $MASTER_ADDR \
 --if_name $IF_NAME \

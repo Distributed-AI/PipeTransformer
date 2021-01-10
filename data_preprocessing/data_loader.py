@@ -28,6 +28,15 @@ class CVDatasetManager:
         # only load dataset once
         self.get_data(args, self.dataset)
 
+        """
+        `node rank` is used to guarantee the shuffle during epochs is only executed inside a machine.
+        Note that this does not change the randomness of data. 
+        The only difference is that some parallel processes in distributed training are 
+        fixed in part of the shuffle datasets.
+        """
+        self.node_rank = args.node_rank
+        self.local_rank = args.local_rank
+
         self.num_train_epochs = args.epochs
         self.num_train_samples = 20
         self.origin_sample_id_mapping_by_epoch = []
