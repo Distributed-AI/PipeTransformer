@@ -210,8 +210,7 @@ class CVDatasetManager:
                                        sampler=self.train_sampler,
                                        batch_size=batch_size,
                                        num_workers=0,
-                                       pin_memory=True,
-                                       drop_last=True)
+                                       pin_memory=True)
 
         if self.test_loader is not None:
             del self.test_loader
@@ -219,8 +218,7 @@ class CVDatasetManager:
                                       sampler=self.test_sampler,
                                       batch_size=batch_size,
                                       num_workers=0,
-                                      pin_memory=True,
-                                      drop_last=True)
+                                      pin_memory=True)
         return self.train_loader, self.test_loader
 
     def get_data_loader(self, batch_size, num_replicas, global_rank):
