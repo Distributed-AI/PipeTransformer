@@ -132,7 +132,7 @@ class AutoCacheImpl:
 
     def _is_batch_in_cache(self, batch_sample_idx):
         for sample_uid in batch_sample_idx:
-            hidden_feature_per_sample, layer_id = self.shared_memory_mgr.get(sample_uid)
+            hidden_feature_per_sample, layer_id = self.shared_memory_mgr.is_exist(sample_uid)
             if hidden_feature_per_sample is None or layer_id is None:
                 return False
         return True

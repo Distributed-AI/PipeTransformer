@@ -50,6 +50,14 @@ class SharedMemoryManager:
         sharable_layer_id = np.ndarray(layer_id_np.shape, dtype=layer_id_np.dtype, buffer=layer_id_shm.buf)
         sharable_layer_id[:] = layer_id_np[:]
 
+    def is_exist(self, sample_uid):
+        name = self._build_tensor_memory_name(sample_uid)
+        try:
+            SharedMemory(name=name)
+            return True
+        except FileNotFoundError:
+            return False
+
     def get(self, sample_uid, tensor_np, idx_in_batch):
         return self._get_tensor(sample_uid, tensor_np, idx_in_batch), self._get_layer_id(sample_uid)
 
