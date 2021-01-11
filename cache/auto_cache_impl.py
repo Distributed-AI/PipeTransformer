@@ -4,6 +4,7 @@ import math
 import shutil
 import time
 
+import numpy
 import psutil
 import torch
 import torch.multiprocessing as mp
@@ -103,25 +104,33 @@ class AutoCacheImpl:
 
         if self._is_batch_in_cache(batch_sample_idx):
             hidden_feature = x
+            logging.info("(global_rank = %d) copy from shared memory START")
             layer_id = 0
             sample_idx_in_batch = 0
+            hidden_feature = None
             for sample_uid in batch_sample_idx:
-                hidden_feature_per_sample, layer_id = self.shared_memory_mgr.get(sample_uid)
-                hidden_feature[sample_idx_in_batch] = hidden_feature_per_sample
+                new_hidden_feature_per_sample, layer_id = self.shared_memory_mgr.get(sample_uid)
+                if hidden_feature is None:
+                    hidden_feature = new_hidden_feature_per_sample
+                else:
+                    hidden_feature = numpy.stack(hidden_feature, new_hidden_feature_per_sample)
                 sample_idx_in_batch += 1
 
             logging.info("(global_rank = %d) get_hidden_feature. NO need to compute FP (layer 0-%d), "
                          "only compute FP (layer %d-%d), get from shared memory" % (
                          self.args.global_rank, layer_id - 1, layer_id, num_frozen_layer))
+            logging.info("(global_rank = %d) copy from shared memory END")
+
             if layer_id != num_frozen_layer:
                 hidden_feature = model(hidden_feature.to(device), layer_id).detach().cpu()
                 self._cache_a_batch_sample(batch_sample_idx, hidden_feature, num_frozen_layer)
+                logging.info("(global_rank = %d) update shared memory END")
         else:
-            logging.info("(global_rank = %d) get_hidden_feature. cache to shared memory" % self.args.global_rank)
+            logging.info("(global_rank = %d) get_hidden_feature. cache to shared memory (START)" % self.args.global_rank)
             # [60, 197, 768]
             hidden_feature = model(x).detach().cpu()
             self._cache_a_batch_sample(batch_sample_idx, hidden_feature, num_frozen_layer)
-
+            logging.info("(global_rank = %d) get_hidden_feature. cache to shared memory (END)" % self.args.global_rank)
         self._send_training_progress_to_daemon(epoch, batch_idx)
         return hidden_feature
 
