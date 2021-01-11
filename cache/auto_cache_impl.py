@@ -107,7 +107,7 @@ class AutoCacheImpl:
         layer_id = 0
         for sample_uid in batch_sample_idx:
             hidden_feature_per_sample, layer_id = self.shared_memory_mgr.get(sample_uid)
-            if hidden_feature_per_sample is None:
+            if hidden_feature_per_sample is None or layer_id is None:
                 b_is_batch_cached = False
                 del hidden_feature
                 break
