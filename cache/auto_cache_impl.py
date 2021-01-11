@@ -106,7 +106,10 @@ class AutoCacheImpl:
             logging.info("(global_rank = %d) copy from shared memory START")
             layer_id = 0
             sample_idx_in_batch = 0
-            hidden_tensor_np = numpy.ndarray([self.args.batch_size, self.args.seq_len, self.args.transformer_hidden_size], dtype=numpy.float)
+            hidden_tensor_np = numpy.ndarray(
+                [self.args.batch_size, self.args.seq_len, self.args.transformer_hidden_size],
+                dtype=self.shared_memory_mgr.get_tensor_dtype()
+            )
             for sample_uid in batch_sample_idx:
                 hidden_tensor_np, layer_id = self.shared_memory_mgr.get(sample_uid, hidden_tensor_np, sample_idx_in_batch)
                 if hidden_tensor_np is None or layer_id is None:

@@ -58,6 +58,9 @@ class SharedMemoryManager:
         except FileNotFoundError:
             return False
 
+    def get_tensor_dtype(self):
+        return self.tensor_dtype
+
     def get(self, sample_uid, tensor_np, idx_in_batch):
         return self._get_tensor(sample_uid, tensor_np, idx_in_batch), self._get_layer_id(sample_uid)
 
