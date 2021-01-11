@@ -124,7 +124,7 @@ class AutoCacheImpl:
             # [60, 197, 768]
             hidden_feature = model(x).detach().cpu()
             self._cache_a_batch_sample(batch_sample_idx, hidden_feature, num_frozen_layer)
-        self._send_training_progress_to_daemon(epoch, batch_idx)
+        # self._send_training_progress_to_daemon(epoch, batch_idx)
         return hidden_feature
 
     def _cache_a_batch_sample(self, batch_sample_idx, hidden_feature, num_frozen_layer):
