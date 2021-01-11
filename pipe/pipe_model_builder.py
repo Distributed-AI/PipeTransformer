@@ -69,13 +69,13 @@ class FrozenLayer(nn.Module):
         if layer_id == 0:
             logging.info("compute from layer 0")
             x = self.embedding(x)
-            for layer_id in range(layer_id, self.num_frozen_layer):
-                x = self.layers[layer_id](x)
+            for id in range(0, self.num_frozen_layer):
+                x = self.layers[id](x)
             return x
         else:
             logging.info("compute from layer %d-%d" % (layer_id, self.num_frozen_layer-1))
-            for layer_id in range(layer_id, self.num_frozen_layer):
-                x = self.layers[layer_id](x)
+            for id in range(layer_id, self.num_frozen_layer):
+                x = self.layers[id](x)
             return x
 
 

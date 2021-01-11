@@ -129,13 +129,15 @@ class AutoCacheImpl:
                          self.args.global_rank, layer_id - 1, layer_id, num_frozen_layer))
             logging.info("(global_rank = %d) copy from shared memory END" % self.args.global_rank)
             if layer_id != num_frozen_layer:
-                hidden_feature = model(hidden_feature.to(device), layer_id).detach().cpu()
+                with torch.no_grad():
+                    hidden_feature = model(hidden_feature.to(device), layer_id).detach().cpu()
                 self._cache_a_batch_sample(batch_sample_idx, hidden_feature, num_frozen_layer)
                 logging.info("(global_rank = %d) update shared memory END" % self.args.global_rank)
         else:
             logging.info("(global_rank = %d) get_hidden_feature. cache to shared memory (START)" % self.args.global_rank)
             # [60, 197, 768]
-            hidden_feature = model(x).detach().cpu()
+            with torch.no_grad():
+                hidden_feature = model(x).detach().cpu()
             self._cache_a_batch_sample(batch_sample_idx, hidden_feature, num_frozen_layer)
             logging.info("(global_rank = %d) get_hidden_feature. cache to shared memory (END)" % self.args.global_rank)
         self._send_training_progress_to_daemon(epoch, batch_idx)
