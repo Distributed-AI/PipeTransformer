@@ -113,8 +113,8 @@ class AutoCacheImpl:
             logging.info("(global_rank = %d) get_hidden_feature. NO need to compute FP (layer 0-%d), "
                          "only compute FP (layer %d-%d), get from shared memory" % (
                          self.args.global_rank, layer_id - 1, layer_id, num_frozen_layer))
-            hidden_feature = model(hidden_feature.to(device), layer_id).detach().cpu()
             if layer_id != num_frozen_layer:
+                hidden_feature = model(hidden_feature.to(device), layer_id).detach().cpu()
                 self._cache_a_batch_sample(batch_sample_idx, hidden_feature, num_frozen_layer)
         else:
             logging.info("(global_rank = %d) get_hidden_feature. cache to shared memory" % self.args.global_rank)
