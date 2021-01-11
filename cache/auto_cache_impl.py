@@ -106,12 +106,12 @@ class AutoCacheImpl:
             logging.info("(global_rank = %d) copy from shared memory START")
             layer_id = 0
             sample_idx_in_batch = 0
-            hidden_feature = list()
+            hidden_tensor_np = numpy.ndarray([self.args.batch_size, self.args.seq_len, self.args.transformer_hidden_size], dtype=numpy.float)
             for sample_uid in batch_sample_idx:
-                new_hidden_feature_per_sample, layer_id = self.shared_memory_mgr.get(sample_uid)
-                hidden_feature.append(new_hidden_feature_per_sample)
+                hidden_tensor_np, layer_id = self.shared_memory_mgr.get(sample_uid, hidden_tensor_np, sample_idx_in_batch)
                 sample_idx_in_batch += 1
-            hidden_feature = numpy.array(hidden_feature)
+            hidden_feature = torch.from_numpy(hidden_tensor_np).cpu()
+
             logging.info("(global_rank = %d) get_hidden_feature. NO need to compute FP (layer 0-%d), "
                          "only compute FP (layer %d-%d), get from shared memory" % (
                          self.args.global_rank, layer_id - 1, layer_id, num_frozen_layer))

@@ -50,28 +50,24 @@ class SharedMemoryManager:
         sharable_layer_id = np.ndarray(layer_id_np.shape, dtype=layer_id_np.dtype, buffer=layer_id_shm.buf)
         sharable_layer_id[:] = layer_id_np[:]
 
-    def get(self, sample_uid):
-        return self._get_tensor(sample_uid), self._get_layer_id(sample_uid)
+    def get(self, sample_uid, tensor_np, idx_in_batch):
+        return self._get_tensor(sample_uid, tensor_np, idx_in_batch), self._get_layer_id(sample_uid)
 
-    def _get_tensor(self, sample_uid):
+    def _get_tensor(self, sample_uid, tensor_np, idx_in_batch):
         name = self._build_tensor_memory_name(sample_uid)
         try:
             shm = SharedMemory(name=name)
         except FileNotFoundError:
             return None
-
-        hidden_tensor_np = np.ndarray(self.tensor_shape, dtype=self.tensor_dtype)
         hidden_tensor = np.ndarray(self.tensor_shape, dtype=self.tensor_dtype, buffer=shm.buf)
         try:
-            hidden_tensor_np[:] = hidden_tensor[:]
+            tensor_np[idx_in_batch] = hidden_tensor[:]
         except IndexError:
             self._delete_tensor(sample_uid)
-            logging.info(hidden_tensor_np.size)
             logging.info(hidden_tensor.size)
             logging.info("_get_tensor error!")
             return None
-        tensor = torch.from_numpy(hidden_tensor_np).cpu()
-        return tensor
+        return tensor_np
 
     def _get_layer_id(self, sample_uid):
         layer_id_name = self._build_layer_id_memory_name(sample_uid)
