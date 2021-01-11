@@ -101,9 +101,9 @@ class AutoCacheImpl:
     def get_hidden_feature(self, num_frozen_layer, model, epoch, batch_idx, batch_sample_idx, x, device):
         logging.info("(global_rank = %d) get_hidden_feature. epoch = %d, batch_idx = %d, batch_sample_idx = %s" % (self.args.global_rank, epoch, batch_idx, str("")))
 
-        layer_id = 0
         if self._is_batch_in_cache(batch_sample_idx):
             hidden_feature = x
+            layer_id = 0
             sample_idx_in_batch = 0
             for sample_uid in batch_sample_idx:
                 hidden_feature_per_sample, layer_id = self.shared_memory_mgr.get(sample_uid)
@@ -114,7 +114,8 @@ class AutoCacheImpl:
                          "only compute FP (layer %d-%d), get from shared memory" % (
                          self.args.global_rank, layer_id - 1, layer_id, num_frozen_layer))
             hidden_feature = model(hidden_feature.to(device), layer_id).detach().cpu()
-            self._cache_a_batch_sample(batch_sample_idx, hidden_feature, num_frozen_layer)
+            if layer_id != num_frozen_layer:
+                self._cache_a_batch_sample(batch_sample_idx, hidden_feature, num_frozen_layer)
         else:
             logging.info("(global_rank = %d) get_hidden_feature. cache to shared memory" % self.args.global_rank)
             # [60, 197, 768]
