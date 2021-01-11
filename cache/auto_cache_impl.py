@@ -99,7 +99,7 @@ class AutoCacheImpl:
         self.msg_q.put(msg)
 
     def get_hidden_feature(self, num_frozen_layer, model, epoch, batch_idx, batch_sample_idx, x, device):
-        logging.info("(global_rank = %d) get_hidden_feature. epoch = %d, batch_idx = %d, batch_sample_idx = %s" % (self.args.global_rank, epoch, batch_idx, str(batch_sample_idx)))
+        logging.info("(global_rank = %d) get_hidden_feature. epoch = %d, batch_idx = %d, batch_sample_idx = %s" % (self.args.global_rank, epoch, batch_idx, str("")))
         b_is_batch_cached = True
         sample_idx_in_batch = 0
         # [60, 197, 768]
