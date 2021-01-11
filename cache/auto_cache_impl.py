@@ -102,17 +102,14 @@ class AutoCacheImpl:
         logging.info("(global_rank = %d) get_hidden_feature. epoch = %d, batch_idx = %d, batch_sample_idx = %s" % (self.args.global_rank, epoch, batch_idx, str("")))
         b_is_batch_cached = True
         sample_idx_in_batch = 0
-        # [60, 197, 768]
-        hidden_feature = torch.randn([self.args.batch_size, self.args.seq_len, self.args.transformer_hidden_size]).cpu()
+
         layer_id = 0
-        for sample_uid in batch_sample_idx:
-            hidden_feature_per_sample, layer_id = self.shared_memory_mgr.get(sample_uid)
-            if hidden_feature_per_sample is None or layer_id is None:
-                b_is_batch_cached = False
-                del hidden_feature
-                break
-            hidden_feature[sample_idx_in_batch] = hidden_feature_per_sample
-            sample_idx_in_batch += 1
+        if self._is_batch_in_cache(batch_sample_idx):
+            hidden_feature = x
+            for sample_uid in batch_sample_idx:
+                hidden_feature_per_sample, layer_id = self.shared_memory_mgr.get(sample_uid)
+                hidden_feature[sample_idx_in_batch] = hidden_feature_per_sample
+                sample_idx_in_batch += 1
 
         if b_is_batch_cached:
             logging.info("(global_rank = %d) get_hidden_feature. NO need to compute FP (layer 0-%d), "
@@ -124,8 +121,15 @@ class AutoCacheImpl:
             # [60, 197, 768]
             hidden_feature = model(x).detach().cpu()
             self._cache_a_batch_sample(batch_sample_idx, hidden_feature, num_frozen_layer)
-        # self._send_training_progress_to_daemon(epoch, batch_idx)
+        self._send_training_progress_to_daemon(epoch, batch_idx)
         return hidden_feature
+
+    def _is_batch_in_cache(self, batch_sample_idx):
+        for sample_uid in batch_sample_idx:
+            hidden_feature_per_sample, layer_id = self.shared_memory_mgr.get(sample_uid)
+            if hidden_feature_per_sample is None or layer_id is None:
+                return False
+        return True
 
     def _cache_a_batch_sample(self, batch_sample_idx, hidden_feature, num_frozen_layer):
         sample_idx_in_batch = 0
