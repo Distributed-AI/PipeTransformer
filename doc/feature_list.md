@@ -34,6 +34,7 @@ Overlap frozen bp and pipe bubble are suitable for the time when the fp time in 
 (3) Multiple Machines, Multiple GPUs
 
 
+
 # Machine Learning-wise Optimization
 
 1. checking point for Optimizer, Scheduler
@@ -43,6 +44,14 @@ Overlap frozen bp and pipe bubble are suitable for the time when the fp time in 
 3. auto freeze algorithm (*)
 
 
+# Other Ideas
+Distributed Training:
+1. Elastic NAS: Large scale Distributed Neural Architecture Search with Pipe Transformer
+2. Large scale Distributed Training for Video Action Recognition
+
+FedML:
+1. FedBERT: Efficient Training of BERT model for Cross-silo Federated Learning
+2. Efficient and Personalized Federated Neural Architecture Search: Bridging the Accuracy Gap in Federated Learning
 
 Destory CUDA context:
 
