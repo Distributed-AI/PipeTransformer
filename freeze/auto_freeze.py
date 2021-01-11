@@ -52,7 +52,7 @@ class AutoFreeze:
     def get_hand_crafted_frozen_layers_by_epoch(self, epoch):
         num_freeze_layers = 0
         if epoch == 0:
-            num_freeze_layers = 0
+            num_freeze_layers = 6
         elif epoch >= 1 and epoch <= 2:
             num_freeze_layers = 6
         elif epoch > 2 and epoch <= 5:

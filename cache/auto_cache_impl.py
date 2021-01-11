@@ -130,7 +130,10 @@ class AutoCacheImpl:
             logging.info("(global_rank = %d) copy from shared memory END" % self.args.global_rank)
             if layer_id != num_frozen_layer:
                 with torch.no_grad():
-                    hidden_feature = model(hidden_feature.to(device), layer_id).detach().cpu()
+                    hidden_feature = model(x).detach().cpu()
+                    # hidden_feature = model(hidden_feature.to(device), layer_id).detach().cpu()
+                    # if not torch.equal(hidden_feature_without_cache, hidden_feature):
+                    #     raise Exception("not equal with inference from layer 0")
                 self._cache_a_batch_sample(batch_sample_idx, hidden_feature, num_frozen_layer)
                 logging.info("(global_rank = %d) update shared memory END" % self.args.global_rank)
         else:
