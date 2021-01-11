@@ -68,7 +68,7 @@ if __name__ == "__main__":
     parser.add_argument('--epochs', type=int, default=10, metavar='EP',
                         help='how many epochs will be trained locally')
 
-    parser.add_argument("--freq_eval_train_acc", default=1, type=int)
+    parser.add_argument("--freq_eval_train_acc", default=4, type=int)
 
     parser.add_argument("--freq_eval_test_acc", default=1, type=int)
 
