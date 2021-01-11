@@ -109,6 +109,8 @@ class AutoCacheImpl:
             hidden_tensor_np = numpy.ndarray([self.args.batch_size, self.args.seq_len, self.args.transformer_hidden_size], dtype=numpy.float)
             for sample_uid in batch_sample_idx:
                 hidden_tensor_np, layer_id = self.shared_memory_mgr.get(sample_uid, hidden_tensor_np, sample_idx_in_batch)
+                if hidden_tensor_np is None or layer_id is None:
+                    return False
                 sample_idx_in_batch += 1
             hidden_feature = torch.from_numpy(hidden_tensor_np).cpu()
 
@@ -132,8 +134,7 @@ class AutoCacheImpl:
 
     def _is_batch_in_cache(self, batch_sample_idx):
         for sample_uid in batch_sample_idx:
-            hidden_feature_per_sample, layer_id = self.shared_memory_mgr.is_exist(sample_uid)
-            if hidden_feature_per_sample is None or layer_id is None:
+            if not self.shared_memory_mgr.is_exist(sample_uid):
                 return False
         return True
 
