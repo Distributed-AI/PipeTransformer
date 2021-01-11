@@ -103,19 +103,15 @@ class AutoCacheImpl:
         logging.info("(global_rank = %d) get_hidden_feature. epoch = %d, batch_idx = %d, batch_sample_idx = %s" % (self.args.global_rank, epoch, batch_idx, str("")))
 
         if self._is_batch_in_cache(batch_sample_idx):
-            hidden_feature = x
             logging.info("(global_rank = %d) copy from shared memory START")
             layer_id = 0
             sample_idx_in_batch = 0
-            hidden_feature = None
+            hidden_feature = list()
             for sample_uid in batch_sample_idx:
                 new_hidden_feature_per_sample, layer_id = self.shared_memory_mgr.get(sample_uid)
-                if hidden_feature is None:
-                    hidden_feature = new_hidden_feature_per_sample
-                else:
-                    hidden_feature = numpy.stack(hidden_feature, new_hidden_feature_per_sample)
+                hidden_feature.append(new_hidden_feature_per_sample)
                 sample_idx_in_batch += 1
-
+            hidden_feature = numpy.array(hidden_feature)
             logging.info("(global_rank = %d) get_hidden_feature. NO need to compute FP (layer 0-%d), "
                          "only compute FP (layer %d-%d), get from shared memory" % (
                          self.args.global_rank, layer_id - 1, layer_id, num_frozen_layer))
