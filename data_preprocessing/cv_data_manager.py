@@ -87,8 +87,8 @@ class CVDatasetManager:
         transform_train = transforms.Compose([
             # transforms.RandomSizedCrop((args.img_size, args.img_size), scale=(0.05, 1.0)),
             transforms.Resize(args.img_size),
-            # transforms.RandomCrop(args.img_size),
-            # transforms.RandomHorizontalFlip(),
+            transforms.RandomCrop(args.img_size),
+            transforms.RandomHorizontalFlip(),
             transforms.ToTensor(),
             transforms.Normalize(CIFAR_MEAN, CIFAR_STD),
         ])
