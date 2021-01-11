@@ -3,6 +3,7 @@ import logging
 import torch
 
 from cache.auto_cache_impl import AutoCacheImpl
+from cache.auto_cache_impl_with_host_mem import AutoCacheImplWithHostMem
 
 
 class AutoCache:
@@ -16,8 +17,8 @@ class AutoCache:
         self.batch_num_test = 0
         self.hidden_feature_size = hidden_feature_size
 
-        self.cache_manager_train = AutoCacheImpl(args, self.data_manager)
-        self.cache_manager_test = AutoCacheImpl(args, self.data_manager)
+        self.cache_manager_train = AutoCacheImplWithHostMem(args, self.data_manager)
+        self.cache_manager_test = AutoCacheImplWithHostMem(args, self.data_manager)
 
         self.is_enable = False
 
@@ -35,6 +36,8 @@ class AutoCache:
         self.is_enable = False
 
     def infer_train(self, frozen_model, pipe_model, epoch, batch_idx, batch_sample_idx, x):
+        if self.num_frozen_layers != self.auto_pipe.get_num_frozen_layers():
+            raise Exception("num_frozen_layers does not match with the pipe")
         if self.is_enable:
             if frozen_model is not None:
                 logging.debug("infer_train. batch_idx = %d" % batch_idx)
@@ -57,6 +60,8 @@ class AutoCache:
         return log_probs
 
     def infer_test(self, frozen_model, pipe_model, epoch, batch_idx, batch_sample_idx, x):
+        if self.num_frozen_layers != self.auto_pipe.get_num_frozen_layers():
+            raise Exception("num_frozen_layers does not match with the pipe")
         if self.is_enable:
             if frozen_model is not None:
                 with torch.no_grad():

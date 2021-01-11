@@ -82,13 +82,13 @@ class OneLevelCache:
 
         self.host_memory_percentage = 0.8
 
-        self.data_dict = dict()
+        self.sample_ui_hidden_feature_dict = dict()
 
         self.is_cache_ready = False
 
     def reset_status(self, is_ready, batch_size, hidden_feature_size, processes_num):
         self.is_cache_ready = is_ready
-        self.data_dict.clear()
+        self.sample_ui_hidden_feature_dict.clear()
         self.batch_size = batch_size
         logging.info("self.is_cache_ready = %s, self.batch_size = %s" % (str(self.is_cache_ready), str(self.batch_size)))
 
@@ -104,16 +104,16 @@ class OneLevelCache:
 
         if not self.is_host_memory_full():
             logging.info("####################host memory is not full. epoch = %d, batch_idx = %d" % (epoch, batch_idx))
-            self.data_dict[batch_idx] = hidden_feature
+            self.sample_ui_hidden_feature_dict[batch_idx] = hidden_feature
         if batch_idx == self.batch_size-1:
             logging.info("####################write_one_batch finished. epoch = %d, batch_idx = %d" % (epoch, batch_idx))
             self.is_cache_ready = True
         return hidden_feature
 
     def read_one_batch(self, epoch, batch_idx, x, model):
-        if batch_idx in self.data_dict.keys():
+        if batch_idx in self.sample_ui_hidden_feature_dict.keys():
             logging.info("####################read from cache. epoch = %d, batch_idx = %d" % (epoch, batch_idx))
-            hidden_feature = self.data_dict[batch_idx]
+            hidden_feature = self.sample_ui_hidden_feature_dict[batch_idx]
         else:
             hidden_feature = model(x)
         return hidden_feature
