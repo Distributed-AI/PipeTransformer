@@ -118,16 +118,16 @@ class AutoCacheImpl:
                     b_is_batch_cached = False
                     break
                 sample_idx_in_batch += 1
-            hidden_feature = torch.from_numpy(hidden_tensor_np).cpu()
-
-            logging.info("(global_rank = %d) get_hidden_feature. NO need to compute FP (layer 0-%d), "
-                         "only compute FP (layer %d-%d), get from shared memory" % (
-                         self.args.global_rank, layer_id - 1, layer_id, num_frozen_layer))
-            logging.info("(global_rank = %d) copy from shared memory END")
+            if hidden_tensor_np is not None:
+                hidden_feature = torch.from_numpy(hidden_tensor_np).cpu()
         else:
             b_is_batch_cached = False
 
         if b_is_batch_cached:
+            logging.info("(global_rank = %d) get_hidden_feature. NO need to compute FP (layer 0-%d), "
+                         "only compute FP (layer %d-%d), get from shared memory" % (
+                         self.args.global_rank, layer_id - 1, layer_id, num_frozen_layer))
+            logging.info("(global_rank = %d) copy from shared memory END")
             if layer_id != num_frozen_layer:
                 hidden_feature = model(hidden_feature.to(device), layer_id).detach().cpu()
                 self._cache_a_batch_sample(batch_sample_idx, hidden_feature, num_frozen_layer)
