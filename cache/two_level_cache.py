@@ -75,7 +75,10 @@ class TwoLevelCache:
     MSG_TYPE_TERMINATE = 5
     MSG_TYPE_RESET = 6
 
-    def __init__(self):
+    def __init__(self, data_manager):
+        self.data_manager = data_manager
+        self.epoch = 0
+
         self.cache_path = "./hidden_feature_cache_" + str(id(self))
         self.is_enable = False
 
@@ -103,7 +106,7 @@ class TwoLevelCache:
         self.disk_storage_process = None
         logging.info("main process - chunk_size = %d" % self.chunk_size)
 
-    def reset_status(self, is_ready, batch_size, hidden_feature_size, processes_num):
+    def reset_status(self, epoch, is_ready, batch_size, hidden_feature_size, processes_num):
         self.is_cache_ready = is_ready
         self.batch_size = batch_size
         self.hidden_feature_size = hidden_feature_size
@@ -118,12 +121,9 @@ class TwoLevelCache:
             data_q_i = self.manager.dict()
             self.data_dict[c_i] = data_q_i
 
-        self.finish()
+        train_sample_index = self.data_manager.get_train_sample_index(epoch)
+        test_sample_index = self.data_manager.get_test_sample_index(epoch)
 
-        self.disk_storage_process = mp.Process(target=disk_cache_process_impl,
-                                               args=(self.cache_path, self.chunk_size, self.data_dict, self.msg_q))
-        self.disk_storage_process.daemon = True
-        self.disk_storage_process.start()
 
     def get_hidden_feature(self, epoch, batch_idx, x, model):
         if not self.is_cache_ready:
@@ -259,7 +259,6 @@ class TwoLevelCache:
             msg_params['chunk_idx'] = chunk_idx
             msg_params['chunk_num'] = self.chunk_num
             self.msg_q.put((TwoLevelCache.MSG_TYPE_READING, msg_params))
-
 
         logging.info("self.chunk_idx_end_cache = %d" % self.chunk_idx_end_cache)
         if chunk_idx <= self.chunk_idx_end_cache:

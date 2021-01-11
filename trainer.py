@@ -29,32 +29,38 @@ class VisionTransformerTrainer:
 
         # data
         self.cv_data_manager = cv_data_manager
-        self.train_dl, self.test_dl = cv_data_manager.get_data_loader(args.batch_size, auto_dp.get_data_duplicate_num(),
-                                                            auto_dp.get_data_rank())
+        self.train_dl, self.test_dl = cv_data_manager.get_data_loader(args.batch_size, auto_dp.get_global_data_duplicate_num(),
+                                                                      auto_dp.get_global_data_rank())
 
     def train_and_eval(self, freeze_point):
         epoch_start = freeze_point['epoch']
-        self.update_data_and_cache(True, True)
+        self.update_data_and_cache(0, True, True)
         for epoch in range(epoch_start, self.args.epochs):
             self.train(epoch)
             self.eval(epoch)
 
-    def update_data_and_cache(self, is_pipe_len_changed, is_frozen_layer_changed):
+    def update_data_and_cache(self, epoch, is_pipe_len_changed, is_frozen_layer_changed):
         if is_pipe_len_changed:
-            self.train_dl, self.test_dl = self.cv_data_manager.get_data_loader(self.args.batch_size,
-                                                                               self.auto_dp.get_data_duplicate_num(),
-                                                                               self.auto_dp.get_data_rank())
+            # epoch, batch_size, node_rank, num_replicas, local_rank
+            self.train_dl, self.test_dl = self.cv_data_manager.get_data_loader_with_node_rank(
+                epoch,
+                self.args.batch_size,
+                self.args.node_rank,
+                self.auto_dp.get_local_data_duplicate_num(),
+                self.auto_dp.get_local_rank()
+            )
             self.device_first = self.auto_pipe.get_device_first()
             self.device_last = self.auto_pipe.get_device_last()
 
-        logging.info("global_rank = %d. is_frozen_layer_changed: %s" % (self.auto_dp.get_global_rank(), str(is_frozen_layer_changed)))
-        """
-        one case is that pipe len is not changed but the frozen layer number is changed, so we need to update the cache
-        """
+            logging.info("global_rank = %d. is_frozen_layer_changed: %s" % (self.auto_dp.get_global_rank(), str(is_frozen_layer_changed)))
+            """
+            To help the cache to adjust the shared_memory and the disk memory, 
+            we need to update the cache index when the pipe len has been changed
+            """
+            self.auto_cache.update_sample_index(epoch)
+
         if is_frozen_layer_changed:
-            self.auto_cache.reset(self.auto_pipe.get_num_frozen_layers(),
-                                  len(self.train_dl),
-                                  len(self.test_dl))
+            self.auto_cache.update_num_frozen_layer(self.auto_pipe.get_num_frozen_layers())
 
     def train(self, epoch):
         if self.auto_freeze.is_freeze_open():
@@ -70,7 +76,7 @@ class VisionTransformerTrainer:
                                                                                   frozen_layer_idx,
                                                                                   new_freeze_point)
             new_freeze_point = self.auto_dp.get_freeze_point()
-            self.update_data_and_cache(is_pipe_len_changed, is_frozen_layer_changed)
+            self.update_data_and_cache(epoch, is_pipe_len_changed, is_frozen_layer_changed)
 
 
         criterion = nn.CrossEntropyLoss()
@@ -89,7 +95,7 @@ class VisionTransformerTrainer:
         num_sample_processed_in_total = 0
         communication_count = 0.0
         logging.info("global_rank = %d. data_loader id = %d/" % (self.auto_dp.get_global_rank(), id(self.train_dl)))
-        for batch_idx, (x, target) in enumerate(self.train_dl):
+        for batch_idx, (sample_index_list, x, target) in enumerate(self.train_dl):
             # torch.cuda.empty_cache()
 
             if batch_idx == 0:
@@ -97,16 +103,17 @@ class VisionTransformerTrainer:
             logging.info("--------------global_rank = %d. Epoch %d, batch index %d Statistics: " % (
                 self.auto_dp.get_global_rank(), epoch, batch_idx))
             logging.info("global_rank = %d. epoch = %d, batch index = %d/%d" % (
-                self.auto_dp.get_global_rank(), epoch, batch_idx, len(self.train_dl)))
+                self.auto_dp.get_global_rank(), epoch, batch_idx, len(self.train_dl)-1))
             num_sample_processed_in_total += len(x)
             communication_count += 1
             iteration_num += 1
 
+            sample_index_list = sample_index_list.cpu().numpy()
             x = x.to(self.device_first)
             target = target.to(self.device_last)
 
             optimizer.zero_grad()
-            log_probs = self.auto_cache.infer_train(self.frozen_model, self.pipe_model, x, batch_idx, epoch)
+            log_probs = self.auto_cache.infer_train(self.frozen_model, self.pipe_model, epoch, batch_idx, sample_index_list, x)
 
             loss = criterion(log_probs, target)
             loss.backward()
@@ -183,16 +190,17 @@ class VisionTransformerTrainer:
         criterion = nn.CrossEntropyLoss()
         iteration_num = 0
         with torch.no_grad():
-            for batch_idx, (x, target) in enumerate(test_data):
-                logging.info("evaluation - batch index = %d/%d" % (batch_idx, len(test_data)))
+            for batch_idx, (sample_index_list, x, target) in enumerate(test_data):
+                logging.info("(%s)evaluation - batch index = %d/%d" % (str(is_train), batch_idx, len(test_data)-1))
                 iteration_num += 1
+                sample_index_list = sample_index_list.cpu().numpy()
                 x = x.to(self.device_first)
                 target = target.to(self.device_last)
 
                 if is_train:
-                    log_probs = self.auto_cache.infer_train(self.frozen_model, self.pipe_model, x, batch_idx, epoch)
+                    log_probs = self.auto_cache.infer_train(self.frozen_model, self.pipe_model, epoch, batch_idx, sample_index_list, x)
                 else:
-                    log_probs = self.auto_cache.infer_test(self.frozen_model, self.pipe_model, x, batch_idx, epoch)
+                    log_probs = self.auto_cache.infer_test(self.frozen_model, self.pipe_model, epoch, batch_idx, sample_index_list, x)
 
                 loss = criterion(log_probs, target)
                 _, predicted = torch.max(log_probs, -1)

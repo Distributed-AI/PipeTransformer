@@ -16,6 +16,7 @@ class AutoDataParallel:
 
     def __init__(self, args):
         self.args = args
+        self.num_nodes = args.nnodes
         self.local_rank = -1
         self.global_rank = -1
         self.world_size = -1
@@ -84,6 +85,18 @@ class AutoDataParallel:
 
     def get_active_world_size(self):
         return len(self.active_ranks)
+
+    def get_global_data_rank(self):
+        self.update_active_ranks()
+        logging.info("self.active_data_ranks = " + str(self.active_data_ranks))
+        return self.active_data_ranks[self.global_rank]
+
+    def get_global_data_duplicate_num(self):
+        self.update_active_ranks()
+        return len(self.active_data_ranks)
+
+    def get_local_data_duplicate_num(self):
+        return int(len(self.active_ranks)/self.num_nodes)
 
     def init_rpc(self):
         rpc_backend_options = TensorPipeRpcBackendOptions()
@@ -176,15 +189,6 @@ class AutoDataParallel:
 
     def get_freeze_point(self):
         return self.freeze_point
-
-    def get_data_rank(self):
-        self.update_active_ranks()
-        logging.info("self.active_data_ranks = " + str(self.active_data_ranks))
-        return self.active_data_ranks[self.global_rank]
-
-    def get_data_duplicate_num(self):
-        self.update_active_ranks()
-        return len(self.active_data_ranks)
 
     def transform(self, auto_pipe, auto_freeze, frozen_model, pipe_model, num_frozen_layers, freeze_point):
         self.freeze_point = freeze_point

@@ -8,27 +8,71 @@ import torch
 import torch.multiprocessing as mp
 
 from cache.cache_msg import Message
+from cache.disk_memory_manager import DiskMemoryManager
+from cache.shared_memory_manager import SharedMemoryManager
 
 
-class CacheProcessManager:
-    def __init__(self, cache_path, chunk_size, data_dict, msg_q):
-        self.cache_path = cache_path
-        self.chunk_size = chunk_size
-        self.data_dict = data_dict
+class CacheDaemon(mp.Process):
+    def __init__(self, msg_q):
+        super().__init__()
         self.msg_q = msg_q
+        self.shared_memory_mgr = SharedMemoryManager("hidden_feature")
+        self.disk_memory_mgr = DiskMemoryManager("hidden_feature")
 
-    def start_process(self):
-        self.disk_storage_process = mp.Process(target=self.disk_cache_process_impl,
-                                               args=(self.cache_path, self.chunk_size, self.data_dict, self.msg_q))
-        self.disk_storage_process.daemon = True
-        self.disk_storage_process.start()
+        self.epoch = 0
+        self.train_sample_index = []
+        self.test_sample_index = []
 
-    def destory_process(self):
-        self.disk_storage_process.join()
-        self.disk_storage_process.terminate()
-        self.clear_all_cache_files(self.cache_path, self.chunk_size)
+    def run(self) -> None:
+        while True:
+            message = self.msg_q.get()
+            msg_type = message.get_type()
+            if msg_type == Message.MSG_TYPE_TRAINING_PROGRESS:
+                logging.info("Message.MSG_TYPE_TRAINING_PROGRESS")
+                epoch = message.get(Message.MSG_KEY_EPOCH)
+                batch_idx = message.get(Message.MSG_KEY_BATCH_INDEX)
+                sample_index_list_to_disk, \
+                sample_index_list_to_memory = self._determine_sample_location_with_slding_window(epoch, batch_idx)
+                self._move_shared_memory_to_disk(sample_index_list_to_disk)
+                self._move_disk_memory_to_shared_memory(sample_index_list_to_memory)
 
-    def disk_cache_process_impl(self, cache_path, chunk_size, data_dict, msg_q):
+            elif msg_type == Message.MSG_TYPE_UPDATE_INDEX:
+                logging.info("Message.MSG_TYPE_UPDATE_INDEX")
+                self.epoch = message.get(Message.MSG_KEY_EPOCH)
+                self.train_sample_index = message.get(Message.MSG_KEY_TRAIN_SAMPLE_INDEX)
+                self.test_sample_index = message.get(Message.MSG_KEY_TRAIN_SAMPLE_INDEX)
+                # logging.info(self.train_sample_index)
+                # logging.info(self.test_sample_index)
+
+            elif msg_type == Message.MSG_TYPE_RESET:
+                logging.info("Message.MSG_TYPE_RESET")
+                self._delete_all_cache()
+            else:
+                raise Exception("no such message")
+            logging.info("subprocess is running")
+
+    def _determine_sample_location_with_slding_window(self, epoch, current_batch_idx):
+        sample_index_list_to_disk = []
+        sample_index_list_to_memory = []
+        return sample_index_list_to_disk, sample_index_list_to_memory
+
+    def _calculate_num_of_sample_in_shared_memory(self, available_host_memory, hidden_feature_size):
+        pass
+
+    def _calculate_num_of_sample_in_disk_memory(self, available_disk_memory, hidden_feature_size):
+        pass
+
+    def _move_shared_memory_to_disk(self, sample_index_list_to_disk):
+        pass
+
+    def _move_disk_memory_to_shared_memory(self, sample_index_list_to_memory):
+        pass
+
+    def _delete_all_cache(self):
+        pass
+
+
+    def disk_cache_process_impl(self, msg_q):
         host_memory_window_len = -1
         chunk_idx_starting_disk_cache = -1
         chunk_idx_starting_recompute = -1
@@ -245,7 +289,3 @@ class CacheProcessManager:
             for idx in range(disk_start_chunk, disk_end_chunk):
                 chunk_index_list_to_in_disk.append(idx)
         return chunk_index_list_to_in_disk, chunk_index_list_to_in_memory
-
-
-if __name__ == '__main__':
-    cache_process_manager = CacheProcessManager()

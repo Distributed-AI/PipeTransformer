@@ -1,3 +1,5 @@
+import logging
+import math
 import os
 import os.path
 
@@ -80,7 +82,8 @@ def default_loader(path):
 
 class ImageNet(data.Dataset):
 
-    def __init__(self, data_dir, dataidxs=None, train=True, transform=None, target_transform=None, download=False):
+    def __init__(self, data_dir, node_num=0, node_rank=-1,
+                 dataidxs=None, train=True, transform=None, target_transform=None, download=False):
         """
             Generating this class too many times will be time-consuming.
             So it will be better calling this once and put it into ImageNet_truncated.
@@ -107,6 +110,23 @@ class ImageNet(data.Dataset):
             for idxs in dataidxs:
                 (begin, end) = self.net_dataidx_map[idxs]
                 self.local_data += self.all_data[begin: end]
+
+        # for PipeTransformer
+        if node_num > 0 and node_rank >= 0:
+            data_len = len(self.local_data)
+            if data_len % node_num > 0:
+                subset_len = math.ceil(data_len / node_num)
+                even_len = subset_len * node_num
+                self.local_data += self.local_data[:even_len - data_len]
+                starting_idx = subset_len * node_rank
+                end_idx = subset_len * (node_rank + 1)
+                # logging.info("data_len = %d, node_num = %d" % (len(self.local_data), node_num))
+                # raise Exception("dataset cannot be partitioned to equal length!")
+            else:
+                subset_len = int(data_len / node_num)
+                starting_idx = subset_len * node_rank
+                end_idx = subset_len * (node_rank + 1)
+            self.local_data = self.local_data[starting_idx:end_idx]
 
     def get_local_data(self):
         return self.local_data
@@ -152,50 +172,3 @@ class ImageNet(data.Dataset):
     def __len__(self):
         return len(self.local_data)
 
-
-class ImageNet_truncated(data.Dataset):
-
-    def __init__(self, imagenet_dataset: ImageNet, dataidxs, net_dataidx_map, train=True, transform=None,
-                 target_transform=None, download=False):
-
-        self.dataidxs = dataidxs
-        self.train = train
-        self.transform = transform
-        self.target_transform = target_transform
-        self.download = download
-        self.net_dataidx_map = net_dataidx_map
-        self.loader = default_loader
-        self.all_data = imagenet_dataset.get_local_data()
-        if dataidxs == None:
-            self.local_data = self.all_data
-        elif type(dataidxs) == int:
-            (begin, end) = self.net_dataidx_map[dataidxs]
-            self.local_data = self.all_data[begin: end]
-        else:
-            self.local_data = []
-            for idxs in dataidxs:
-                (begin, end) = self.net_dataidx_map[idxs]
-                self.local_data += self.all_data[begin: end]
-
-    def __getitem__(self, index):
-        """
-        Args:
-            index (int): Index
-
-        Returns:
-            tuple: (image, target) where target is index of the target class.
-        """
-        # img, target = self.data[index], self.target[index]
-
-        path, target = self.local_data[index]
-        img = self.loader(path)
-        if self.transform is not None:
-            img = self.transform(img)
-
-        if self.target_transform is not None:
-            target = self.target_transform(target)
-
-        return index, img, target
-
-    def __len__(self):
-        return len(self.local_data)

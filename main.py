@@ -8,7 +8,7 @@ import psutil
 import wandb
 
 from cache.auto_cache import AutoCache
-from data_preprocessing.data_loader import CVDatasetManager
+from data_preprocessing.cv_data_manager import CVDatasetManager
 from dp.auto_dp import AutoDataParallel
 from freeze.auto_freeze import AutoFreeze
 from model.vit.vision_transformer_origin import CONFIGS
@@ -20,6 +20,10 @@ from trainer import VisionTransformerTrainer
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(
         description="PipeTransformer: Elastic and Automated Pipelining for Fast Distributed Training of Transformer Models")
+    parser.add_argument("--nnodes", type=int, default=2)
+
+    parser.add_argument("--nproc_per_node", type=int, default=8)
+
     parser.add_argument("--node_rank", type=int, default=0)
 
     parser.add_argument("--local_rank", type=int, default=0)
@@ -64,7 +68,7 @@ if __name__ == "__main__":
     parser.add_argument('--epochs', type=int, default=10, metavar='EP',
                         help='how many epochs will be trained locally')
 
-    parser.add_argument("--freq_eval_train_acc", default=4, type=int)
+    parser.add_argument("--freq_eval_train_acc", default=1, type=int)
 
     parser.add_argument("--freq_eval_test_acc", default=1, type=int)
 
@@ -117,7 +121,7 @@ if __name__ == "__main__":
 
     # create dataset
     cv_data_manager = CVDatasetManager(args)
-    train_dataset, test_dataset, output_dim = cv_data_manager.get_data(args, args.dataset)
+    output_dim = cv_data_manager.get_output_dim()
 
     # create model
     model_type = 'vit-B_16'
@@ -125,6 +129,8 @@ if __name__ == "__main__":
     # model_type = 'vit-H_14'
     config = CONFIGS[model_type]
     args.num_layer = config.transformer.num_layers
+    args.transformer_hidden_size = config.hidden_size
+    args.seq_len = 197
 
     logging.info("Vision Transformer Configuration: " + str(config))
     model = VisionTransformer(config, args.img_size, zero_head=True, num_classes=output_dim, vis=False)
@@ -149,7 +155,7 @@ if __name__ == "__main__":
                                 output_head, args.pipe_len_at_the_beginning, num_layers)
 
     # create FP cache with CPU memory
-    auto_cache = AutoCache(auto_dp, auto_pipe, model.get_hidden_feature_size() * args.batch_size)
+    auto_cache = AutoCache(args, auto_dp, auto_pipe, cv_data_manager, model.get_hidden_feature_size() * args.batch_size)
     if args.do_cache:
         auto_cache.enable()
     else:
@@ -158,7 +164,8 @@ if __name__ == "__main__":
     # start training
     freeze_point = dict()
     freeze_point['epoch'] = 0
-    frozen_model, pipe_model, is_pipe_len_changed, is_frozen_layer_changed = auto_dp.transform(auto_pipe, auto_freeze, None, model,
+    frozen_model, pipe_model, is_pipe_len_changed, is_frozen_layer_changed = auto_dp.transform(auto_pipe, auto_freeze,
+                                                                                               None, model,
                                                                                                0, freeze_point)
     freeze_point = auto_dp.get_freeze_point()
 

@@ -53,6 +53,32 @@ Using a Wrapper model to help DDP find find Tensors inside RRef.
 """
 
 
+class FrozenLayer(nn.Module):
+    def __init__(self, num_frozen_layer, frozen_emb, frozen_layer_list):
+        super().__init__()
+        self.num_frozen_layer = num_frozen_layer
+        self.embedding = frozen_emb
+        self.layers = nn.ModuleList()
+        for layer_i in range(num_frozen_layer):
+            self.layers.append(frozen_layer_list[layer_i])
+
+    def forward(self, x, layer_id=0):
+        if layer_id == self.num_frozen_layer:
+            logging.info("no need to recompute")
+            return x
+        if layer_id == 0:
+            logging.info("compute from layer 0")
+            x = self.embedding(x)
+            for layer_id in range(layer_id, self.num_frozen_layer):
+                x = self.layers[layer_id](x)
+            return x
+        else:
+            logging.info("compute from layer %d-%d" % (layer_id, self.num_frozen_layer-1))
+            for layer_id in range(layer_id, self.num_frozen_layer):
+                x = self.layers[layer_id](x)
+            return x
+
+
 class PipeModelWrapper(nn.Module):
     def __init__(self, pipe_model):
         super().__init__()
@@ -83,23 +109,25 @@ def create_pipe_styled_model(model_backbone, output_model, num_layer_in_total, n
     parameters_list_pipe = []
 
     if num_frozen_layer > 0:
-        frozen_model = nn.Sequential()
         for param in model_backbone.transformer.embeddings.parameters():
             param.requires_grad = False
-        frozen_model.add_module("embedding", model_backbone.transformer.embeddings)
+
+        frozen_emb = model_backbone.transformer.embeddings
 
         size_embedding = count_parameters(model_backbone.transformer.embeddings, False)
         parameters_size_frozen += size_embedding
 
+        frozen_layer_list = nn.ModuleList()
         for frozen_layer_index in range(num_frozen_layer):
             layer_block = model_backbone.transformer.encoder.layer[frozen_layer_index]
             for param in layer_block.parameters():
                 param.requires_grad = False
-            frozen_model.add_module("transformer_block_" + str(frozen_layer_index), layer_block)
+            frozen_layer_list.append(layer_block)
 
             size_layer_block = count_parameters(layer_block, False)
             parameters_size_frozen += size_layer_block
 
+        frozen_model = FrozenLayer(num_frozen_layer, frozen_emb, frozen_layer_list)
     else:
         pipe_model.add_module("embedding", model_backbone.transformer.embeddings)
         size_embedding = count_parameters(model_backbone.transformer.embeddings, False)
