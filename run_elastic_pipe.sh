@@ -20,6 +20,9 @@ python -m torch.distributed.launch \
 --master_addr $MASTER_ADDR \
 --master_port $MASTER_PORT \
 main.py \
+--nnodes $NNODE \
+--nproc_per_node=$NPROC_PER_NODE \
+--node_rank $NODE_RANK \
 --is_infiniband $IB \
 --master_addr $MASTER_ADDR \
 --if_name $IF_NAME \

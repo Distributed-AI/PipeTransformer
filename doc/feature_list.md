@@ -33,6 +33,7 @@ Overlap frozen bp and pipe bubble are suitable for the time when the fp time in 
 (2) Single Machine, Multiple GPUs
 (3) Multiple Machines, Multiple GPUs
 
+(***) 8. What if we freeze randomly, does the system design still work?
 
 
 # Machine Learning-wise Optimization

@@ -4,8 +4,8 @@
 
 1.create conda environment
 ```
-conda create --name pipe_distributed python=3.7.4
-conda activate pipe_distributed
+conda create -n pipe_transformer python=3.8.0
+conda activate pipe_transformer
 ```
 
 2.install the latest nightly Pytorch, in which DPipe (torchpipe) is supported.
@@ -13,8 +13,7 @@ conda activate pipe_distributed
 ```
 torch.__version__
 '1.8.0.dev20201219
-conda install pytorch==1.8.0.dev20201219 torchvision torchaudio cudatoolkit=10.2 -c pytorch-nightly
-
+conda install pytorch torchvision torchaudio cudatoolkit=10.2 -c pytorch
 
 ```
 
