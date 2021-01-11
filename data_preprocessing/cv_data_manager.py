@@ -210,7 +210,8 @@ class CVDatasetManager:
                                        sampler=self.train_sampler,
                                        batch_size=batch_size,
                                        num_workers=0,
-                                       pin_memory=True)
+                                       pin_memory=True,
+                                       drop_last=True)
 
         if self.test_loader is not None:
             del self.test_loader
@@ -218,7 +219,8 @@ class CVDatasetManager:
                                       sampler=self.test_sampler,
                                       batch_size=batch_size,
                                       num_workers=0,
-                                      pin_memory=True)
+                                      pin_memory=True,
+                                      drop_last=True)
         return self.train_loader, self.test_loader
 
     def get_data_loader(self, batch_size, num_replicas, global_rank):
@@ -375,11 +377,11 @@ def test_single_worker():
 def test_distributed():
     args.epochs = 10
     args.img_size = 224
-    args.dataset = "imagenet"
-    args.data_dir = "/home/chaoyanghe/sourcecode/dataset/cv/ImageNet"
-    # args.dataset = "cifar10"
-    # args.data_dir = "./data/cifar10"
-    args.batch_size = 500
+    # args.dataset = "imagenet"
+    # args.data_dir = "/home/chaoyanghe/sourcecode/dataset/cv/ImageNet"
+    args.dataset = "cifar10"
+    args.data_dir = "./data/cifar10"
+    args.batch_size = 60
     data_manager = CVDatasetManager(args)
 
     data_manager.set_seed(data_manager.seeds[0])
@@ -396,7 +398,7 @@ def test_distributed():
     # (global_rank=0, local_rank=1, nnodes=2, node_rank=0, nproc_per_node=8)
     logging.info("len of train_indices_dataloader = %d" % len(train_indices_dataloader))
     ending_time = time.time()
-    logging.info(data_manager.get_train_sample_index(0))
+    # logging.info(data_manager.get_train_sample_index(0))
     logging.info("time cost = " + str(ending_time - starting_time))
     return
 
@@ -443,13 +445,13 @@ def test_distributed():
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(
         description="PipeTransformer: Elastic and Automated Pipelining for Fast Distributed Training of Transformer Models")
-    parser.add_argument("--nnodes", type=int, default=2)
+    parser.add_argument("--nnodes", type=int, default=1)
 
-    parser.add_argument("--nproc_per_node", type=int, default=8)
+    parser.add_argument("--nproc_per_node", type=int, default=4)
 
     parser.add_argument("--node_rank", type=int, default=0)
 
-    parser.add_argument("--local_rank", type=int, default=1)
+    parser.add_argument("--local_rank", type=int, default=0)
 
     parser.add_argument("--global_rank", type=int, default=0)
 

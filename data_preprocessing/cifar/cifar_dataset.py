@@ -53,6 +53,7 @@ class CIFAR10(VisionDataset):
     def __init__(
             self,
             root: str,
+            batch_size=2,
             node_num=0,
             node_rank=-1,
             train: bool = True,
@@ -106,15 +107,19 @@ class CIFAR10(VisionDataset):
                 self.targets += self.targets[:even_len - data_len]
                 starting_idx = subset_len * node_rank
                 end_idx = subset_len * (node_rank + 1)
-                # logging.info("data_len = %d, node_num = %d" % (len(self.local_data), node_num))
-                # raise Exception("dataset cannot be partitioned to equal length!")
             else:
                 subset_len = int(data_len / node_num)
                 starting_idx = subset_len * node_rank
                 end_idx = subset_len * (node_rank + 1)
             self.data = self.data[starting_idx:end_idx]
             self.targets = self.targets[starting_idx:end_idx]
-
+        # drop last = False
+        data_len = len(self.data)
+        if data_len % batch_size > 0:
+            subset_len = math.ceil(data_len / batch_size)
+            even_len = subset_len * node_num
+            self.data += self.data[:even_len - data_len]
+            self.targets += self.targets[:even_len - data_len]
         self._load_meta()
 
     def _load_meta(self) -> None:
