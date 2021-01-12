@@ -1,10 +1,5 @@
 import logging
-import os
-import os.path
-import pickle
-from os import path
 
-import torch
 import torch.multiprocessing as mp
 
 from cache.cache_msg import Message
@@ -68,7 +63,14 @@ class CacheDaemon(mp.Process):
         for sample_uid in batch_sample_idx:
             # [197, 768]
             sample = hidden_feature[sample_idx_in_batch, :, :]
+            self.shared_memory_msg_layer_id.set_int_value(sample_uid, num_frozen_layer)
             self.shared_memory_mgr_hidden_feature.add_tensor(sample_uid, num_frozen_layer, sample)
+            sample_idx_in_batch += 1
+
+    def _delete_a_cached_batch(self, batch_sample_idx, num_frozen_layer):
+        sample_idx_in_batch = 0
+        for sample_uid in batch_sample_idx:
+            self.shared_memory_mgr_hidden_feature.delete_tensor(sample_uid, num_frozen_layer)
             self.shared_memory_msg_layer_id.set_int_value(sample_uid, num_frozen_layer)
             sample_idx_in_batch += 1
 
