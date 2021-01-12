@@ -32,7 +32,11 @@ class CacheDaemon(mp.Process):
                 batch_sample_idx = message.get(Message.MSG_KEY_BATCH_SAMPLE_INDEX)
                 hidden_feature = message.get(Message.MSG_KEY_HIDDEN_FEATURE)
                 num_frozen_layer = message.get(Message.MSG_KEY_NUM_FROZEN_LAYER)
+
+                # add new tensor to cache, and delete the old ones
                 self._cache_a_batch_sample(batch_sample_idx, hidden_feature, num_frozen_layer)
+                self._delete_a_cached_batch(batch_sample_idx, num_frozen_layer)
+
                 sample_index_list_to_disk, \
                 sample_index_list_to_memory = self._determine_sample_location_with_slding_window(epoch, batch_idx)
                 self._move_shared_memory_to_disk(sample_index_list_to_disk)
