@@ -155,7 +155,7 @@ if __name__ == "__main__":
     logging.info("num_layers = %d" % num_layers)
 
     # create AutoFreeze algorithm
-    auto_freeze = AutoFreeze()
+    auto_freeze = AutoFreeze(args)
     auto_freeze.enable(args.b_freeze)
 
     # create pipe and DDP
