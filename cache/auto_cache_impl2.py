@@ -158,6 +158,7 @@ class AutoCacheImpl2:
         for sample_uid in batch_sample_idx:
             if not self.shared_memory_msg_layer_id.is_exist(sample_uid):
                 return None, None
+            layer_id = self.shared_memory_msg_layer_id.get_int_value(sample_uid)
             cache_hidden_feature = self.shared_memory_mgr_hidden_feature.get_tensor(sample_uid, layer_id)
             if cache_hidden_feature is None:
                 return None, None
