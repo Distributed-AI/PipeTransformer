@@ -115,8 +115,6 @@ class AutoCacheImpl2:
         # cache epoch-num_frozen_layer pair
         if not self.shared_memory_msg_layer_id.is_exist(epoch):
             self.shared_memory_msg_layer_id.add_int_value(epoch, num_frozen_layer)
-        else:
-            self.shared_memory_msg_layer_id.set_int_value(epoch, num_frozen_layer)
 
         hidden_feature, layer_id = self._get_a_cached_batch_sample(epoch - 1, batch_sample_idx)
         if layer_id is not None and hidden_feature is not None:
@@ -126,9 +124,10 @@ class AutoCacheImpl2:
                              self.args.global_rank, layer_id - 1, layer_id, num_frozen_layer))
             if self.args.is_debug_mode:
                 self._check_the_tensor_during_debug_mode(model, x, batch_idx, hidden_feature, layer_id, device)
-            hidden_feature = model(hidden_feature.to(device), layer_id).detach().cpu()
+            if layer_id != num_frozen_layer:
+                hidden_feature = model(hidden_feature.to(device), layer_id).detach().cpu()
 
-            self._send_to_daemon_for_cache(epoch, batch_idx, batch_sample_idx, hidden_feature, layer_id, num_frozen_layer)
+                self._send_to_daemon_for_cache(epoch, batch_idx, batch_sample_idx, hidden_feature, layer_id, num_frozen_layer)
             logging.info("(global_rank = %d) copy from shared memory END" % self.args.global_rank)
         else:
             logging.info(

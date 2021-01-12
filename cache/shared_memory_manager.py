@@ -74,4 +74,4 @@ class SharedMemoryManager:
             self.delete_tensor(sample_uid)
 
     def _build_tensor_memory_name(self, sample_uid, layer_id):
-        return self.name + "_tensor_" + str(layer_id) + str(sample_uid)
+        return self.name + "_tensor_" + str(layer_id) + "_" + str(sample_uid)
