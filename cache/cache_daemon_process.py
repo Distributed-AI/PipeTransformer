@@ -13,10 +13,10 @@ from cache.shared_memory_manager import SharedMemoryManager
 
 
 class CacheDaemon(mp.Process):
-    def __init__(self, msg_q):
+    def __init__(self, args, msg_q):
         super().__init__()
         self.msg_q = msg_q
-        self.shared_memory_mgr = SharedMemoryManager("hidden_feature")
+        self.shared_memory_mgr = SharedMemoryManager(args, "hidden_feature")
         self.disk_memory_mgr = DiskMemoryManager("hidden_feature")
 
         self.epoch = 0

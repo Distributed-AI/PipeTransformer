@@ -84,7 +84,7 @@ class AutoCacheImplWithHostMem:
 
         self.msg_q = mp.Queue()
 
-        self.cache_daemon = CacheDaemon(self.msg_q)
+        self.cache_daemon = CacheDaemon(args, self.msg_q)
         self.cache_daemon.daemon = True
         self.cache_daemon.start()
 

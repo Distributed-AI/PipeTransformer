@@ -91,7 +91,7 @@ if __name__ == "__main__":
     parser.add_argument("--do_cache", default=1, type=int,
                         help="do cache")
 
-    parser.add_argument("--is_debug_mode", default=0, type=int,
+    parser.add_argument("--is_debug_mode", default=1, type=int,
                         help="is_debug_mode")
 
     args = parser.parse_args()
@@ -112,6 +112,7 @@ if __name__ == "__main__":
     auto_dp = AutoDataParallel(args)
     auto_dp.init_ddp(args)
     auto_dp.init_rpc()
+    auto_dp.enable_new_pipe(False)
     args.global_rank = auto_dp.get_global_rank()
 
     if args.global_rank == 0:

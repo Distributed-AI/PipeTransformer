@@ -1,5 +1,6 @@
 import argparse
 import logging
+import math
 import shutil
 import time
 
@@ -7,10 +8,9 @@ import numpy
 import psutil
 import torch
 import torch.multiprocessing as mp
-
+import wandb
 from cache.cache_daemon_process import CacheDaemon
 from cache.cache_msg import Message
-from cache.shared_memory_dict.shared_memory_dict import SharedMemoryDict
 from cache.shared_memory_manager import SharedMemoryManager
 from cache.shared_memory_manager_int_value import SharedMemoryManagerIntValue
 from data_preprocessing.cv_data_manager import CVDatasetManager
@@ -73,8 +73,7 @@ Traceback (most recent call last):
 OverflowError: cannot serialize a bytes object larger than 4 GiB
 """
 
-
-class AutoCacheImpl:
+class AutoCacheImpl2:
 
     def __init__(self, args, data_manager):
         self.args = args
@@ -90,10 +89,12 @@ class AutoCacheImpl:
         self.cache_daemon.daemon = True
         self.cache_daemon.start()
 
+        # TODO: self.sample_uid_to_feature_dict = dict()
+        # self.sample_uid_to_layer_id_dict = dict()
         self.shared_memory_mgr_hidden_feature = SharedMemoryManager(self.args, "hidden_feature")
         self.shared_memory_msg_layer_id = SharedMemoryManagerIntValue(self.args, "layer_id")
+
         self.dtype = None
-        self.count_mismatch = 0
 
     def reset_status(self, epoch):
         train_sample_index = self.data_manager.get_train_sample_index(epoch)
@@ -105,11 +106,11 @@ class AutoCacheImpl:
         self.msg_q.put(msg)
 
     def get_hidden_feature(self, num_frozen_layer, model, epoch, batch_idx, batch_sample_idx, x, device):
-        logging.info("(global_rank = %d) get_hidden_feature. epoch = %d, batch_idx = %d, batch_sample_idx = %s" % (
-        self.args.global_rank, epoch, batch_idx, str(batch_sample_idx)))
+        logging.info("(global_rank = %d) get_hidden_feature. epoch = %d, batch_idx = %d, batch_sample_idx = %s" % (self.args.global_rank, epoch, batch_idx, str("")))
 
+        b_is_batch_cached = True
+        layer_id = 0
         if self._is_batch_in_cache(batch_sample_idx):
-            layer_id = 0
             logging.info("(global_rank = %d) copy from shared memory START" % self.args.global_rank)
 
             sample_idx_in_batch = 0
@@ -117,52 +118,36 @@ class AutoCacheImpl:
                 [self.args.batch_size, self.args.seq_len, self.args.transformer_hidden_size],
                 dtype=self.dtype
             )
-            if len(batch_sample_idx) != self.args.batch_size:
-                raise Exception("batch size does not match")
             for sample_uid in batch_sample_idx:
+                # TODO: cache_hidden_feature = self.sample_uid_to_feature_dict[sample_uid]
+                # layer_id = self.sample_uid_to_layer_id_dict[sample_uid]
                 cache_hidden_feature = self.shared_memory_mgr_hidden_feature.get_tensor(sample_uid, hidden_tensor_np.dtype)
-                hidden_tensor_np[sample_idx_in_batch] = cache_hidden_feature[:]
                 layer_id = self.shared_memory_msg_layer_id.get_int_value(sample_uid)
+
+                hidden_tensor_np[sample_idx_in_batch] = cache_hidden_feature[:]
                 sample_idx_in_batch += 1
             if hidden_tensor_np is not None:
                 hidden_feature = torch.from_numpy(hidden_tensor_np).cpu()
+        else:
+            b_is_batch_cached = False
 
+        if b_is_batch_cached:
             logging.info("(global_rank = %d) get_hidden_feature. NO need to compute FP (layer 0-%d), "
                          "only compute FP (layer %d-%d), get from shared memory" % (
-                             self.args.global_rank, layer_id - 1, layer_id, num_frozen_layer))
+                         self.args.global_rank, layer_id - 1, layer_id, num_frozen_layer))
             logging.info("(global_rank = %d) copy from shared memory END" % self.args.global_rank)
             if layer_id != num_frozen_layer:
                 with torch.no_grad():
                     hidden_feature_without_cache = model(x).detach().cpu()
-                    hidden_feature_output = model(hidden_feature.to(device), layer_id).detach().cpu()
-                    if not torch.equal(hidden_feature_without_cache, hidden_feature_output):
-                        logging.info(hidden_feature_without_cache.shape)
-                        logging.info(hidden_feature_without_cache.type())
-                        # logging.info(hidden_feature_without_cache)
-                        logging.info(hidden_feature.shape)
-                        logging.info(hidden_feature.type())
-                        # logging.info(hidden_feature)
-                        # eq = torch.eq(hidden_feature_without_cache, hidden_feature)
-                        # for element in eq:
-                        #     for el in element:
-                        #         logging.info(el)
-                        logging.info(batch_sample_idx)
-                        logging.info(torch.allclose(hidden_feature_without_cache, hidden_feature))
-
-                        self.count_mismatch += 1
-                        logging.info("---global_rank = %d----batch_idx = %d ---------------count_mismatch = %d------"
-                                     "---------------------------------"
-                                     "-" % (self.args.global_rank, batch_idx, self.count_mismatch))
-                        raise Exception(
-                            "global_rank = %d. not equal with inference from layer 0" % self.args.global_rank)
-
+                    hidden_feature = model(hidden_feature.to(device), layer_id).detach().cpu()
+                    if not torch.equal(hidden_feature_without_cache, hidden_feature):
+                        raise Exception("not equal with inference from layer 0")
                     else:
                         logging.info("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$")
                 self._cache_a_batch_sample(batch_sample_idx, hidden_feature, num_frozen_layer)
                 logging.info("(global_rank = %d) update shared memory END" % self.args.global_rank)
         else:
-            logging.info(
-                "(global_rank = %d) get_hidden_feature. cache to shared memory (START)" % self.args.global_rank)
+            logging.info("(global_rank = %d) get_hidden_feature. cache to shared memory (START)" % self.args.global_rank)
             # [60, 197, 768]
             with torch.no_grad():
                 hidden_feature = model(x).detach().cpu()
@@ -170,12 +155,15 @@ class AutoCacheImpl:
                     self.dtype = hidden_feature.numpy().dtype
             self._cache_a_batch_sample(batch_sample_idx, hidden_feature, num_frozen_layer)
             logging.info("(global_rank = %d) get_hidden_feature. cache to shared memory (END)" % self.args.global_rank)
+
+
         self._send_training_progress_to_daemon(epoch, batch_idx)
         return hidden_feature
 
     def _is_batch_in_cache(self, batch_sample_idx):
         for sample_uid in batch_sample_idx:
             if not self.shared_memory_mgr_hidden_feature.is_exist(sample_uid):
+            # TODO: if sample_uid not in self.sample_uid_to_feature_dict.keys():
                 return False
         return True
 
@@ -184,8 +172,11 @@ class AutoCacheImpl:
         for sample_uid in batch_sample_idx:
             # [197, 768]
             sample = hidden_feature[sample_idx_in_batch, :, :]
+            # TODO: self.sample_uid_to_feature_dict[sample_uid] = sample
+            # self.sample_uid_to_layer_id_dict[sample_uid] = num_frozen_layer
             self.shared_memory_mgr_hidden_feature.set_tensor(sample_uid, sample)
             self.shared_memory_msg_layer_id.set_int_value(sample_uid, num_frozen_layer)
+
             sample_idx_in_batch += 1
 
     def _send_training_progress_to_daemon(self, epoch, batch_idx):
@@ -242,6 +233,7 @@ class TestModel(torch.nn.Module):
     def forward(self, x):
         x = self.relu(self.net1(x))
         return self.net2(x)
+
 
 
 if __name__ == '__main__':

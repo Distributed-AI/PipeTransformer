@@ -1,37 +1,35 @@
 # https://docs.python.org/3/library/multiprocessing.shared_memory.html
 # https://pypi.org/project/shared-memory-dict/
-import copy
 import logging
 from multiprocessing.shared_memory import SharedMemory
 
 import numpy
 import numpy as np
-import torch
 
 from cache.shared_memory_dict.lock import lock
 
 
-class SharedMemoryManager:
+class SharedMemoryManagerIntValue:
     def __init__(self, args, name):
         self.args = args
         self.name = name
 
     @lock
-    def set_tensor(self, sample_uid, tensor):
-        shm_hidden_tensor_np = tensor.numpy()
-        tensor_name = self._build_tensor_memory_name(sample_uid)
-        tensor_size = 4 * self.args.seq_len * self.args.transformer_hidden_size
+    def set_int_value(self, sample_uid, int_value):
+        int_value_np = numpy.asarray(int_value)
+        int_name = self._build_layer_id_memory_name(sample_uid)
+        size = 4
         tensor_shm = self._get_or_create_memory_block(
-            name=tensor_name,
-            size=tensor_size
+            name=int_name,
+            size=size
         )
-        sharable_hidden_tensor = np.ndarray([self.args.seq_len, self.args.transformer_hidden_size], dtype=shm_hidden_tensor_np.dtype,
+        sharable_hidden_tensor = np.ndarray([1], dtype=numpy.int32,
                                             buffer=tensor_shm.buf)
-        sharable_hidden_tensor[:] = shm_hidden_tensor_np[:]
+        sharable_hidden_tensor[0] = int_value_np
 
     @lock
     def is_exist(self, sample_uid):
-        name = self._build_tensor_memory_name(sample_uid)
+        name = self._build_layer_id_memory_name(sample_uid)
         try:
             SharedMemory(name=name)
             return True
@@ -39,18 +37,25 @@ class SharedMemoryManager:
             return False
 
     @lock
-    def get_tensor(self, sample_uid, dtype):
-        name = self._build_tensor_memory_name(sample_uid)
+    def get_int_value(self, sample_uid):
+        int_value = -1
+        name = self._build_layer_id_memory_name(sample_uid)
         try:
             shm = SharedMemory(name=name)
         except FileNotFoundError:
-            raise Exception("get_tensor not found")
+            return None
         shm_hidden_tensor_np = np.ndarray(
-            [self.args.seq_len, self.args.transformer_hidden_size],
-            dtype=dtype,
+            [1],
+            dtype=numpy.int32,
             buffer=shm.buf
         )
-        return torch.from_numpy(copy.deepcopy(shm_hidden_tensor_np[:]))
+        try:
+            int_value = shm_hidden_tensor_np[0]
+        except IndexError:
+            self._delete_tensor(sample_uid)
+            logging.info("global_rank = %d, shm_hidden_tensor_np.size = %d" % (self.args.global_rank, shm_hidden_tensor_np.size))
+            raise Exception("_get_tensor error!")
+        return int_value
 
     @lock
     def delete(self, sample_uid):
@@ -58,7 +63,7 @@ class SharedMemoryManager:
 
     @lock
     def _delete_tensor(self, sample_uid):
-        name = self._build_tensor_memory_name(sample_uid)
+        name = self._build_layer_id_memory_name(sample_uid)
         try:
             shm = SharedMemory(name=name)
             shm.close()
@@ -76,5 +81,5 @@ class SharedMemoryManager:
             # logging.info("create new shared_memory")
             return SharedMemory(name=name, create=True, size=size)
 
-    def _build_tensor_memory_name(self, sample_uid):
-        return self.name + "_tensor_" + str(sample_uid)
+    def _build_layer_id_memory_name(self, sample_uid):
+        return self.name + "_layer_id_" + str(sample_uid)

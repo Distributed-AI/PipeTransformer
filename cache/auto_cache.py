@@ -3,6 +3,7 @@ import logging
 import torch
 
 from cache.auto_cache_impl import AutoCacheImpl
+from cache.auto_cache_impl2 import AutoCacheImpl2
 from cache.auto_cache_impl_with_host_mem import AutoCacheImplWithHostMem
 
 
@@ -17,8 +18,11 @@ class AutoCache:
         self.batch_num_test = 0
         self.hidden_feature_size = hidden_feature_size
 
-        self.cache_manager_train = AutoCacheImplWithHostMem(args, self.data_manager)
-        self.cache_manager_test = AutoCacheImplWithHostMem(args, self.data_manager)
+        # self.cache_manager_train = AutoCacheImplWithHostMem(args, self.data_manager)
+        # self.cache_manager_test = AutoCacheImplWithHostMem(args, self.data_manager)
+
+        self.cache_manager_train = AutoCacheImpl2(args, self.data_manager)
+        self.cache_manager_test = AutoCacheImpl2(args, self.data_manager)
 
         self.is_enable = False
 

@@ -36,6 +36,11 @@ class AutoDataParallel:
 
         self.comm_broadcast_group = None
 
+        self.enable_new_pipe = True
+
+    def enable_new_pipe(self, on):
+        self.enable_new_pipe = on
+
     def get_ddp_model(self, model, local_rank):
         return DDP(model, device_ids=[local_rank], output_device=local_rank)
 
@@ -223,6 +228,15 @@ class AutoDataParallel:
         if auto_pipe.get_num_frozen_layers() != num_frozen_layers:
             is_frozen_layer_changed = True
         frozen_model, pipe_model, pipe_len = auto_pipe.transform(num_frozen_layers)
+        if not self.enable_new_pipe:
+            self.compressed_pipe_len = pipe_len
+            # broadcast control messages
+            logging.info("####### broad cast control message (num_frozen_layers, pipe_len) to all processes #######")
+            self.clear_memory()
+            is_pipe_len_changed = True
+            pipe_model = self.generate_ddp_model(pipe_model, pipe_len)
+            return frozen_model, pipe_model, is_pipe_len_changed, is_frozen_layer_changed
+
         if self.compressed_pipe_len != pipe_len:
             self.compressed_pipe_len = pipe_len
             self.update_active_ranks()

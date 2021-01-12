@@ -59,6 +59,9 @@ class VisionTransformerTrainer:
             """
             self.auto_cache.update_sample_index(epoch)
 
+            # synchronize the parameters to all newly created pipes
+
+
         if is_frozen_layer_changed:
             self.auto_cache.update_num_frozen_layer(self.auto_pipe.get_num_frozen_layers())
 
@@ -75,9 +78,9 @@ class VisionTransformerTrainer:
                                                                                   self.pipe_model,
                                                                                   frozen_layer_idx,
                                                                                   new_freeze_point)
+
             new_freeze_point = self.auto_dp.get_freeze_point()
             self.update_data_and_cache(epoch, is_pipe_len_changed, is_frozen_layer_changed)
-
 
         criterion = nn.CrossEntropyLoss()
         optimizer, scheduler = self.build_optimizer(self.pipe_model)
@@ -100,6 +103,8 @@ class VisionTransformerTrainer:
 
             if batch_idx == 0:
                 starting_time = time.time()
+                self.pipe_model._sync_params()
+
             logging.info("--------------global_rank = %d. Epoch %d, batch index %d Statistics: " % (
                 self.auto_dp.get_global_rank(), epoch, batch_idx))
             logging.info("global_rank = %d. epoch = %d, batch index = %d/%d" % (
