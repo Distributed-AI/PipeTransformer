@@ -5,6 +5,8 @@ import logging
 import numpy as np
 import torch
 
+from cache.shared_memory_dict.shared_memory_dict import SharedMemoryDict
+from cache.shared_memory_manager import SharedMemoryManager
 from data_preprocessing.cv_data_manager import CVDatasetManager
 from model.vit.vision_transformer_origin import CONFIGS, VisionTransformer
 from pipe.pipe_model_builder import OutputHead
@@ -12,7 +14,8 @@ from utils import WarmupCosineSchedule, WarmupLinearSchedule
 
 
 class AutoFreeze:
-    def __init__(self):
+    def __init__(self, args):
+        self.args = args
         self.model = None
         self.num_freeze_layers = 0
         self.is_freeze = False
@@ -31,8 +34,7 @@ class AutoFreeze:
         self.last_grad_norm_by_layer = None
         self.percentile = 50
 
-        self.num_freeze_layers_per_epoch_dict = dict()
-        self.num_freeze_layers_per_epoch_dict[0] = 0
+        self.shared_memory_dict_frozen_layer_num = SharedMemoryDict("frozen_layer_num", 4)
 
     def update_status(self, num_freeze_layers, last_grad_norm_by_layer):
         logging.info("(%s) num_freeze_layers = %d, last_grad_norm_by_layer = %s" % (str(id(self)), num_freeze_layers, str(last_grad_norm_by_layer)))
@@ -61,11 +63,11 @@ class AutoFreeze:
             num_freeze_layers = 10
         elif epoch > 7:
             num_freeze_layers = 12
-        self.num_freeze_layers_per_epoch_dict[epoch] = num_freeze_layers
+        self.shared_memory_dict_frozen_layer_num[epoch] = num_freeze_layers
         return num_freeze_layers
 
     def get_num_of_frozen_layer(self, epoch):
-        return self.num_freeze_layers_per_epoch_dict[epoch]
+        return self.shared_memory_dict_frozen_layer_num[epoch]
 
     def accumulate(self, model):
         for layer_idx in range(self.num_layer):
@@ -143,7 +145,7 @@ class AutoFreeze:
                 return 0
             if frozen_layer_idx != -1:
                 self.num_freeze_layers = frozen_layer_idx + 1
-                self.num_freeze_layers_per_epoch_dict[epoch] = self.num_freeze_layers
+                self.shared_memory_dict_frozen_layer_num[epoch] = self.num_freeze_layers
         logging.info("epoch = %d, num_frozen_layer = %s" % (epoch, str(self.num_freeze_layers)))
         return self.num_freeze_layers
 

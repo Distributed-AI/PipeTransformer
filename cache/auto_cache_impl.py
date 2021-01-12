@@ -113,14 +113,12 @@ class AutoCacheImpl:
         hidden_feature = self._get_a_cached_batch_sample(num_frozen_layer_last_epoch, batch_sample_idx)
         if hidden_feature is not None:
             logging.info("(global_rank = %d) copy from shared memory START" % self.args.global_rank)
-            logging.info("(global_rank = %d) NO need to compute FP (layer 0-%d), "
-                         "only compute FP (layer %d-%d), get from shared memory" % (
-                             self.args.global_rank, num_frozen_layer_last_epoch - 1, num_frozen_layer_last_epoch,
-                             num_frozen_layer - 1))
             if self.args.is_debug_mode:
                 self._check_the_tensor_during_debug_mode(model, x, batch_idx, hidden_feature,
                                                          num_frozen_layer_last_epoch, device)
             if num_frozen_layer > num_frozen_layer_last_epoch:
+                logging.info("(global_rank = %d) NO need to compute FP (layer 0-%d), frozen layer number = %d" % (
+                                 self.args.global_rank, num_frozen_layer_last_epoch - 1, num_frozen_layer))
                 hidden_feature = model(hidden_feature.to(device), num_frozen_layer_last_epoch).detach().cpu()
                 self._send_to_daemon_for_cache(epoch, batch_idx, batch_sample_idx, hidden_feature,
                                                num_frozen_layer_last_epoch, num_frozen_layer)
