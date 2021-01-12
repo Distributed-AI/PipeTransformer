@@ -20,14 +20,12 @@ class AutoCache:
         # self.cache_manager_train = AutoCacheImplWithHostMem(args, self.data_manager)
         # self.cache_manager_test = AutoCacheImplWithHostMem(args, self.data_manager)
 
-        self.cache_manager_train = AutoCacheImpl(args, self.data_manager)
-        self.cache_manager_test = AutoCacheImpl(args, self.data_manager)
+        self.cache_manager = AutoCacheImpl(args, self.data_manager)
 
         self.is_enable = False
 
     def update_sample_index(self, epoch):
-        self.cache_manager_train.reset_status(epoch)
-        self.cache_manager_test.reset_status(epoch)
+        self.cache_manager.reset_status(epoch)
 
     def update_num_frozen_layer(self, num_frozen_layers):
         self.num_frozen_layers = num_frozen_layers
@@ -43,7 +41,7 @@ class AutoCache:
                 logging.debug("infer_train. batch_idx = %d" % batch_idx)
                 with torch.no_grad():
                     device_idx_start = self.auto_dp.get_local_rank() * self.auto_pipe.get_pipe_len()
-                    hidden_feature = self.cache_manager_train.get_hidden_feature(
+                    hidden_feature = self.cache_manager.get_hidden_feature(
                         self.auto_freeze.get_num_of_frozen_layer(epoch - 1 if epoch - 1 >= 0 else 0),
                         self.num_frozen_layers, frozen_model,
                         epoch, batch_idx, batch_sample_idx, x, device_idx_start
@@ -67,7 +65,7 @@ class AutoCache:
             if frozen_model is not None:
                 with torch.no_grad():
                     device_idx_start = self.auto_dp.get_local_rank() * self.auto_pipe.get_pipe_len()
-                    hidden_feature = self.cache_manager_test.get_hidden_feature(
+                    hidden_feature = self.cache_manager.get_hidden_feature(
                         self.auto_freeze.get_num_of_frozen_layer(epoch - 1 if epoch - 1 >= 0 else 0),
                         self.num_frozen_layers, frozen_model,
                         epoch, batch_idx, batch_sample_idx, x, device_idx_start
@@ -85,5 +83,4 @@ class AutoCache:
         return log_probs
 
     def cleanup(self):
-        self.cache_manager_train.cleanup()
-        self.cache_manager_test.cleanup()
+        self.cache_manager.cleanup()
