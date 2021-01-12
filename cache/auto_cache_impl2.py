@@ -115,7 +115,7 @@ class AutoCacheImpl2:
         hidden_feature, layer_id = self._get_a_batch_sample(batch_sample_idx)
         if layer_id is not None and hidden_feature is not None:
             logging.info("(global_rank = %d) copy from shared memory START" % self.args.global_rank)
-            logging.info("(global_rank = %d) get_hidden_feature. NO need to compute FP (layer 0-%d), "
+            logging.info("(global_rank = %d) NO need to compute FP (layer 0-%d), "
                          "only compute FP (layer %d-%d), get from shared memory" % (
                              self.args.global_rank, layer_id - 1, layer_id, num_frozen_layer))
             if self.args.is_debug_mode:
@@ -157,10 +157,12 @@ class AutoCacheImpl2:
         )
         for sample_uid in batch_sample_idx:
             if not self.shared_memory_msg_layer_id.is_exist(sample_uid):
+                logging.info("no layer id")
                 return None, None
             layer_id = self.shared_memory_msg_layer_id.get_int_value(sample_uid)
             cache_hidden_feature = self.shared_memory_mgr_hidden_feature.get_tensor(sample_uid, layer_id)
             if cache_hidden_feature is None:
+                logging.info("tensor is none")
                 return None, None
             hidden_tensor_np[sample_idx_in_batch] = copy.deepcopy(cache_hidden_feature)
             sample_idx_in_batch += 1
