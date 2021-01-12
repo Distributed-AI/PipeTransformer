@@ -40,11 +40,8 @@ class AutoFreeze:
     def get_status(self):
         return self.num_freeze_layers, self.last_grad_norm_by_layer
 
-    def do_freeze(self):
-        self.is_freeze = True
-
-    def do_not_freeze(self):
-        self.is_freeze = False
+    def enable(self, on):
+        self.is_freeze = on
 
     def is_freeze_open(self):
         return self.is_freeze

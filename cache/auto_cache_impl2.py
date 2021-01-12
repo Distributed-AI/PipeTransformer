@@ -105,10 +105,7 @@ class AutoCacheImpl2:
         self.msg_q.put(msg)
 
     def get_hidden_feature(self, num_frozen_layer, model, epoch, batch_idx, batch_sample_idx, x, device):
-        logging.info("(global_rank = %d) get_hidden_feature. epoch = %d, batch_idx = %d, batch_sample_idx = %s" % (self.args.global_rank, epoch, batch_idx, str(batch_sample_idx)))
-        logging.info("(global_rank = %d) x= %s" % (self.args.global_rank, str(x.shape)))
-
-        logging.info("self.count_mismatch = %d" % self.count_mismatch)
+        logging.info("(global_rank = %d) get_hidden_feature. epoch = %d, batch_idx = %d" % (self.args.global_rank, epoch, batch_idx))
 
         hidden_feature, layer_id = self._get_a_batch_sample(batch_sample_idx)
         if layer_id is not None and hidden_feature is not None:
@@ -116,21 +113,12 @@ class AutoCacheImpl2:
             logging.info("(global_rank = %d) get_hidden_feature. NO need to compute FP (layer 0-%d), "
                          "only compute FP (layer %d-%d), get from shared memory" % (
                              self.args.global_rank, layer_id - 1, layer_id, num_frozen_layer))
-            logging.info("(global_rank = %d) copy from shared memory END" % self.args.global_rank)
-            # check correctness
-            with torch.no_grad():
-                hidden_feature_without_cache = model(x).detach().cpu()
-                hidden_feature = model(hidden_feature.to(device), layer_id).detach().cpu()
-                if not torch.equal(hidden_feature_without_cache, hidden_feature):
-                    hidden_feature = hidden_feature_without_cache
-                    logging.info("(global_rank = %d, batch_idx = %d) tensor does not match" % (self.args.global_rank, batch_idx))
-                    self.count_mismatch += 1
-                    raise Exception("not equal with inference from layer 0")
-                else:
-                    logging.info("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$")
+            if self.args.is_debug_mode:
+                self._check_the_tensor_during_debug_mode(model, x, batch_idx, hidden_feature, layer_id, device)
+            hidden_feature = model(hidden_feature.to(device), layer_id).detach().cpu()
 
             self._send_to_daemon_for_cache(epoch, batch_idx, batch_sample_idx, hidden_feature, num_frozen_layer)
-            logging.info("(global_rank = %d) update shared memory END" % self.args.global_rank)
+            logging.info("(global_rank = %d) copy from shared memory END" % self.args.global_rank)
         else:
             logging.info(
                 "(global_rank = %d) get_hidden_feature. cache to shared memory (START)" % self.args.global_rank)
@@ -140,6 +128,20 @@ class AutoCacheImpl2:
             self._send_to_daemon_for_cache(epoch, batch_idx, batch_sample_idx, hidden_feature, num_frozen_layer)
             logging.info("(global_rank = %d) get_hidden_feature. cache to shared memory (END)" % self.args.global_rank)
         return hidden_feature
+
+    def _check_the_tensor_during_debug_mode(self, model, x, batch_idx, hidden_feature, layer_id, device):
+        # check correctness
+        with torch.no_grad():
+            hidden_feature_without_cache = model(x).detach().cpu()
+            hidden_feature = model(hidden_feature.to(device), layer_id).detach().cpu()
+            if not torch.equal(hidden_feature_without_cache, hidden_feature):
+                logging.info(
+                    "(global_rank = %d, batch_idx = %d) tensor does not match" % (self.args.global_rank, batch_idx))
+                self.count_mismatch += 1
+                logging.info("self.count_mismatch = %d" % self.count_mismatch)
+                raise Exception("not equal with inference from layer 0")
+            else:
+                logging.info("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$")
 
     def _get_a_batch_sample(self, batch_sample_idx):
         layer_id = 0

@@ -33,11 +33,8 @@ class AutoCache:
     def update_num_frozen_layer(self, num_frozen_layers):
         self.num_frozen_layers = num_frozen_layers
 
-    def enable(self):
-        self.is_enable = True
-
-    def disable(self):
-        self.is_enable = False
+    def enable(self, on):
+        self.is_enable = on
 
     def infer_train(self, frozen_model, pipe_model, epoch, batch_idx, batch_sample_idx, x):
         if self.num_frozen_layers != self.auto_pipe.get_num_frozen_layers():

@@ -85,13 +85,23 @@ if __name__ == "__main__":
     parser.add_argument("--is_infiniband", default=1, type=int,
                         help="is_infiniband")
 
-    parser.add_argument("--do_freeze", default=1, type=int,
-                        help="do freeze")
+    parser.add_argument('--freeze', dest='b_freeze', action='store_true')
+    parser.add_argument('--no_freeze', dest='b_freeze', action='store_false')
+    parser.set_defaults(b_freeze=True)
 
-    parser.add_argument("--do_cache", default=1, type=int,
-                        help="do cache")
+    parser.add_argument('--auto_pipe', dest='b_auto_pipe', action='store_true')
+    parser.add_argument('--do_auto_pipe', dest='b_auto_pipe', action='store_false')
+    parser.set_defaults(b_auto_pipe=True)
 
-    parser.add_argument("--is_debug_mode", default=1, type=int,
+    parser.add_argument('--auto_dp', dest='b_auto_dp', action='store_true')
+    parser.add_argument('--no_auto_dp', dest='b_auto_dp', action='store_false')
+    parser.set_defaults(b_auto_dp=True)
+
+    parser.add_argument('--cache', dest='b_cache', action='store_true')
+    parser.add_argument('--no_cache', dest='b_cache', action='store_false')
+    parser.set_defaults(b_cache=True)
+
+    parser.add_argument("--is_debug_mode", default=0, type=int,
                         help="is_debug_mode")
 
     args = parser.parse_args()
@@ -112,7 +122,7 @@ if __name__ == "__main__":
     auto_dp = AutoDataParallel(args)
     auto_dp.init_ddp(args)
     auto_dp.init_rpc()
-    auto_dp.enable(False)
+    auto_dp.enable(args.b_auto_dp)
     args.global_rank = auto_dp.get_global_rank()
 
     if args.global_rank == 0:
@@ -146,10 +156,7 @@ if __name__ == "__main__":
 
     # create AutoFreeze algorithm
     auto_freeze = AutoFreeze()
-    if args.do_freeze == 1:
-        auto_freeze.do_freeze()
-    else:
-        auto_freeze.do_not_freeze()
+    auto_freeze.enable(args.b_freeze)
 
     # create pipe and DDP
     auto_pipe = AutoElasticPipe(auto_dp.get_world_size(), args.local_rank, args.global_rank, model,
@@ -157,11 +164,7 @@ if __name__ == "__main__":
 
     # create FP cache with CPU memory
     auto_cache = AutoCache(args, auto_dp, auto_pipe, cv_data_manager, model.get_hidden_feature_size() * args.batch_size)
-    if args.do_cache:
-        auto_cache.enable()
-    else:
-        auto_cache.disable()
-
+    auto_cache.enable(args.b_cache)
     # start training
     freeze_point = dict()
     freeze_point['epoch'] = 0
