@@ -37,7 +37,7 @@ class VisionTransformerTrainer:
         self.update_data_and_cache(0, True, True)
         for epoch in range(epoch_start, self.args.epochs):
             self.train(epoch)
-            # self.eval(epoch)
+            self.eval(epoch)
 
     def update_data_and_cache(self, epoch, is_pipe_len_changed, is_frozen_layer_changed):
         if is_pipe_len_changed:

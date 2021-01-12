@@ -178,6 +178,7 @@ if __name__ == "__main__":
     trainer.train_and_eval(freeze_point)
 
     auto_cache.cleanup()
+    auto_freeze.cleanup()
 
     if args.global_rank == 0:
         wandb.finish()
