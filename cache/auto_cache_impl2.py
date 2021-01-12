@@ -104,6 +104,10 @@ class AutoCacheImpl2:
         msg.set(Message.MSG_KEY_TEST_SAMPLE_INDEX, test_sample_index)
         self.msg_q.put(msg)
 
+    def cleanup(self):
+        self.shared_memory_mgr_hidden_feature.cleanup()
+        self.shared_memory_msg_layer_id.cleanup()
+
     def get_hidden_feature(self, num_frozen_layer, model, epoch, batch_idx, batch_sample_idx, x, device):
         logging.info("(global_rank = %d) get_hidden_feature. epoch = %d, batch_idx = %d" % (self.args.global_rank, epoch, batch_idx))
 

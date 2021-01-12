@@ -13,19 +13,17 @@ class SharedMemoryManagerIntValue:
     def __init__(self, args, name):
         self.args = args
         self.name = name
+        self.non_shared_memory_for_cleanup_layer_id = dict()
 
     @lock
-    def set_int_value(self, sample_uid, int_value):
+    def add_int_value(self, sample_uid, int_value):
         int_value_np = numpy.asarray(int_value)
         int_name = self._build_layer_id_memory_name(sample_uid)
-        size = 4
-        tensor_shm = self._get_or_create_memory_block(
-            name=int_name,
-            size=size
-        )
+        tensor_shm = SharedMemory(name=int_name, create=True, size=4)
         sharable_hidden_tensor = np.ndarray([1], dtype=numpy.int32,
                                             buffer=tensor_shm.buf)
         sharable_hidden_tensor[0] = int_value_np
+        self.non_shared_memory_for_cleanup_layer_id[sample_uid] = int_name
 
     @lock
     def is_exist(self, sample_uid):
@@ -52,17 +50,13 @@ class SharedMemoryManagerIntValue:
         try:
             int_value = shm_hidden_tensor_np[0]
         except IndexError:
-            self._delete_tensor(sample_uid)
+            self.delete_tensor(sample_uid)
             logging.info("global_rank = %d, shm_hidden_tensor_np.size = %d" % (self.args.global_rank, shm_hidden_tensor_np.size))
             raise Exception("_get_tensor error!")
         return int_value
 
     @lock
-    def delete(self, sample_uid):
-        self._delete_tensor(sample_uid)
-
-    @lock
-    def _delete_tensor(self, sample_uid):
+    def delete_tensor(self, sample_uid):
         name = self._build_layer_id_memory_name(sample_uid)
         try:
             shm = SharedMemory(name=name)
@@ -72,14 +66,9 @@ class SharedMemoryManagerIntValue:
             logging.info("%d does not exist" % sample_uid)
 
     @lock
-    def _get_or_create_memory_block(
-            self, name: str, size: int
-    ) -> SharedMemory:
-        try:
-            return SharedMemory(name=name)
-        except FileNotFoundError:
-            # logging.info("create new shared_memory")
-            return SharedMemory(name=name, create=True, size=size)
+    def cleanup(self):
+        for sample_uid in self.non_shared_memory_for_cleanup_layer_id.keys():
+            self.delete_tensor(sample_uid)
 
     def _build_layer_id_memory_name(self, sample_uid):
         return self.name + "_layer_id_" + str(sample_uid)

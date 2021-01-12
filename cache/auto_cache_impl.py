@@ -185,7 +185,7 @@ class AutoCacheImpl:
             # [197, 768]
             sample = hidden_feature[sample_idx_in_batch, :, :]
             self.shared_memory_mgr_hidden_feature.set_tensor(sample_uid, sample)
-            self.shared_memory_msg_layer_id.set_int_value(sample_uid, num_frozen_layer)
+            self.shared_memory_msg_layer_id.add_int_value(sample_uid, num_frozen_layer)
             sample_idx_in_batch += 1
 
     def _send_training_progress_to_daemon(self, epoch, batch_idx):

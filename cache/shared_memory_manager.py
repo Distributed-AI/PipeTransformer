@@ -14,6 +14,7 @@ class SharedMemoryManager:
     def __init__(self, args, name):
         self.args = args
         self.name = name
+        self.non_shared_memory_for_cleanup_tensor = dict()
 
     @lock
     def add_tensor(self, sample_uid, layer_id, tensor):
@@ -24,6 +25,8 @@ class SharedMemoryManager:
         sharable_hidden_tensor = np.ndarray(shape=shm_hidden_tensor_np.shape, dtype=shm_hidden_tensor_np.dtype,
                                             buffer=tensor_shm.buf)
         np.copyto(sharable_hidden_tensor, shm_hidden_tensor_np)
+
+        self.non_shared_memory_for_cleanup_tensor[sample_uid] = tensor_name
 
     @lock
     def update_tensor(self, sample_uid, layer_id, tensor):
@@ -64,6 +67,11 @@ class SharedMemoryManager:
             shm.unlink()
         except FileNotFoundError:
             logging.info("%d does not exist" % sample_uid)
+
+    @lock
+    def cleanup(self):
+        for sample_uid in self.non_shared_memory_for_cleanup_tensor.keys():
+            self.delete_tensor(sample_uid)
 
     def _build_tensor_memory_name(self, sample_uid, layer_id):
         return self.name + "_tensor_" + str(layer_id) + str(sample_uid)

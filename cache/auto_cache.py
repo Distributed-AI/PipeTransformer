@@ -82,3 +82,7 @@ class AutoCache:
                     hidden_feature = frozen_model(x)
                 log_probs = pipe_model(hidden_feature)
         return log_probs
+
+    def cleanup(self):
+        self.cache_manager_train.cleanup()
+        self.cache_manager_test.cleanup()
