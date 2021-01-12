@@ -12,7 +12,6 @@ import torch.multiprocessing as mp
 from cache.cache_daemon_process import CacheDaemon
 from cache.cache_msg import Message
 from cache.shared_memory_manager import SharedMemoryManager
-from cache.shared_memory_manager_int_value import SharedMemoryManagerIntValue
 from data_preprocessing.cv_data_manager import CVDatasetManager
 
 """
@@ -74,7 +73,7 @@ OverflowError: cannot serialize a bytes object larger than 4 GiB
 """
 
 
-class AutoCacheImpl2:
+class AutoCacheImpl:
 
     def __init__(self, args, data_manager):
         self.args = args
@@ -106,21 +105,25 @@ class AutoCacheImpl2:
     def cleanup(self):
         self.shared_memory_mgr_hidden_feature.cleanup()
 
-    def get_hidden_feature(self, num_frozen_layer_last_epoch, num_frozen_layer, model, epoch, batch_idx, batch_sample_idx, x, device):
+    def get_hidden_feature(self, num_frozen_layer_last_epoch, num_frozen_layer, model, epoch, batch_idx,
+                           batch_sample_idx, x, device):
         logging.info("(global_rank = %d) get_hidden_feature. epoch = %d, batch_idx = %d" % (
-        self.args.global_rank, epoch, batch_idx))
+            self.args.global_rank, epoch, batch_idx))
 
         hidden_feature = self._get_a_cached_batch_sample(num_frozen_layer_last_epoch, batch_sample_idx)
         if hidden_feature is not None:
             logging.info("(global_rank = %d) copy from shared memory START" % self.args.global_rank)
             logging.info("(global_rank = %d) NO need to compute FP (layer 0-%d), "
                          "only compute FP (layer %d-%d), get from shared memory" % (
-                             self.args.global_rank, num_frozen_layer_last_epoch-1, num_frozen_layer_last_epoch, num_frozen_layer-1))
+                             self.args.global_rank, num_frozen_layer_last_epoch - 1, num_frozen_layer_last_epoch,
+                             num_frozen_layer - 1))
             if self.args.is_debug_mode:
-                self._check_the_tensor_during_debug_mode(model, x, batch_idx, hidden_feature, num_frozen_layer_last_epoch, device)
+                self._check_the_tensor_during_debug_mode(model, x, batch_idx, hidden_feature,
+                                                         num_frozen_layer_last_epoch, device)
             if num_frozen_layer > num_frozen_layer_last_epoch:
                 hidden_feature = model(hidden_feature.to(device), num_frozen_layer_last_epoch).detach().cpu()
-                self._send_to_daemon_for_cache(epoch, batch_idx, batch_sample_idx, hidden_feature, num_frozen_layer_last_epoch, num_frozen_layer)
+                self._send_to_daemon_for_cache(epoch, batch_idx, batch_sample_idx, hidden_feature,
+                                               num_frozen_layer_last_epoch, num_frozen_layer)
             logging.info("(global_rank = %d) copy from shared memory END" % self.args.global_rank)
         else:
             logging.info(
@@ -128,11 +131,13 @@ class AutoCacheImpl2:
             # [60, 197, 768]
             with torch.no_grad():
                 hidden_feature = model(x).detach().cpu()
-            self._send_to_daemon_for_cache(epoch, batch_idx, batch_sample_idx, hidden_feature, num_frozen_layer_last_epoch, num_frozen_layer)
+            self._send_to_daemon_for_cache(epoch, batch_idx, batch_sample_idx, hidden_feature,
+                                           num_frozen_layer_last_epoch, num_frozen_layer)
             logging.info("(global_rank = %d) get_hidden_feature. cache to shared memory (END)" % self.args.global_rank)
         return hidden_feature
 
-    def _check_the_tensor_during_debug_mode(self, model, x, batch_idx, hidden_feature, num_frozen_layer_last_epoch, device):
+    def _check_the_tensor_during_debug_mode(self, model, x, batch_idx, hidden_feature, num_frozen_layer_last_epoch,
+                                            device):
         # check correctness
         with torch.no_grad():
             hidden_feature_without_cache = model(x).detach().cpu()
@@ -153,7 +158,8 @@ class AutoCacheImpl2:
             dtype=numpy.float32
         )
         for sample_uid in batch_sample_idx:
-            cache_hidden_feature = self.shared_memory_mgr_hidden_feature.get_tensor(sample_uid, num_frozen_layer_last_epoch)
+            cache_hidden_feature = self.shared_memory_mgr_hidden_feature.get_tensor(sample_uid,
+                                                                                    num_frozen_layer_last_epoch)
             if cache_hidden_feature is None:
                 logging.info("tensor is none")
                 return None
@@ -161,7 +167,8 @@ class AutoCacheImpl2:
             sample_idx_in_batch += 1
         return torch.from_numpy(hidden_tensor_np).cpu()
 
-    def _send_to_daemon_for_cache(self, epoch, batch_idx, batch_sample_idx, hidden_feature, cached_layer_id, num_frozen_layer):
+    def _send_to_daemon_for_cache(self, epoch, batch_idx, batch_sample_idx, hidden_feature, cached_layer_id,
+                                  num_frozen_layer):
         logging.info("_send_training_progress_to_daemon. epoch = %d, batch_idx = %d" % (epoch, batch_idx))
         msg = Message(Message.MSG_TYPE_TRAINING_PROGRESS)
         msg.set(Message.MSG_KEY_EPOCH, epoch)

@@ -1,10 +1,7 @@
 import logging
 
 import torch
-
 from cache.auto_cache_impl import AutoCacheImpl
-from cache.auto_cache_impl2 import AutoCacheImpl2
-from cache.auto_cache_impl_with_host_mem import AutoCacheImplWithHostMem
 
 
 class AutoCache:
@@ -23,8 +20,8 @@ class AutoCache:
         # self.cache_manager_train = AutoCacheImplWithHostMem(args, self.data_manager)
         # self.cache_manager_test = AutoCacheImplWithHostMem(args, self.data_manager)
 
-        self.cache_manager_train = AutoCacheImpl2(args, self.data_manager)
-        self.cache_manager_test = AutoCacheImpl2(args, self.data_manager)
+        self.cache_manager_train = AutoCacheImpl(args, self.data_manager)
+        self.cache_manager_test = AutoCacheImpl(args, self.data_manager)
 
         self.is_enable = False
 
@@ -47,7 +44,7 @@ class AutoCache:
                 with torch.no_grad():
                     device_idx_start = self.auto_dp.get_local_rank() * self.auto_pipe.get_pipe_len()
                     hidden_feature = self.cache_manager_train.get_hidden_feature(
-                        self.auto_freeze.get_num_of_frozen_layer(epoch-1 if epoch-1 >= 0 else 0),
+                        self.auto_freeze.get_num_of_frozen_layer(epoch - 1 if epoch - 1 >= 0 else 0),
                         self.num_frozen_layers, frozen_model,
                         epoch, batch_idx, batch_sample_idx, x, device_idx_start
                     ).to(device_idx_start)
@@ -71,7 +68,8 @@ class AutoCache:
                 with torch.no_grad():
                     device_idx_start = self.auto_dp.get_local_rank() * self.auto_pipe.get_pipe_len()
                     hidden_feature = self.cache_manager_test.get_hidden_feature(
-                        self.auto_freeze.get_num_of_frozen_layer(epoch-1 if epoch-1 >= 0 else 0), self.num_frozen_layers, frozen_model,
+                        self.auto_freeze.get_num_of_frozen_layer(epoch - 1 if epoch - 1 >= 0 else 0),
+                        self.num_frozen_layers, frozen_model,
                         epoch, batch_idx, batch_sample_idx, x, device_idx_start
                     ).to(device_idx_start)
                 log_probs = pipe_model(hidden_feature)

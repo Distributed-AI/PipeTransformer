@@ -1,6 +1,5 @@
 import argparse
 import logging
-import math
 import shutil
 import time
 
@@ -8,10 +7,9 @@ import numpy
 import psutil
 import torch
 import torch.multiprocessing as mp
-import wandb
+
 from cache.cache_daemon_process import CacheDaemon
 from cache.cache_msg import Message
-from cache.shared_memory_manager import SharedMemoryManager
 from data_preprocessing.cv_data_manager import CVDatasetManager
 
 """
@@ -72,6 +70,7 @@ Traceback (most recent call last):
 OverflowError: cannot serialize a bytes object larger than 4 GiB
 """
 
+
 class AutoCacheImplWithHostMem:
 
     def __init__(self, args, data_manager):
@@ -102,7 +101,8 @@ class AutoCacheImplWithHostMem:
         self.msg_q.put(msg)
 
     def get_hidden_feature(self, num_frozen_layer, model, epoch, batch_idx, batch_sample_idx, x, device):
-        logging.info("(global_rank = %d) get_hidden_feature. epoch = %d, batch_idx = %d, batch_sample_idx = %s" % (self.args.global_rank, epoch, batch_idx, str("")))
+        logging.info("(global_rank = %d) get_hidden_feature. epoch = %d, batch_idx = %d, batch_sample_idx = %s" % (
+        self.args.global_rank, epoch, batch_idx, str("")))
 
         b_is_batch_cached = True
         layer_id = 0
@@ -127,7 +127,7 @@ class AutoCacheImplWithHostMem:
         if b_is_batch_cached:
             logging.info("(global_rank = %d) get_hidden_feature. NO need to compute FP (layer 0-%d), "
                          "only compute FP (layer %d-%d), get from shared memory" % (
-                         self.args.global_rank, layer_id - 1, layer_id, num_frozen_layer))
+                             self.args.global_rank, layer_id - 1, layer_id, num_frozen_layer))
             logging.info("(global_rank = %d) copy from shared memory END" % self.args.global_rank)
             if layer_id != num_frozen_layer:
                 with torch.no_grad():
@@ -140,7 +140,8 @@ class AutoCacheImplWithHostMem:
                 self._cache_a_batch_sample(batch_sample_idx, hidden_feature, num_frozen_layer)
                 logging.info("(global_rank = %d) update shared memory END" % self.args.global_rank)
         else:
-            logging.info("(global_rank = %d) get_hidden_feature. cache to shared memory (START)" % self.args.global_rank)
+            logging.info(
+                "(global_rank = %d) get_hidden_feature. cache to shared memory (START)" % self.args.global_rank)
             # [60, 197, 768]
             with torch.no_grad():
                 hidden_feature = model(x).detach().cpu()
@@ -148,7 +149,6 @@ class AutoCacheImplWithHostMem:
                     self.dtype = hidden_feature.numpy().dtype
             self._cache_a_batch_sample(batch_sample_idx, hidden_feature, num_frozen_layer)
             logging.info("(global_rank = %d) get_hidden_feature. cache to shared memory (END)" % self.args.global_rank)
-
 
         self._send_training_progress_to_daemon(epoch, batch_idx)
         return hidden_feature
@@ -185,106 +185,3 @@ class AutoCacheImplWithHostMem:
         memory_cost_percent = 1 - psutil.virtual_memory()[4] / psutil.virtual_memory()[0]
         # logging.info("is_host_memory_full. Percentage = " + str(memory_cost_percent))
         return True if memory_cost_percent > self.host_memory_percentage else False
-
-
-class Trainer:
-    def __init__(self, two_level_cache, model):
-        self.auto_cache = two_level_cache
-        self.model = model
-
-    def train(self):
-        n_test_batches = 10
-        x = torch.randn(500, 197, 768)
-        for batch_idx in range(n_test_batches):
-            hidden_feature = auto_cache.get_hidden_feature(0, batch_idx, x, self.model)
-
-        logging.info("---------------------\n")
-        logging.info("---------------------\n")
-        logging.info("----------READ 1-----------\n")
-        for batch_idx in range(n_test_batches):
-            hidden_feature = auto_cache.get_hidden_feature(1, batch_idx, x, self.model)
-
-        logging.info("---------------------\n")
-        logging.info("---------------------\n")
-        logging.info("----------READ 2-----------\n")
-
-        for batch_idx in range(n_test_batches):
-            hidden_feature = auto_cache.get_hidden_feature(2, batch_idx, x, self.model)
-
-
-class TestModel(torch.nn.Module):
-    def __init__(self):
-        super(TestModel, self).__init__()
-        self.net1 = torch.nn.Linear(10, 10)
-        self.relu = torch.nn.ReLU()
-        self.net2 = torch.nn.Linear(10, 5)
-
-    def forward(self, x):
-        x = self.relu(self.net1(x))
-        return self.net2(x)
-
-
-
-if __name__ == '__main__':
-    parser = argparse.ArgumentParser(
-        description="PipeTransformer: Elastic and Automated Pipelining for Fast Distributed Training of Transformer Models")
-    parser.add_argument("--nnodes", type=int, default=2)
-
-    parser.add_argument("--nproc_per_node", type=int, default=8)
-
-    parser.add_argument("--node_rank", type=int, default=0)
-
-    parser.add_argument("--local_rank", type=int, default=1)
-
-    parser.add_argument("--global_rank", type=int, default=0)
-
-    parser.add_argument("--batch_size", type=int, default=500)
-    args = parser.parse_args()
-
-    # customize the log format
-    logging.basicConfig(level=logging.INFO,
-                        format='%(processName)s - %(asctime)s.%(msecs)03d - {%(module)s.py (%(lineno)d)} - %(funcName)s(): %(message)s',
-                        datefmt='%Y-%m-%d,%H:%M:%S')
-
-    args.epochs = 10
-    args.img_size = 224
-    args.dataset = "imagenet"
-    args.data_dir = "/home/chaoyanghe/sourcecode/dataset/cv/ImageNet"
-    # args.dataset = "cifar10"
-    # args.data_dir = "./data/cifar10"
-    epoch = 0
-    data_manager = CVDatasetManager(args)
-
-    data_manager.set_seed(data_manager.seeds[0])
-
-    num_replicas = [2, 2, 2, 2, 4, 4, 8, 8, 16, 16]
-
-    # train_indices_dataloader = data_manager.test_mapping_for_single_worker()node_rank, num_replicas, local_rank
-    starting_time = time.time()
-    train_indices_dataloader, _ = data_manager.get_data_loader_with_node_rank(epoch=epoch, batch_size=args.batch_size,
-                                                                              node_rank=args.node_rank,
-                                                                              num_replicas=num_replicas[0],
-                                                                              local_rank=args.local_rank)
-    # train_indices_dataloader, _ = data_manager.get_data_loader_single_worker(batch_size=batch_size)
-    # (global_rank=0, local_rank=1, nnodes=2, node_rank=0, nproc_per_node=8)
-    logging.info("len of train_indices_dataloader = %d" % len(train_indices_dataloader))
-    ending_time = time.time()
-    # logging.info(data_manager.get_train_sample_index(0))
-    logging.info("time cost = " + str(ending_time - starting_time))
-
-    hidden_feature_size = 512 * 769 * 197 * 4
-
-    auto_cache = AutoCacheImpl(data_manager)
-
-    # epoch, is_ready, batch_size, hidden_feature_size, processes_num
-    auto_cache.reset_status(0, False, args.batch_size, hidden_feature_size, 1)
-
-    model = TestModel()
-    trainer = Trainer(auto_cache, model)
-    trainer.train()
-
-    logging.info("**************************************************************\n\n\n")
-
-    auto_cache.reset_status(0, False, args.batch_size, hidden_feature_size, 1)
-
-    trainer.train()
