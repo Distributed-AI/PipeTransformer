@@ -77,7 +77,7 @@ class CacheDaemon(mp.Process):
     def _delete_previous_cached_batch(self, batch_sample_idx):
         sample_idx_in_batch = 0
         for sample_uid in batch_sample_idx:
-            if not self.shared_memory_msg_layer_id.is_exist(sample_uid):
+            if self.shared_memory_msg_layer_id.is_exist(sample_uid):
                 layer_id = self.shared_memory_msg_layer_id.get_int_value(sample_uid)
                 self.shared_memory_mgr_hidden_feature.delete_tensor(sample_uid, layer_id)
             sample_idx_in_batch += 1
