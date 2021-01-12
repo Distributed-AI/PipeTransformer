@@ -32,9 +32,10 @@ class CacheDaemon(mp.Process):
                 batch_sample_idx = message.get(Message.MSG_KEY_BATCH_SAMPLE_INDEX)
                 hidden_feature = message.get(Message.MSG_KEY_HIDDEN_FEATURE)
                 num_frozen_layer = message.get(Message.MSG_KEY_NUM_FROZEN_LAYER)
+                cached_layer_id = message.get(Message.MSG_KEY_CACHED_NUM_FROZEN_LAYER)
 
                 # add new tensor to cache, and delete the old ones
-                self._delete_previous_cached_batch(batch_sample_idx)
+                self._delete_previous_cached_batch(batch_sample_idx, cached_layer_id)
                 self._cache_a_batch_sample(batch_sample_idx, hidden_feature, num_frozen_layer)
 
                 sample_index_list_to_disk, \
@@ -67,19 +68,13 @@ class CacheDaemon(mp.Process):
         for sample_uid in batch_sample_idx:
             # [197, 768]
             sample = hidden_feature[sample_idx_in_batch, :, :]
-            if not self.shared_memory_msg_layer_id.is_exist(sample_uid):
-                self.shared_memory_msg_layer_id.add_int_value(sample_uid, num_frozen_layer)
-            else:
-                self.shared_memory_msg_layer_id.set_int_value(sample_uid, num_frozen_layer)
             self.shared_memory_mgr_hidden_feature.add_tensor(sample_uid, num_frozen_layer, sample)
             sample_idx_in_batch += 1
 
-    def _delete_previous_cached_batch(self, batch_sample_idx):
+    def _delete_previous_cached_batch(self, batch_sample_idx, cached_layer_id):
         sample_idx_in_batch = 0
         for sample_uid in batch_sample_idx:
-            if self.shared_memory_msg_layer_id.is_exist(sample_uid):
-                layer_id = self.shared_memory_msg_layer_id.get_int_value(sample_uid)
-                self.shared_memory_mgr_hidden_feature.delete_tensor(sample_uid, layer_id)
+            self.shared_memory_mgr_hidden_feature.delete_tensor(sample_uid, cached_layer_id)
             sample_idx_in_batch += 1
 
     def _calculate_num_of_sample_in_shared_memory(self, available_host_memory, hidden_feature_size):

@@ -112,7 +112,13 @@ class AutoCacheImpl2:
         logging.info("(global_rank = %d) get_hidden_feature. epoch = %d, batch_idx = %d" % (
         self.args.global_rank, epoch, batch_idx))
 
-        hidden_feature, layer_id = self._get_a_batch_sample(batch_sample_idx)
+        # cache epoch-num_frozen_layer pair
+        if not self.shared_memory_msg_layer_id.is_exist(epoch):
+            self.shared_memory_msg_layer_id.add_int_value(epoch, num_frozen_layer)
+        else:
+            self.shared_memory_msg_layer_id.set_int_value(epoch, num_frozen_layer)
+
+        hidden_feature, layer_id = self._get_a_cached_batch_sample(epoch - 1, batch_sample_idx)
         if layer_id is not None and hidden_feature is not None:
             logging.info("(global_rank = %d) copy from shared memory START" % self.args.global_rank)
             logging.info("(global_rank = %d) NO need to compute FP (layer 0-%d), "
@@ -122,7 +128,7 @@ class AutoCacheImpl2:
                 self._check_the_tensor_during_debug_mode(model, x, batch_idx, hidden_feature, layer_id, device)
             hidden_feature = model(hidden_feature.to(device), layer_id).detach().cpu()
 
-            self._send_to_daemon_for_cache(epoch, batch_idx, batch_sample_idx, hidden_feature, num_frozen_layer)
+            self._send_to_daemon_for_cache(epoch, batch_idx, batch_sample_idx, hidden_feature, layer_id, num_frozen_layer)
             logging.info("(global_rank = %d) copy from shared memory END" % self.args.global_rank)
         else:
             logging.info(
@@ -130,7 +136,7 @@ class AutoCacheImpl2:
             # [60, 197, 768]
             with torch.no_grad():
                 hidden_feature = model(x).detach().cpu()
-            self._send_to_daemon_for_cache(epoch, batch_idx, batch_sample_idx, hidden_feature, num_frozen_layer)
+            self._send_to_daemon_for_cache(epoch, batch_idx, batch_sample_idx, hidden_feature, 0, num_frozen_layer)
             logging.info("(global_rank = %d) get_hidden_feature. cache to shared memory (END)" % self.args.global_rank)
         return hidden_feature
 
@@ -148,7 +154,7 @@ class AutoCacheImpl2:
             else:
                 logging.info("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$")
 
-    def _get_a_batch_sample(self, batch_sample_idx):
+    def _get_a_cached_batch_sample(self, epoch_last, batch_sample_idx):
         layer_id = 0
         sample_idx_in_batch = 0
         hidden_tensor_np = numpy.ndarray(
@@ -156,10 +162,10 @@ class AutoCacheImpl2:
             dtype=numpy.float32
         )
         for sample_uid in batch_sample_idx:
-            if not self.shared_memory_msg_layer_id.is_exist(sample_uid):
+            if not self.shared_memory_msg_layer_id.is_exist(epoch_last):
                 logging.info("no layer id")
                 return None, None
-            layer_id = self.shared_memory_msg_layer_id.get_int_value(sample_uid)
+            layer_id = self.shared_memory_msg_layer_id.get_int_value(epoch_last)
             cache_hidden_feature = self.shared_memory_mgr_hidden_feature.get_tensor(sample_uid, layer_id)
             if cache_hidden_feature is None:
                 logging.info(layer_id)
@@ -169,7 +175,7 @@ class AutoCacheImpl2:
             sample_idx_in_batch += 1
         return torch.from_numpy(hidden_tensor_np).cpu(), layer_id
 
-    def _send_to_daemon_for_cache(self, epoch, batch_idx, batch_sample_idx, hidden_feature, num_frozen_layer):
+    def _send_to_daemon_for_cache(self, epoch, batch_idx, batch_sample_idx, hidden_feature, cached_layer_id, num_frozen_layer):
         logging.info("_send_training_progress_to_daemon. epoch = %d, batch_idx = %d" % (epoch, batch_idx))
         msg = Message(Message.MSG_TYPE_TRAINING_PROGRESS)
         msg.set(Message.MSG_KEY_EPOCH, epoch)
@@ -177,6 +183,7 @@ class AutoCacheImpl2:
         msg.set(Message.MSG_KEY_BATCH_SAMPLE_INDEX, batch_sample_idx)
         msg.set(Message.MSG_KEY_HIDDEN_FEATURE, hidden_feature)
         msg.set(Message.MSG_KEY_NUM_FROZEN_LAYER, num_frozen_layer)
+        msg.set(Message.MSG_KEY_CACHED_NUM_FROZEN_LAYER, cached_layer_id)
         self.msg_q.put(msg)
 
     def is_disk_storage_full(self):

@@ -14,6 +14,7 @@ class AutoCache:
         self.data_manager = data_manager
 
         self.num_frozen_layers = 0
+
         self.batch_num_train = 0
         self.batch_num_test = 0
         self.hidden_feature_size = hidden_feature_size
