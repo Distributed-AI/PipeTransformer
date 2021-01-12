@@ -163,7 +163,7 @@ if __name__ == "__main__":
                                 output_head, args.pipe_len_at_the_beginning, num_layers)
 
     # create FP cache with CPU memory
-    auto_cache = AutoCache(args, auto_dp, auto_pipe, cv_data_manager, model.get_hidden_feature_size() * args.batch_size)
+    auto_cache = AutoCache(args, auto_freeze, auto_dp, auto_pipe, cv_data_manager, model.get_hidden_feature_size() * args.batch_size)
     auto_cache.enable(args.b_cache)
     # start training
     freeze_point = dict()

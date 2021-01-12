@@ -13,7 +13,6 @@ class CacheDaemon(mp.Process):
         super().__init__()
         self.msg_q = msg_q
         self.shared_memory_mgr_hidden_feature = SharedMemoryManager(args, "hidden_feature")
-        self.shared_memory_msg_layer_id = SharedMemoryManagerIntValue(args, "layer_id")
 
         self.disk_memory_mgr = DiskMemoryManager("hidden_feature")
 

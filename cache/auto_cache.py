@@ -8,7 +8,8 @@ from cache.auto_cache_impl_with_host_mem import AutoCacheImplWithHostMem
 
 
 class AutoCache:
-    def __init__(self, args, auto_dp, auto_pipe, data_manager, hidden_feature_size):
+    def __init__(self, args, auto_freeze, auto_dp, auto_pipe, data_manager, hidden_feature_size):
+        self.auto_freeze = auto_freeze
         self.auto_dp = auto_dp
         self.auto_pipe = auto_pipe
         self.data_manager = data_manager
@@ -46,6 +47,7 @@ class AutoCache:
                 with torch.no_grad():
                     device_idx_start = self.auto_dp.get_local_rank() * self.auto_pipe.get_pipe_len()
                     hidden_feature = self.cache_manager_train.get_hidden_feature(
+                        self.auto_freeze.get_num_of_frozen_layer(epoch-1 if epoch-1 >= 0 else 0),
                         self.num_frozen_layers, frozen_model,
                         epoch, batch_idx, batch_sample_idx, x, device_idx_start
                     ).to(device_idx_start)
@@ -69,7 +71,7 @@ class AutoCache:
                 with torch.no_grad():
                     device_idx_start = self.auto_dp.get_local_rank() * self.auto_pipe.get_pipe_len()
                     hidden_feature = self.cache_manager_test.get_hidden_feature(
-                        self.num_frozen_layers, frozen_model,
+                        self.auto_freeze, self.num_frozen_layers, frozen_model,
                         epoch, batch_idx, batch_sample_idx, x, device_idx_start
                     ).to(device_idx_start)
                 log_probs = pipe_model(hidden_feature)
