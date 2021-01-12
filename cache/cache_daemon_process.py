@@ -78,7 +78,7 @@ class CacheDaemon(mp.Process):
         sample_idx_in_batch = 0
         for sample_uid in batch_sample_idx:
             self.shared_memory_mgr_hidden_feature.delete_tensor(sample_uid, num_frozen_layer)
-            self.shared_memory_msg_layer_id.delete_tensor(sample_uid, num_frozen_layer)
+            self.shared_memory_msg_layer_id.delete_tensor(sample_uid)
             sample_idx_in_batch += 1
 
     def _calculate_num_of_sample_in_shared_memory(self, available_host_memory, hidden_feature_size):
