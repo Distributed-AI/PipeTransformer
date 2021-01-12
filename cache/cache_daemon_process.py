@@ -35,7 +35,8 @@ class CacheDaemon(mp.Process):
                 cached_layer_id = message.get(Message.MSG_KEY_CACHED_NUM_FROZEN_LAYER)
 
                 # add new tensor to cache, and delete the old ones
-                self._delete_previous_cached_batch(batch_sample_idx, cached_layer_id)
+                if cached_layer_id > 0:
+                    self._delete_previous_cached_batch(batch_sample_idx, cached_layer_id)
                 self._cache_a_batch_sample(batch_sample_idx, hidden_feature, num_frozen_layer)
 
                 sample_index_list_to_disk, \
