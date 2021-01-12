@@ -210,7 +210,8 @@ class AutoDataParallel:
         # create the initial group only once
         if self.first_run:
             self.create_active_process_group()
-            self.create_broadcast_process_group()
+            if self.enable_new_pipe:
+                self.create_broadcast_process_group()
             self.clear_memory()
             self.first_run = False
 
