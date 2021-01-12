@@ -14,7 +14,7 @@ DATASET=${10}
 DATADIR=${11}
 PIPE_LEN=${12}
 
-python -m ./launch \
+python -m launch \
 --nproc_per_node=$NPROC_PER_NODE --nnodes=$NNODE --node_rank=$NODE_RANK \
 --master_addr $MASTER_ADDR \
 --master_port $MASTER_PORT \
