@@ -67,7 +67,10 @@ class CacheDaemon(mp.Process):
         for sample_uid in batch_sample_idx:
             # [197, 768]
             sample = hidden_feature[sample_idx_in_batch, :, :]
-            self.shared_memory_msg_layer_id.add_int_value(sample_uid, num_frozen_layer)
+            if not self.shared_memory_msg_layer_id.is_exist(sample_uid):
+                self.shared_memory_msg_layer_id.add_int_value(sample_uid, num_frozen_layer)
+            else:
+                self.shared_memory_msg_layer_id.set_int_value(sample_uid, num_frozen_layer)
             self.shared_memory_mgr_hidden_feature.add_tensor(sample_uid, num_frozen_layer, sample)
             sample_idx_in_batch += 1
 

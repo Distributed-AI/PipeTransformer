@@ -26,6 +26,16 @@ class SharedMemoryManagerIntValue:
         self.non_shared_memory_for_cleanup_layer_id[sample_uid] = int_name
 
     @lock
+    def set_int_value(self, sample_uid, int_value):
+        int_value_np = numpy.asarray(int_value)
+        int_name = self._build_layer_id_memory_name(sample_uid)
+        tensor_shm = SharedMemory(name=int_name)
+        sharable_hidden_tensor = np.ndarray([1], dtype=numpy.int32,
+                                            buffer=tensor_shm.buf)
+        sharable_hidden_tensor[0] = int_value_np
+        self.non_shared_memory_for_cleanup_layer_id[sample_uid] = int_name
+
+    @lock
     def is_exist(self, sample_uid):
         name = self._build_layer_id_memory_name(sample_uid)
         try:

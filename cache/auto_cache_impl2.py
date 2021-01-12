@@ -1,7 +1,6 @@
 import argparse
 import copy
 import logging
-import math
 import shutil
 import time
 
@@ -9,7 +8,7 @@ import numpy
 import psutil
 import torch
 import torch.multiprocessing as mp
-import wandb
+
 from cache.cache_daemon_process import CacheDaemon
 from cache.cache_msg import Message
 from cache.shared_memory_manager import SharedMemoryManager
@@ -74,6 +73,7 @@ Traceback (most recent call last):
 OverflowError: cannot serialize a bytes object larger than 4 GiB
 """
 
+
 class AutoCacheImpl2:
 
     def __init__(self, args, data_manager):
@@ -109,7 +109,8 @@ class AutoCacheImpl2:
         self.shared_memory_msg_layer_id.cleanup()
 
     def get_hidden_feature(self, num_frozen_layer, model, epoch, batch_idx, batch_sample_idx, x, device):
-        logging.info("(global_rank = %d) get_hidden_feature. epoch = %d, batch_idx = %d" % (self.args.global_rank, epoch, batch_idx))
+        logging.info("(global_rank = %d) get_hidden_feature. epoch = %d, batch_idx = %d" % (
+        self.args.global_rank, epoch, batch_idx))
 
         hidden_feature, layer_id = self._get_a_batch_sample(batch_sample_idx)
         if layer_id is not None and hidden_feature is not None:
@@ -155,8 +156,7 @@ class AutoCacheImpl2:
             dtype=numpy.float32
         )
         for sample_uid in batch_sample_idx:
-            layer_id = self.shared_memory_msg_layer_id.get_int_value(sample_uid)
-            if layer_id is None:
+            if not self.shared_memory_msg_layer_id.is_exist(sample_uid):
                 return None, None
             cache_hidden_feature = self.shared_memory_mgr_hidden_feature.get_tensor(sample_uid, layer_id)
             if cache_hidden_feature is None:
@@ -222,7 +222,6 @@ class TestModel(torch.nn.Module):
     def forward(self, x):
         x = self.relu(self.net1(x))
         return self.net2(x)
-
 
 
 if __name__ == '__main__':
