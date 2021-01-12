@@ -71,7 +71,7 @@ class AutoCache:
                 with torch.no_grad():
                     device_idx_start = self.auto_dp.get_local_rank() * self.auto_pipe.get_pipe_len()
                     hidden_feature = self.cache_manager_test.get_hidden_feature(
-                        self.auto_freeze, self.num_frozen_layers, frozen_model,
+                        self.auto_freeze.get_num_of_frozen_layer(epoch-1 if epoch-1 >= 0 else 0), self.num_frozen_layers, frozen_model,
                         epoch, batch_idx, batch_sample_idx, x, device_idx_start
                     ).to(device_idx_start)
                 log_probs = pipe_model(hidden_feature)
