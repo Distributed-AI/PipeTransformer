@@ -156,7 +156,7 @@ class AutoCacheImpl2:
             cache_hidden_feature = self.shared_memory_mgr_hidden_feature.get_tensor(sample_uid, num_frozen_layer_last_epoch)
             if cache_hidden_feature is None:
                 logging.info("tensor is none")
-                return None, None
+                return None
             hidden_tensor_np[sample_idx_in_batch] = copy.deepcopy(cache_hidden_feature)
             sample_idx_in_batch += 1
         return torch.from_numpy(hidden_tensor_np).cpu()
