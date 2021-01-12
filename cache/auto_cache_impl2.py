@@ -162,6 +162,7 @@ class AutoCacheImpl2:
             layer_id = self.shared_memory_msg_layer_id.get_int_value(sample_uid)
             cache_hidden_feature = self.shared_memory_mgr_hidden_feature.get_tensor(sample_uid, layer_id)
             if cache_hidden_feature is None:
+                logging.info(layer_id)
                 logging.info("tensor is none")
                 return None, None
             hidden_tensor_np[sample_idx_in_batch] = copy.deepcopy(cache_hidden_feature)

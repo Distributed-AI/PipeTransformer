@@ -34,8 +34,8 @@ class CacheDaemon(mp.Process):
                 num_frozen_layer = message.get(Message.MSG_KEY_NUM_FROZEN_LAYER)
 
                 # add new tensor to cache, and delete the old ones
+                self._delete_previous_cached_batch(batch_sample_idx)
                 self._cache_a_batch_sample(batch_sample_idx, hidden_feature, num_frozen_layer)
-                self._delete_a_cached_batch(batch_sample_idx, num_frozen_layer)
 
                 sample_index_list_to_disk, \
                 sample_index_list_to_memory = self._determine_sample_location_with_slding_window(epoch, batch_idx)
@@ -74,10 +74,12 @@ class CacheDaemon(mp.Process):
             self.shared_memory_mgr_hidden_feature.add_tensor(sample_uid, num_frozen_layer, sample)
             sample_idx_in_batch += 1
 
-    def _delete_a_cached_batch(self, batch_sample_idx, num_frozen_layer):
+    def _delete_previous_cached_batch(self, batch_sample_idx):
         sample_idx_in_batch = 0
         for sample_uid in batch_sample_idx:
-            self.shared_memory_mgr_hidden_feature.delete_tensor(sample_uid, num_frozen_layer)
+            if not self.shared_memory_msg_layer_id.is_exist(sample_uid):
+                layer_id = self.shared_memory_msg_layer_id.get_int_value(sample_uid)
+                self.shared_memory_mgr_hidden_feature.delete_tensor(sample_uid, layer_id)
             sample_idx_in_batch += 1
 
     def _calculate_num_of_sample_in_shared_memory(self, available_host_memory, hidden_feature_size):
