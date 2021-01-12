@@ -4,7 +4,6 @@ import copy
 import logging
 from multiprocessing.shared_memory import SharedMemory
 
-import numpy
 import numpy as np
 import torch
 
@@ -17,48 +16,48 @@ class SharedMemoryManager:
         self.name = name
 
     @lock
-    def set_tensor(self, sample_uid, tensor):
+    def add_tensor(self, sample_uid, layer_id, tensor):
         shm_hidden_tensor_np = tensor.numpy()
-        tensor_name = self._build_tensor_memory_name(sample_uid)
-        tensor_size = 4 * self.args.seq_len * self.args.transformer_hidden_size
-        tensor_shm = self._get_or_create_memory_block(
-            name=tensor_name,
-            size=tensor_size
-        )
-        sharable_hidden_tensor = np.ndarray([self.args.seq_len, self.args.transformer_hidden_size], dtype=shm_hidden_tensor_np.dtype,
+        tensor_name = self._build_tensor_memory_name(sample_uid, layer_id)
+        tensor_size = shm_hidden_tensor_np.nbytes
+        tensor_shm = SharedMemory(name=tensor_name, create=True, size=tensor_size)
+        sharable_hidden_tensor = np.ndarray(shape=shm_hidden_tensor_np.shape, dtype=shm_hidden_tensor_np.dtype,
                                             buffer=tensor_shm.buf)
-        sharable_hidden_tensor[:] = shm_hidden_tensor_np[:]
+        np.copyto(sharable_hidden_tensor, shm_hidden_tensor_np)
 
     @lock
-    def is_exist(self, sample_uid):
-        name = self._build_tensor_memory_name(sample_uid)
-        try:
-            SharedMemory(name=name)
-            return True
-        except FileNotFoundError:
-            return False
+    def update_tensor(self, sample_uid, layer_id, tensor):
+        shm_hidden_tensor_np = tensor.numpy()
+        tensor_name = self._build_tensor_memory_name(sample_uid, layer_id)
+        tensor_shm = SharedMemory(name=tensor_name)
+        sharable_hidden_tensor = np.ndarray(shape=shm_hidden_tensor_np.shape, dtype=shm_hidden_tensor_np.dtype,
+                                            buffer=tensor_shm.buf)
+        np.copyto(sharable_hidden_tensor, shm_hidden_tensor_np)
 
     @lock
-    def get_tensor(self, sample_uid, dtype):
-        name = self._build_tensor_memory_name(sample_uid)
+    def get_tensor(self, sample_uid, layer_id):
+        name = self._build_tensor_memory_name(sample_uid, layer_id)
         try:
             shm = SharedMemory(name=name)
         except FileNotFoundError:
-            raise Exception("get_tensor not found")
+            # raise Exception("get_tensor not found")
+            return None
+        if len(shm.buf) != self.args.seq_len * self.args.transformer_hidden_size * 4:
+            logging.info("len(shm.buf) = %d" % len(shm.buf))
+            raise Exception("length is incorrect!")
         shm_hidden_tensor_np = np.ndarray(
-            [self.args.seq_len, self.args.transformer_hidden_size],
-            dtype=dtype,
+            shape=(self.args.seq_len, self.args.transformer_hidden_size),
+            dtype=np.float32,
             buffer=shm.buf
         )
-        return torch.from_numpy(copy.deepcopy(shm_hidden_tensor_np[:]))
+        tensor = torch.from_numpy(copy.deepcopy(shm_hidden_tensor_np[:]))
+        del shm_hidden_tensor_np
+        shm.close()
+        return tensor
 
     @lock
-    def delete(self, sample_uid):
-        self._delete_tensor(sample_uid)
-
-    @lock
-    def _delete_tensor(self, sample_uid):
-        name = self._build_tensor_memory_name(sample_uid)
+    def delete_tensor(self, sample_uid, layer_id):
+        name = self._build_tensor_memory_name(sample_uid, layer_id)
         try:
             shm = SharedMemory(name=name)
             shm.close()
@@ -66,15 +65,5 @@ class SharedMemoryManager:
         except FileNotFoundError:
             logging.info("%d does not exist" % sample_uid)
 
-    @lock
-    def _get_or_create_memory_block(
-            self, name: str, size: int
-    ) -> SharedMemory:
-        try:
-            return SharedMemory(name=name)
-        except FileNotFoundError:
-            # logging.info("create new shared_memory")
-            return SharedMemory(name=name, create=True, size=size)
-
-    def _build_tensor_memory_name(self, sample_uid):
-        return self.name + "_tensor_" + str(sample_uid)
+    def _build_tensor_memory_name(self, sample_uid, layer_id):
+        return self.name + "_tensor_" + str(layer_id) + str(sample_uid)

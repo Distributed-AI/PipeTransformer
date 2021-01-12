@@ -38,7 +38,7 @@ class AutoDataParallel:
 
         self.enable_new_pipe = True
 
-    def enable_new_pipe(self, on):
+    def enable(self, on):
         self.enable_new_pipe = on
 
     def get_ddp_model(self, model, local_rank):

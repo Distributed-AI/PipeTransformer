@@ -8,6 +8,9 @@ class Message(object):
     MSG_KEY_BATCH_INDEX = "batch_idx"
     MSG_KEY_TRAIN_SAMPLE_INDEX = "train_sample_index"
     MSG_KEY_TEST_SAMPLE_INDEX = "test_sample_index"
+    MSG_KEY_BATCH_SAMPLE_INDEX = "batch_sample_idx"
+    MSG_KEY_HIDDEN_FEATURE = "hidden_feature"
+    MSG_KEY_NUM_FROZEN_LAYER = "num_frozen_layer"
 
     def __init__(self, msg_type):
         self.msg_type = msg_type

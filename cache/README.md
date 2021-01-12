@@ -6,3 +6,5 @@ Two-level dynamic caching system for large scale
 4. CacheManagerProcess: support two-level cache, handle the host memory and disk storage
 7. CacheManagerProcess, Sliding window algorithm and mini-batch organization.
 
+Shared_memory:
+https://bugs.python.org/issue35813
