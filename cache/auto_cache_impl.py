@@ -107,10 +107,14 @@ class AutoCacheImpl:
         self.shared_memory_mgr_hidden_feature_train.cleanup()
         self.shared_memory_mgr_hidden_feature_test.cleanup()
 
-        self.msg_q.close()
+        msg = Message(Message.MSG_TYPE_FINISH)
+        self.msg_q.put(msg)
+
         self.cache_daemon.join()
+
         self.cache_daemon.terminate()
         self.cache_daemon.kill()
+        self.msg_q.close()
 
     def watch_dog_process_impl(self, msg_q):
         while True:

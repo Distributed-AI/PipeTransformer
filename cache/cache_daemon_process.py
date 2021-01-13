@@ -71,6 +71,8 @@ class CacheDaemon(mp.Process):
             elif msg_type == Message.MSG_TYPE_RESET:
                 logging.info("Message.MSG_TYPE_RESET")
                 self._delete_all_cache()
+            elif msg_type == Message.MSG_TYPE_FINISH:
+                break
             else:
                 raise Exception("no such message")
             logging.info("subprocess is running")

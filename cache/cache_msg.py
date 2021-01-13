@@ -4,6 +4,7 @@ class Message(object):
     MSG_TYPE_TRAINING_PROGRESS = 2
     MSG_TYPE_TEST_PROGRESS = 3
     MSG_TYPE_RESET = 4
+    MSG_TYPE_FINISH = 5
 
     MSG_KEY_EPOCH = "epoch"
     MSG_KEY_BATCH_INDEX = "batch_idx"
