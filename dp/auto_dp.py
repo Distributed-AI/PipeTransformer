@@ -8,6 +8,7 @@ import torch.nn
 from torch.distributed import rpc, timedelta, Backend
 from torch.distributed.rpc import TensorPipeRpcBackendOptions
 from torch.nn.parallel import DistributedDataParallel as DDP
+from art import *
 
 from dp.distributed_communicator import dist_broadcast
 
@@ -314,7 +315,9 @@ class AutoDataParallel:
         else:
             broad_cast_msg[5 + len(self.newly_added_active_ranks)] = -1
 
-        logging.info("\n################################ Congratulations! To train faster, \n"
+        art = text2art("PipeTransformer!!!")
+        logging.info(art)
+        logging.info("################################ Congratulations! To train faster, "
                      "PipeTransformer has automatically transformed to:\n"
                      "################################ Epoch: %d \n"
                      "################################ Number of frozen layers: %d \n"
