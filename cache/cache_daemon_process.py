@@ -35,7 +35,7 @@ class CacheDaemon(mp.Process):
 
                 # add new tensor to cache, and delete the old ones
                 # self._delete_previous_cached_batch(batch_sample_idx, cached_layer_id)
-                self._cache_a_batch_sample(batch_sample_idx, hidden_feature, num_frozen_layer, True)
+                self._cache_a_batch_sample(cached_layer_id, batch_sample_idx, hidden_feature, num_frozen_layer, True)
 
                 sample_index_list_to_disk, \
                 sample_index_list_to_memory = self._determine_sample_location_with_sliding_window(epoch, batch_idx)
@@ -53,7 +53,7 @@ class CacheDaemon(mp.Process):
 
                 # add new tensor to cache, and delete the old ones
                 # self._delete_previous_cached_batch(batch_sample_idx, cached_layer_id)
-                self._cache_a_batch_sample(batch_sample_idx, hidden_feature, num_frozen_layer, False)
+                self._cache_a_batch_sample(cached_layer_id, batch_sample_idx, hidden_feature, num_frozen_layer, False)
 
                 sample_index_list_to_disk, \
                 sample_index_list_to_memory = self._determine_sample_location_with_sliding_window(epoch, batch_idx)
@@ -80,7 +80,9 @@ class CacheDaemon(mp.Process):
         sample_index_list_to_memory = []
         return sample_index_list_to_disk, sample_index_list_to_memory
 
-    def _cache_a_batch_sample(self, batch_sample_idx, hidden_feature, num_frozen_layer, is_train):
+    def _cache_a_batch_sample(self, cached_layer_id, batch_sample_idx, hidden_feature, num_frozen_layer, is_train):
+        if cached_layer_id > num_frozen_layer:
+            raise Exception("cached_layer_id illegal")
         if is_train:
             shared_memory_mgr = self.shared_memory_mgr_hidden_feature_train
         else:
