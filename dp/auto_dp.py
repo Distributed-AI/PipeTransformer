@@ -317,8 +317,8 @@ class AutoDataParallel:
             broad_cast_msg[5 + len(self.newly_added_active_ranks)] = -1
 
         art = text2art("PipeTransformer!")
-        logging.info("\n%s" % art)
-        logging.info("\n################################ Congratulations! To train faster, "
+        logging.critical("\n%s" % art)
+        logging.critical("\n################################ Congratulations! To train faster, "
                      "PipeTransformer has automatically transformed to:\n"
                      "################################ Epoch: %d \n"
                      "################################ Number of frozen layers: %d \n"
