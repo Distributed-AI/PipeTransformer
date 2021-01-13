@@ -315,7 +315,7 @@ class AutoDataParallel:
             broad_cast_msg[5 + len(self.newly_added_active_ranks)] = -1
 
         logging.info("\n################################ Congratulations! To train faster, \n"
-                     "PipeTransformer has transformed to:\n"
+                     "PipeTransformer has automatically transformed to:\n"
                      "################################ Epoch: %d \n"
                      "################################ Number of frozen layers: %d \n"
                      "################################ Pipe length: %d/%d \n"
