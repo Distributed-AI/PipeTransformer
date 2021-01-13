@@ -93,7 +93,6 @@ class AutoCacheImpl:
 
         self.count_mismatch = 0
 
-
     def reset_status(self, epoch):
         train_sample_index = self.data_manager.get_train_sample_index(epoch)
         test_sample_index = self.data_manager.get_test_sample_index(epoch)

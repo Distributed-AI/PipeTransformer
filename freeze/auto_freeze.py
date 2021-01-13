@@ -67,7 +67,8 @@ class AutoFreeze:
             num_freeze_layers = 10
         elif epoch > 7:
             num_freeze_layers = 12
-        self.shared_memory_mgr_frozen_layer_num.add_int_value(epoch, num_freeze_layers)
+        if not self.shared_memory_mgr_frozen_layer_num.is_exist(epoch):
+            self.shared_memory_mgr_frozen_layer_num.add_int_value(epoch, num_freeze_layers)
         return num_freeze_layers
 
     def get_num_of_frozen_layer(self, epoch):

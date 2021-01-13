@@ -61,7 +61,6 @@ class VisionTransformerTrainer:
 
             # synchronize the parameters to all newly created pipes
 
-
         if is_frozen_layer_changed:
             self.auto_cache.update_num_frozen_layer(self.auto_pipe.get_num_frozen_layers())
 
