@@ -122,18 +122,19 @@ class AutoCacheImpl:
 
     def get_hidden_feature(self, num_frozen_layer_last_epoch, num_frozen_layer, model, epoch, batch_idx,
                            batch_sample_idx, x, device, is_train_mode, is_train_data):
-        logging.info("(global_rank = %d) get_hidden_feature. epoch = %d, batch_idx = %d" % (
-            self.args.global_rank, epoch, batch_idx))
         if is_train_mode:
             cached_num_frozen_layer = num_frozen_layer_last_epoch
         else:
             cached_num_frozen_layer = num_frozen_layer
         hidden_feature = self._get_a_cached_batch_sample(cached_num_frozen_layer, batch_sample_idx, is_train_data)
         if hidden_feature is not None:
-            logging.info("(global_rank = %d) copy from shared memory START" % self.args.global_rank)
-            logging.info("(global_rank = %d) NO need to compute FP (layer 0-%d), frozen layer number = %d ------"
-                         "---@@@@@@@@@@@@@@@@" % (
-                self.args.global_rank, cached_num_frozen_layer - 1, num_frozen_layer))
+            logging.critical("(global_rank = %d, epoch = %d, batch_idx = %d, is_train_mode = %s, is_train_data = %s, "
+                             "num_frozen_layer_last_epoch = %d, num_frozen_layer = %d) "
+                             "NO need to compute FP (layer 0-%d), "
+                             "frozen layer number = %d (START)"
+                             % (self.args.global_rank, epoch, batch_idx, str(is_train_mode), str(is_train_data),
+                                num_frozen_layer_last_epoch, num_frozen_layer,
+                                cached_num_frozen_layer - 1, num_frozen_layer))
 
             if self.args.is_debug_mode:
                 self._check_the_tensor_during_debug_mode(model, x, batch_idx, hidden_feature,
@@ -143,16 +144,19 @@ class AutoCacheImpl:
                 hidden_feature = model(hidden_feature.to(device), cached_num_frozen_layer).detach().cpu()
                 self._send_to_daemon_for_cache(epoch, batch_idx, batch_sample_idx, hidden_feature,
                                                cached_num_frozen_layer, num_frozen_layer, is_train_data)
-            logging.info("(global_rank = %d) copy from shared memory END" % self.args.global_rank)
+                logging.critical("(global_rank = %d) cached layer %d" % (self.args.global_rank, num_frozen_layer))
+            logging.critical("(global_rank = %d) NO need to compute FP (END)" % self.args.global_rank)
         else:
-            logging.info(
-                "(global_rank = %d) get_hidden_feature. cache to shared memory (START)" % self.args.global_rank)
-            # [60, 197, 768]
+            logging.critical("(global_rank = %d, epoch = %d, batch_idx = %d, is_train_mode = %s, is_train_data = %s, "
+                             "num_frozen_layer_last_epoch = %d, num_frozen_layer = %d) "
+                             "cache to shared memory (START)"
+                             % (self.args.global_rank, epoch, batch_idx, str(is_train_mode), str(is_train_data),
+                                num_frozen_layer_last_epoch, num_frozen_layer))
             with torch.no_grad():
                 hidden_feature = model(x).detach().cpu()
             self._send_to_daemon_for_cache(epoch, batch_idx, batch_sample_idx, hidden_feature,
                                            cached_num_frozen_layer, num_frozen_layer, is_train_data)
-            logging.info("(global_rank = %d) get_hidden_feature. cache to shared memory (END)" % self.args.global_rank)
+            logging.critical("(global_rank = %d) cache to shared memory (END)" % self.args.global_rank)
         return hidden_feature
 
     def _check_the_tensor_during_debug_mode(self, model, x, batch_idx, hidden_feature, num_frozen_layer_last_epoch,
