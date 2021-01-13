@@ -2,3 +2,4 @@ ml_collections
 scipy
 psutil
 wandb
+art
