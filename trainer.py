@@ -213,20 +213,36 @@ class VisionTransformerTrainer:
         test_loss = test_acc = test_total = 0.
         criterion = nn.CrossEntropyLoss()
         iteration_num = 0
+
+        starting_time_forward = 0.0
+        forward_time_accumulate = 0.0
+
+        backwards_time_accumulate = 0.0
         with torch.no_grad():
             for batch_idx, (sample_index_list, x, target) in enumerate(test_data):
                 logging.info("(%s)evaluation - batch index = %d/%d" % (str(is_train), batch_idx, len(test_data) - 1))
+
+                if batch_idx > 0:
+                    backwards_time_accumulate += time.time() - starting_time_forward
+                    backwards_time_per_batch = backwards_time_accumulate / (batch_idx + 1)
+                    logging.critical("(epoch = %d) backwards_time_per_batch = %s" % (epoch, backwards_time_per_batch))
+
                 iteration_num += 1
                 sample_index_list = sample_index_list.cpu().numpy()
                 x = x.to(self.device_first)
                 target = target.to(self.device_last)
 
+                starting_time_forward = time.time()
                 if is_train:
                     log_probs = self.auto_cache.forward_with_cache(self.frozen_model, self.pipe_model,
                                                                    epoch, batch_idx, sample_index_list, x, False, True)
                 else:
                     log_probs = self.auto_cache.forward_with_cache(self.frozen_model, self.pipe_model,
                                                                    epoch, batch_idx, sample_index_list, x, False, False)
+                end_time_forward = time.time()
+                forward_time_accumulate += (end_time_forward - starting_time_forward)
+                forward_time_per_batch = forward_time_accumulate / (batch_idx + 1)
+                logging.critical("(epoch = %d) forward_time_per_batch = %s" % (epoch, forward_time_per_batch))
 
                 loss = criterion(log_probs, target)
                 _, predicted = torch.max(log_probs, -1)
