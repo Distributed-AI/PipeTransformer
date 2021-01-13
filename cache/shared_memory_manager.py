@@ -73,6 +73,7 @@ class SharedMemoryManager:
 
     def delete_tensor_by_name(self, name):
         try:
+            logging.debug("deleting %s" % name)
             shm = SharedMemory(name=name)
             shm.close()
             shm.unlink()

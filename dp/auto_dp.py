@@ -273,8 +273,9 @@ class AutoDataParallel:
 
         broad_cast_msg = [float(i * 0.0) for i in range(self.message_len)]
         frozen_message = dist_broadcast(broad_cast_msg, 0, self.comm_broadcast_group)
-        num_frozen_layers, pipe_len, max_parameter_per_gpu_at_beginning, \
-        newly_added_active_ranks, freeze_point, last_grad_norm_by_layer = self._parse_broad_cast_message(frozen_message)
+
+        num_frozen_layers, pipe_len, max_parameter_per_gpu_at_beginning, newly_added_active_ranks, freeze_point, \
+        last_grad_norm_by_layer = self._parse_broad_cast_message(frozen_message)
 
         is_pipe_len_changed = True
         is_frozen_layer_changed = True
@@ -304,7 +305,7 @@ class AutoDataParallel:
         broad_cast_msg = [float(i * 0.0) for i in range(self.message_len)]
         broad_cast_msg[0] = float(num_frozen_layers)
         broad_cast_msg[1] = float(pipe_len)
-        broad_cast_msg[2] = max_parameter_per_gpu_at_beginning
+        broad_cast_msg[2] = float(max_parameter_per_gpu_at_beginning)
         broad_cast_msg[3] = float(freeze_point['epoch'])
         broad_cast_msg[4] = float(len(self.newly_added_active_ranks))
         for idx, new_active_rank in enumerate(self.newly_added_active_ranks):
@@ -324,7 +325,7 @@ class AutoDataParallel:
                      "################################ Pipe length: %d/%d \n"
                      "################################ Newly added ranks: %s \n"
                      % (freeze_point['epoch'], num_frozen_layers, pipe_len,
-                        max_parameter_per_gpu_at_beginning, str(self.newly_added_active_ranks)))
+                        self.initial_pipe_len, str(self.newly_added_active_ranks)))
 
         return broad_cast_msg
 
@@ -335,7 +336,7 @@ class AutoDataParallel:
         num_frozen_layers = int(frozen_message[0])
         logging.info("_parse_broad_cast_message. num_frozen_layers = %d" % num_frozen_layers)
         pipe_len = int(frozen_message[1])
-        max_parameter_per_gpu_at_beginning = frozen_message[2]
+        max_parameter_per_gpu_at_beginning = float(frozen_message[2])
         logging.info("local_rank = %d, global_rank = %d - frozen_layer_num = %s" % (
             self.local_rank, self.global_rank, num_frozen_layers))
         logging.info(
