@@ -73,15 +73,6 @@ class AutoFreeze:
     def get_num_of_frozen_layer(self, epoch):
         return self.shared_memory_dict_frozen_layer_num[epoch]
 
-    def get_last_changed_num_frozen_layers(self, epoch):
-        current_num_frozen_layers = self.shared_memory_dict_frozen_layer_num[epoch]
-        while epoch >= 0:
-            last_num_frozen_layers = self.shared_memory_dict_frozen_layer_num[epoch]
-            if last_num_frozen_layers != current_num_frozen_layers:
-                return last_num_frozen_layers
-            epoch -= 1
-        return current_num_frozen_layers
-
     def accumulate(self, model):
         for layer_idx in range(self.num_layer):
             for name, param in model.transformer.encoder.layer[layer_idx].named_parameters():
