@@ -313,6 +313,16 @@ class AutoDataParallel:
                 broad_cast_msg[layer_idx + 5 + len(self.newly_added_active_ranks)] = last_grad_norm_by_layer[layer_idx]
         else:
             broad_cast_msg[5 + len(self.newly_added_active_ranks)] = -1
+
+        logging.info("\n################################ Congratulations! To train faster, \n"
+                     "PipeTransformer has transformed to:\n"
+                     "################################ Epoch: %d \n"
+                     "################################ Number of frozen layers: %d \n"
+                     "################################ Pipe length: %d/%d \n"
+                     "################################ Newly added ranks: %s \n"
+                     % (freeze_point['epoch'], num_frozen_layers, pipe_len,
+                        max_parameter_per_gpu_at_beginning, str(self.newly_added_active_ranks)))
+
         return broad_cast_msg
 
     def _parse_broad_cast_message(self, frozen_message):
