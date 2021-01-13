@@ -241,6 +241,10 @@ class AutoDataParallel:
             self.compressed_pipe_len = pipe_len
             self.update_active_ranks()
 
+            # save model weights for newly active processes
+            if self.get_local_rank() == 0:
+                torch.save(frozen_model.state_dict(), self._build_path_for_frozen_layer_model_state(num_frozen_layers))
+
             # broadcast control messages
             logging.info("####### broad cast control message (num_frozen_layers, pipe_len) to all processes #######")
             max_parameter_per_gpu_at_beginning = auto_pipe.get_max_parameter_per_gpu_at_beginning()
@@ -286,9 +290,11 @@ class AutoDataParallel:
 
             frozen_model, pipe_model, pipe_len = auto_pipe.transform(num_frozen_layers)
             pipe_model = self.generate_ddp_model(pipe_model, pipe_len)
+
+            # load model state for frozen_layer
+            frozen_model.load_state_dict(torch.load(self._build_path_for_frozen_layer_model_state(num_frozen_layers)))
         else:
-            frozen_model, pipe_model, is_pipe_len_changed, is_frozen_layer_changed = self._inactive_process_impl(
-                auto_pipe, auto_freeze)
+            frozen_model, pipe_model, is_pipe_len_changed, is_frozen_layer_changed = self._inactive_process_impl(auto_pipe, auto_freeze)
         return frozen_model, pipe_model, is_pipe_len_changed, is_frozen_layer_changed
 
     def _build_broad_cast_message(self, num_frozen_layers, pipe_len, max_parameter_per_gpu_at_beginning,
@@ -362,3 +368,6 @@ class AutoDataParallel:
 
     def _diff_list(self, li1, li2):
         return (list(list(set(li1) - set(li2)) + list(set(li2) - set(li1))))
+
+    def _build_path_for_frozen_layer_model_state(self, number_frozen_layers):
+        return "./checkpoint_frozen_layers.pth_num_frozen_layers_%d.pth" % number_frozen_layers
