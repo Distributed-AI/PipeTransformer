@@ -152,5 +152,6 @@ class AutoElasticPipe:
         if self.pipe is not None:
             del self.pipe
             self.pipe = None
-        self.pipe = Pipe(model, chunks=6, checkpoint="never")
+        # self.pipe = Pipe(model, chunks=self.pipe_len*2, checkpoint="never")
+        self.pipe = Pipe(model, chunks=1, checkpoint="never")
         return self.pipe
