@@ -105,20 +105,23 @@ class VisionTransformerTrainer:
         backwards_time_accumulate = 0.0
         logging.info("global_rank = %d. data_loader id = %d/" % (self.auto_dp.get_global_rank(), id(self.train_dl)))
         for batch_idx, (sample_index_list, x, target) in enumerate(self.train_dl):
+            communication_count += 1
+            iteration_num += 1
+
             if batch_idx == 0:
                 starting_time = time.time()
                 self.pipe_model._sync_params()
 
             if batch_idx > 0:
                 backwards_time_accumulate += time.time() - starting_time_forward
+                backwards_time_per_batch = backwards_time_accumulate / (batch_idx+1)
+                logging.critical("(epoch = %d) backwards_time_per_batch = %s" % (epoch, backwards_time_per_batch))
 
             logging.info("--------------global_rank = %d. Epoch %d, batch index %d Statistics: " % (
                 self.auto_dp.get_global_rank(), epoch, batch_idx))
             logging.info("global_rank = %d. epoch = %d, batch index = %d/%d" % (
                 self.auto_dp.get_global_rank(), epoch, batch_idx, len(self.train_dl) - 1))
             num_sample_processed_in_total += len(x)
-            communication_count += 1
-            iteration_num += 1
 
             sample_index_list = sample_index_list.cpu().numpy()
             x = x.to(self.device_first)
@@ -131,6 +134,8 @@ class VisionTransformerTrainer:
                                                            epoch, batch_idx, sample_index_list, x, True, True)
             end_time_forward = time.time()
             forward_time_accumulate += (end_time_forward - starting_time_forward)
+            forward_time_per_batch = forward_time_accumulate / (batch_idx + 1)
+            logging.critical("(epoch = %d) forward_time_per_batch = %s" % (epoch, forward_time_per_batch))
 
             loss = criterion(log_probs, target)
             loss.backward()
