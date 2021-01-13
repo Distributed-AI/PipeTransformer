@@ -41,7 +41,7 @@ class CacheDaemon(mp.Process):
                 sample_index_list_to_memory = self._determine_sample_location_with_sliding_window(epoch, batch_idx)
                 self._move_shared_memory_to_disk(sample_index_list_to_disk)
                 self._move_disk_memory_to_shared_memory(sample_index_list_to_memory)
-                
+
             elif msg_type == Message.MSG_TYPE_TEST_PROGRESS:
                 logging.info("Message.MSG_TYPE_TEST_PROGRESS")
                 epoch = message.get(Message.MSG_KEY_EPOCH)
