@@ -89,7 +89,8 @@ class AutoCacheImpl:
         self.cache_daemon.daemon = True
         self.cache_daemon.start()
 
-        self.shared_memory_mgr_hidden_feature = SharedMemoryManager(self.args, "hidden_feature")
+        self.shared_memory_mgr_hidden_feature_train = SharedMemoryManager(self.args, "hidden_feature_train")
+        self.shared_memory_mgr_hidden_feature_test = SharedMemoryManager(self.args, "hidden_feature_test")
 
         self.count_mismatch = 0
 
@@ -103,14 +104,15 @@ class AutoCacheImpl:
         self.msg_q.put(msg)
 
     def cleanup(self):
-        self.shared_memory_mgr_hidden_feature.cleanup()
+        self.shared_memory_mgr_hidden_feature_train.cleanup()
+        self.shared_memory_mgr_hidden_feature_test.cleanup()
 
     def get_hidden_feature(self, num_frozen_layer_last_epoch, num_frozen_layer, model, epoch, batch_idx,
-                           batch_sample_idx, x, device):
+                           batch_sample_idx, x, device, is_train=True):
         logging.info("(global_rank = %d) get_hidden_feature. epoch = %d, batch_idx = %d" % (
             self.args.global_rank, epoch, batch_idx))
 
-        hidden_feature = self._get_a_cached_batch_sample(num_frozen_layer_last_epoch, batch_sample_idx)
+        hidden_feature = self._get_a_cached_batch_sample(num_frozen_layer_last_epoch, batch_sample_idx, is_train)
         if hidden_feature is not None:
             logging.info("(global_rank = %d) copy from shared memory START" % self.args.global_rank)
             logging.info("(global_rank = %d) NO need to compute FP (layer 0-%d), frozen layer number = %d" % (
@@ -151,15 +153,18 @@ class AutoCacheImpl:
             else:
                 logging.info("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$")
 
-    def _get_a_cached_batch_sample(self, num_frozen_layer_last_epoch, batch_sample_idx):
+    def _get_a_cached_batch_sample(self, num_frozen_layer_last_epoch, batch_sample_idx, is_train=True):
+        if is_train:
+            shared_memory_mgr_hidden_feature = self.shared_memory_mgr_hidden_feature_train
+        else:
+            shared_memory_mgr_hidden_feature = self.shared_memory_mgr_hidden_feature_test
         sample_idx_in_batch = 0
         hidden_tensor_np = numpy.ndarray(
             (self.args.batch_size, self.args.seq_len, self.args.transformer_hidden_size),
             dtype=numpy.float32
         )
         for sample_uid in batch_sample_idx:
-            cache_hidden_feature = self.shared_memory_mgr_hidden_feature.get_tensor(sample_uid,
-                                                                                    num_frozen_layer_last_epoch)
+            cache_hidden_feature = shared_memory_mgr_hidden_feature.get_tensor(sample_uid, num_frozen_layer_last_epoch)
             if cache_hidden_feature is None:
                 logging.info("tensor is none")
                 return None
@@ -168,9 +173,12 @@ class AutoCacheImpl:
         return torch.from_numpy(hidden_tensor_np).cpu()
 
     def _send_to_daemon_for_cache(self, epoch, batch_idx, batch_sample_idx, hidden_feature, cached_layer_id,
-                                  num_frozen_layer):
+                                  num_frozen_layer, is_train=True):
         logging.info("_send_training_progress_to_daemon. epoch = %d, batch_idx = %d" % (epoch, batch_idx))
-        msg = Message(Message.MSG_TYPE_TRAINING_PROGRESS)
+        if is_train:
+            msg = Message(Message.MSG_TYPE_TRAINING_PROGRESS)
+        else:
+            msg = Message(Message.MSG_TYPE_TEST_PROGRESS)
         msg.set(Message.MSG_KEY_EPOCH, epoch)
         msg.set(Message.MSG_KEY_BATCH_INDEX, batch_idx)
         msg.set(Message.MSG_KEY_BATCH_SAMPLE_INDEX, batch_sample_idx)
@@ -277,7 +285,7 @@ if __name__ == '__main__':
 
     hidden_feature_size = 512 * 769 * 197 * 4
 
-    auto_cache = AutoCacheImpl2(data_manager)
+    auto_cache = AutoCacheImpl(data_manager)
 
     # epoch, is_ready, batch_size, hidden_feature_size, processes_num
     auto_cache.reset_status(0, False, args.batch_size, hidden_feature_size, 1)
