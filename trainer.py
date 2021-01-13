@@ -29,7 +29,8 @@ class VisionTransformerTrainer:
 
         # data
         self.cv_data_manager = cv_data_manager
-        self.train_dl, self.test_dl = cv_data_manager.get_data_loader(args.batch_size, auto_dp.get_global_data_duplicate_num(),
+        self.train_dl, self.test_dl = cv_data_manager.get_data_loader(args.batch_size,
+                                                                      auto_dp.get_global_data_duplicate_num(),
                                                                       auto_dp.get_global_data_rank())
 
     def train_and_eval(self, freeze_point):
@@ -52,7 +53,8 @@ class VisionTransformerTrainer:
             self.device_first = self.auto_pipe.get_device_first()
             self.device_last = self.auto_pipe.get_device_last()
 
-            logging.info("global_rank = %d. is_frozen_layer_changed: %s" % (self.auto_dp.get_global_rank(), str(is_frozen_layer_changed)))
+            logging.info("global_rank = %d. is_frozen_layer_changed: %s" % (
+            self.auto_dp.get_global_rank(), str(is_frozen_layer_changed)))
             """
             To help the cache to adjust the shared_memory and the disk memory, 
             we need to update the cache index when the pipe len has been changed
@@ -107,7 +109,7 @@ class VisionTransformerTrainer:
             logging.info("--------------global_rank = %d. Epoch %d, batch index %d Statistics: " % (
                 self.auto_dp.get_global_rank(), epoch, batch_idx))
             logging.info("global_rank = %d. epoch = %d, batch index = %d/%d" % (
-                self.auto_dp.get_global_rank(), epoch, batch_idx, len(self.train_dl)-1))
+                self.auto_dp.get_global_rank(), epoch, batch_idx, len(self.train_dl) - 1))
             num_sample_processed_in_total += len(x)
             communication_count += 1
             iteration_num += 1
@@ -138,8 +140,9 @@ class VisionTransformerTrainer:
             sample_num_throughput = int(
                 num_sample_processed_in_total / (
                         time.time() - time_finish_prepare_ddp)) * self.auto_dp.get_active_world_size()
-            logging.info("global_rank = %d. sample_num_throughput (images/second): %d" % (self.auto_dp.get_global_rank(),
-                                                                                          sample_num_throughput))
+            logging.info(
+                "global_rank = %d. sample_num_throughput (images/second): %d" % (self.auto_dp.get_global_rank(),
+                                                                                 sample_num_throughput))
 
             comm_freq = communication_count / (time.time() - time_finish_prepare_ddp)
             logging.info(
@@ -168,7 +171,7 @@ class VisionTransformerTrainer:
                 wandb.log({"Train/Acc": train_acc, "epoch": epoch})
                 wandb.log({"Train/Loss": train_loss, "epoch": epoch})
                 stats = {'training_acc': train_acc, 'training_loss': train_loss}
-                logging.info(stats)
+                logging.critical(stats)
 
         # test data
         # if epoch == self.args.epochs - 1:
@@ -184,8 +187,7 @@ class VisionTransformerTrainer:
                 wandb.log({"Test/Acc": test_acc, "epoch": epoch})
                 wandb.log({"Test/Loss": test_loss, "epoch": epoch})
                 stats = {'test_acc': test_acc, 'test_loss': test_loss}
-                logging.info(stats)
-
+                logging.critical(stats)
 
     def _infer(self, test_data, epoch, is_train):
         if self.frozen_model is not None:
@@ -196,7 +198,7 @@ class VisionTransformerTrainer:
         iteration_num = 0
         with torch.no_grad():
             for batch_idx, (sample_index_list, x, target) in enumerate(test_data):
-                logging.info("(%s)evaluation - batch index = %d/%d" % (str(is_train), batch_idx, len(test_data)-1))
+                logging.info("(%s)evaluation - batch index = %d/%d" % (str(is_train), batch_idx, len(test_data) - 1))
                 iteration_num += 1
                 sample_index_list = sample_index_list.cpu().numpy()
                 x = x.to(self.device_first)
@@ -207,7 +209,7 @@ class VisionTransformerTrainer:
                                                                    epoch, batch_idx, sample_index_list, x, False, True)
                 else:
                     log_probs = self.auto_cache.forward_with_cache(self.frozen_model, self.pipe_model,
-                                                           epoch, batch_idx, sample_index_list, x, False, False)
+                                                                   epoch, batch_idx, sample_index_list, x, False, False)
 
                 loss = criterion(log_probs, target)
                 _, predicted = torch.max(log_probs, -1)
@@ -219,7 +221,6 @@ class VisionTransformerTrainer:
                     break
 
         return test_acc, test_total, test_loss
-
 
     def build_optimizer(self, model):
         if self.args.client_optimizer == "sgd":
@@ -239,8 +240,6 @@ class VisionTransformerTrainer:
             scheduler = WarmupLinearSchedule(optimizer, warmup_steps=self.args.warmup_steps,
                                              t_total=self.args.epochs)
         return optimizer, scheduler
-
-
 
     def sync_all_devices(self, local_rank, device_cnt=4):
         for d in range(device_cnt):
