@@ -125,7 +125,7 @@ class AutoCacheImpl:
             if num_frozen_layer > num_frozen_layer_last_epoch:
                 hidden_feature = model(hidden_feature.to(device), num_frozen_layer_last_epoch).detach().cpu()
                 self._send_to_daemon_for_cache(epoch, batch_idx, batch_sample_idx, hidden_feature,
-                                               num_frozen_layer_last_epoch, num_frozen_layer)
+                                               num_frozen_layer_last_epoch, num_frozen_layer, is_train)
             logging.info("(global_rank = %d) copy from shared memory END" % self.args.global_rank)
         else:
             logging.info(
@@ -134,7 +134,7 @@ class AutoCacheImpl:
             with torch.no_grad():
                 hidden_feature = model(x).detach().cpu()
             self._send_to_daemon_for_cache(epoch, batch_idx, batch_sample_idx, hidden_feature,
-                                           num_frozen_layer_last_epoch, num_frozen_layer)
+                                           num_frozen_layer_last_epoch, num_frozen_layer, is_train)
             logging.info("(global_rank = %d) get_hidden_feature. cache to shared memory (END)" % self.args.global_rank)
         return hidden_feature
 
@@ -153,7 +153,7 @@ class AutoCacheImpl:
             else:
                 logging.info("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$")
 
-    def _get_a_cached_batch_sample(self, num_frozen_layer_last_epoch, batch_sample_idx, is_train=True):
+    def _get_a_cached_batch_sample(self, num_frozen_layer_last_epoch, batch_sample_idx, is_train):
         if is_train:
             shared_memory_mgr_hidden_feature = self.shared_memory_mgr_hidden_feature_train
         else:
@@ -173,7 +173,7 @@ class AutoCacheImpl:
         return torch.from_numpy(hidden_tensor_np).cpu()
 
     def _send_to_daemon_for_cache(self, epoch, batch_idx, batch_sample_idx, hidden_feature, cached_layer_id,
-                                  num_frozen_layer, is_train=True):
+                                  num_frozen_layer, is_train):
         logging.info("_send_training_progress_to_daemon. epoch = %d, batch_idx = %d" % (epoch, batch_idx))
         if is_train:
             msg = Message(Message.MSG_TYPE_TRAINING_PROGRESS)

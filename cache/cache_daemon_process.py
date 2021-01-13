@@ -80,7 +80,7 @@ class CacheDaemon(mp.Process):
         sample_index_list_to_memory = []
         return sample_index_list_to_disk, sample_index_list_to_memory
 
-    def _cache_a_batch_sample(self, batch_sample_idx, hidden_feature, num_frozen_layer, is_train=True):
+    def _cache_a_batch_sample(self, batch_sample_idx, hidden_feature, num_frozen_layer, is_train):
         if is_train:
             shared_memory_mgr = self.shared_memory_mgr_hidden_feature_train
         else:
