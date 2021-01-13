@@ -53,7 +53,8 @@ class AutoFreeze:
         return self.is_freeze
 
     def cleanup(self):
-        self.shared_memory_dict_frozen_layer_num.finalize()
+        # self.shared_memory_dict_frozen_layer_num.finalize()
+        pass
 
     def get_hand_crafted_frozen_layers_by_epoch(self, epoch):
         num_freeze_layers = 0
