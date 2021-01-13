@@ -107,8 +107,6 @@ class AutoCacheImpl:
         self.shared_memory_mgr_hidden_feature_train.cleanup()
         self.shared_memory_mgr_hidden_feature_test.cleanup()
 
-        while not self.msg_q.empty():
-            self.msg_q.get()
         self.msg_q.close()
         self.cache_daemon.join()
         self.cache_daemon.terminate()
