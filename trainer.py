@@ -98,13 +98,19 @@ class VisionTransformerTrainer:
         iteration_num = 0
         num_sample_processed_in_total = 0
         communication_count = 0.0
+
+        starting_time_forward = 0.0
+        forward_time_accumulate = 0.0
+
+        backwards_time_accumulate = 0.0
         logging.info("global_rank = %d. data_loader id = %d/" % (self.auto_dp.get_global_rank(), id(self.train_dl)))
         for batch_idx, (sample_index_list, x, target) in enumerate(self.train_dl):
-            # torch.cuda.empty_cache()
-
             if batch_idx == 0:
                 starting_time = time.time()
                 self.pipe_model._sync_params()
+
+            if batch_idx > 0:
+                backwards_time_accumulate += time.time() - starting_time_forward
 
             logging.info("--------------global_rank = %d. Epoch %d, batch index %d Statistics: " % (
                 self.auto_dp.get_global_rank(), epoch, batch_idx))
@@ -119,8 +125,12 @@ class VisionTransformerTrainer:
             target = target.to(self.device_last)
 
             optimizer.zero_grad()
+
+            starting_time_forward = time.time()
             log_probs = self.auto_cache.forward_with_cache(self.frozen_model, self.pipe_model,
                                                            epoch, batch_idx, sample_index_list, x, True, True)
+            end_time_forward = time.time()
+            forward_time_accumulate += (end_time_forward - starting_time_forward)
 
             loss = criterion(log_probs, target)
             loss.backward()
@@ -137,25 +147,27 @@ class VisionTransformerTrainer:
                 logging.info("global_rank = %d. data loading cost = %s" % (
                     self.auto_dp.get_global_rank(), str(time_finish_prepare_ddp - starting_time)))
 
-            sample_num_throughput = int(
-                num_sample_processed_in_total / (
-                        time.time() - time_finish_prepare_ddp)) * self.auto_dp.get_active_world_size()
-            logging.info(
-                "global_rank = %d. sample_num_throughput (images/second): %d" % (self.auto_dp.get_global_rank(),
-                                                                                 sample_num_throughput))
+            sample_num_throughput = int(num_sample_processed_in_total / (time.time() - time_finish_prepare_ddp)) * self.auto_dp.get_active_world_size()
+            logging.critical("global_rank = %d. sample_num_throughput (images/second): %d" % (self.auto_dp.get_global_rank(), sample_num_throughput))
 
             comm_freq = communication_count / (time.time() - time_finish_prepare_ddp)
-            logging.info(
-                "global_rank = %d. communication frequency (cross machine sync/second): %f" % (
-                    self.auto_dp.get_global_rank(),
-                    comm_freq))
+            logging.critical("global_rank = %d. communication frequency (cross machine sync/second): %f" % (self.auto_dp.get_global_rank(), comm_freq))
 
             if batch_idx == len(self.train_dl) - 1 and self.auto_dp.get_global_rank() == 0:
                 wandb.log({"comm_frequency": comm_freq, "epoch": epoch})
                 wandb.log({"sample_throughput": sample_num_throughput, "epoch": epoch})
+
+                forward_time_per_batch = forward_time_accumulate / len(self.train_dl)
+                logging.critical("(epoch = %d) forward_time_per_batch = %s" % (epoch, forward_time_per_batch))
+                wandb.log({"forward_time_per_batch": forward_time_per_batch, "epoch": epoch})
+
             logging.info("-------------------------------------")
             if iteration_num == 3 and self.args.is_debug_mode:
                 break
+        if self.auto_dp.get_global_rank() == 0:
+            backwards_time_per_batch = backwards_time_accumulate / len(self.train_dl)
+            wandb.log({"backwards_time_per_batch": backwards_time_per_batch, "epoch": epoch})
+            logging.critical("(epoch = %d) backwards_time_per_batch = %s" % (epoch, backwards_time_per_batch))
 
     def eval(self, epoch):
         # train data
