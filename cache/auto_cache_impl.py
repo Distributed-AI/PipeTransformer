@@ -87,8 +87,6 @@ class AutoCacheImpl:
         self.cache_daemon = CacheDaemon(args, self.msg_q)
         self.cache_daemon.daemon = True
         self.cache_daemon.start()
-        #
-        # self.watchdog_process = mp.Process(target=self.watch_dog_process_impl, args=(self.msg_q,))
 
         self.shared_memory_mgr_hidden_feature_train = SharedMemoryManager(self.args, "hidden_feature_train")
         self.shared_memory_mgr_hidden_feature_test = SharedMemoryManager(self.args, "hidden_feature_test")
@@ -109,23 +107,11 @@ class AutoCacheImpl:
         self.shared_memory_mgr_hidden_feature_train.cleanup()
         self.shared_memory_mgr_hidden_feature_test.cleanup()
 
-        while self.msg_q.empty():
+        while not self.msg_q.empty():
             self.msg_q.get()
         self.msg_q.close()
         self.cache_daemon.terminate()
         self.cache_daemon.kill()
-
-        #
-        # self.watchdog_process.start()
-        # self.watchdog_process.daemon = True
-        # while True:
-        #     msg = self.msg_q.get()
-        #     if msg == "KILL WATCHDOG":
-        #         self.cache_daemon.terminate()
-        #         time.sleep(0.1)
-        #         if not self.cache_daemon.is_alive():
-        #             self.msg_q.close()
-        #             break
 
     def watch_dog_process_impl(self, msg_q):
         while True:
