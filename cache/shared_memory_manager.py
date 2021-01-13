@@ -21,13 +21,15 @@ class SharedMemoryManager:
         shm_hidden_tensor_np = tensor.numpy()
         tensor_name = self._build_tensor_memory_name(sample_uid, layer_id)
         tensor_size = shm_hidden_tensor_np.nbytes
-        tensor_shm = SharedMemory(name=tensor_name, create=True, size=tensor_size)
-        sharable_hidden_tensor = np.ndarray(shape=shm_hidden_tensor_np.shape, dtype=shm_hidden_tensor_np.dtype,
-                                            buffer=tensor_shm.buf)
-        np.copyto(sharable_hidden_tensor, shm_hidden_tensor_np)
+        try:
+            tensor_shm = SharedMemory(name=tensor_name, create=True, size=tensor_size)
+            sharable_hidden_tensor = np.ndarray(shape=shm_hidden_tensor_np.shape, dtype=shm_hidden_tensor_np.dtype,
+                                                buffer=tensor_shm.buf)
+            np.copyto(sharable_hidden_tensor, shm_hidden_tensor_np)
 
-        self.non_shared_memory_for_cleanup_tensor[sample_uid] = tensor_name
-
+            self.non_shared_memory_for_cleanup_tensor[sample_uid] = tensor_name
+        except FileExistsError:
+            logging.info("%s is already stored!" % tensor_name)
     @lock
     def update_tensor(self, sample_uid, layer_id, tensor):
         shm_hidden_tensor_np = tensor.numpy()
