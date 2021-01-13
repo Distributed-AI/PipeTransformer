@@ -21,3 +21,7 @@ Discussion:
 2. dynamic decide when to start the cache and how.
 3. sample-wise caching with batch-wise caching
 4. shuffling v.s. no-shuffling
+5. can we use GPU caching if CPU caching is slower than FP?
+6. Let the daemon process handle the CPU caching
+7. prefetching a sliding window caching to GPU memory, much faster.
+8.
