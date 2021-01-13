@@ -315,8 +315,8 @@ class AutoDataParallel:
         else:
             broad_cast_msg[5 + len(self.newly_added_active_ranks)] = -1
 
-        art = text2art("\nPipeTransformer!")
-        logging.info(art)
+        art = text2art("PipeTransformer!")
+        logging.info("\n%s" % art)
         logging.info("\n################################ Congratulations! To train faster, "
                      "PipeTransformer has automatically transformed to:\n"
                      "################################ Epoch: %d \n"

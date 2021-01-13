@@ -82,7 +82,8 @@ class SharedMemoryManager:
     @lock
     def cleanup(self):
         for sample_uid in self.non_shared_memory_for_cleanup_tensor.keys():
-            self.delete_tensor_by_name(sample_uid)
+            name = self.non_shared_memory_for_cleanup_tensor[sample_uid]
+            self.delete_tensor_by_name(name)
 
     def _build_tensor_memory_name(self, sample_uid, layer_id):
         return self.name + "_tensor_" + str(layer_id) + "_" + str(sample_uid)
