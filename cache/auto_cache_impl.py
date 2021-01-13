@@ -104,9 +104,6 @@ class AutoCacheImpl:
         self.msg_q.put(msg)
 
     def cleanup(self):
-        self.shared_memory_mgr_hidden_feature_train.cleanup()
-        self.shared_memory_mgr_hidden_feature_test.cleanup()
-
         msg = Message(Message.MSG_TYPE_FINISH)
         self.msg_q.put(msg)
 
