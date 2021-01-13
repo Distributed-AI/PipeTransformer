@@ -35,6 +35,7 @@ class AutoFreeze:
         self.percentile = 50
 
         self.shared_memory_dict_frozen_layer_num = SharedMemoryDict("frozen_layer_num", 1024 * args.epochs)
+        self.shared_memory_dict_frozen_layer_num.clear()
 
     def update_status(self, num_freeze_layers, last_grad_norm_by_layer):
         logging.info("(%s) num_freeze_layers = %d, last_grad_norm_by_layer = %s" % (str(id(self)), num_freeze_layers, str(last_grad_norm_by_layer)))

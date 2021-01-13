@@ -5,7 +5,6 @@ import torch.multiprocessing as mp
 from cache.cache_msg import Message
 from cache.disk_memory_manager import DiskMemoryManager
 from cache.shared_memory_manager import SharedMemoryManager
-from cache.shared_memory_manager_int_value import SharedMemoryManagerIntValue
 
 
 class CacheDaemon(mp.Process):
@@ -34,12 +33,11 @@ class CacheDaemon(mp.Process):
                 cached_layer_id = message.get(Message.MSG_KEY_CACHED_NUM_FROZEN_LAYER)
 
                 # add new tensor to cache, and delete the old ones
-                if cached_layer_id > 0:
-                    self._delete_previous_cached_batch(batch_sample_idx, cached_layer_id)
+                self._delete_previous_cached_batch(batch_sample_idx, cached_layer_id)
                 self._cache_a_batch_sample(batch_sample_idx, hidden_feature, num_frozen_layer)
 
                 sample_index_list_to_disk, \
-                sample_index_list_to_memory = self._determine_sample_location_with_slding_window(epoch, batch_idx)
+                sample_index_list_to_memory = self._determine_sample_location_with_sliding_window(epoch, batch_idx)
                 self._move_shared_memory_to_disk(sample_index_list_to_disk)
                 self._move_disk_memory_to_shared_memory(sample_index_list_to_memory)
 
@@ -58,7 +56,7 @@ class CacheDaemon(mp.Process):
                 raise Exception("no such message")
             logging.info("subprocess is running")
 
-    def _determine_sample_location_with_slding_window(self, epoch, current_batch_idx):
+    def _determine_sample_location_with_sliding_window(self, epoch, current_batch_idx):
         sample_index_list_to_disk = []
         sample_index_list_to_memory = []
         return sample_index_list_to_disk, sample_index_list_to_memory
