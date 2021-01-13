@@ -122,7 +122,8 @@ if __name__ == "__main__":
     auto_dp = AutoDataParallel(args)
     auto_dp.init_ddp(args)
     auto_dp.init_rpc()
-    auto_dp.enable(args.b_auto_dp)
+    # auto_dp.enable(args.b_auto_dp)
+    auto_dp.enable(False)
     args.global_rank = auto_dp.get_global_rank()
 
     if args.global_rank == 0:
