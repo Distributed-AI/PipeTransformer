@@ -72,6 +72,8 @@ class CacheDaemon(mp.Process):
                 logging.info("Message.MSG_TYPE_RESET")
                 self._delete_all_cache()
             elif msg_type == Message.MSG_TYPE_FINISH:
+                self.shared_memory_mgr_hidden_feature_train.cleanup()
+                self.shared_memory_mgr_hidden_feature_test.cleanup()
                 break
             else:
                 raise Exception("no such message")
