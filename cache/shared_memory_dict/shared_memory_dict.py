@@ -1,3 +1,4 @@
+import logging
 import pickle
 from collections import OrderedDict
 from contextlib import contextmanager
@@ -18,8 +19,11 @@ class SharedMemoryDict(OrderedDict):
         self._memory_block.close()
 
     def finalize(self) -> None:
-        self._memory_block.close()
-        self._memory_block.unlink()
+        try:
+            self._memory_block.close()
+            self._memory_block.unlink()
+        except FileNotFoundError:
+            logging.info("no such file")
 
     def move_to_end(self, key: str, last: Optional[bool] = True) -> None:
         with self._modify_db() as db:
