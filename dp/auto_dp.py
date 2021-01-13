@@ -317,7 +317,7 @@ class AutoDataParallel:
 
         art = text2art("\nPipeTransformer!")
         logging.info(art)
-        logging.info("################################ Congratulations! To train faster, "
+        logging.info("\n################################ Congratulations! To train faster, "
                      "PipeTransformer has automatically transformed to:\n"
                      "################################ Epoch: %d \n"
                      "################################ Number of frozen layers: %d \n"
