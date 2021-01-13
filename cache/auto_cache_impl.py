@@ -88,10 +88,20 @@ class AutoCacheImpl:
         self.cache_daemon.daemon = True
         self.cache_daemon.start()
 
+        self.watchdog_process = mp.Process(target=self.watch_dog_process_impl, args=(self.msg_q,))
+
         self.shared_memory_mgr_hidden_feature_train = SharedMemoryManager(self.args, "hidden_feature_train")
         self.shared_memory_mgr_hidden_feature_test = SharedMemoryManager(self.args, "hidden_feature_test")
 
         self.count_mismatch = 0
+
+    def watch_dog_process_impl(self, msg_q):
+        while True:
+            try:
+                msg = msg_q.get(timeout=2.0)
+            except msg_q.Empty as e:
+                print("[WATCHDOG]: Maybe WORKER is slacking")
+                msg_q.put("KILL WORKER")
 
     def reset_status(self, epoch):
         train_sample_index = self.data_manager.get_train_sample_index(epoch)
@@ -105,8 +115,18 @@ class AutoCacheImpl:
     def cleanup(self):
         self.shared_memory_mgr_hidden_feature_train.cleanup()
         self.shared_memory_mgr_hidden_feature_test.cleanup()
-        self.cache_daemon.terminate()
-        self.cache_daemon.kill()
+
+        self.watchdog_process.start()
+        self.watchdog_process.daemon = True
+        while True:
+            msg = self.msg_q.get()
+            if msg == "KILL WATCHDOG":
+                self.cache_daemon.terminate()
+                time.sleep(0.1)
+                if not self.cache_daemon.is_alive():
+                    self.cache_daemon.join(timeout=1.0)
+                    self.msg_q.close()
+                    break
 
     def get_hidden_feature(self, num_frozen_layer_last_epoch, num_frozen_layer, model, epoch, batch_idx,
                            batch_sample_idx, x, device, is_train):
