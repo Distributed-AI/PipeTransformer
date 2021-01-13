@@ -118,7 +118,8 @@ class VisionTransformerTrainer:
             target = target.to(self.device_last)
 
             optimizer.zero_grad()
-            log_probs = self.auto_cache.infer_train(self.frozen_model, self.pipe_model, epoch, batch_idx, sample_index_list, x)
+            log_probs = self.auto_cache.infer_train(self.frozen_model, self.pipe_model,
+                                                    epoch, batch_idx, sample_index_list, x, True)
 
             loss = criterion(log_probs, target)
             loss.backward()
@@ -203,9 +204,11 @@ class VisionTransformerTrainer:
                 target = target.to(self.device_last)
 
                 if is_train:
-                    log_probs = self.auto_cache.infer_train(self.frozen_model, self.pipe_model, epoch, batch_idx, sample_index_list, x)
+                    log_probs = self.auto_cache.infer_train(self.frozen_model, self.pipe_model,
+                                                            epoch, batch_idx, sample_index_list, x, True)
                 else:
-                    log_probs = self.auto_cache.infer_test(self.frozen_model, self.pipe_model, epoch, batch_idx, sample_index_list, x)
+                    log_probs = self.auto_cache.infer_test(self.frozen_model, self.pipe_model,
+                                                           epoch, batch_idx, sample_index_list, x, False)
 
                 loss = criterion(log_probs, target)
                 _, predicted = torch.max(log_probs, -1)
