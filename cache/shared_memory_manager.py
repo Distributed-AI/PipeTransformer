@@ -30,6 +30,7 @@ class SharedMemoryManager:
             self.non_shared_memory_for_cleanup_tensor[sample_uid] = tensor_name
         except FileExistsError:
             logging.info("%s is already stored!" % tensor_name)
+            raise FileExistsError
     @lock
     def update_tensor(self, sample_uid, layer_id, tensor):
         shm_hidden_tensor_np = tensor.numpy()

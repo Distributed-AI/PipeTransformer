@@ -33,7 +33,7 @@ class AutoCache:
     def enable(self, on):
         self.is_enable = on
 
-    def forward_with_cache(self, frozen_model, pipe_model, epoch, batch_idx, batch_sample_idx, x, is_train_data):
+    def forward_with_cache(self, frozen_model, pipe_model, epoch, batch_idx, batch_sample_idx, x, is_train_mode, is_train_data):
         if self.num_frozen_layers != self.auto_pipe.get_num_frozen_layers():
             raise Exception("num_frozen_layers does not match with the pipe")
         if self.is_enable:
@@ -44,7 +44,7 @@ class AutoCache:
                     hidden_feature = self.cache_manager.get_hidden_feature(
                         self.auto_freeze.get_num_of_frozen_layer(epoch - 1 if epoch - 1 >= 0 else 0),
                         self.num_frozen_layers, frozen_model,
-                        epoch, batch_idx, batch_sample_idx, x, device_idx_start, is_train_data
+                        epoch, batch_idx, batch_sample_idx, x, device_idx_start, is_train_mode, is_train_data
                     ).to(device_idx_start)
                 log_probs = pipe_model(hidden_feature)
             else:

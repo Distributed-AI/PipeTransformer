@@ -119,7 +119,7 @@ class VisionTransformerTrainer:
 
             optimizer.zero_grad()
             log_probs = self.auto_cache.forward_with_cache(self.frozen_model, self.pipe_model,
-                                                           epoch, batch_idx, sample_index_list, x, True)
+                                                           epoch, batch_idx, sample_index_list, x, True, True)
 
             loss = criterion(log_probs, target)
             loss.backward()
@@ -205,10 +205,10 @@ class VisionTransformerTrainer:
 
                 if is_train:
                     log_probs = self.auto_cache.forward_with_cache(self.frozen_model, self.pipe_model,
-                                                                   epoch, batch_idx, sample_index_list, x, True)
+                                                                   epoch, batch_idx, sample_index_list, x, False, True)
                 else:
                     log_probs = self.auto_cache.forward_with_cache(self.frozen_model, self.pipe_model,
-                                                           epoch, batch_idx, sample_index_list, x, False)
+                                                           epoch, batch_idx, sample_index_list, x, False, False)
 
                 loss = criterion(log_probs, target)
                 _, predicted = torch.max(log_probs, -1)
