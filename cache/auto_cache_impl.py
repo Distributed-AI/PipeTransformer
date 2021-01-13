@@ -78,7 +78,6 @@ class AutoCacheImpl:
     def __init__(self, args, data_manager):
         self.args = args
         self.data_manager = data_manager
-        self.epoch = 0
 
         self.host_memory_percentage = 0.2
         self.disk_memory_percentage = 0.2
@@ -106,9 +105,11 @@ class AutoCacheImpl:
     def cleanup(self):
         self.shared_memory_mgr_hidden_feature_train.cleanup()
         self.shared_memory_mgr_hidden_feature_test.cleanup()
+        self.cache_daemon.terminate()
+        self.cache_daemon.kill()
 
     def get_hidden_feature(self, num_frozen_layer_last_epoch, num_frozen_layer, model, epoch, batch_idx,
-                           batch_sample_idx, x, device, is_train=True):
+                           batch_sample_idx, x, device, is_train):
         logging.info("(global_rank = %d) get_hidden_feature. epoch = %d, batch_idx = %d" % (
             self.args.global_rank, epoch, batch_idx))
 
