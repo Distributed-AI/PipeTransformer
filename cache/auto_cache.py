@@ -34,7 +34,7 @@ class AutoCache:
     def forward_with_cache(self, frozen_model, pipe_model, epoch, batch_idx, batch_sample_idx, x, is_train_mode, is_train_data):
         if self.num_frozen_layers != self.auto_pipe.get_num_frozen_layers():
             raise Exception("num_frozen_layers does not match with the pipe")
-        if self.is_enable:
+        if self.is_enable and self.num_frozen_layers >= 3:
             if frozen_model is not None:
                 logging.debug("infer_train. batch_idx = %d" % batch_idx)
                 with torch.no_grad():

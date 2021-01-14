@@ -154,6 +154,18 @@ class AutoElasticPipe:
         if self.pipe is not None:
             del self.pipe
             self.pipe = None
-        # self.pipe = Pipe(model, chunks=self.pipe_len*2, checkpoint="never")
-        self.pipe = Pipe(model, chunks=self.num_chunks_of_micro_batches, checkpoint="never")
+        # self.num_chunks_of_micro_batches
+        self.pipe = Pipe(model, chunks=self.pipe_len, checkpoint="never")
         return self.pipe
+
+    def _get_optimal_chunk_num_by_pipe_len(self, pipe_len):
+        chunk_num = 8
+        if pipe_len == 8:
+            chunk_num = 2 * pipe_len
+        elif pipe_len == 4:
+            chunk_num = 4 * pipe_len
+        elif pipe_len == 2:
+            chunk_num = 2 * pipe_len
+        else:
+            chunk_num = 4 * pipe_len
+        return chunk_num
