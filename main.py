@@ -95,7 +95,7 @@ if __name__ == "__main__":
 
     parser.add_argument('--auto_dp', dest='b_auto_dp', action='store_true')
     parser.add_argument('--no_auto_dp', dest='b_auto_dp', action='store_false')
-    parser.set_defaults(b_auto_dp=True)
+    parser.set_defaults(b_auto_dp=False)
 
     parser.add_argument('--cache', dest='b_cache', action='store_true')
     parser.add_argument('--no_cache', dest='b_cache', action='store_false')
