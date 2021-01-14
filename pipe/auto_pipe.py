@@ -159,9 +159,8 @@ class AutoElasticPipe:
         return self.pipe
 
     def _get_optimal_chunk_num_by_pipe_len(self, pipe_len):
-        chunk_num = 8
         if pipe_len == 8:
-            chunk_num = 2 * pipe_len
+            chunk_num = 4 * pipe_len
         elif pipe_len == 4:
             chunk_num = 4 * pipe_len
         elif pipe_len == 2:
