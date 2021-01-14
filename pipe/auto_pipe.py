@@ -153,5 +153,5 @@ class AutoElasticPipe:
             del self.pipe
             self.pipe = None
         # self.pipe = Pipe(model, chunks=self.pipe_len*2, checkpoint="never")
-        self.pipe = Pipe(model, chunks=1, checkpoint="never")
+        self.pipe = Pipe(model, chunks=4*self.pipe_len, checkpoint="never")
         return self.pipe
