@@ -45,6 +45,12 @@ class AutoElasticPipe:
         self.max_parameter_per_gpu_at_beginning = 0.0
         self.num_frozen_layers = -1
 
+        # switch
+        self.b_enable = True
+
+    def enable(self, on):
+        self.b_enable = on
+
     def transform(self, num_frozen_layers):
         # traceback.print_stack()
         logging.info("---local_rank = %d, global_rank = %d -------------freeze layer number = %d---------------" % (
@@ -63,7 +69,8 @@ class AutoElasticPipe:
         logging.info("len(pipe_model) = %d" % len(model))
         logging.info("len(pipe_model paras_size) = %d" % len(self.pipe_model_params_size_list))
 
-        if num_frozen_layers == 0:
+        # when b_enable = False, the load balance is not even, may lead to lower training speed.
+        if num_frozen_layers == 0 or not self.b_enable:
             # set the num_frozen_layers = 0 because we put all frozen layers into frozen_model
             balanced_sub_layer_distribution, balanced_params_size_distribution = self._auto_balanced_elastic_partition(
                 0)
@@ -160,11 +167,11 @@ class AutoElasticPipe:
 
     def _get_optimal_chunk_num_by_pipe_len(self, pipe_len):
         if pipe_len == 8:
-            chunk_num = 2 * pipe_len
+            chunk_num = 4 * pipe_len
         elif pipe_len == 4:
             chunk_num = 4 * pipe_len
         elif pipe_len == 2:
-            chunk_num = 2 * pipe_len
+            chunk_num = 4 * pipe_len
         else:
             chunk_num = 4 * pipe_len
         return chunk_num
