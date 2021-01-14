@@ -87,15 +87,15 @@ if __name__ == "__main__":
 
     parser.add_argument('--freeze', dest='b_freeze', action='store_true')
     parser.add_argument('--no_freeze', dest='b_freeze', action='store_false')
-    parser.set_defaults(b_freeze=False)
+    parser.set_defaults(b_freeze=True)
 
     parser.add_argument('--auto_pipe', dest='b_auto_pipe', action='store_true')
     parser.add_argument('--do_auto_pipe', dest='b_auto_pipe', action='store_false')
-    parser.set_defaults(b_auto_pipe=False)
+    parser.set_defaults(b_auto_pipe=True)
 
     parser.add_argument('--auto_dp', dest='b_auto_dp', action='store_true')
     parser.add_argument('--no_auto_dp', dest='b_auto_dp', action='store_false')
-    parser.set_defaults(b_auto_dp=False)
+    parser.set_defaults(b_auto_dp=True)
 
     parser.add_argument('--cache', dest='b_cache', action='store_true')
     parser.add_argument('--no_cache', dest='b_cache', action='store_false')

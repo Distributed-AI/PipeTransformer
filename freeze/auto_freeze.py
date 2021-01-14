@@ -56,11 +56,17 @@ class AutoFreeze:
         pass
 
     def get_hand_crafted_frozen_layers_by_epoch(self, epoch):
-        num_freeze_layers = epoch
+        num_freeze_layers = 6
         if not self.shared_memory_mgr_frozen_layer_num.is_exist(epoch):
             self.shared_memory_mgr_frozen_layer_num.add_int_value(epoch, num_freeze_layers)
         return num_freeze_layers
-    #
+
+    # def get_hand_crafted_frozen_layers_by_epoch(self, epoch):
+    #     num_freeze_layers = epoch
+    #     if not self.shared_memory_mgr_frozen_layer_num.is_exist(epoch):
+    #         self.shared_memory_mgr_frozen_layer_num.add_int_value(epoch, num_freeze_layers)
+    #     return num_freeze_layers
+
     # def get_hand_crafted_frozen_layers_by_epoch(self, epoch):
     #     num_freeze_layers = 0
     #     if epoch == 0:
@@ -76,6 +82,7 @@ class AutoFreeze:
     #     if not self.shared_memory_mgr_frozen_layer_num.is_exist(epoch):
     #         self.shared_memory_mgr_frozen_layer_num.add_int_value(epoch, num_freeze_layers)
     #     return num_freeze_layers
+
 
     def get_num_of_frozen_layer(self, epoch):
         return self.shared_memory_mgr_frozen_layer_num.get_int_value(epoch)
