@@ -167,7 +167,7 @@ if __name__ == "__main__":
     # create pipe and DDP
     auto_pipe = AutoElasticPipe(auto_dp.get_world_size(), args.local_rank, args.global_rank, args.num_chunks_of_micro_batches,
                                 model, output_head, args.pipe_len_at_the_beginning, num_layers)
-    auto_pipe.ena
+    auto_pipe.enable(args.b_auto_pipe)
 
     # create FP cache with CPU memory
     auto_cache = AutoCache(args, auto_freeze, auto_dp, auto_pipe, cv_data_manager, model.get_hidden_feature_size() * args.batch_size)
