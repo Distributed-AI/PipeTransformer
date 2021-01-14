@@ -85,6 +85,12 @@ if __name__ == "__main__":
     parser.add_argument("--is_infiniband", default=1, type=int,
                         help="is_infiniband")
 
+    # 8: 2 * pipelen = 4
+    # 16: 4 * pipelen = 4
+    # 4: 1 * pipelen = 4
+    parser.add_argument("--num_chunks_of_micro_batches", default=8, type=int,
+                        help="num_chunks_of_micro_batches")
+
     parser.add_argument('--freeze', dest='b_freeze', action='store_true')
     parser.add_argument('--no_freeze', dest='b_freeze', action='store_false')
     parser.set_defaults(b_freeze=True)
@@ -159,8 +165,8 @@ if __name__ == "__main__":
     auto_freeze.enable(args.b_freeze)
 
     # create pipe and DDP
-    auto_pipe = AutoElasticPipe(auto_dp.get_world_size(), args.local_rank, args.global_rank, model,
-                                output_head, args.pipe_len_at_the_beginning, num_layers)
+    auto_pipe = AutoElasticPipe(auto_dp.get_world_size(), args.local_rank, args.global_rank, args.num_chunks_of_micro_batches,
+                                model, output_head, args.pipe_len_at_the_beginning, num_layers)
 
     # create FP cache with CPU memory
     auto_cache = AutoCache(args, auto_freeze, auto_dp, auto_pipe, cv_data_manager, model.get_hidden_feature_size() * args.batch_size)

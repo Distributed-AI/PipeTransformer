@@ -8,11 +8,13 @@ from pipe.pipe_model_builder import convert_to_balanced_model, create_pipe_style
 
 
 class AutoElasticPipe:
-    def __init__(self, world_size, local_rank, global_rank, model_backbone, output_head, num_device, num_layer_in_total,
+    def __init__(self, world_size, local_rank, global_rank, num_chunks_of_micro_batches, model_backbone, output_head, num_device, num_layer_in_total,
                  debug_mode=False):
         self.world_size = world_size
         self.local_rank = local_rank
         self.global_rank = global_rank
+
+        self.num_chunks_of_micro_batches = num_chunks_of_micro_batches
 
         self.model_backbone = model_backbone
         self.output_head = output_head
@@ -153,5 +155,5 @@ class AutoElasticPipe:
             del self.pipe
             self.pipe = None
         # self.pipe = Pipe(model, chunks=self.pipe_len*2, checkpoint="never")
-        self.pipe = Pipe(model, chunks=4*self.pipe_len, checkpoint="never")
+        self.pipe = Pipe(model, chunks=self.num_chunks_of_micro_batches, checkpoint="never")
         return self.pipe
