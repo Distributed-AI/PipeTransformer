@@ -88,7 +88,8 @@ if __name__ == "__main__":
     # 8: 2 * pipelen = 4
     # 16: 4 * pipelen = 4
     # 4: 1 * pipelen = 4
-    parser.add_argument("--num_chunks_of_micro_batches", default=4, type=int,
+    # 3: 1 * pipelen = 4
+    parser.add_argument("--num_chunks_of_micro_batches", default=12, type=int,
                         help="num_chunks_of_micro_batches")
 
     parser.add_argument('--freeze', dest='b_freeze', action='store_true')
