@@ -97,7 +97,7 @@ if __name__ == "__main__":
 
     parser.add_argument('--freeze', dest='b_freeze', action='store_true')
     parser.add_argument('--no_freeze', dest='b_freeze', action='store_false')
-    parser.set_defaults(b_freeze=False)
+    parser.set_defaults(b_freeze=True)
 
     parser.add_argument('--auto_pipe', dest='b_auto_pipe', action='store_true')
     parser.add_argument('--do_auto_pipe', dest='b_auto_pipe', action='store_false')
