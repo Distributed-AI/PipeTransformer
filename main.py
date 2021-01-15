@@ -85,10 +85,15 @@ if __name__ == "__main__":
     parser.add_argument("--is_infiniband", default=1, type=int,
                         help="is_infiniband")
 
-    # pipelin = 2 * 8
-    # pipelin = 2 * 4
-    # pipelin = 2 * 2
-    parser.add_argument("--num_chunks_of_micro_batches", default=16, type=int,
+    # pipe length = 8
+    # 1 * pipe length = 16
+    # 2 * pipe length = 16
+    # 3 * pipe length = 16
+    # 4 * pipe length = 16
+    # 5 * pipe length = 16
+    # 6 * pipe length = 16
+
+    parser.add_argument("--num_chunks_of_micro_batches", default=8*6, type=int,
                         help="num_chunks_of_micro_batches")
 
     parser.add_argument('--freeze', dest='b_freeze', action='store_true')
