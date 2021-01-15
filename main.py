@@ -92,7 +92,7 @@ if __name__ == "__main__":
     # 4 * pipe length = 16
     # 5 * pipe length = 16
     # 6 * pipe length = 16
-    parser.add_argument("--num_chunks_of_micro_batches", default=8*2, type=int,
+    parser.add_argument("--num_chunks_of_micro_batches", default=8*1, type=int,
                         help="num_chunks_of_micro_batches")
 
     parser.add_argument('--freeze', dest='b_freeze', action='store_true')
