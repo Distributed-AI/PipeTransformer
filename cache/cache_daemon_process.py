@@ -1,5 +1,7 @@
 import logging
+import shutil
 
+import psutil
 import torch.multiprocessing as mp
 
 from cache.cache_msg import Message
@@ -19,6 +21,10 @@ class CacheDaemon(mp.Process):
         self.epoch = 0
         self.train_sample_index = []
         self.test_sample_index = []
+
+        self.host_memory_percentage = 0.85
+        self.disk_memory_percentage = 0.85
+
 
     def run(self) -> None:
         while True:
@@ -85,6 +91,8 @@ class CacheDaemon(mp.Process):
         return sample_index_list_to_disk, sample_index_list_to_memory
 
     def _cache_a_batch_sample(self, cached_layer_id, batch_sample_idx, hidden_feature, num_frozen_layer, is_train):
+        if self._is_disk_storage_full():
+            return
         if cached_layer_id > num_frozen_layer:
             raise Exception("cached_layer_id illegal")
         if is_train:
@@ -103,6 +111,17 @@ class CacheDaemon(mp.Process):
         for sample_uid in batch_sample_idx:
             self.shared_memory_mgr_hidden_feature_train.delete_tensor(sample_uid, cached_layer_id)
             sample_idx_in_batch += 1
+
+    def _is_disk_storage_full(self):
+        total, used, free = shutil.disk_usage(__file__)
+        used_storage_percentage = used / total
+        # logging.info("is_disk_storage_full. Percentage = " + str(used_storage_percentage))
+        return True if used_storage_percentage > self.disk_memory_percentage else False
+
+    def _is_host_memory_full(self):
+        memory_cost_percent = 1 - psutil.virtual_memory()[4] / psutil.virtual_memory()[0]
+        # logging.info("is_host_memory_full. Percentage = " + str(memory_cost_percent))
+        return True if memory_cost_percent > self.host_memory_percentage else False
 
     def _calculate_num_of_sample_in_shared_memory(self, available_host_memory, hidden_feature_size):
         pass

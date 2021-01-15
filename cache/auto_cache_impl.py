@@ -79,9 +79,6 @@ class AutoCacheImpl:
         self.args = args
         self.data_manager = data_manager
 
-        self.host_memory_percentage = 0.2
-        self.disk_memory_percentage = 0.2
-
         self.msg_q = mp.Queue()
 
         self.cache_daemon = CacheDaemon(args, self.msg_q)
@@ -207,18 +204,6 @@ class AutoCacheImpl:
         msg.set(Message.MSG_KEY_NUM_FROZEN_LAYER, num_frozen_layer)
         msg.set(Message.MSG_KEY_CACHED_NUM_FROZEN_LAYER, cached_layer_id)
         self.msg_q.put(msg)
-
-    def is_disk_storage_full(self):
-        total, used, free = shutil.disk_usage(__file__)
-        used_storage_percentage = used / total
-        # logging.info("is_disk_storage_full. Percentage = " + str(used_storage_percentage))
-        return True if used_storage_percentage > self.disk_memory_percentage else False
-
-    def is_host_memory_full(self):
-        memory_cost_percent = 1 - psutil.virtual_memory()[4] / psutil.virtual_memory()[0]
-        # logging.info("is_host_memory_full. Percentage = " + str(memory_cost_percent))
-        return True if memory_cost_percent > self.host_memory_percentage else False
-
 
 class Trainer:
     def __init__(self, two_level_cache, model):
