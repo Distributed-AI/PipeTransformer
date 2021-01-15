@@ -162,7 +162,7 @@ class AutoElasticPipe:
             del self.pipe
             self.pipe = None
         # self.num_chunks_of_micro_batches
-        self.pipe = Pipe(model, chunks=self.pipe_len, checkpoint="never")
+        self.pipe = Pipe(model, chunks=self.num_chunks_of_micro_batches, checkpoint="never")
         return self.pipe
 
     def _get_optimal_chunk_num_by_pipe_len(self, pipe_len):

@@ -129,6 +129,7 @@ class VisionTransformerTrainer:
 
             optimizer.zero_grad()
 
+            # TODO: cuda sync
             starting_time_forward = time.time()
             log_probs = self.auto_cache.forward_with_cache(self.frozen_model, self.pipe_model,
                                                            epoch, batch_idx, sample_index_list, x, True, True)
