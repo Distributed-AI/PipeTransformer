@@ -133,9 +133,9 @@ class AutoCacheImpl:
                                 str(num_frozen_layer_last_epoch), str(num_frozen_layer),
                                 cached_num_frozen_layer - 1, num_frozen_layer))
 
-            if self.args.is_debug_mode:
-                self._check_the_tensor_during_debug_mode(model, x, batch_idx, hidden_feature,
-                                                         cached_num_frozen_layer, device)
+            # if self.args.is_debug_mode:
+            #     self._check_the_tensor_during_debug_mode(model, x, batch_idx, hidden_feature,
+            #                                              cached_num_frozen_layer, device)
 
             if num_frozen_layer > cached_num_frozen_layer:
                 hidden_feature = model(hidden_feature.to(device), cached_num_frozen_layer).detach().cpu()
