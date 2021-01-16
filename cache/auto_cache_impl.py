@@ -125,12 +125,12 @@ class AutoCacheImpl:
             cached_num_frozen_layer = num_frozen_layer
         hidden_feature = self._get_a_cached_batch_sample(cached_num_frozen_layer, batch_sample_idx, is_train_data)
         if hidden_feature is not None:
-            logging.critical("(global_rank = %d, epoch = %d, batch_idx = %d, is_train_mode = %s, is_train_data = %s, "
-                             "num_frozen_layer_last_epoch = %d, num_frozen_layer = %d) "
+            logging.critical("(global_rank = %s, epoch = %s, batch_idx = %s, is_train_mode = %s, is_train_data = %s, "
+                             "num_frozen_layer_last_epoch = %s, num_frozen_layer = %s) "
                              "NO need to compute FP (layer 0-%d), "
                              "frozen layer number = %d (START)"
-                             % (self.args.global_rank, epoch, batch_idx, str(is_train_mode), str(is_train_data),
-                                num_frozen_layer_last_epoch, num_frozen_layer,
+                             % (str(self.args.global_rank), str(epoch), str(batch_idx), str(is_train_mode), str(is_train_data),
+                                str(num_frozen_layer_last_epoch), str(num_frozen_layer),
                                 cached_num_frozen_layer - 1, num_frozen_layer))
 
             if self.args.is_debug_mode:
