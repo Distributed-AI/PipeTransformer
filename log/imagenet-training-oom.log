@@ -1,0 +1,58 @@
+MainProcess 2021-01-15,05:15:30.195 - {trainer.py (160)} - train(): global_rank = 1. communication frequency (cross machine sync/second): 0.183957
+MainProcess 2021-01-15,05:15:30.195 - {trainer.py (157)} - train(): global_rank = 0. sample_num_throughput (images/second): 292
+MainProcess 2021-01-15,05:15:30.195 - {trainer.py (160)} - train(): global_rank = 0. communication frequency (cross machine sync/second): 0.183956
+MainProcess 2021-01-15,05:15:32.530 - {trainer.py (118)} - train(): (epoch = 1) backwards_time_per_batch = 5.42065723066484
+MainProcess 2021-01-15,05:15:32.552 - {auto_cache_impl.py (147)} - get_hidden_feature(): (global_rank = 0, epoch = 1, batch_idx = 556, is_train_mode = True, is_train_data = True, num_frozen_layer_last_epoch = 0, num_frozen_layer = 6) cache to shared memory (START)
+MainProcess 2021-01-15,05:15:32.813 - {trainer.py (118)} - train(): (epoch = 1) backwards_time_per_batch = 5.416663628720295
+MainProcess 2021-01-15,05:15:32.835 - {auto_cache_impl.py (147)} - get_hidden_feature(): (global_rank = 1, epoch = 1, batch_idx = 556, is_train_mode = True, is_train_data = True, num_frozen_layer_last_epoch = 0, num_frozen_layer = 6) cache to shared memory (START)
+MainProcess 2021-01-15,05:15:34.373 - {auto_cache_impl.py (156)} - get_hidden_feature(): (global_rank = 1) cache to shared memory (END)
+Traceback (most recent call last):
+  File "/home/chaoyanghe/anaconda3/envs/pipe_distributed_3.8/lib/python3.8/multiprocessing/queues.py", line 239, in _feed
+    obj = _ForkingPickler.dumps(obj)
+  File "/home/chaoyanghe/anaconda3/envs/pipe_distributed_3.8/lib/python3.8/multiprocessing/reduction.py", line 51, in dumps
+    cls(buf, protocol).dump(obj)
+  File "/home/chaoyanghe/anaconda3/envs/pipe_distributed_3.8/lib/python3.8/site-packages/torch/multiprocessing/reductions.py", line 321, in reduce_storage
+    fd, size = storage._share_fd_()
+RuntimeError: unable to write to file </torch_2399_2745296011>
+MainProcess 2021-01-15,05:15:34.588 - {trainer.py (139)} - train(): (epoch = 1) forward_time_per_batch = 1.9361756370140364
+Traceback (most recent call last):
+  File "main.py", line 182, in <module>
+Traceback (most recent call last):
+  File "main.py", line 182, in <module>
+    frozen_model, pipe_model, is_pipe_len_changed, is_frozen_layer_changed = auto_dp.transform(auto_pipe, auto_freeze,
+      File "/home/chaoyanghe/PipeTransformer/dp/auto_dp.py", line 222, in transform
+frozen_model, pipe_model, is_pipe_len_changed, is_frozen_layer_changed = auto_dp.transform(auto_pipe, auto_freeze,
+  File "/home/chaoyanghe/PipeTransformer/dp/auto_dp.py", line 222, in transform
+    frozen_model, pipe_model, is_pipe_len_changed, is_frozen_layer_changed = self._inactive_process_impl(
+      File "/home/chaoyanghe/PipeTransformer/dp/auto_dp.py", line 299, in _inactive_process_impl
+frozen_model, pipe_model, is_pipe_len_changed, is_frozen_layer_changed = self._inactive_process_impl(
+  File "/home/chaoyanghe/PipeTransformer/dp/auto_dp.py", line 299, in _inactive_process_impl
+    frozen_model, pipe_model, is_pipe_len_changed, is_frozen_layer_changed = self._inactive_process_impl(auto_pipe, auto_freeze)
+  File "/home/chaoyanghe/PipeTransformer/dp/auto_dp.py", line 275, in _inactive_process_impl
+    frozen_model, pipe_model, is_pipe_len_changed, is_frozen_layer_changed = self._inactive_process_impl(auto_pipe, auto_freeze)
+  File "/home/chaoyanghe/PipeTransformer/dp/auto_dp.py", line 275, in _inactive_process_impl
+    frozen_message = dist_broadcast(broad_cast_msg, 0, self.comm_broadcast_group)
+  File "/home/chaoyanghe/PipeTransformer/dp/distributed_communicator.py", line 8, in dist_broadcast
+    frozen_message = dist_broadcast(broad_cast_msg, 0, self.comm_broadcast_group)
+  File "/home/chaoyanghe/PipeTransformer/dp/distributed_communicator.py", line 8, in dist_broadcast
+    dist.broadcast_object_list(object_list, src, group=group)
+  File "/home/chaoyanghe/anaconda3/envs/pipe_distributed_3.8/lib/python3.8/site-packages/torch/distributed/distributed_c10d.py", line 1385, in broadcast_object_list
+    dist.broadcast_object_list(object_list, src, group=group)
+  File "/home/chaoyanghe/anaconda3/envs/pipe_distributed_3.8/lib/python3.8/site-packages/torch/distributed/distributed_c10d.py", line 1385, in broadcast_object_list
+    broadcast(object_sizes_tensor, src=src, group=group)
+      File "/home/chaoyanghe/anaconda3/envs/pipe_distributed_3.8/lib/python3.8/site-packages/torch/distributed/distributed_c10d.py", line 868, in broadcast
+broadcast(object_sizes_tensor, src=src, group=group)
+  File "/home/chaoyanghe/anaconda3/envs/pipe_distributed_3.8/lib/python3.8/site-packages/torch/distributed/distributed_c10d.py", line 868, in broadcast
+    work.wait()
+    work.wait()
+RuntimeError: [/opt/conda/conda-bld/pytorch_1607369981906/work/third_party/gloo/gloo/transport/tcp/pair.cc:575] Connection closed by peer [192.168.11.2]:29834
+RuntimeError: [/opt/conda/conda-bld/pytorch_1607369981906/work/third_party/gloo/gloo/transport/tcp/pair.cc:575] Connection closed by peer [192.168.11.2]:49301
+Traceback (most recent call last):
+  File "main.py", line 182, in <module>
+    frozen_model, pipe_model, is_pipe_len_changed, is_frozen_layer_changed = auto_dp.transform(auto_pipe, auto_freeze,
+  File "/home/chaoyanghe/PipeTransformer/dp/auto_dp.py", line 222, in transform
+    frozen_model, pipe_model, is_pipe_len_changed, is_frozen_layer_changed = self._inactive_process_impl(
+  File "/home/chaoyanghe/PipeTransformer/dp/auto_dp.py", line 299, in _inactive_process_impl
+    frozen_model, pipe_model, is_pipe_len_changed, is_frozen_layer_changed = self._inactive_process_impl(auto_pipe, auto_freeze)
+  File "/home/chaoyanghe/PipeTransformer/dp/auto_dp.py", line 275, in _inactive_process_impl
+    frozen_message = dist_broadcast(broad_cast_msg, 0, self.comm_broadcast_group)
