@@ -134,15 +134,13 @@ class ImageNet(data.Dataset):
         if data_len % nproc_per_node > 0:
             subset_len = math.ceil(data_len / nproc_per_node)
             even_len = int(subset_len * nproc_per_node)
-            temp = self.local_data[:even_len - data_len]
-            self.local_data = np.concatenate((self.local_data, temp), axis=0)
+            self.local_data += self.local_data[:even_len - data_len]
 
         data_len = len(self.local_data)
         gap = data_len % batch_size
         if gap > 0:
             added_batch = batch_size - gap
-            temp = self.local_data[:added_batch]
-            self.local_data = np.concatenate((self.local_data, temp), axis=0)
+            self.local_data += self.local_data[:added_batch]
         logging.info("data_len = %d" % len(self.local_data))
 
     def get_local_data(self):
