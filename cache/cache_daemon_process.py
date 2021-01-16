@@ -22,7 +22,7 @@ class CacheDaemon(mp.Process):
         self.train_sample_index = []
         self.test_sample_index = []
 
-        self.host_memory_percentage = 0.95
+        self.host_memory_percentage = 0.85
         self.disk_memory_percentage = 0.85
 
 
@@ -91,7 +91,7 @@ class CacheDaemon(mp.Process):
         return sample_index_list_to_disk, sample_index_list_to_memory
 
     def _cache_a_batch_sample(self, cached_layer_id, batch_sample_idx, hidden_feature, num_frozen_layer, is_train):
-        if self._is_disk_storage_full():
+        if self._is_host_memory_full():
             return
         if cached_layer_id > num_frozen_layer:
             raise Exception("cached_layer_id illegal")
