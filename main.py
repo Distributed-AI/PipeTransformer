@@ -117,7 +117,7 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     # customize the log format
-    logging.basicConfig(level=logging.ERROR,
+    logging.basicConfig(level=logging.DEBUG,
                         format='%(processName)s %(asctime)s.%(msecs)03d - {%(module)s.py (%(lineno)d)} - %(funcName)s(): %(message)s',
                         datefmt='%Y-%m-%d,%H:%M:%S')
     logging.info(args)
