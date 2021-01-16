@@ -5,7 +5,7 @@ import time
 
 import numpy as np
 import torch
-from torch.utils.data import DataLoader, RandomSampler
+from torch.utils.data import RandomSampler, DataLoader
 from torch.utils.data.distributed import DistributedSampler
 from torchvision import transforms
 
@@ -24,9 +24,6 @@ class CVDatasetManager:
 
         self.args = args
         self.dataset = args.dataset
-
-        # only load dataset once
-        self.get_data(args, self.dataset, node_num=args.nnodes, node_rank=args.node_rank)
 
         """
         `node rank` is used to guarantee the shuffle during epochs is only executed inside a machine.
@@ -53,23 +50,23 @@ class CVDatasetManager:
         else:
             raise Exception("no such datasets")
 
-    def get_data(self, args, dataset, node_num=0, node_rank=-1):
+    def get_data(self, args, dataset, node_num=0, nproc_per_node=0, node_rank=-1):
         self.args = args
         self.dataset = dataset
         logging.info("load_data. dataset_name = %s" % dataset)
         if dataset == "cifar10":
-            train_dataset, test_dataset, output_dim = self.load_cifar_centralized_training_for_vit(args, node_num, node_rank)
+            train_dataset, test_dataset, output_dim = self.load_cifar_centralized_training_for_vit(args, node_num, nproc_per_node, node_rank)
         elif dataset == "cifar100":
-            train_dataset, test_dataset, output_dim = self.load_cifar_centralized_training_for_vit(args, node_num, node_rank)
+            train_dataset, test_dataset, output_dim = self.load_cifar_centralized_training_for_vit(args, node_num, nproc_per_node, node_rank)
         elif dataset == "imagenet":
-            train_dataset, test_dataset, output_dim = self.load_imagenet_centralized_training_for_vit(args, node_num, node_rank)
+            train_dataset, test_dataset, output_dim = self.load_imagenet_centralized_training_for_vit(args, node_num, nproc_per_node, node_rank)
         else:
             raise Exception("no such dataset!")
         self.train_dataset = train_dataset
         self.test_dataset = test_dataset
         return train_dataset, test_dataset, output_dim
 
-    def load_cifar_centralized_training_for_vit(self, args, node_num=0, node_rank=-1):
+    def load_cifar_centralized_training_for_vit(self, args, node_num=0, nproc_per_node=0, node_rank=-1):
         # if args.is_distributed == 1:
         #     torch.distributed.barrier()
 
@@ -100,13 +97,17 @@ class CVDatasetManager:
 
         if args.dataset == "cifar10":
             trainset = CIFAR10(root=args.data_dir,
+                               batch_size=args.batch_size,
                                node_num=node_num,
+                               nproc_per_node=nproc_per_node,
                                node_rank=node_rank,
                                train=True,
                                download=True,
                                transform=transform_train)
             testset = CIFAR10(root=args.data_dir,
+                              batch_size=args.batch_size,
                               node_num=node_num,
+                              nproc_per_node=nproc_per_node,
                               node_rank=node_rank,
                               train=False,
                               download=True,
@@ -114,12 +115,14 @@ class CVDatasetManager:
             output_dim = 10
         else:
             trainset = CIFAR100(root=args.data_dir,
+                                batch_size=args.batch_size,
                                 node_num=node_num,
                                 node_rank=node_rank,
                                 train=True,
                                 download=True,
                                 transform=transform_train)
             testset = CIFAR100(root=args.data_dir,
+                               batch_size=args.batch_size,
                                node_num=node_num,
                                node_rank=node_rank,
                                train=False,
@@ -131,7 +134,7 @@ class CVDatasetManager:
         #     torch.distributed.barrier()
         return trainset, testset, output_dim
 
-    def load_imagenet_centralized_training_for_vit(self, args, node_num=0, node_rank=-1):
+    def load_imagenet_centralized_training_for_vit(self, args, node_num=0, nproc_per_node=0, node_rank=-1):
         # if args.is_distributed == 1:
         #     torch.distributed.barrier()
 
@@ -162,14 +165,18 @@ class CVDatasetManager:
         ])
 
         trainset = ImageNet(data_dir=args.data_dir,
+                            batch_size=args.batch_size,
                             node_num=node_num,
                             node_rank=node_rank,
+                            nproc_per_node=nproc_per_node,
                             train=True,
                             download=True,
                             transform=transform_train)
         testset = ImageNet(data_dir=args.data_dir,
+                           batch_size=args.batch_size,
                            node_num=node_num,
                            node_rank=node_rank,
+                           nproc_per_node=nproc_per_node,
                            train=False,
                            download=True,
                            transform=transform_test)
@@ -183,6 +190,9 @@ class CVDatasetManager:
         Optimization:
             Pin Memory: https://pytorch.org/docs/stable/notes/cuda.html#use-pinned-memory-buffers
         """
+        # only load dataset once
+        self.get_data(args, self.dataset, node_num=self.args.nnodes, nproc_per_node=num_replicas, node_rank=node_rank)
+
         logging.info("train dataset len = %d, test dataset len = %d" % (len(self.train_dataset), len(self.test_dataset)))
         if self.train_sampler is not None:
             del self.train_sampler
@@ -195,7 +205,8 @@ class CVDatasetManager:
 
         if self.test_sampler is not None:
             del self.test_sampler
-        self.test_sampler = DistributedSampler(self.test_dataset, num_replicas=num_replicas, rank=local_rank)
+        self.test_sampler = DistributedSampler(self.test_dataset, num_replicas=num_replicas,
+                                               rank=local_rank, drop_last=False)
         indexes = list(iter(self.test_sampler))
         logging.info("global_rank = %d. test indexes len = %d" % (self.args.global_rank, len(indexes)))
         self.test_sample_idx_list_by_epoch[epoch] = indexes
@@ -211,7 +222,7 @@ class CVDatasetManager:
                                        batch_size=batch_size,
                                        num_workers=0,
                                        pin_memory=True,
-                                       drop_last=True)
+                                       drop_last=False)
 
         if self.test_loader is not None:
             del self.test_loader
@@ -220,7 +231,7 @@ class CVDatasetManager:
                                       batch_size=batch_size,
                                       num_workers=0,
                                       pin_memory=True,
-                                      drop_last=True)
+                                      drop_last=False)
         return self.train_loader, self.test_loader
 
     def get_data_loader(self, batch_size, num_replicas, global_rank):
@@ -377,16 +388,16 @@ def test_single_worker():
 def test_distributed():
     args.epochs = 10
     args.img_size = 224
-    # args.dataset = "imagenet"
-    # args.data_dir = "/home/chaoyanghe/sourcecode/dataset/cv/ImageNet"
-    args.dataset = "cifar10"
-    args.data_dir = "./data/cifar10"
+    args.dataset = "imagenet"
+    args.data_dir = "/home/chaoyanghe/sourcecode/dataset/cv/ImageNet"
+    # args.dataset = "cifar10"
+    # args.data_dir = "./data/cifar10"
     args.batch_size = 60
     data_manager = CVDatasetManager(args)
 
     data_manager.set_seed(data_manager.seeds[0])
 
-    num_replicas = [2, 2, 2, 2, 4, 4, 8, 8, 16, 16]
+    num_replicas = [3, 2, 2, 2, 4, 4, 8, 8, 16, 16]
 
     # train_indices_dataloader = data_manager.test_mapping_for_single_worker()node_rank, num_replicas, local_rank
     starting_time = time.time()
@@ -400,6 +411,9 @@ def test_distributed():
     ending_time = time.time()
     # logging.info(data_manager.get_train_sample_index(0))
     logging.info("time cost = " + str(ending_time - starting_time))
+    for batch_idx, batch in enumerate(train_indices_dataloader):
+        sample_uid_list, sample_origin, target_origin = batch
+        logging.info(len(sample_uid_list))
     return
 
     sample_origin_list = {}
@@ -445,7 +459,7 @@ def test_distributed():
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(
         description="PipeTransformer: Elastic and Automated Pipelining for Fast Distributed Training of Transformer Models")
-    parser.add_argument("--nnodes", type=int, default=1)
+    parser.add_argument("--nnodes", type=int, default=2)
 
     parser.add_argument("--nproc_per_node", type=int, default=4)
 

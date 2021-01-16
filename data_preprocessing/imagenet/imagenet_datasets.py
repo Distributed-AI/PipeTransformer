@@ -3,6 +3,7 @@ import math
 import os
 import os.path
 
+import numpy as np
 import torch.utils.data as data
 from PIL import Image
 
@@ -82,7 +83,7 @@ def default_loader(path):
 
 class ImageNet(data.Dataset):
 
-    def __init__(self, data_dir, node_num=0, node_rank=-1,
+    def __init__(self, data_dir, batch_size, node_num=0, nproc_per_node=0, node_rank=-1,
                  dataidxs=None, train=True, transform=None, target_transform=None, download=False):
         """
             Generating this class too many times will be time-consuming.
@@ -128,6 +129,22 @@ class ImageNet(data.Dataset):
                 end_idx = subset_len * (node_rank + 1)
             self.local_data = self.local_data[starting_idx:end_idx]
 
+        # drop_last = False
+        data_len = len(self.local_data)
+        if data_len % nproc_per_node > 0:
+            subset_len = math.ceil(data_len / nproc_per_node)
+            even_len = int(subset_len * nproc_per_node)
+            temp = self.local_data[:even_len - data_len]
+            self.local_data = np.concatenate((self.local_data, temp), axis=0)
+
+        data_len = len(self.local_data)
+        gap = data_len % batch_size
+        if gap > 0:
+            added_batch = batch_size - gap
+            temp = self.local_data[:added_batch]
+            self.local_data = np.concatenate((self.local_data, temp), axis=0)
+        logging.info("data_len = %d" % len(self.local_data))
+
     def get_local_data(self):
         return self.local_data
 
@@ -171,4 +188,3 @@ class ImageNet(data.Dataset):
 
     def __len__(self):
         return len(self.local_data)
-

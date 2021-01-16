@@ -55,6 +55,7 @@ class CIFAR10(VisionDataset):
             root: str,
             batch_size=2,
             node_num=0,
+            nproc_per_node=0,
             node_rank=-1,
             train: bool = True,
             transform: Optional[Callable] = None,
@@ -92,10 +93,8 @@ class CIFAR10(VisionDataset):
                 else:
                     self.targets.extend(entry['fine_labels'])
 
-        logging.info("self.data = " + str(self.data[0][0]))
         self.data = np.vstack(self.data).reshape(-1, 3, 32, 32)
         self.data = self.data.transpose((0, 2, 3, 1))  # convert to HWC
-        logging.info("self.data = " + str(self.data.shape))
 
         # for PipeTransformer
         if node_num > 0 and node_rank >= 0:
@@ -113,13 +112,28 @@ class CIFAR10(VisionDataset):
                 end_idx = subset_len * (node_rank + 1)
             self.data = self.data[starting_idx:end_idx]
             self.targets = self.targets[starting_idx:end_idx]
+
         # drop last = False
         data_len = len(self.data)
-        if data_len % batch_size > 0:
-            subset_len = math.ceil(data_len / batch_size)
-            even_len = subset_len * node_num
-            self.data += self.data[:even_len - data_len]
+        if data_len % nproc_per_node > 0:
+            subset_len = math.ceil(data_len / nproc_per_node)
+            even_len = int(subset_len * nproc_per_node)
+            logging.info(len(self.data[:even_len - data_len]))
+            logging.info(self.data[:even_len - data_len].shape)
+            temp = self.data[:even_len - data_len]
+            self.data = np.concatenate((self.data, temp), axis=0)
             self.targets += self.targets[:even_len - data_len]
+
+        data_len = len(self.data)
+        gap = data_len % batch_size
+        if gap > 0:
+            added_batch = batch_size - gap
+            temp = self.data[:added_batch]
+            self.data = np.concatenate((self.data, temp), axis=0)
+            self.targets += self.targets[:added_batch]
+        logging.info("data_len = %d" % len(self.data))
+        logging.info("targets = %d" % len(self.targets))
+
         self._load_meta()
 
     def _load_meta(self) -> None:
