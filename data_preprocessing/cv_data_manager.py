@@ -191,7 +191,7 @@ class CVDatasetManager:
             Pin Memory: https://pytorch.org/docs/stable/notes/cuda.html#use-pinned-memory-buffers
         """
         # only load dataset once
-        self.get_data(args, self.dataset, node_num=self.args.nnodes, nproc_per_node=num_replicas, node_rank=node_rank)
+        self.get_data(self.args, self.dataset, node_num=self.args.nnodes, nproc_per_node=num_replicas, node_rank=node_rank)
 
         logging.info("train dataset len = %d, test dataset len = %d" % (len(self.train_dataset), len(self.test_dataset)))
         if self.train_sampler is not None:

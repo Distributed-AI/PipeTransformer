@@ -8,7 +8,7 @@ from torch import nn
 from utils import WarmupCosineSchedule, WarmupLinearSchedule
 
 
-class VisionTransformerTrainer:
+class PipeTransformerTrainer:
     def __init__(self, args, auto_freeze, auto_pipe, auto_dp, auto_cache,
                  frozen_model, pipe_model,
                  cv_data_manager):
@@ -29,9 +29,7 @@ class VisionTransformerTrainer:
 
         # data
         self.cv_data_manager = cv_data_manager
-        self.train_dl, self.test_dl = cv_data_manager.get_data_loader(args.batch_size,
-                                                                      auto_dp.get_global_data_duplicate_num(),
-                                                                      auto_dp.get_global_data_rank())
+        self.train_dl, self.test_dl = None, None
 
     def train_and_eval(self, freeze_point):
         epoch_start = freeze_point['epoch']

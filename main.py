@@ -15,7 +15,7 @@ from model.vit.vision_transformer_origin import CONFIGS
 from model.vit.vision_transformer_origin import VisionTransformer
 from pipe.auto_pipe import AutoElasticPipe
 from pipe.pipe_model_builder import OutputHead
-from trainer import VisionTransformerTrainer
+from trainer import PipeTransformerTrainer
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(
@@ -184,8 +184,8 @@ if __name__ == "__main__":
                                                                                                0, freeze_point)
     freeze_point = auto_dp.get_freeze_point()
 
-    trainer = VisionTransformerTrainer(args, auto_freeze, auto_pipe, auto_dp, auto_cache,
-                                       frozen_model, pipe_model, cv_data_manager)
+    trainer = PipeTransformerTrainer(args, auto_freeze, auto_pipe, auto_dp, auto_cache,
+                                     frozen_model, pipe_model, cv_data_manager)
     trainer.train_and_eval(freeze_point)
 
     auto_cache.cleanup()
