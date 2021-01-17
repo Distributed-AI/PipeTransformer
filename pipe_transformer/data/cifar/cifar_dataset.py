@@ -131,7 +131,7 @@ class CIFAR10(VisionDataset):
             added_batch = batch_size - gap
             temp = self.data[:added_batch]
             self.data = np.concatenate((self.data, temp), axis=0)
-            temp_target = self.data[:added_batch]
+            temp_target = self.targets[:added_batch]
             self.targets = np.concatenate((self.targets, temp_target), axis=0)
         logging.info("data_len = %d" % len(self.data))
         logging.info("targets len = %d" % len(self.targets))
