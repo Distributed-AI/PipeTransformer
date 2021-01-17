@@ -72,7 +72,6 @@ class CVTrainer:
 
             optimizer.zero_grad()
 
-            # TODO: cuda sync
             starting_time_forward = time.time()
             log_probs = self.pipe_transformer.forward(epoch, batch_idx, sample_index_list, x, True, True)
 

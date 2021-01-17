@@ -19,10 +19,22 @@ conda install pytorch torchvision torchaudio cudatoolkit=10.2 -c pytorch
 pip install -r requirements.txt 
 ```
 
-4. WandB.com
+4.WandB.com
 ```
 wandb login ee0b5f53d949c84cee7decbe7a629e63fb2f8408
 ```
+
+5.prepare dataset and pretrained weights
+
+(1) prepare ViT model pretrained weights
+
+```
+cd model/cv/pretrained/
+sh download_pretrained_weights.sh
+cd ../../../
+```
+(2) download datasets at `data` folder
+
 ## Experiments
 check README.md at 
 

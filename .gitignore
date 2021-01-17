@@ -4,7 +4,6 @@
 
 data/*
 wandb
-*.npz
 
 pipe_transformer/freeze/data
 

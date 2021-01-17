@@ -19,16 +19,13 @@ class AutoCache:
 
         self.cache_manager = AutoCacheImpl(config, self.data_manager)
 
-        self.is_enable = False
+        self.is_enable = config.b_cache
 
     def update_sample_index(self, epoch):
         self.cache_manager.reset_status(epoch)
 
     def update_num_frozen_layer(self, num_frozen_layers):
         self.num_frozen_layers = num_frozen_layers
-
-    def enable(self, on):
-        self.is_enable = on
 
     def forward_with_cache(self, frozen_model, pipe_model, epoch, batch_idx, batch_sample_idx, x, is_train_mode, is_train_data):
         if self.num_frozen_layers != self.auto_pipe.get_num_frozen_layers():
