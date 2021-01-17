@@ -2,8 +2,8 @@ import os
 
 from nltk.tree import Tree
 
-from pipe_transformer.data.base.base_client_data_loader import BaseClientDataLoader
-from pipe_transformer.data.base import BaseRawDataLoader
+from data_preprocessing.base.base_client_data_loader import BaseClientDataLoader
+from data_preprocessing.base.base_raw_data_loader import BaseRawDataLoader
 
 
 class RawDataLoader(BaseRawDataLoader):

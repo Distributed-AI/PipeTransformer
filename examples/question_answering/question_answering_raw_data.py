@@ -120,6 +120,31 @@ def load_data(args, dataset):
     return train_data, test_data
 
 
+def get_normal_format(dataset, cut_off=None):
+    """
+    reformat the dataset to normal version.
+    """
+    reformatted_data = []
+    assert len(dataset["context_X"]) == len(dataset["question_X"]) == len(dataset["Y"]) == len(
+        dataset["question_ids"]) == len(dataset["original_index"])
+    for c, q, a, qid, oid in zip(dataset["context_X"], dataset["question_X"], dataset["Y"], dataset["question_ids"],
+                                 dataset["original_index"]):
+        item = {}
+        item["context"] = c
+        item["qas"] = [
+            {
+                # "id": "%d"%(len(reformatted_data)+1),
+                "qid": qid,
+                "id": oid,
+                "is_impossible": False,
+                "question": q,
+                "answers": [{"text": c[a[0]:a[1]], "answer_start": a[0]}],
+            }
+        ]
+        reformatted_data.append(item)
+    return reformatted_data[:cut_off]
+
+
 def main(args):
     logging.basicConfig(level=logging.INFO)
     transformers_logger = logging.getLogger("transformers")
@@ -128,8 +153,8 @@ def main(args):
     # Loading full data (for centralized learning)
     train_data, test_data = load_data(args, args.dataset)
 
-    train_data = pipe_transformer.data.SQuAD_1_1.data_loader.get_normal_format(train_data, cut_off=None)
-    test_data = pipe_transformer.data.SQuAD_1_1.data_loader.get_normal_format(test_data, cut_off=None)
+    train_data = get_normal_format(train_data, cut_off=None)
+    test_data = get_normal_format(test_data, cut_off=None)
 
     print("create model...")
     # Create a ClassificationModel.

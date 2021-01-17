@@ -147,8 +147,8 @@ class ClassificationModel:
 
         # dataset loading
         train_examples = [
-            InputExample(i, text, None, label)
-            for i, (text, label) in enumerate(zip(train_df.iloc[:, 0], train_df.iloc[:, 1]))
+            InputExample(oid, text, None, label)
+            for i, (text, label, oid) in enumerate(zip(train_df.iloc[:, 0], train_df.iloc[:, 1], train_df.iloc[:, 2]))
         ]
         train_dataset = self.load_and_cache_examples(train_examples, verbose=verbose)
 

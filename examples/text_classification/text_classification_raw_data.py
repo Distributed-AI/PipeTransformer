@@ -98,8 +98,8 @@ def load_data(args, dataset):
     all_data = data_loader.data_loader()
 
     X, Y, target_vocab, attributes = all_data["X"], all_data["Y"], all_data["target_vocab"], all_data["attributes"]
-    train_data = [(X[idx], target_vocab[Y[idx]]) for idx in attributes["train_index_list"]]
-    test_data = [(X[idx], target_vocab[Y[idx]]) for idx in attributes["test_index_list"]]
+    train_data = [(X[idx], target_vocab[Y[idx]], idx) for idx in attributes["train_index_list"]]
+    test_data = [(X[idx], target_vocab[Y[idx]], idx) for idx in attributes["test_index_list"]]
     return pd.DataFrame(train_data), pd.DataFrame(test_data), len(target_vocab)
 
 
