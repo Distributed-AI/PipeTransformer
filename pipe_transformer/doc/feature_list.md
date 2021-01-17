@@ -1,10 +1,9 @@
+# System-wise Optimization:
 System-wise benefits:
 
 1. computation can be reused
 2. communication is not required
 3. memory cost is reduced
-
-# System-wise Optimization:
 
 1. DPipe: a pytorch compatible pipe parallelism for large model like BERT, Vision Transformer.
 
@@ -63,3 +62,7 @@ https://github.com/pytorch/pytorch/issues/37664
 This idea can also be used in Federated Learning. We can calculate the frozen number at the server side.
 
 https://arxiv.org/pdf/1706.05806.pdf
+
+# GPipe
+torch.__version__
+'1.8.0.dev20201219
