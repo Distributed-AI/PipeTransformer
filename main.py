@@ -195,15 +195,5 @@ def main():
     if args.global_rank == 0:
         wandb.finish()
 
-
-def main2():
-    print(psutil.virtual_memory())
-    memory_cost_percent = 1 - psutil.virtual_memory()[4] / psutil.virtual_memory()[0]
-    print(psutil.virtual_memory()[0])
-    print(psutil.virtual_memory()[4])
-    print(memory_cost_percent)
-
-
 if __name__ == "__main__":
-    # main()
-    main2()
+    main()
