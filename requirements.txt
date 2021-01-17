@@ -4,3 +4,17 @@ psutil
 wandb
 art
 matplotlib
+numpy
+requests
+tqdm
+regex
+tokenizers==0.9.3
+transformers==3.5.0
+scikit-learn
+seqeval
+tensorboardx
+pandas
+streamlit
+gensim
+nltk
+spacy
