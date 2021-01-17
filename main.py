@@ -17,7 +17,8 @@ from pipe.auto_pipe import AutoElasticPipe
 from pipe.pipe_model_builder import OutputHead
 from trainer import PipeTransformerTrainer
 
-if __name__ == "__main__":
+
+def main():
     parser = argparse.ArgumentParser(
         description="PipeTransformer: Elastic and Automated Pipelining for Fast Distributed Training of Transformer Models")
     parser.add_argument("--nnodes", type=int, default=2)
@@ -193,3 +194,14 @@ if __name__ == "__main__":
 
     if args.global_rank == 0:
         wandb.finish()
+
+
+def main2():
+    print(psutil.virtual_memory())
+    memory_cost_percent = 1 - psutil.virtual_memory()[4] / psutil.virtual_memory()[0]
+    print(memory_cost_percent)
+
+
+if __name__ == "__main__":
+    # main()
+    main2()
