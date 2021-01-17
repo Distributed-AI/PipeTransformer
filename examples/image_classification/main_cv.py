@@ -108,7 +108,7 @@ def add_args():
 
     parser.add_argument('--cache', dest='b_cache', action='store_true')
     parser.add_argument('--no_cache', dest='b_cache', action='store_false')
-    parser.set_defaults(b_cache=True)
+    parser.set_defaults(b_cache=False)
 
     parser.add_argument("--is_debug_mode", default=1, type=int,
                         help="is_debug_mode")
@@ -210,3 +210,6 @@ if __name__ == "__main__":
 
     if args.global_rank == 0:
         wandb.finish()
+
+if __name__ == "__main__":
+    main()
