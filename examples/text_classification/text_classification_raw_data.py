@@ -29,7 +29,7 @@ import wandb
 sys.path.insert(0, os.path.abspath(os.path.join(os.getcwd(), "")))
 sys.path.insert(0, os.path.abspath(os.path.join(os.getcwd(), "../../")))
 
-from model.nlp.classification.classification_model import ClassificationModel
+from examples.text_classification.classification_model import ClassificationModel
 import pipe_transformer.data.SST_2.data_loader
 
 

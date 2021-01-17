@@ -2,10 +2,11 @@
 *.pyc
 *.gz
 
-data/*
+
 wandb
 
 pipe_transformer/freeze/data
 
-/data/
+data/cifar10
+data/cifar100
 pipe_transformer/data/data/cifar10/*

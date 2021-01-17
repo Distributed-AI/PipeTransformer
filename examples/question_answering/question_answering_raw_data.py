@@ -28,7 +28,7 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.getcwd(), "")))
 sys.path.insert(0, os.path.abspath(os.path.join(os.getcwd(), "../../")))
 
 import pipe_transformer.data.SQuAD_1_1.data_loader
-from model.nlp.question_answering.question_answering_model import QuestionAnsweringModel
+from examples.question_answering.question_answering_model import QuestionAnsweringModel
 
 
 def add_args(parser):
