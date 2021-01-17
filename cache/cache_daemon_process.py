@@ -22,7 +22,7 @@ class CacheDaemon(mp.Process):
         self.train_sample_index = []
         self.test_sample_index = []
 
-        self.host_memory_percentage = 0.75
+        self.host_memory_percentage = 0.65
         self.disk_memory_percentage = 0.85
 
 
