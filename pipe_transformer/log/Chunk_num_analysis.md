@@ -12,6 +12,7 @@
 
 1 pipe len: 264 images/second
 
+2 pipe len:  images/second
 
 # Pipe len = 2
 
