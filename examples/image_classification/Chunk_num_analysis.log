@@ -1,0 +1,6 @@
+ImageNet, Batch size = 400
+
+Pipe len = 8
+
+4 * pipe len: 180 images/second
+3 * pipe len:
