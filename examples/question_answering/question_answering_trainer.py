@@ -185,9 +185,8 @@ class QuestionAnsweringTrainer:
                     if self.args.evaluate_during_training and (self.args.evaluate_during_training_steps > 0
                             and global_step % self.args.evaluate_during_training_steps == 0):
 
-                        results, _ = self.eval_model(eval_data, **kwargs)
+                        # results, _ = self.eval_model(eval_data, **kwargs)
                         self.eval_model_by_offical_script(eval_data, eval_data_path)
-
 
         return global_step, tr_loss / global_step
 
