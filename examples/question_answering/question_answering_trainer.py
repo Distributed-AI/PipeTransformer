@@ -75,7 +75,7 @@ class QuestionAnsweringTrainer:
         self.results = {}
 
     def train_model(
-            self, train_data, eval_data, output_dir=False, args=None, **kwargs
+            self, train_data, eval_data, eval_data_path, output_dir=False, args=None, **kwargs
     ):
         """
         Trains the model using 'train_data'
@@ -116,13 +116,13 @@ class QuestionAnsweringTrainer:
         os.makedirs(output_dir, exist_ok=True)
 
         global_step, training_details = self.train(
-            train_dataset, eval_data=eval_data, **kwargs
+            train_dataset, eval_data, eval_data_path, **kwargs
         )
         logger.info(" Training of {} model complete. Saved to {}.".format(self.args.model_type, output_dir))
 
         return global_step, training_details
 
-    def train(self, train_dataset, eval_data=None, **kwargs):
+    def train(self, train_dataset, eval_data, eval_data_path, **kwargs):
         """
         Trains the model on train_dataset.
 
@@ -186,6 +186,8 @@ class QuestionAnsweringTrainer:
                             and global_step % self.args.evaluate_during_training_steps == 0):
 
                         results, _ = self.eval_model(eval_data, **kwargs)
+                        self.eval_model_by_offical_script(eval_data, eval_data_path)
+
 
         return global_step, tr_loss / global_step
 
@@ -395,7 +397,6 @@ class QuestionAnsweringTrainer:
             )
 
         return all_predictions, all_nbest_json, scores_diff_json, eval_loss
-
 
     def calculate_results(self, truth, predictions, **kwargs):
         truth_dict = {}
