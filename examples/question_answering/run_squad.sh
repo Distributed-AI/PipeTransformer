@@ -1,8 +1,8 @@
 
-python -m question_answering_raw_data \
+python -m main_qa \
     --dataset squad_1.1 \
-    --data_dir "../data/span_extraction/SQuAD_1.1/" \
-    --data_file "../data/span_extraction/SQuAD_1.1/squad_1.1_data.pkl" \
+    --data_dir "../../data/span_extraction/SQuAD_1.1/" \
+    --data_file "../../data/span_extraction/SQuAD_1.1/squad_1.1_data.pkl" \
     --model_type bert \
     --model_name bert-base-uncased \
     --do_lower_case True \

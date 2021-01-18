@@ -129,22 +129,27 @@ class ImageNet(data.Dataset):
                 end_idx = subset_len * (node_rank + 1)
             self.local_data = self.local_data[starting_idx:end_idx]
 
-        # drop_last = False
+        # for PipeTransformer: to make sure in each machine, the dataset can be divided by nproc_per_node*batch_size
         data_len = len(self.local_data)
-        if data_len % nproc_per_node > 0:
-            subset_len = math.ceil(data_len / nproc_per_node)
-            even_len = int(subset_len * nproc_per_node)
+        logging.info("nproc_per_node = %d" % nproc_per_node)
+        gap = (data_len / nproc_per_node) % batch_size
+        if gap > 0:
+            subset_len = math.ceil((data_len / nproc_per_node) / batch_size)
+            even_len = int(subset_len * nproc_per_node * batch_size)
             self.local_data += self.local_data[:even_len - data_len]
 
         data_len = len(self.local_data)
-        gap = data_len % batch_size
-        if gap > 0:
-            added_batch = batch_size - gap
-            self.local_data += self.local_data[:added_batch]
-        logging.info("data_len = %d" % len(self.local_data))
 
-        if (data_len % batch_size) % 8 != 0:
-            raise Exception("could not be divided by more parallel processes")
+        # simulate the transformation
+        worker_num_in_parallel = 1
+        while worker_num_in_parallel <= nproc_per_node:
+            if int(data_len / worker_num_in_parallel) % batch_size != 0:
+                raise Exception("could not be divided by more parallel processes")
+            else:
+                logging.info("Good. Worker_num_in_parallel = %d is dividable!" % worker_num_in_parallel)
+            worker_num_in_parallel *= 2
+        logging.info("data_len = %d" % len(self.local_data))
+        logging.info("targets len = %d" % len(self.local_data))
 
     def get_local_data(self):
         return self.local_data

@@ -108,17 +108,25 @@ class ModelArgs:
 
 
 @dataclass
-class QuestionAnsweringArgs(ModelArgs):
+class ClassificationArgs(ModelArgs):
     """
-    Model args for a QuestionAnsweringModel
+    Model args for a ClassificationModel
     """
 
-    model_class: str = "QuestionAnsweringModel"
-    doc_stride: int = 384
-    early_stopping_metric: str = "correct"
-    early_stopping_metric_minimize: bool = False
+    model_class: str = "ClassificationModel"
+    labels_list: list = field(default_factory=list)
+    labels_map: dict = field(default_factory=dict)
+    lazy_delimiter: str = "\t"
+    lazy_labels_column: int = 1
     lazy_loading: bool = False
-    max_answer_length: int = 100
-    max_query_length: int = 64
-    n_best_size: int = 20
-    null_score_diff_threshold: float = 0.0
+    lazy_loading_start_line: int = 1
+    lazy_text_a_column: bool = None
+    lazy_text_b_column: bool = None
+    lazy_text_column: int = 0
+    onnx: bool = False
+    regression: bool = False
+    sliding_window: bool = False
+    stride: float = 0.8
+    tie_value: int = 1
+    evaluate_during_training_steps: int = 433
+    evaluate_during_training: bool = True

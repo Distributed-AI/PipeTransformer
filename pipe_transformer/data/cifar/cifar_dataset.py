@@ -96,7 +96,7 @@ class CIFAR10(VisionDataset):
         self.data = np.vstack(self.data).reshape(-1, 3, 32, 32)
         self.data = self.data.transpose((0, 2, 3, 1))  # convert to HWC
 
-        # for PipeTransformer
+        # for PipeTransformer: evenly distribute to multiple machines
         if node_num > 0 and node_rank >= 0:
             data_len = len(self.data)
             if data_len % node_num > 0:
@@ -113,29 +113,29 @@ class CIFAR10(VisionDataset):
             self.data = self.data[starting_idx:end_idx]
             self.targets = self.targets[starting_idx:end_idx]
 
-        # drop last = False
+        # for PipeTransformer: to make sure in each machine, the dataset can be divided by nproc_per_node*batch_size
         data_len = len(self.data)
-        if data_len % nproc_per_node > 0:
-            subset_len = math.ceil(data_len / nproc_per_node)
-            even_len = int(subset_len * nproc_per_node)
-            logging.info(len(self.data[:even_len - data_len]))
-            logging.info(self.data[:even_len - data_len].shape)
+        logging.info("nproc_per_node = %d" % nproc_per_node)
+        gap = (data_len / nproc_per_node) % batch_size
+        if gap > 0:
+            subset_len = math.ceil((data_len / nproc_per_node) / batch_size)
+            even_len = int(subset_len * nproc_per_node * batch_size)
+            logging.info(even_len)
             temp = self.data[:even_len - data_len]
             self.data = np.concatenate((self.data, temp), axis=0)
             temp_target = self.targets[:even_len - data_len]
             self.targets = np.concatenate((self.targets, temp_target), axis=0)
 
         data_len = len(self.data)
-        gap = data_len % batch_size
-        if gap > 0:
-            added_batch = batch_size - gap
-            temp = self.data[:added_batch]
-            self.data = np.concatenate((self.data, temp), axis=0)
-            temp_target = self.targets[:added_batch]
-            self.targets = np.concatenate((self.targets, temp_target), axis=0)
 
-        if (data_len % batch_size) % 8 != 0:
-            raise Exception("could not be divided by more parallel processes")
+        # simulate the transformation
+        worker_num_in_parallel = 1
+        while worker_num_in_parallel <= nproc_per_node:
+            if int(data_len / worker_num_in_parallel) % batch_size != 0:
+                raise Exception("could not be divided by more parallel processes")
+            else:
+                logging.info("Good. Worker_num_in_parallel = %d is dividable!" % worker_num_in_parallel)
+            worker_num_in_parallel *= 2
         logging.info("data_len = %d" % len(self.data))
         logging.info("targets len = %d" % len(self.targets))
 
