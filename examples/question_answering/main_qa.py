@@ -45,7 +45,7 @@ def add_args(parser):
     parser.add_argument('--data_file', type=str, default='data/data_loaders/squad_1.1_data_loader.pkl',
                         help='data pickle file')
 
-    parser.add_argument('--eval_data_file', type=str, default='data/span_extraction/SQuAD_1.1/dev-v1.1.json',
+    parser.add_argument('--eval_data_file', type=str, default='../../data/span_extraction/SQuAD_1.1/dev-v1.1.json',
                         help='this argument is set up for using official script to evaluate the model')
 
     # Model related
@@ -133,9 +133,9 @@ def get_normal_format(dataset, cut_off=None):
         item["context"] = c
         item["qas"] = [
             {
-                # "id": "%d"%(len(reformatted_data)+1),
+                "id": "%d"%(len(reformatted_data)+1),
                 "qid": qid,
-                "id": oid,
+                # "id": oid,
                 "is_impossible": False,
                 "question": q,
                 "answers": [{"text": c[a[0]:a[1]], "answer_start": a[0]}],
@@ -153,8 +153,8 @@ def main(args):
     # Loading full data (for centralized learning)
     train_data, test_data = load_data(args, args.dataset)
 
-    train_data = get_normal_format(train_data, cut_off=100)
-    test_data = get_normal_format(test_data, cut_off=100)
+    train_data = get_normal_format(train_data, cut_off=160)
+    test_data = get_normal_format(test_data, cut_off=160)
 
     print("create model...")
     # Create a ClassificationModel.

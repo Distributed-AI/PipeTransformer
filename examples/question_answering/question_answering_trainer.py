@@ -262,7 +262,7 @@ class QuestionAnsweringTrainer:
         f = os.popen("python ./evaluate-v1.1.py %s %s" % (
             eval_data_path, os.path.join(output_dir, "prediction.json")))
 
-        result = eval(f.read().strip())
+        result = f.read().strip()
         return result
 
     def evaluate(self, eval_data, output_dir, verbose_logging=False):
@@ -396,7 +396,6 @@ class QuestionAnsweringTrainer:
 
         return all_predictions, all_nbest_json, scores_diff_json, eval_loss
 
-
     def calculate_results(self, truth, predictions, **kwargs):
         truth_dict = {}
         questions_dict = {}
@@ -441,6 +440,7 @@ class QuestionAnsweringTrainer:
         extra_metrics = {}
         logging.info(kwargs)
         for metric, func in kwargs.items():
+            logging.info("metric = %d, func = %s" % str(metric), str(func))
             extra_metrics[metric] = func(true_answers, predicted_answers)
 
         result = {"correct": correct, "similar": similar, "incorrect": incorrect, **extra_metrics}
