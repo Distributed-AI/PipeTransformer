@@ -3,8 +3,8 @@
 ##  Pipe len = 8
 
 4 * pipe len: 180 images/second
-3 * pipe len: 210 images/second
-2 * pipe len: 210 images/second
+3 * pipe len: 210 images/second   
+2 * pipe len: 210 images/second (***)
 1 * pipe len: 200 images/second
 6 (less than 1 pipe len): 188 images/second
 
@@ -14,10 +14,11 @@
 
 1 pipe len: 300 images/second
 
-2 pipe len: 312 images/second
+2 pipe len: 312 images/second  (***)
 
-2 pipe len: 308 images/second
+3 pipe len: 308 images/second
 
+4 pipe len: 304 images/second
 
 # Pipe len = 2
 
