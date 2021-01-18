@@ -19,11 +19,13 @@ python -m experiments.centralized.transformer_exps.text_classification_raw_data 
 import argparse
 import logging
 import os
+import random
 import sys
 
+import numpy as np
 import pandas as pd
 import sklearn
-
+import torch
 import wandb
 
 # this is a temporal import, we will refactor FedML as a package installation
@@ -39,6 +41,10 @@ def add_args(parser):
     parser : argparse.ArgumentParser
     return a parser added with args required by fit
     """
+    # Infrastructure related
+    parser.add_argument('--device_id', type=int, default=8, metavar='N',
+                        help='device id')
+
     # Data related
     parser.add_argument('--dataset', type=str, default='20news', metavar='N',
                         help='dataset used for training')
@@ -104,10 +110,23 @@ def load_data(args, dataset):
     return pd.DataFrame(train_data), pd.DataFrame(test_data), len(target_vocab)
 
 
+def set_seed(seed):
+    torch.backends.cudnn.deterministic = True
+    torch.backends.cudnn.benchmark = False
+    torch.manual_seed(seed)
+    torch.cuda.manual_seed_all(seed)
+    np.random.seed(seed)
+    random.seed(seed)
+
+
 def main(args):
     logging.basicConfig(level=logging.INFO)
     transformers_logger = logging.getLogger("transformers")
     transformers_logger.setLevel(logging.WARNING)
+
+    logging.info(args)
+
+    set_seed(0)
 
     # Loading full data (for centralized learning)
     train_data, test_data, num_labels = load_data(args, args.dataset)
@@ -120,15 +139,16 @@ def main(args):
               "gradient_accumulation_steps": args.gradient_accumulation_steps,
               "do_lower_case": args.do_lower_case,
               "manual_seed": args.manual_seed,
-              "reprocess_input_data": True,
+              "reprocess_input_data": False,
               "overwrite_output_dir": True,
               "max_seq_length": args.max_seq_length,
               "train_batch_size": args.train_batch_size,
               "eval_batch_size": args.eval_batch_size,
               "fp16": args.fp16,
+              "device_id": args.device_id,
               "output_dir": args.output_dir})
 
-    # Strat training.
+    # start training.
     model.train_model(train_data, test_data, acc=sklearn.metrics.accuracy_score)
 
     # Evaluate the model

@@ -107,14 +107,6 @@ class AutoCacheImpl:
         self.cache_daemon.kill()
         self.msg_q.close()
 
-    def watch_dog_process_impl(self, msg_q):
-        while True:
-            try:
-                msg = msg_q.get(timeout=2.0)
-            except msg_q.Empty as e:
-                print("[WATCHDOG]: Maybe WORKER is slacking")
-                msg_q.put("KILL WORKER")
-
     def get_hidden_feature(self, num_frozen_layer_last_epoch, num_frozen_layer, model, epoch, batch_idx,
                            batch_sample_idx, x, device, is_train_mode, is_train_data):
         if is_train_mode:
@@ -142,10 +134,10 @@ class AutoCacheImpl:
                 logging.critical("(global_rank = %d) cached layer %d" % (self.config.global_rank, num_frozen_layer))
             logging.critical("(global_rank = %d) NO need to compute FP (END)" % self.config.global_rank)
         else:
-            logging.critical("(global_rank = %d, epoch = %d, batch_idx = %d, is_train_mode = %s, is_train_data = %s, "
+            logging.critical("(global_rank = %s, epoch = %d, batch_idx = %d, is_train_mode = %s, is_train_data = %s, "
                              "num_frozen_layer_last_epoch = %d, num_frozen_layer = %d) "
                              "cache to shared memory (START)"
-                             % (self.config.global_rank, epoch, batch_idx, str(is_train_mode), str(is_train_data),
+                             % (str(self.config.global_rank), epoch, batch_idx, str(is_train_mode), str(is_train_data),
                                 num_frozen_layer_last_epoch, num_frozen_layer))
             with torch.no_grad():
                 hidden_feature = model(x).detach().cpu()

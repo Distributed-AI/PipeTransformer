@@ -478,35 +478,7 @@ def squad_convert_examples_to_features(
         example_index += 1
     features = new_features
     del new_features
-
-    # Convert to Tensors and build dataset
-    all_input_ids = torch.tensor([f.input_ids for f in features], dtype=torch.long)
-    all_attention_masks = torch.tensor([f.attention_mask for f in features], dtype=torch.long)
-    all_token_type_ids = torch.tensor([f.token_type_ids for f in features], dtype=torch.long)
-    all_cls_index = torch.tensor([f.cls_index for f in features], dtype=torch.long)
-    all_p_mask = torch.tensor([f.p_mask for f in features], dtype=torch.float)
-    all_is_impossible = torch.tensor([f.is_impossible for f in features], dtype=torch.float)
-
-    if not is_training:
-        all_feature_index = torch.arange(all_input_ids.size(0), dtype=torch.long)
-        dataset = TensorDataset(
-            all_input_ids, all_attention_masks, all_token_type_ids, all_feature_index, all_cls_index, all_p_mask
-        )
-    else:
-        all_start_positions = torch.tensor([f.start_position for f in features], dtype=torch.long)
-        all_end_positions = torch.tensor([f.end_position for f in features], dtype=torch.long)
-        dataset = TensorDataset(
-            all_input_ids,
-            all_attention_masks,
-            all_token_type_ids,
-            all_start_positions,
-            all_end_positions,
-            all_cls_index,
-            all_p_mask,
-            all_is_impossible,
-        )
-
-    return features, dataset
+    return features
 
 
 def convert_examples_to_features(

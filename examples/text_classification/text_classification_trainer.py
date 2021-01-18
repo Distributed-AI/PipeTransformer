@@ -25,7 +25,6 @@ from transformers import (
 
 from examples.text_classification.classification_utils import (
     InputExample,
-    LazyClassificationDataset,
     convert_examples_to_features,
 )
 from examples.text_classification.model_args import ClassificationArgs
@@ -77,10 +76,12 @@ class TextClassificationTrainer:
         self.config = config_class.from_pretrained(model_name, num_labels=num_labels, **self.args.config)
         self.model = model_class.from_pretrained(model_name, config=self.config, **kwargs)
         self.tokenizer = tokenizer_class.from_pretrained(model_name, do_lower_case=self.args.do_lower_case, **kwargs)
+        logging.info(self.model)
 
-        self.device = torch.device("cuda:0")
+        self.device = torch.device("cuda:" + str(self.args.device_id))
         # training results
         self.results = {}
+        self.best_accuracy = 0.0
 
     def train_model(self, train_df, eval_df=None, **kwargs):
         """
@@ -109,8 +110,9 @@ class TextClassificationTrainer:
 
         warmup_steps = math.ceil(t_total * self.args.warmup_ratio)
         self.args.warmup_steps = warmup_steps if self.args.warmup_steps == 0 else self.args.warmup_steps
-        optimizer = torch.optim.Adam(self._get_optimizer_grouped_parameters(), lr=self.args.learning_rate, betas=(0.9, 0.999), weight_decay=0.01)
-        # optimizer = AdamW(self._get_optimizer_grouped_parameters(), lr=self.args.learning_rate, eps=self.args.adam_epsilon)
+        logging.info("warmup steps = %d" % self.args.warmup_steps)
+        # optimizer = torch.optim.Adam(self._get_optimizer_grouped_parameters(), lr=self.args.learning_rate, betas=(0.9, 0.999), weight_decay=0.01)
+        optimizer = AdamW(self._get_optimizer_grouped_parameters(), lr=self.args.learning_rate, eps=self.args.adam_epsilon)
         scheduler = get_linear_schedule_with_warmup(
             optimizer, num_warmup_steps=self.args.warmup_steps, num_training_steps=t_total
         )
@@ -123,6 +125,7 @@ class TextClassificationTrainer:
         for epoch in range(self.args.num_train_epochs):
 
             for batch_idx, batch in enumerate(train_dataloader):
+                self.model.train()
                 inputs = self._get_inputs_dict(batch)
                 outputs = self.model(**inputs)
                 # model outputs are always tuple in pytorch-transformers (see doc)
@@ -227,6 +230,9 @@ class TextClassificationTrainer:
         with open(output_eval_file, "w") as writer:
             for key in sorted(result.keys()):
                 writer.write("{} = {}\n".format(key, str(result[key])))
+        if result["acc"] > self.best_accuracy:
+            self.best_accuracy = result["acc"]
+        logging.info("best_accuracy = %f" % self.best_accuracy)
         self.results.update(result)
         logger.info(self.results)
 
@@ -261,7 +267,9 @@ class TextClassificationTrainer:
                 mode, args.model_type, args.max_seq_length, self.num_labels, len(examples),
             ),
         )
-
+        logging.info("cached_features_file = %s" % str(cached_features_file))
+        logging.info("args.reprocess_input_data = %s" % str(args.reprocess_input_data))
+        logging.info("no_cache = %s" % str(no_cache))
         if os.path.exists(cached_features_file) and (
                 (not args.reprocess_input_data and not no_cache)
                 or (mode == "dev" and args.use_cached_eval_features and not no_cache)
@@ -362,19 +370,22 @@ class TextClassificationTrainer:
 
     def _get_inputs_dict(self, batch):
         if isinstance(batch[0], dict):
+            logging.info("_get_inputs_dict")
             inputs = {key: value.squeeze().to(self.device) for key, value in batch[0].items()}
             inputs["labels"] = batch[1].to(self.device)
         else:
+            logging.info("another branch")
             batch = tuple(t.to(self.device) for t in batch)
 
             inputs = {"input_ids": batch[0], "attention_mask": batch[1], "labels": batch[3]}
 
             # XLM, DistilBERT and RoBERTa don't use segment_ids
             if self.args.model_type != "distilbert":
+                logging.info("token_type_ids")
                 inputs["token_type_ids"] = (
                     batch[2] if self.args.model_type in ["bert", "xlnet", "albert", "layoutlm"] else None
                 )
-
+            logging.info(inputs)
         return inputs
 
     def _get_optimizer_grouped_parameters(self):

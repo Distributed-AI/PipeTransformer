@@ -38,9 +38,9 @@ class ModelArgs:
     early_stopping_patience: int = 3
     encoding: str = None
     eval_batch_size: int = 8
-    evaluate_during_training: bool = False
+    evaluate_during_training: bool = True
     evaluate_during_training_silent: bool = True
-    evaluate_during_training_steps: int = 2000
+    evaluate_during_training_steps: int = 100
     evaluate_during_training_verbose: bool = False
     evaluate_each_epoch: bool = True
     fp16: bool = True
@@ -63,7 +63,7 @@ class ModelArgs:
     overwrite_output_dir: bool = False
     process_count: int = field(default_factory=get_default_process_count)
     quantized_model: bool = False
-    reprocess_input_data: bool = True
+    reprocess_input_data: bool = False
     save_best_model: bool = True
     save_eval_checkpoints: bool = True
     save_model_every_epoch: bool = True

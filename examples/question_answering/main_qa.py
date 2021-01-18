@@ -26,9 +26,8 @@ import wandb
 
 sys.path.insert(0, os.path.abspath(os.path.join(os.getcwd(), "")))
 sys.path.insert(0, os.path.abspath(os.path.join(os.getcwd(), "../../")))
-
+from examples.question_answering.question_answering_trainer import QuestionAnsweringTrainer
 import pipe_transformer.data.SQuAD_1_1.data_loader
-from examples.question_answering.question_answering_model import QuestionAnsweringModel
 
 
 def add_args(parser):
@@ -111,6 +110,7 @@ def load_data(args, dataset):
         for idx in index_list:
             for key in dataset.keys():
                 data[key].append(dataset[key][idx])
+        data["original_index"] = index_list
         return data
 
     input_dataset = {"context_X": context_X, "question_X": question_X, "question_ids": question_ids, "Y": Y}
@@ -158,14 +158,14 @@ def main(args):
 
     print("create model...")
     # Create a ClassificationModel.
-    model = QuestionAnsweringModel(
+    trainer = QuestionAnsweringTrainer(
         args.model_type, args.model_name,
         args={"num_train_epochs": args.num_train_epochs,
               "learning_rate": args.learning_rate,
               "gradient_accumulation_steps": args.gradient_accumulation_steps,
               "do_lower_case": args.do_lower_case,
               "manual_seed": args.manual_seed,
-              "reprocess_input_data": True,
+              "reprocess_input_data": False,
               "overwrite_output_dir": True,
               "max_seq_length": args.max_seq_length,
               "train_batch_size": args.train_batch_size,
@@ -177,12 +177,13 @@ def main(args):
               "wandb_project": "fednlp"})
 
     # Strat training.
-    model.train_model(train_data)
+    trainer.train_model(train_data, test_data)
 
     # Evaluate the model
-    result, texts = model.eval_model(test_data, output_dir=args.output_dir, verbose=False, verbose_logging=False)
+    result, texts = trainer.eval_model(test_data, output_dir=args.output_dir, verbose=False, verbose_logging=False)
     print(result)
-    result = model.eval_model_by_offical_script(test_data, args.eval_data_file, output_dir=args.output_dir,
+
+    result = trainer.eval_model_by_offical_script(test_data, args.eval_data_file, output_dir=args.output_dir,
                                                 verbose=False, verbose_logging=False)
     print(result)
 

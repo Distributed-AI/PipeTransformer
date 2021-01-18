@@ -1,11 +1,13 @@
 import argparse
 import logging
 import os
+import random
 import socket
 import sys
 
 import numpy as np
 import psutil
+import torch
 import wandb
 
 sys.path.insert(0, os.path.abspath(os.path.join(os.getcwd(), "")))
@@ -136,6 +138,7 @@ if __name__ == "__main__":
         Dataset related
     """
     cv_data_manager = CVDatasetManager(args)
+    cv_data_manager.set_seed(0)
     output_dim = cv_data_manager.get_output_dim()
 
     """
