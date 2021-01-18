@@ -12,7 +12,7 @@
 
 6 (less than 1 pipe len): 328 images/second
 
-
+1 pipe len: 300 images/second
 
 
 # Pipe len = 2
