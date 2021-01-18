@@ -440,7 +440,7 @@ class QuestionAnsweringTrainer:
         extra_metrics = {}
         logging.info(kwargs)
         for metric, func in kwargs.items():
-            logging.info("metric = %d, func = %s" % str(metric), str(func))
+            logging.info("metric = %s, func = %s" % (str(metric), str(func)))
             extra_metrics[metric] = func(true_answers, predicted_answers)
 
         result = {"correct": correct, "similar": similar, "incorrect": incorrect, **extra_metrics}

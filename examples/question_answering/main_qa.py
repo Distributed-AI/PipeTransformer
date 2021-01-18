@@ -180,7 +180,7 @@ def main(args):
     trainer.train_model(train_data, test_data)
 
     # Evaluate the model
-    result, texts = trainer.eval_model(test_data, output_dir=args.output_dir, verbose=False, verbose_logging=False)
+    result, texts = trainer.eval_model(test_data)
     print(result)
 
     result = trainer.eval_model_by_offical_script(test_data, args.eval_data_file, output_dir=args.output_dir,
