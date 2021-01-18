@@ -5,7 +5,7 @@
 4 * pipe len: 180 images/second
 3 * pipe len: 210 images/second
 2 * pipe len: 210 images/second
-1 * pipe len: 210 images/second
+1 * pipe len: 200 images/second
 
 # Pipe len = 4
 
