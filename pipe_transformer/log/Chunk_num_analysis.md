@@ -10,15 +10,8 @@
 
 # Pipe len = 4
 
-6 (less than 1 pipe len): 328 images/second
+1 pipe len: 264 images/second
 
-1 pipe len: 300 images/second
-
-2 pipe len: 312 images/second  (***)
-
-3 pipe len: 308 images/second
-
-4 pipe len: 304 images/second
 
 # Pipe len = 2
 
