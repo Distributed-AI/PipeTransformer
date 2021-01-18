@@ -153,8 +153,8 @@ def main(args):
     # Loading full data (for centralized learning)
     train_data, test_data = load_data(args, args.dataset)
 
-    train_data = get_normal_format(train_data, cut_off=None)
-    test_data = get_normal_format(test_data, cut_off=None)
+    train_data = get_normal_format(train_data, cut_off=100)
+    test_data = get_normal_format(test_data, cut_off=100)
 
     print("create model...")
     # Create a ClassificationModel.
