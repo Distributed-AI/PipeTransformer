@@ -13,9 +13,12 @@ class CVTrainer:
         self.args = args
         self.pipe_transformer = pipe_transformer
 
-        self.frozen_model, self.pipe_model = None, None
-        self.train_dl, self.test_dl = None, None
-        self.device_first, self.device_last = None, None
+        self.frozen_model = None
+        self.pipe_model = None
+        self.train_dl = None
+        self.test_dl = None
+        self.device_first = None
+        self.device_last = None
 
     def train_and_eval(self):
         epoch_start = self.pipe_transformer.start()

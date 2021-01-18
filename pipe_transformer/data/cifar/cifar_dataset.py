@@ -133,6 +133,9 @@ class CIFAR10(VisionDataset):
             self.data = np.concatenate((self.data, temp), axis=0)
             temp_target = self.targets[:added_batch]
             self.targets = np.concatenate((self.targets, temp_target), axis=0)
+
+        if (data_len % batch_size) % 8 != 0:
+            raise Exception("could not be divided by more parallel processes")
         logging.info("data_len = %d" % len(self.data))
         logging.info("targets len = %d" % len(self.targets))
 

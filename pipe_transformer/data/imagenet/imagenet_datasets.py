@@ -143,6 +143,9 @@ class ImageNet(data.Dataset):
             self.local_data += self.local_data[:added_batch]
         logging.info("data_len = %d" % len(self.local_data))
 
+        if (data_len % batch_size) % 8 != 0:
+            raise Exception("could not be divided by more parallel processes")
+
     def get_local_data(self):
         return self.local_data
 

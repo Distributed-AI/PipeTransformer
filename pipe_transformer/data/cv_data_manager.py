@@ -25,12 +25,7 @@ class CVDatasetManager:
         self.args = args
         self.dataset = args.dataset
 
-        """
-        `node rank` is used to guarantee the shuffle during epochs is only executed inside a machine.
-        Note that this does not change the randomness of data. 
-        The only difference is that some parallel processes in distributed training are 
-        fixed in part of the shuffle datasets.
-        """
+
         self.node_rank = args.node_rank
         self.local_rank = args.local_rank
         self.num_train_epochs = args.epochs
@@ -39,6 +34,15 @@ class CVDatasetManager:
         self.seeds = [i for i in range(self.num_train_epochs)]
         self.train_sample_idx_list_by_epoch = dict()
         self.test_sample_idx_list_by_epoch = dict()
+
+        """only load dataset once
+        `node rank` is used to guarantee the shuffle during epochs is only executed inside a machine.
+        Note that this does not change the randomness of data. 
+        The only difference is that some parallel processes in distributed training are 
+        fixed in part of the shuffle datasets.
+        """
+        self.get_data(self.args, self.dataset, node_num=self.args.nnodes, nproc_per_node=self.args.nproc_per_node,
+                      node_rank=self.args.node_rank)
 
     def get_output_dim(self):
         if self.args.dataset == "cifar10":
@@ -197,10 +201,6 @@ class CVDatasetManager:
         Optimization:
             Pin Memory: https://pytorch.org/docs/stable/notes/cuda.html#use-pinned-memory-buffers
         """
-        # only load dataset once
-        self.get_data(self.args, self.dataset, node_num=self.args.nnodes, nproc_per_node=num_replicas,
-                      node_rank=node_rank)
-
         logging.info(
             "train dataset len = %d, test dataset len = %d" % (len(self.train_dataset), len(self.test_dataset)))
         if self.train_sampler is not None:
