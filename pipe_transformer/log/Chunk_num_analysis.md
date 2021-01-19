@@ -18,7 +18,7 @@
 
 4 pipe len: 296 images/second
 
-5 pipe len: ?   images/second
+5 pipe len: 300   images/second
 # Pipe len = 2
 
 

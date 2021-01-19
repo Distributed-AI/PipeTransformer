@@ -50,7 +50,7 @@ class AutoFreeze:
         pass
 
     def get_hand_crafted_frozen_layers_by_epoch(self, epoch):
-        num_freeze_layers = 6
+        num_freeze_layers = 10
         if not self.shared_memory_mgr_frozen_layer_num.is_exist(epoch):
             self.shared_memory_mgr_frozen_layer_num.add_int_value(epoch, num_freeze_layers)
         return num_freeze_layers
