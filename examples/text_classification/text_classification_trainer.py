@@ -77,6 +77,7 @@ class TextClassificationTrainer:
 
                 # outputs = self.pipe_transformer.forward(epoch, batch_idx, sample_index_list, inputs, True, True)
                 # outputs = self.pipe_model(**inputs)
+                logging.info(self.pipe_model)
                 outputs = self.pipe_model(batch[0])
                 # model outputs are always tuple in pytorch-transformers (see doc)
                 loss = outputs[0]

@@ -27,13 +27,13 @@ import torch
 
 # this is a temporal import, we will refactor FedML as a package installation
 
+
 sys.path.insert(0, os.path.abspath(os.path.join(os.getcwd(), "")))
 sys.path.insert(0, os.path.abspath(os.path.join(os.getcwd(), "../../")))
 
-from transformers import BertConfig, BertTokenizer
+from transformers.models.bert import BertConfig, BertTokenizer, BertForSequenceClassification
 
 from examples.text_classification.model_args import ClassificationArgs
-from model.nlp.classification.bert_model import BertForSequenceClassification
 from pipe_transformer.data.tc_data_manager import TCDatasetManager
 
 from examples.text_classification.text_classification_trainer import TextClassificationTrainer
@@ -243,7 +243,7 @@ if __name__ == "__main__":
 
     config.is_debug_mode = args.is_debug_mode
 
-    pipe_transformer = PipeTransformer(config, tc_data_manager, model)
+    pipe_transformer = PipeTransformer(config, tc_data_manager, model_config, model)
     args.global_rank = pipe_transformer.get_global_rank()
 
     logging.info("successfully create PipeTransformer")

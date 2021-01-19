@@ -192,7 +192,7 @@ if __name__ == "__main__":
 
     config.is_debug_mode = args.is_debug_mode
 
-    pipe_transformer = PipeTransformer(config, cv_data_manager, model)
+    pipe_transformer = PipeTransformer(config, cv_data_manager, None, model)
     args.global_rank = pipe_transformer.get_global_rank()
 
     """

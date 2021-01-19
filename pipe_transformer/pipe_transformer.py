@@ -7,7 +7,7 @@ from pipe_transformer.pipe.auto_pipe import AutoElasticPipe
 
 
 class PipeTransformer:
-    def __init__(self, config, data_manager, model):
+    def __init__(self, config, data_manager, model_config, model):
         self.config = config
         self.data_manager = data_manager
         self.model = model
@@ -17,7 +17,7 @@ class PipeTransformer:
         config.global_rank = self.auto_dp.get_global_rank()
 
         self.auto_freeze = AutoFreeze(config)
-        self.auto_pipe = AutoElasticPipe(config, model)
+        self.auto_pipe = AutoElasticPipe(config, model_config, model)
         self.auto_cache = AutoCache(config, self.auto_freeze, self.auto_dp, self.auto_pipe, data_manager)
 
         self.frozen_model, self.pipe_model = None, None

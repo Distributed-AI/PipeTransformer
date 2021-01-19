@@ -1,7 +1,7 @@
 import torch
 import torch.nn as nn
 from torch.nn import CrossEntropyLoss, MSELoss
-from transformers.modeling_bert import BertModel, BertPreTrainedModel
+from transformers import BertPreTrainedModel, BertModel
 
 
 class BertForSequenceClassification(BertPreTrainedModel):
@@ -53,7 +53,6 @@ class BertForSequenceClassification(BertPreTrainedModel):
         inputs_embeds=None,
         labels=None,
     ):
-
         outputs = self.bert(
             input_ids,
             attention_mask=attention_mask,
