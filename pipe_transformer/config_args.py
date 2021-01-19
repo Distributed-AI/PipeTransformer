@@ -3,6 +3,14 @@ from dataclasses import dataclass
 
 @dataclass
 class ConfigArgs:
+
+    LEARNING_TASK_IMAGE_CLASSIFICATION = "image_classification"
+    LEARNING_TASK_TEXT_CLASSIFICATION = "text_classification"
+    LEARNING_TASK_QUESTION_ANSWERING = "question_answering"
+
+    MODEL_BERT = "BERT"
+    MODEL_VIT = "ViT"
+
     # switch
     b_auto_dp: bool = True
     b_freeze: bool = True
@@ -23,7 +31,9 @@ class ConfigArgs:
     pipe_len_at_the_beginning: int = 8
     num_chunks_of_micro_batches: int = 32
 
-    # CV model related
+    # model related
+    learning_task: str = LEARNING_TASK_IMAGE_CLASSIFICATION
+    model_name: str = MODEL_VIT
     batch_size: int = 256
     num_layer: int = 12
     output_dim: int = 10

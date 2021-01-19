@@ -155,7 +155,7 @@ def main(args):
     # Loading full data (for centralized learning)
     train_data, test_data = load_data(args, args.dataset)
 
-    train_data, train_id_mapping_dict = get_normal_format(train_data, cut_off=100)
+    train_data, train_id_mapping_dict = get_normal_format(train_data, cut_off=None)
     test_data, test_id_mapping_dict = get_normal_format(test_data, cut_off=None)
 
     print("create model...")
@@ -181,9 +181,9 @@ def main(args):
     # Strat training.
     trainer.train_model(train_data, train_id_mapping_dict, test_data, test_id_mapping_dict, args.eval_data_file)
 
-    # Evaluate the model
-    result, texts = trainer.eval_model(test_data)
-    print(result)
+    # # Evaluate the model
+    # result, texts = trainer.eval_model(test_data)
+    # print(result)
 
     result = trainer.eval_model_by_offical_script(test_data, args.eval_data_file, output_dir=args.output_dir,
                                                 verbose=False, verbose_logging=False)

@@ -24,9 +24,11 @@ class CVTrainer:
         epoch_start = self.pipe_transformer.start()
         for epoch in range(epoch_start, self.args.epochs):
 
+            self.pipe_transformer.transform(epoch)
+
             self.frozen_model, self.pipe_model, \
             self.train_dl, self.test_dl, \
-            self.device_first, self.device_last = self.pipe_transformer.transform(epoch)
+            self.device_first, self.device_last = self.pipe_transformer.get_new_model_and_dataset()
 
             self.train(epoch)
             self.eval(epoch)

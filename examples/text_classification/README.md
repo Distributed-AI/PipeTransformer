@@ -26,3 +26,6 @@ Learning rate (Adam): 5e-5, 3e-5, 2e-5
 3e5: best_accuracy = 0.924217
 
 5e5: best_accuracy = 0.929160
+
+
+# Experimental Scripts

@@ -1,4 +1,4 @@
-python -m main_text_classification \
+python -m main_tc \
     --dataset "sst_2" \
     --data_dir "../../data/text_classification/SST-2/trees" \
     --data_file "../../data/text_classification/SST-2/sst_2_data.pkl" \

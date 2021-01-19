@@ -9,12 +9,14 @@ from torch.utils.data import DataLoader
 from torch.utils.data.distributed import DistributedSampler
 from torchvision import transforms
 
+from .base_data_manager import BaseDataManager
 from .cifar.cifar_dataset import CIFAR10, CIFAR100
 from .imagenet.imagenet_datasets import ImageNet
 
 
-class CVDatasetManager:
+class CVDatasetManager(BaseDataManager):
     def __init__(self, args):
+        super().__init__()
         self.train_dataset = None
         self.test_dataset = None
         self.train_loader = None
@@ -24,7 +26,6 @@ class CVDatasetManager:
 
         self.args = args
         self.dataset = args.dataset
-
 
         self.node_rank = args.node_rank
         self.local_rank = args.local_rank

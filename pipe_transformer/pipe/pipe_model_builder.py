@@ -5,9 +5,9 @@ import torch
 import torch.nn as nn
 
 
-class MultHeadAttentionLayer(nn.Module):
+class MultiHeadAttentionLayer(nn.Module):
     def __init__(self, attention_norm, attn):
-        super(MultHeadAttentionLayer, self).__init__()
+        super(MultiHeadAttentionLayer, self).__init__()
         self.attention_norm = attention_norm
         self.attn = attn
 
@@ -63,12 +63,18 @@ class FrozenLayer(nn.Module):
             self.layers.append(frozen_layer_list[layer_i])
 
     def forward(self, x, layer_id=0):
+        logging.info(x)
         if layer_id == self.num_frozen_layer:
             logging.info("no need to recompute")
             return x
         if layer_id == 0:
             logging.info("compute from layer 0")
-            x = self.embedding(x)
+            if isinstance(x, dict):
+                # NLP
+                x = self.embedding(input_ids=x['input_ids'])
+            else:
+                # CV
+                x = self.embedding(x)
             for id in range(0, self.num_frozen_layer):
                 x = self.layers[id](x)
             return x
@@ -85,6 +91,8 @@ class PipeModelWrapper(nn.Module):
         self.pipe_model = pipe_model
 
     def forward(self, *args, **kwargs):
+        logging.info(args)
+        logging.info(kwargs)
         return self.pipe_model(*args, **kwargs).local_value()
 
 
@@ -96,12 +104,13 @@ def count_parameters(model, b_is_required_grad=True):
     return params / 1000000
 
 
-def create_pipe_styled_model(model_backbone, output_model, num_layer_in_total, num_frozen_layer):
+def create_pipe_styled_model_vit(model_backbone, output_model, num_layer_in_total, num_frozen_layer):
     """
     Optimization:
         Pin Memory: https://pytorch.org/docs/stable/notes/cuda.html#use-pinned-memory-buffers
         Prepare a Pin Memory model
     """
+    logging.info(model_backbone)
     frozen_model = None
     pipe_model = nn.Sequential()
 
@@ -136,7 +145,7 @@ def create_pipe_styled_model(model_backbone, output_model, num_layer_in_total, n
     # add transformer blocks needed to be trained
     for layer_index in range(num_frozen_layer, num_layer_in_total):
         layer_block = model_backbone.transformer.encoder.layer[layer_index]
-        multihead_attention_layer = MultHeadAttentionLayer(layer_block.attention_norm, layer_block.attn)
+        multihead_attention_layer = MultiHeadAttentionLayer(layer_block.attention_norm, layer_block.attn)
         mlp_layer = MLPLayer(layer_block.ffn_norm, layer_block.ffn)
         pipe_model.add_module("multihead_attention_layer" + str(layer_index), multihead_attention_layer)
         pipe_model.add_module("mlp_layer" + str(layer_index), mlp_layer)
@@ -161,6 +170,100 @@ def create_pipe_styled_model(model_backbone, output_model, num_layer_in_total, n
     # logging.info(parameters_list_pipe)
 
     return frozen_model, parameters_size_frozen, pipe_model, parameters_list_pipe
+
+def create_pipe_styled_model_BERT_for_TC(model_backbone, output_model, num_layer_in_total, num_frozen_layer):
+    logging.info(model_backbone)
+    for name, p in model_backbone.named_parameters():
+        logging.info(name)
+
+    frozen_model = None
+    pipe_model = nn.Sequential()
+
+    parameters_size_frozen = 0.0
+    parameters_list_pipe = []
+
+    if num_frozen_layer > 0:
+        for param in model_backbone.bert.embeddings.parameters():
+            param.requires_grad = False
+
+        frozen_emb = model_backbone.bert.embeddings
+
+        size_embedding = count_parameters(model_backbone.bert.embeddings, False)
+        parameters_size_frozen += size_embedding
+
+        frozen_layer_list = nn.ModuleList()
+        for frozen_layer_index in range(num_frozen_layer):
+            layer_block = model_backbone.bert.encoder.layer[frozen_layer_index]
+            for param in layer_block.parameters():
+                param.requires_grad = False
+            frozen_layer_list.append(layer_block)
+
+            size_layer_block = count_parameters(layer_block, False)
+            parameters_size_frozen += size_layer_block
+
+        frozen_model = FrozenLayer(num_frozen_layer, frozen_emb, frozen_layer_list)
+    else:
+        pipe_model.add_module("embedding", model_backbone.bert.embeddings)
+        size_embedding = count_parameters(model_backbone.bert.embeddings, False)
+        parameters_list_pipe.append(size_embedding)
+
+    # add transformer blocks needed to be trained
+    for layer_index in range(num_frozen_layer, num_layer_in_total):
+        layer_block = model_backbone.bert.encoder.layer[layer_index]
+
+        pipe_model.add_module("layer" + str(layer_index) + "attention", layer_block.attention)
+        size_layer_block_attention = count_parameters(layer_block.attention, False)
+        parameters_list_pipe.append(size_layer_block_attention)
+        # logging.info(size_layer_block_attention)
+
+        pipe_model.add_module("layer" + str(layer_index) + "intermediate", layer_block.intermediate)
+        size_layer_block_intermediate = count_parameters(layer_block.intermediate, False)
+        parameters_list_pipe.append(size_layer_block_intermediate)
+        # logging.info(size_layer_block_intermediate)
+
+        pipe_model.add_module("layer" + str(layer_index) + "output", layer_block.output)
+        size_layer_block_output = count_parameters(layer_block.output, False)
+        parameters_list_pipe.append(size_layer_block_output)
+        # logging.info(size_layer_block_output)
+
+    pipe_model.add_module("pooler", model_backbone.bert.pooler)
+    size_pooler = count_parameters(model_backbone.bert.pooler, False)
+    parameters_list_pipe.append(size_pooler)
+
+    pipe_model.add_module("classifier", model_backbone.classifier)
+    size_classifier = count_parameters(model_backbone.classifier, False)
+    parameters_list_pipe.append(size_classifier)
+
+
+    logging.info(frozen_model)
+    logging.info(parameters_size_frozen)
+    logging.info(pipe_model)
+    logging.info(parameters_list_pipe)
+
+    return frozen_model, parameters_size_frozen, pipe_model, parameters_list_pipe
+
+
+def create_pipe_styled_model_BERT_for_QA(model_backbone, output_model, num_layer_in_total, num_frozen_layer):
+    pass
+
+
+def create_pipe_styled_model(config, model_backbone, output_model, num_layer_in_total, num_frozen_layer):
+    if config.learning_task == config.LEARNING_TASK_IMAGE_CLASSIFICATION and \
+            config.model_name == config.MODEL_VIT:
+        logging.info("create ViT pipeline")
+        return create_pipe_styled_model_vit(model_backbone, output_model, num_layer_in_total, num_frozen_layer)
+
+    elif config.learning_task == config.LEARNING_TASK_TEXT_CLASSIFICATION and \
+            config.model_name == config.MODEL_BERT:
+        logging.info("create BERT for text classification pipeline")
+        return create_pipe_styled_model_BERT_for_TC(model_backbone, output_model, num_layer_in_total, num_frozen_layer)
+
+    elif config.learning_task == config.LEARNING_TASK_QUESTION_ANSWERING and \
+            config.model_name == config.MODEL_BERT:
+        logging.info("create BERT for QA pipeline")
+        return create_pipe_styled_model_BERT_for_QA(model_backbone, output_model, num_layer_in_total, num_frozen_layer)
+    else:
+        raise Exception("does not exist")
 
 
 def convert_to_balanced_model(local_rank, global_rank,

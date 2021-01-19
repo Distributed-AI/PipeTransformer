@@ -70,7 +70,7 @@ class QuestionAnsweringTrainer:
 
         logging.info(self.model)
 
-        self.device = torch.device("cuda:2")
+        self.device = torch.device("cuda:0")
 
         self.train_id_mapping_dict = []
         self.test_id_mapping_dict = []

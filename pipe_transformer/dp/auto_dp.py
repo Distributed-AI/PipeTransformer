@@ -48,7 +48,7 @@ class AutoDataParallel:
 
     def init_ddp(self):
         self.local_rank = self.config.local_rank
-        logging.info(f"Running basic DDP example on local rank {self.local_rank}.")
+        logging.info(f"Running DP on local rank {self.local_rank}.")
 
         self.config.master_port += 1
         os.environ.update({"MASTER_ADDR": self.config.master_addr})
@@ -380,6 +380,9 @@ class AutoDataParallel:
         # dist.destroy_process_group()
         torch.cuda.empty_cache()
         gc.collect()
+
+    def cleanup(self):
+        rpc.shutdown(graceful=False)
 
     def _diff_list(self, li1, li2):
         return (list(list(set(li1) - set(li2)) + list(set(li2) - set(li1))))

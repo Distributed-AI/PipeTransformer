@@ -60,6 +60,7 @@ class PipeTransformer:
         self.device_first = self.auto_pipe.get_device_first()
         self.device_last = self.auto_pipe.get_device_last()
 
+    def get_new_model_and_dataset(self):
         return self.frozen_model, self.pipe_model, self.train_dl, self.test_dl, self.device_first, self.device_last
 
     def forward(self, epoch, batch_idx, sample_index_list, x, is_train_mode, is_train_data):
@@ -104,3 +105,4 @@ class PipeTransformer:
     def finish(self):
         self.auto_cache.cleanup()
         self.auto_freeze.cleanup()
+        self.auto_dp.cleanup()

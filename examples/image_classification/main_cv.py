@@ -1,13 +1,11 @@
 import argparse
 import logging
 import os
-import random
 import socket
 import sys
 
 import numpy as np
 import psutil
-import torch
 import wandb
 
 sys.path.insert(0, os.path.abspath(os.path.join(os.getcwd(), "")))
@@ -28,6 +26,8 @@ def add_args():
     parser = argparse.ArgumentParser(
         description="PipeTransformer: "
                     "Elastic and Automated Pipelining for Fast Distributed Training of Transformer Models")
+
+    # PipeTransformer related
     parser.add_argument("--nnodes", type=int, default=2)
 
     parser.add_argument("--nproc_per_node", type=int, default=8)
@@ -44,6 +44,38 @@ def add_args():
 
     parser.add_argument("--if_name", type=str, default="lo")
 
+    parser.add_argument("--is_distributed", default=1, type=int,
+                        help="is_distributed")
+
+    parser.add_argument("--pipe_len_at_the_beginning", default=4, type=int,
+                        help="pipe_len_at_the_beginning")
+
+    parser.add_argument("--is_infiniband", default=1, type=int,
+                        help="is_infiniband")
+
+    parser.add_argument("--num_chunks_of_micro_batches", default=1 * 8, type=int,
+                        help="num_chunks_of_micro_batches")
+
+    parser.add_argument('--freeze', dest='b_freeze', action='store_true')
+    parser.add_argument('--no_freeze', dest='b_freeze', action='store_false')
+    parser.set_defaults(b_freeze=True)
+
+    parser.add_argument('--auto_pipe', dest='b_auto_pipe', action='store_true')
+    parser.add_argument('--do_auto_pipe', dest='b_auto_pipe', action='store_false')
+    parser.set_defaults(b_auto_pipe=True)
+
+    parser.add_argument('--auto_dp', dest='b_auto_dp', action='store_true')
+    parser.add_argument('--no_auto_dp', dest='b_auto_dp', action='store_false')
+    parser.set_defaults(b_auto_dp=True)
+
+    parser.add_argument('--cache', dest='b_cache', action='store_true')
+    parser.add_argument('--no_cache', dest='b_cache', action='store_false')
+    parser.set_defaults(b_cache=True)
+
+    parser.add_argument("--is_debug_mode", default=0, type=int,
+                        help="is_debug_mode")
+
+    # model related
     parser.add_argument('--model', type=str, default='transformer', metavar='N',
                         help='neural network used in training')
 
@@ -83,37 +115,6 @@ def add_args():
     parser.add_argument("--pretrained_dir", type=str,
                         default="./../../model/cv/pretrained/ViT-B_16.npz",
                         help="Where to search for pretrained vit models.")
-
-    parser.add_argument("--is_distributed", default=1, type=int,
-                        help="is_distributed")
-
-    parser.add_argument("--pipe_len_at_the_beginning", default=4, type=int,
-                        help="pipe_len_at_the_beginning")
-
-    parser.add_argument("--is_infiniband", default=1, type=int,
-                        help="is_infiniband")
-
-    parser.add_argument("--num_chunks_of_micro_batches", default=1 * 8, type=int,
-                        help="num_chunks_of_micro_batches")
-
-    parser.add_argument('--freeze', dest='b_freeze', action='store_true')
-    parser.add_argument('--no_freeze', dest='b_freeze', action='store_false')
-    parser.set_defaults(b_freeze=True)
-
-    parser.add_argument('--auto_pipe', dest='b_auto_pipe', action='store_true')
-    parser.add_argument('--do_auto_pipe', dest='b_auto_pipe', action='store_false')
-    parser.set_defaults(b_auto_pipe=True)
-
-    parser.add_argument('--auto_dp', dest='b_auto_dp', action='store_true')
-    parser.add_argument('--no_auto_dp', dest='b_auto_dp', action='store_false')
-    parser.set_defaults(b_auto_dp=True)
-
-    parser.add_argument('--cache', dest='b_cache', action='store_true')
-    parser.add_argument('--no_cache', dest='b_cache', action='store_false')
-    parser.set_defaults(b_cache=True)
-
-    parser.add_argument("--is_debug_mode", default=0, type=int,
-                        help="is_debug_mode")
 
     args = parser.parse_args()
     return args
@@ -181,6 +182,8 @@ if __name__ == "__main__":
     config.pipe_len_at_the_beginning = args.pipe_len_at_the_beginning
     config.num_chunks_of_micro_batches = args.num_chunks_of_micro_batches
 
+    config.learning_task = config.LEARNING_TASK_IMAGE_CLASSIFICATION
+    config.model_name = config.MODEL_VIT
     config.num_layer = num_layers
     config.output_dim = output_dim
     config.hidden_size = args.transformer_hidden_size

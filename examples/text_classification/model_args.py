@@ -130,4 +130,3 @@ class ClassificationArgs(ModelArgs):
     tie_value: int = 1
     evaluate_during_training_steps: int = 20
     evaluate_during_training: bool = True
-    device_id: int = 0

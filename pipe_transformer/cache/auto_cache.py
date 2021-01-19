@@ -42,13 +42,13 @@ class AutoCache:
                     ).to(device_idx_start)
                 log_probs = pipe_model(hidden_feature)
             else:
-                log_probs = pipe_model(x)
+                log_probs = pipe_model(**x if isinstance(x, dict) else x)
         else:
             if frozen_model is None:
-                log_probs = pipe_model(x)
+                log_probs = pipe_model(**x if isinstance(x, dict) else x)
             else:
                 with torch.no_grad():
-                    hidden_feature = frozen_model(x)
+                    hidden_feature = frozen_model(**x if isinstance(x, dict) else x)
                 log_probs = pipe_model(hidden_feature)
         return log_probs
 

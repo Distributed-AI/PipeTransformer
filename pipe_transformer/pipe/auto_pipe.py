@@ -9,6 +9,7 @@ from .pipe_model_builder import convert_to_balanced_model, create_pipe_styled_mo
 
 class AutoElasticPipe:
     def __init__(self, config, model):
+        self.config = config
         self.world_size = config.world_size
         self.local_rank = config.local_rank
         self.global_rank = config.global_rank
@@ -62,7 +63,8 @@ class AutoElasticPipe:
         # frozen_model, parameters_size_frozen, pipe_model, parameters_list_pipe
 
         frozen_model, parameters_size_frozen, \
-        model, self.pipe_model_params_size_list = create_pipe_styled_model(self.model_backbone, self.output_head,
+        model, self.pipe_model_params_size_list = create_pipe_styled_model(self.config,
+                                                                           self.model_backbone, self.output_head,
                                                                            self.num_layer_in_total, num_frozen_layers)
         logging.info("len(pipe_model) = %d" % len(model))
         logging.info("len(pipe_model paras_size) = %d" % len(self.pipe_model_params_size_list))
