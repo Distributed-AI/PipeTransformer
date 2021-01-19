@@ -72,10 +72,13 @@ class QuestionAnsweringTrainer:
 
         self.device = torch.device("cuda:2")
 
+        self.train_id_mapping_dict = []
+        self.test_id_mapping_dict = []
+
         self.results = {}
 
     def train_model(
-            self, train_data, eval_data, eval_data_path, output_dir=False, args=None, **kwargs
+            self, train_data, train_id_mapping_dict, eval_data, test_id_mapping_dict, eval_data_path, output_dir=False, args=None, **kwargs
     ):
         """
         Trains the model using 'train_data'
@@ -120,6 +123,8 @@ class QuestionAnsweringTrainer:
         )
         logger.info(" Training of {} model complete. Saved to {}.".format(self.args.model_type, output_dir))
 
+        self.train_id_mapping_dict = train_id_mapping_dict
+        self.test_id_mapping_dict = test_id_mapping_dict
         return global_step, training_details
 
     def train(self, train_dataset, eval_data, eval_data_path, **kwargs):
@@ -186,7 +191,8 @@ class QuestionAnsweringTrainer:
                             and global_step % self.args.evaluate_during_training_steps == 0):
 
                         # results, _ = self.eval_model(eval_data, **kwargs)
-                        self.eval_model_by_offical_script(eval_data, eval_data_path)
+                        result = self.eval_model_by_offical_script(eval_data, eval_data_path)
+                        logging.info("result = %s" + str(result))
 
         return global_step, tr_loss / global_step
 

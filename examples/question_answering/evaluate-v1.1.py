@@ -60,7 +60,7 @@ def evaluate(dataset, predictions):
                 if qa['id'] not in predictions:
                     message = 'Unanswered question ' + qa['id'] + \
                               ' will receive score 0.'
-                    print(message, file=sys.stderr)
+                    # print(message, file=sys.stderr)
                     continue
                 ground_truths = list(map(lambda x: x['text'], qa['answers']))
                 prediction = predictions[qa['id']]

@@ -125,12 +125,14 @@ def get_normal_format(dataset, cut_off=None):
     reformat the dataset to normal version.
     """
     reformatted_data = []
+    id_mapping_dict = dict()
     assert len(dataset["context_X"]) == len(dataset["question_X"]) == len(dataset["Y"]) == len(
         dataset["question_ids"]) == len(dataset["original_index"])
     for c, q, a, qid, oid in zip(dataset["context_X"], dataset["question_X"], dataset["Y"], dataset["question_ids"],
                                  dataset["original_index"]):
         item = {}
         item["context"] = c
+        id_mapping_dict[len(reformatted_data) + 1] = oid
         item["qas"] = [
             {
                 "id": "%d"%(len(reformatted_data)+1),
@@ -142,7 +144,7 @@ def get_normal_format(dataset, cut_off=None):
             }
         ]
         reformatted_data.append(item)
-    return reformatted_data[:cut_off]
+    return reformatted_data[:cut_off], id_mapping_dict
 
 
 def main(args):
@@ -153,8 +155,8 @@ def main(args):
     # Loading full data (for centralized learning)
     train_data, test_data = load_data(args, args.dataset)
 
-    train_data = get_normal_format(train_data, cut_off=None)
-    test_data = get_normal_format(test_data, cut_off=None)
+    train_data, train_id_mapping_dict = get_normal_format(train_data, cut_off=100)
+    test_data, test_id_mapping_dict = get_normal_format(test_data, cut_off=None)
 
     print("create model...")
     # Create a ClassificationModel.
@@ -177,7 +179,7 @@ def main(args):
               "wandb_project": "fednlp"})
 
     # Strat training.
-    trainer.train_model(train_data, test_data, args.eval_data_file)
+    trainer.train_model(train_data, train_id_mapping_dict, test_data, test_id_mapping_dict, args.eval_data_file)
 
     # Evaluate the model
     result, texts = trainer.eval_model(test_data)
