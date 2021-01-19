@@ -22,6 +22,9 @@
 # Pipe len = 2
 1 pipe len: 520 images/second
 
+2 pipe len: 528 images/second
+
+3 pipe len: ? images/second
 
 # CIFAR-100, Batch size = 320
 
