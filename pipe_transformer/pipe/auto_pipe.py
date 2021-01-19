@@ -4,7 +4,7 @@ import torch
 
 from . import Pipe
 from .load_balance import generate_parameter_size_wise_balance
-from .pipe_model_builder import convert_to_balanced_model, create_pipe_styled_model, PipeModelWrapper, OutputHead
+from .pipe_model_builder import convert_to_balanced_model, create_pipe_styled_model, PipeModelWrapper, ViTOutputHead
 
 
 class AutoElasticPipe:
@@ -18,7 +18,6 @@ class AutoElasticPipe:
         self.num_chunks_of_micro_batches = config.num_chunks_of_micro_batches
 
         self.model_backbone = model
-        self.output_head = OutputHead(config.hidden_size, config.output_dim)
         self.normal_model = model
         """
         Optimization:
@@ -65,7 +64,7 @@ class AutoElasticPipe:
 
         frozen_model, parameters_size_frozen, \
         model, self.pipe_model_params_size_list = create_pipe_styled_model(self.config, self.model_config,
-                                                                           self.model_backbone, self.output_head,
+                                                                           self.model_backbone,
                                                                            self.num_layer_in_total, num_frozen_layers)
         logging.info("len(pipe_model) = %d" % len(model))
         logging.info("len(pipe_model paras_size) = %d" % len(self.pipe_model_params_size_list))

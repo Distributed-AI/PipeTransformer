@@ -149,6 +149,7 @@ if __name__ == "__main__":
     # model_type = 'vit-L_32'
     # model_type = 'vit-H_14'
     model_config = CONFIGS[model_type]
+    model_config.output_dim = output_dim
     args.num_layer = model_config.transformer.num_layers
     args.transformer_hidden_size = model_config.hidden_size
     args.seq_len = 197
@@ -192,7 +193,7 @@ if __name__ == "__main__":
 
     config.is_debug_mode = args.is_debug_mode
 
-    pipe_transformer = PipeTransformer(config, cv_data_manager, None, model)
+    pipe_transformer = PipeTransformer(config, cv_data_manager, model_config, model)
     args.global_rank = pipe_transformer.get_global_rank()
 
     """

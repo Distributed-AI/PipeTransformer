@@ -178,7 +178,7 @@ if __name__ == "__main__":
     #                  name="PipeTransformer""-" + str(args.dataset),
     #                  config=args)
     # customize the log format
-    logging.basicConfig(level=logging.DEBUG,
+    logging.basicConfig(level=logging.INFO,
                         format='%(process)s %(asctime)s.%(msecs)03d - {%(module)s.py (%(lineno)d)} - %(funcName)s(): %(message)s',
                         datefmt='%Y-%m-%d,%H:%M:%S')
     logging.info(args)

@@ -14,6 +14,8 @@ from sklearn.metrics import (
     confusion_matrix,
     matthews_corrcoef,
 )
+from torch.nn import CrossEntropyLoss
+
 from transformers import (
     AdamW,
     get_linear_schedule_with_warmup,
@@ -69,18 +71,24 @@ class TextClassificationTrainer:
                 if batch_idx == 0:
                     self.pipe_model._sync_params()
 
-                batch = tuple(t.to(self.device_first) for t in batch)
-                inputs = {"input_ids": batch[0], "attention_mask": batch[1], "labels": batch[3]}
-
+                batch = tuple(t for t in batch)
+                # inputs = {"input_ids": batch[0], "attention_mask": batch[1], "labels": batch[3]}
+                x = batch[0].to(self.device_first)
+                labels = batch[3].to(self.device_last)
                 sample_index_list = batch[0][0].cpu().numpy()
-                logging.info(sample_index_list)
+                # logging.info(sample_index_list)
 
                 # outputs = self.pipe_transformer.forward(epoch, batch_idx, sample_index_list, inputs, True, True)
                 # outputs = self.pipe_model(**inputs)
-                logging.info(self.pipe_model)
-                outputs = self.pipe_model(batch[0])
+                # logging.info(self.pipe_model)
+                # outputs = self.pipe_model(**inputs)
+                logits = self.pipe_model(x)
+                loss_fct = CrossEntropyLoss()
+                loss = loss_fct(logits.view(-1, self.num_labels), labels.view(-1))
+
                 # model outputs are always tuple in pytorch-transformers (see doc)
-                loss = outputs[0]
+                # loss = outputs[0]
+                # logging.info(loss)
                 current_loss = loss.item()
                 logging.info("epoch = %d, batch_idx = %d/%d, loss = %s" % (epoch, batch_idx,
                                                                            len(self.train_dl), current_loss))
@@ -117,20 +125,20 @@ class TextClassificationTrainer:
         for i, batch in enumerate(self.test_dl):
             with torch.no_grad():
                 batch = tuple(t for t in batch)
-                inputs = {"input_ids": batch[0], "attention_mask": batch[1], "labels": batch[3]}
-
-                batch[0].to(self.device_first)
-                batch[3].to(self.device_last)
-
-                outputs = self.pipe_model(**inputs)
-                tmp_eval_loss, logits = outputs[:2]
-                eval_loss += tmp_eval_loss.item()
+                # inputs = {"input_ids": batch[0], "attention_mask": batch[1], "labels": batch[3]}
+                x = batch[0].to(self.device_first)
+                labels = batch[3].to(self.device_last)
+                logits = self.pipe_model(x)
+                loss_fct = CrossEntropyLoss()
+                loss = loss_fct(logits.view(-1, self.num_labels), labels.view(-1))
+                eval_loss += loss.item()
+                # logging.info("test. batch index = %d, loss = %s" % (i, str(eval_loss)))
 
             nb_eval_steps += 1
             start_index = self.args.eval_batch_size * i
             end_index = start_index + self.args.eval_batch_size if i != (n_batches - 1) else len(self.test_dataset)
             preds[start_index:end_index] = logits.detach().cpu().numpy()
-            out_label_ids[start_index:end_index] = inputs["labels"].detach().cpu().numpy()
+            out_label_ids[start_index:end_index] = labels.detach().cpu().numpy()
 
         eval_loss = eval_loss / nb_eval_steps
 

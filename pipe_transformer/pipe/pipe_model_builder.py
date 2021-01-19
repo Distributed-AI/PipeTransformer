@@ -2,7 +2,9 @@ import logging
 import time
 
 import torch
-import torch.nn as nn
+from torch import nn
+from torch.nn import CrossEntropyLoss, MSELoss
+
 from transformers import apply_chunking_to_forward
 
 """
@@ -13,6 +15,8 @@ This model architecture is normal in practice, such as Transformer Multi Head At
 
 Without such support, the partition can only be coarse-grained, which is hard to make the word load balanced in pipeline.
 """
+
+
 class MultiHeadAttentionLayer(nn.Module):
     def __init__(self, attention_norm, attn):
         super(MultiHeadAttentionLayer, self).__init__()
@@ -41,9 +45,9 @@ class MLPLayer(nn.Module):
         return x
 
 
-class OutputHead(nn.Module):
+class ViTOutputHead(nn.Module):
     def __init__(self, hidden_size, num_classes):
-        super(OutputHead, self).__init__()
+        super(ViTOutputHead, self).__init__()
         self.head = nn.Linear(hidden_size, num_classes)
 
     def forward(self, x):
@@ -77,7 +81,7 @@ class FrozenLayer(nn.Module):
                 x = self.layers[id](x)
             return x
         else:
-            logging.info("compute from layer %d-%d" % (layer_id, self.num_frozen_layer-1))
+            logging.info("compute from layer %d-%d" % (layer_id, self.num_frozen_layer - 1))
             for id in range(layer_id, self.num_frozen_layer):
                 x = self.layers[id](x)
             return x
@@ -98,79 +102,36 @@ class BertFFNLayer(nn.Module):
         super().__init__()
         self.chunk_size_feed_forward = config.chunk_size_feed_forward
         self.seq_len_dim = 1
-        self.is_decoder = config.is_decoder
-        self.add_cross_attention = config.add_cross_attention
         self.intermediate = intermediate
         self.output = output
 
-    def forward(
-            self,
-            hidden_states,
-            attention_mask=None,
-            head_mask=None,
-            encoder_hidden_states=None,
-            encoder_attention_mask=None,
-            past_key_value=None,
-            output_attentions=False,
-    ):
-        # decoder uni-directional self-attention cached key/values tuple is at positions 1,2
-        self_attn_past_key_value = past_key_value[:2] if past_key_value is not None else None
-        self_attention_outputs = self.attention(
-            hidden_states,
-            attention_mask,
-            head_mask,
-            output_attentions=output_attentions,
-            past_key_value=self_attn_past_key_value,
-        )
+    def forward(self, self_attention_outputs):
         attention_output = self_attention_outputs[0]
-
-        # if decoder, the last output is tuple of self-attn cache
-        if self.is_decoder:
-            outputs = self_attention_outputs[1:-1]
-            present_key_value = self_attention_outputs[-1]
-        else:
-            outputs = self_attention_outputs[1:]  # add self attentions if we output attention weights
-
-        cross_attn_present_key_value = None
-        if self.is_decoder and encoder_hidden_states is not None:
-            assert hasattr(
-                self, "crossattention"
-            ), f"If `encoder_hidden_states` are passed, {self} has to be instantiated with cross-attention layers by setting `config.add_cross_attention=True`"
-
-            # cross_attn cached key/values tuple is at positions 3,4 of past_key_value tuple
-            cross_attn_past_key_value = past_key_value[-2:] if past_key_value is not None else None
-            cross_attention_outputs = self.crossattention(
-                attention_output,
-                attention_mask,
-                head_mask,
-                encoder_hidden_states,
-                encoder_attention_mask,
-                cross_attn_past_key_value,
-                output_attentions,
-            )
-            attention_output = cross_attention_outputs[0]
-            outputs = outputs + cross_attention_outputs[1:-1]  # add cross attentions if we output attention weights
-
-            # add cross-attn cache to positions 3,4 of present_key_value tuple
-            cross_attn_present_key_value = cross_attention_outputs[-1]
-            present_key_value = present_key_value + cross_attn_present_key_value
-
+        outputs = self_attention_outputs[1:]  # add self attentions if we output attention weights
         layer_output = apply_chunking_to_forward(
             self.feed_forward_chunk, self.chunk_size_feed_forward, self.seq_len_dim, attention_output
         )
-        outputs = (layer_output,) + outputs
-
-        # if decoder, return the attn key/values as the last output
-        if self.is_decoder:
-            outputs = outputs + (present_key_value,)
-
-        return outputs
+        # outputs = (layer_output,) + outputs
+        return layer_output
 
     def feed_forward_chunk(self, attention_output):
         intermediate_output = self.intermediate(attention_output)
         layer_output = self.output(intermediate_output, attention_output)
         return layer_output
 
+
+class BertForSequenceClassification_OutputHead(nn.Module):
+    def __init__(self, config):
+        super().__init__()
+        self.num_labels = config.num_labels
+
+        self.dropout = nn.Dropout(config.hidden_dropout_prob)
+        self.classifier = nn.Linear(config.hidden_size, config.num_labels)
+
+    def forward(self, bert_outputs):
+        pooled_output = self.dropout(bert_outputs)
+        logits = self.classifier(pooled_output)
+        return logits
 
 """
 Issues Description:
@@ -199,7 +160,7 @@ def count_parameters(model, b_is_required_grad=True):
     return params / 1000000
 
 
-def create_pipe_styled_model_vit(model_backbone, output_model, num_layer_in_total, num_frozen_layer):
+def create_pipe_styled_model_vit(model_config, model_backbone, num_layer_in_total, num_frozen_layer):
     """
     Optimization:
         Pin Memory: https://pytorch.org/docs/stable/notes/cuda.html#use-pinned-memory-buffers
@@ -255,8 +216,9 @@ def create_pipe_styled_model_vit(model_backbone, output_model, num_layer_in_tota
     size_encoder_norm = count_parameters(model_backbone.transformer.encoder.encoder_norm, False)
     parameters_list_pipe.append(size_encoder_norm)
 
-    pipe_model.add_module("head", output_model)
-    size_output_model = count_parameters(output_model, False)
+    output_head = ViTOutputHead(model_config.hidden_size, model_config.output_dim)
+    pipe_model.add_module("head", output_head)
+    size_output_model = count_parameters(output_head, False)
     parameters_list_pipe.append(size_output_model)
 
     # logging.info(frozen_model)
@@ -266,7 +228,9 @@ def create_pipe_styled_model_vit(model_backbone, output_model, num_layer_in_tota
 
     return frozen_model, parameters_size_frozen, pipe_model, parameters_list_pipe
 
-def create_pipe_styled_model_BERT_for_TC(model_config, model_backbone, output_model, num_layer_in_total, num_frozen_layer):
+
+def create_pipe_styled_model_BERT_for_TC(model_config, model_backbone, num_layer_in_total,
+                                         num_frozen_layer):
     logging.info(model_backbone)
     for name, p in model_backbone.named_parameters():
         logging.info(name)
@@ -322,10 +286,10 @@ def create_pipe_styled_model_BERT_for_TC(model_config, model_backbone, output_mo
     size_pooler = count_parameters(model_backbone.bert.pooler, False)
     parameters_list_pipe.append(size_pooler)
 
-    pipe_model.add_module("classifier", model_backbone.classifier)
-    size_classifier = count_parameters(model_backbone.classifier, False)
-    parameters_list_pipe.append(size_classifier)
-
+    output_head = BertForSequenceClassification_OutputHead(model_config)
+    pipe_model.add_module("output_head", output_head)
+    size_output_head = count_parameters(output_head, False)
+    parameters_list_pipe.append(size_output_head)
 
     logging.info(frozen_model)
     logging.info(parameters_size_frozen)
@@ -335,25 +299,25 @@ def create_pipe_styled_model_BERT_for_TC(model_config, model_backbone, output_mo
     return frozen_model, parameters_size_frozen, pipe_model, parameters_list_pipe
 
 
-def create_pipe_styled_model_BERT_for_QA(model_backbone, output_model, num_layer_in_total, num_frozen_layer):
+def create_pipe_styled_model_BERT_for_QA(model_config, model_backbone, num_layer_in_total, num_frozen_layer):
     pass
 
 
-def create_pipe_styled_model(config, model_config, model_backbone, output_model, num_layer_in_total, num_frozen_layer):
+def create_pipe_styled_model(config, model_config, model_backbone, num_layer_in_total, num_frozen_layer):
     if config.learning_task == config.LEARNING_TASK_IMAGE_CLASSIFICATION and \
             config.model_name == config.MODEL_VIT:
         logging.info("create ViT pipeline")
-        return create_pipe_styled_model_vit(model_backbone, output_model, num_layer_in_total, num_frozen_layer)
+        return create_pipe_styled_model_vit(model_config, model_backbone, num_layer_in_total, num_frozen_layer)
 
     elif config.learning_task == config.LEARNING_TASK_TEXT_CLASSIFICATION and \
             config.model_name == config.MODEL_BERT:
         logging.info("create BERT for text classification pipeline")
-        return create_pipe_styled_model_BERT_for_TC(model_config, model_backbone, output_model, num_layer_in_total, num_frozen_layer)
+        return create_pipe_styled_model_BERT_for_TC(model_config, model_backbone, num_layer_in_total, num_frozen_layer)
 
     elif config.learning_task == config.LEARNING_TASK_QUESTION_ANSWERING and \
             config.model_name == config.MODEL_BERT:
         logging.info("create BERT for QA pipeline")
-        return create_pipe_styled_model_BERT_for_QA(model_backbone, output_model, num_layer_in_total, num_frozen_layer)
+        return create_pipe_styled_model_BERT_for_QA(model_config, model_backbone, num_layer_in_total, num_frozen_layer)
     else:
         raise Exception("does not exist")
 
@@ -389,9 +353,10 @@ def convert_to_balanced_model(local_rank, global_rank,
             balanced_pipe.append(nn.Sequential(*layers))
     time_end_loading = time.time()
     logging.info("CPU->GPU time cost = " + str(time_end_loading - time_start_loading))
-    output_pipe_model =  nn.Sequential(*balanced_pipe)
+    output_pipe_model = nn.Sequential(*balanced_pipe)
     logging.info("output = " + str(output_pipe_model))
     return output_pipe_model
+
 
 def freeze_layers_for_pipe_model(model, num_frozen_layers):
     ddp_ignore_name_list = []

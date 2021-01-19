@@ -13,7 +13,7 @@ from examples.image_classification.utils import WarmupCosineSchedule, WarmupLine
 from model.cv.vision_transformer_origin import CONFIGS, VisionTransformer
 from pipe_transformer.data.cv_data_manager import CVDatasetManager
 from pipe_transformer.freeze.auto_freeze import AutoFreeze
-from pipe_transformer.pipe.pipe_model_builder import OutputHead
+from pipe_transformer.pipe.pipe_model_builder import ViTOutputHead
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(
@@ -109,7 +109,7 @@ if __name__ == "__main__":
     model_size = sum(p.numel() for p in model.parameters() if p.requires_grad) / 1e6
     logging.info("model_size = " + str(model_size))
 
-    output_head = OutputHead(config.hidden_size, output_dim)
+    output_head = ViTOutputHead(config.hidden_size, output_dim)
 
     num_layers = config.transformer.num_layers
     logging.info("num_layers = %d" % num_layers)
