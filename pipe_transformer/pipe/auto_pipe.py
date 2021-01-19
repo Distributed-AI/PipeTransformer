@@ -169,7 +169,7 @@ class AutoElasticPipe:
         elif pipe_len == 4:
             chunk_num = 4 * pipe_len
         elif pipe_len == 2:
-            chunk_num = 2 * pipe_len
+            chunk_num = 4 * pipe_len
         else:
             chunk_num = 4 * pipe_len
         return chunk_num
