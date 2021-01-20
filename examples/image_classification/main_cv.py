@@ -28,6 +28,8 @@ def add_args():
                     "Elastic and Automated Pipelining for Fast Distributed Training of Transformer Models")
 
     # PipeTransformer related
+    parser.add_argument("--run_id", type=int, default=0)
+
     parser.add_argument("--nnodes", type=int, default=2)
 
     parser.add_argument("--nproc_per_node", type=int, default=8)
@@ -215,7 +217,7 @@ if __name__ == "__main__":
     """
     if args.global_rank == 0:
         run = wandb.init(project="pipe_and_ddp",
-                         name="PipeTransformer""-" + str(args.dataset),
+                         name="PipeTransformer""-r" + str(args.run_id) + "-" + str(args.dataset),
                          config=args)
 
     """
