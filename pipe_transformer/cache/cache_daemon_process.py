@@ -41,7 +41,7 @@ class CacheDaemon(mp.Process):
 
                 # add new tensor to cache, and delete the old ones
                 # self._delete_previous_cached_batch(batch_sample_idx, cached_layer_id)
-                self._cache_a_batch_sample(cached_layer_id, batch_sample_idx, numpy.ndarraybat, num_frozen_layer, True)
+                self._cache_a_batch_sample(cached_layer_id, batch_sample_idx, hidden_feature, num_frozen_layer, True)
 
                 sample_index_list_to_disk, \
                 sample_index_list_to_memory = self._determine_sample_location_with_sliding_window(epoch, batch_idx)

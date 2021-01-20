@@ -174,9 +174,7 @@ if __name__ == "__main__":
     # parse python script input parameters
     parser = argparse.ArgumentParser()
     args = add_args(parser)
-    run = wandb.init(project="pipe_and_ddp",
-                     name="PipeTransformer""-" + str(args.dataset),
-                     config=args)
+
     # customize the log format
     logging.basicConfig(level=logging.INFO,
                         format='%(process)s %(asctime)s.%(msecs)03d - {%(module)s.py (%(lineno)d)} - %(funcName)s(): %(message)s',
@@ -184,6 +182,11 @@ if __name__ == "__main__":
     logging.info(args)
 
     set_seed(0)
+
+    if args.global_rank == 0:
+        run = wandb.init(project="pipe_and_ddp",
+                         name="PipeTransformer""-" + str(args.dataset),
+                         config=args)
 
     # arguments
     model_type = args.model_type
@@ -254,3 +257,5 @@ if __name__ == "__main__":
     trainer.train_model()
 
     pipe_transformer.finish()
+    if args.global_rank == 0:
+        run.finish()

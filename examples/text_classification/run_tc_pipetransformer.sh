@@ -23,8 +23,8 @@ main_tc.py \
 --model_type bert \
 --model_name bert-base-uncased \
 --do_lower_case True \
---train_batch_size 32 \
---eval_batch_size 32 \
+--train_batch_size 16 \
+--eval_batch_size 16 \
 --max_seq_length 512 \
 --learning_rate 3e-5 \
 --num_train_epochs 5 \

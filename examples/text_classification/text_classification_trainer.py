@@ -10,6 +10,7 @@ import os
 import numpy as np
 import sklearn
 import torch
+import wandb
 from sklearn.metrics import (
     confusion_matrix,
     matthews_corrcoef,
@@ -108,16 +109,16 @@ class TextClassificationTrainer:
 
                     if self.args.evaluate_during_training and (self.args.evaluate_during_training_steps > 0
                                                                and global_step % self.args.evaluate_during_training_steps == 0):
-                        results, _, _ = self.eval_model(epoch)
+                        results, _, _ = self.eval_model(epoch, global_step)
                         logging.info(results)
 
                 if self.args.is_debug_mode == 1 and global_step > 3:
                     break
-        results, _, _ = self.eval_model(self.args.num_train_epochs-1)
+        results, _, _ = self.eval_model(self.args.num_train_epochs-1, global_step)
         logging.info(results)
         return global_step, tr_loss / global_step
 
-    def eval_model(self, epoch):
+    def eval_model(self, epoch, global_step):
         results = {}
 
         eval_loss = 0.0
@@ -177,6 +178,10 @@ class TextClassificationTrainer:
         if result["acc"] > self.best_accuracy:
             self.best_accuracy = result["acc"]
         logging.info("best_accuracy = %f" % self.best_accuracy)
+
+        wandb.log({"Evaluation Accuracy": result["acc"], "step": global_step})
+        wandb.log({"Evaluation Loss": result["eval_loss"], "step": global_step})
+
         self.results.update(result)
         logging.info(self.results)
 
