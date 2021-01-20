@@ -31,7 +31,7 @@ import torch
 sys.path.insert(0, os.path.abspath(os.path.join(os.getcwd(), "")))
 sys.path.insert(0, os.path.abspath(os.path.join(os.getcwd(), "../../")))
 
-from transformers421.models.bert import BertConfig, BertTokenizer, BertForSequenceClassification
+from transformers.models.bert import BertConfig, BertTokenizer, BertForSequenceClassification
 
 from examples.text_classification.model_args import ClassificationArgs
 from pipe_transformer.data.tc_data_manager import TCDatasetManager
@@ -206,7 +206,8 @@ if __name__ == "__main__":
                               "fp16": args.fp16,
                               "data_dir": args.data_dir,
                               "dataset": args.dataset,
-                              "output_dir": args.output_dir})
+                              "output_dir": args.output_dir,
+                              "is_debug_mode": args.is_debug_mode})
 
     num_labels = 2
 

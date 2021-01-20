@@ -14,8 +14,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 """PyTorch BERT model. """
-
-
+import copy
+import logging
 import math
 import os
 import warnings
@@ -52,11 +52,13 @@ from ...modeling_utils import (
     find_pruneable_heads_and_indices,
     prune_linear_layer,
 )
-from ...utils import logging
+
+# from ...utils import logging
+
 from .configuration_bert import BertConfig
 
-
-logger = logging.get_logger(__name__)
+#
+# logger = logging.get_logger(__name__)
 
 _CONFIG_FOR_DOC = "BertConfig"
 _TOKENIZER_FOR_DOC = "BertTokenizer"
@@ -96,19 +98,19 @@ def load_tf_weights_in_bert(model, config, tf_checkpoint_path):
         import numpy as np
         import tensorflow as tf
     except ImportError:
-        logger.error(
-            "Loading a TensorFlow model in PyTorch, requires TensorFlow to be installed. Please see "
-            "https://www.tensorflow.org/install/ for installation instructions."
-        )
+        # logger.error(
+        #     "Loading a TensorFlow model in PyTorch, requires TensorFlow to be installed. Please see "
+        #     "https://www.tensorflow.org/install/ for installation instructions."
+        # )
         raise
     tf_path = os.path.abspath(tf_checkpoint_path)
-    logger.info("Converting TensorFlow checkpoint from {}".format(tf_path))
+    # logger.info("Converting TensorFlow checkpoint from {}".format(tf_path))
     # Load weights from TF model
     init_vars = tf.train.list_variables(tf_path)
     names = []
     arrays = []
     for name, shape in init_vars:
-        logger.info("Loading TF weight {} with shape {}".format(name, shape))
+        # logger.info("Loading TF weight {} with shape {}".format(name, shape))
         array = tf.train.load_variable(tf_path, name)
         names.append(name)
         arrays.append(array)
@@ -121,7 +123,7 @@ def load_tf_weights_in_bert(model, config, tf_checkpoint_path):
             n in ["adam_v", "adam_m", "AdamWeightDecayOptimizer", "AdamWeightDecayOptimizer_1", "global_step"]
             for n in name
         ):
-            logger.info("Skipping {}".format("/".join(name)))
+            # logger.info("Skipping {}".format("/".join(name)))
             continue
         pointer = model
         for m_name in name:
@@ -141,7 +143,7 @@ def load_tf_weights_in_bert(model, config, tf_checkpoint_path):
                 try:
                     pointer = getattr(pointer, scope_names[0])
                 except AttributeError:
-                    logger.info("Skipping {}".format("/".join(name)))
+                    # logger.info("Skipping {}".format("/".join(name)))
                     continue
             if len(scope_names) >= 2:
                 num = int(scope_names[1])
@@ -157,7 +159,7 @@ def load_tf_weights_in_bert(model, config, tf_checkpoint_path):
         except AssertionError as e:
             e.args += (pointer.shape, array.shape)
             raise
-        logger.info("Initialize PyTorch weight {}".format(name))
+        # logger.info("Initialize PyTorch weight {}".format(name))
         pointer.data = torch.from_numpy(array)
     return model
 
@@ -181,8 +183,9 @@ class BertEmbeddings(nn.Module):
         self.position_embedding_type = getattr(config, "position_embedding_type", "absolute")
 
     def forward(
-        self, input_ids=None, token_type_ids=None, position_ids=None, inputs_embeds=None, past_key_values_length=0
+        self, input_ids, token_type_ids=None, position_ids=None, inputs_embeds=None, past_key_values_length=0
     ):
+        # logging.info(input_ids)
         if input_ids is not None:
             input_shape = input_ids.size()
         else:
@@ -208,6 +211,56 @@ class BertEmbeddings(nn.Module):
         embeddings = self.dropout(embeddings)
         return embeddings
 
+
+# class BertSelfAttention(nn.Module):
+#     def __init__(self, config):
+#         super().__init__()
+#         if config.hidden_size % config.num_attention_heads != 0:
+#             raise ValueError(
+#                 "The hidden size (%d) is not a multiple of the number of attention "
+#                 "heads (%d)" % (config.hidden_size, config.num_attention_heads))
+#         self.num_attention_heads = config.num_attention_heads
+#         self.attention_head_size = int(config.hidden_size / config.num_attention_heads)
+#         self.all_head_size = self.num_attention_heads * self.attention_head_size
+#
+#         self.query = nn.Linear(config.hidden_size, self.all_head_size)
+#         self.key = nn.Linear(config.hidden_size, self.all_head_size)
+#         self.value = nn.Linear(config.hidden_size, self.all_head_size)
+#
+#         self.dropout = nn.Dropout(config.attention_probs_dropout_prob)
+#
+#     def transpose_for_scores(self, x):
+#         new_x_shape = x.size()[:-1] + (self.num_attention_heads, self.attention_head_size)
+#         x = x.view(*new_x_shape)
+#         return x.permute(0, 2, 1, 3)
+#
+#     def forward(self, hidden_states, attention_mask):
+#         mixed_query_layer = self.query(hidden_states)
+#         mixed_key_layer = self.key(hidden_states)
+#         mixed_value_layer = self.value(hidden_states)
+#
+#         query_layer = self.transpose_for_scores(mixed_query_layer)
+#         key_layer = self.transpose_for_scores(mixed_key_layer)
+#         value_layer = self.transpose_for_scores(mixed_value_layer)
+#
+#         # Take the dot product between "query" and "key" to get the raw attention scores.
+#         attention_scores = torch.matmul(query_layer, key_layer.transpose(-1, -2))
+#         attention_scores = attention_scores / math.sqrt(self.attention_head_size)
+#         # Apply the attention mask is (precomputed for all layers in BertModel forward() function)
+#         attention_scores = attention_scores + attention_mask
+#
+#         # Normalize the attention scores to probabilities.
+#         attention_probs = nn.Softmax(dim=-1)(attention_scores)
+#
+#         # This is actually dropping out entire tokens to attend to, which might
+#         # seem a bit unusual, but is taken from the original Transformer paper.
+#         attention_probs = self.dropout(attention_probs)
+#
+#         context_layer = torch.matmul(attention_probs, value_layer)
+#         context_layer = context_layer.permute(0, 2, 1, 3).contiguous()
+#         new_context_layer_shape = context_layer.size()[:-2] + (self.all_head_size,)
+#         context_layer = context_layer.view(*new_context_layer_shape)
+#         return context_layer
 
 class BertSelfAttention(nn.Module):
     def __init__(self, config):
@@ -342,10 +395,31 @@ class BertSelfOutput(nn.Module):
         self.dropout = nn.Dropout(config.hidden_dropout_prob)
 
     def forward(self, hidden_states, input_tensor):
+        # logging.info(hidden_states)
+        # logging.info(input_tensor)
+        # logging.info("########################################")
         hidden_states = self.dense(hidden_states)
+        # logging.info("---------------------")
         hidden_states = self.dropout(hidden_states)
+        # logging.info("---------------------")
         hidden_states = self.LayerNorm(hidden_states + input_tensor)
+        # logging.info("---------------------")
         return hidden_states
+
+#
+# class BertAttention(nn.Module):
+#     def __init__(self, config):
+#         super().__init__()
+#         self.self = BertSelfAttention(config)
+#         self.output = BertSelfOutput(config)
+#
+#     def forward(self, input_tensor, attention_mask=None):
+#         logging.info("---------------------")
+#         self_output = self.self(input_tensor, attention_mask)
+#         logging.info("---------------------")
+#         attention_output = self.output(self_output, input_tensor)
+#         logging.info("---------------------")
+#         return attention_output
 
 
 class BertAttention(nn.Module):
@@ -383,6 +457,7 @@ class BertAttention(nn.Module):
         past_key_value=None,
         output_attentions=False,
     ):
+        # logging.info("---------------------")
         self_outputs = self.self(
             hidden_states,
             attention_mask,
@@ -392,8 +467,12 @@ class BertAttention(nn.Module):
             past_key_value,
             output_attentions,
         )
+        # logging.info("---------------------")
         attention_output = self.output(self_outputs[0], hidden_states)
+        # logging.info("---------------------")
+        # outputs = attention_output
         outputs = (attention_output,) + self_outputs[1:]  # add attentions if we output them
+        # logging.info("---------------------")
         return outputs
 
 
@@ -407,8 +486,12 @@ class BertIntermediate(nn.Module):
             self.intermediate_act_fn = config.hidden_act
 
     def forward(self, hidden_states):
+        # logging.info(hidden_states)
+        # logging.info("---------------------")
         hidden_states = self.dense(hidden_states)
+        # logging.info("---------------------")
         hidden_states = self.intermediate_act_fn(hidden_states)
+        # logging.info(self.intermediate_act_fn)
         return hidden_states
 
 
@@ -420,11 +503,31 @@ class BertOutput(nn.Module):
         self.dropout = nn.Dropout(config.hidden_dropout_prob)
 
     def forward(self, hidden_states, input_tensor):
+        # logging.info("---------------------")
         hidden_states = self.dense(hidden_states)
+        # logging.info("---------------------")
         hidden_states = self.dropout(hidden_states)
+        # logging.info("---------------------")
         hidden_states = self.LayerNorm(hidden_states + input_tensor)
+        # logging.info("---------------------")
         return hidden_states
 
+
+# class BertLayer(nn.Module):
+#     def __init__(self, config):
+#         super().__init__()
+#         self.attention = BertAttention(config)
+#         self.intermediate = BertIntermediate(config)
+#         self.output = BertOutput(config)
+#
+#     def forward(self, hidden_states, attention_mask):
+#         logging.info("---------------------")
+#         attention_output = self.attention(hidden_states, attention_mask)
+#         logging.info("---------------------")
+#         intermediate_output = self.intermediate(attention_output)
+#         logging.info("---------------------")
+#         layer_output = self.output(intermediate_output, attention_output)
+#         return layer_output
 
 class BertLayer(nn.Module):
     def __init__(self, config):
@@ -509,6 +612,19 @@ class BertLayer(nn.Module):
         return layer_output
 
 
+# class BertEncoder(nn.Module):
+#     def __init__(self, config):
+#         super().__init__()
+#         layer = BertLayer(config)
+#         self.layer = nn.ModuleList([copy.deepcopy(layer) for _ in range(config.num_hidden_layers)])
+#
+#     def forward(self, hidden_states, attention_mask):
+#         all_encoder_layers = []
+#         for layer_module in self.layer:
+#             hidden_states = layer_module(hidden_states, attention_mask)
+#             all_encoder_layers.append(hidden_states)
+#         return all_encoder_layers
+
 class BertEncoder(nn.Module):
     def __init__(self, config):
         super().__init__()
@@ -539,15 +655,7 @@ class BertEncoder(nn.Module):
 
             layer_head_mask = head_mask[i] if head_mask is not None else None
             past_key_value = past_key_values[i] if past_key_values is not None else None
-
-            if getattr(self.config, "gradient_checkpointing", False) and self.training:
-
-                if use_cache:
-                    logger.warn(
-                        "`use_cache=True` is incompatible with `config.gradient_checkpointing=True`. Setting "
-                        "`use_cache=False`..."
-                    )
-                    use_cache = False
+            if getattr(self.config, "gradient_checkpointing", False):
 
                 def create_custom_forward(module):
                     def custom_forward(*inputs):
@@ -604,7 +712,6 @@ class BertEncoder(nn.Module):
             attentions=all_self_attentions,
             cross_attentions=all_cross_attentions,
         )
-
 
 class BertPooler(nn.Module):
     def __init__(self, config):
@@ -836,7 +943,8 @@ class BertModel(BertPreTrainedModel):
 
     def __init__(self, config, add_pooling_layer=True):
         super().__init__(config)
-        self.config = config
+        # self.config = config
+        logging.info(self.config)
 
         self.embeddings = BertEmbeddings(config)
         self.encoder = BertEncoder(config)
@@ -1047,7 +1155,7 @@ class BertForPreTraining(BertPreTrainedModel):
 
         Example::
 
-            >>> from transformers import BertTokenizer, BertForPreTraining
+            >>> from transformers421 import BertTokenizer, BertForPreTraining
             >>> import torch
 
             >>> tokenizer = BertTokenizer.from_pretrained('bert-base-uncased')
@@ -1107,8 +1215,8 @@ class BertLMHeadModel(BertPreTrainedModel):
     def __init__(self, config):
         super().__init__(config)
 
-        if not config.is_decoder:
-            logger.warning("If you want to use `BertLMHeadModel` as a standalone, add `is_decoder=True.`")
+        # if not config.is_decoder:
+        #     logger.warning("If you want to use `BertLMHeadModel` as a standalone, add `is_decoder=True.`")
 
         self.bert = BertModel(config, add_pooling_layer=False)
         self.cls = BertOnlyMLMHead(config)
@@ -1168,7 +1276,7 @@ class BertLMHeadModel(BertPreTrainedModel):
 
         Example::
 
-            >>> from transformers import BertTokenizer, BertLMHeadModel, BertConfig
+            >>> from transformers421 import BertTokenizer, BertLMHeadModel, BertConfig
             >>> import torch
 
             >>> tokenizer = BertTokenizer.from_pretrained('bert-base-cased')
@@ -1253,11 +1361,11 @@ class BertForMaskedLM(BertPreTrainedModel):
     def __init__(self, config):
         super().__init__(config)
 
-        if config.is_decoder:
-            logger.warning(
-                "If you want to use `BertForMaskedLM` make sure `config.is_decoder=False` for "
-                "bi-directional self-attention."
-            )
+        # if config.is_decoder:
+        #     logger.warning(
+        #         "If you want to use `BertForMaskedLM` make sure `config.is_decoder=False` for "
+        #         "bi-directional self-attention."
+        #     )
 
         self.bert = BertModel(config, add_pooling_layer=False)
         self.cls = BertOnlyMLMHead(config)
@@ -1390,7 +1498,7 @@ class BertForNextSentencePrediction(BertPreTrainedModel):
 
         Example::
 
-            >>> from transformers import BertTokenizer, BertForNextSentencePrediction
+            >>> from transformers421 import BertTokenizer, BertForNextSentencePrediction
             >>> import torch
 
             >>> tokenizer = BertTokenizer.from_pretrained('bert-base-uncased')

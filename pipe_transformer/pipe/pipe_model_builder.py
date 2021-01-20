@@ -4,7 +4,7 @@ import time
 import torch
 from torch import nn
 
-from transformers421 import apply_chunking_to_forward
+from transformers import apply_chunking_to_forward
 
 """
 ViT

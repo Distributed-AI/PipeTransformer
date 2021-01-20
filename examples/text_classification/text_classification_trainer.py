@@ -16,7 +16,7 @@ from sklearn.metrics import (
 )
 from torch.nn import CrossEntropyLoss
 
-from transformers421 import (
+from transformers import (
     AdamW,
     get_linear_schedule_with_warmup,
 )
@@ -110,6 +110,9 @@ class TextClassificationTrainer:
                                                                and global_step % self.args.evaluate_during_training_steps == 0):
                         results, _, _ = self.eval_model()
                         logging.info(results)
+
+                if self.args.is_debug_mode == 1 and global_step > 3:
+                    break
 
         return global_step, tr_loss / global_step
 
