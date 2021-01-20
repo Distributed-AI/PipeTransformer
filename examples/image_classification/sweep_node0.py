@@ -38,29 +38,31 @@ parser = argparse.ArgumentParser()
 args = add_args(parser)
 
 lr = [0.1, 0.3, 0.01, 0.03, 0.06, 0.001, 0.003]
-freeze_strategy = ["mild", "start_from_freeze_all", "freeze_by_epoch"]
+freeze_strategies = ["mild", "start_from_freeze_all", "freeze_by_epoch"]
 batch_size = [400]
 
 os.system("kill $(ps aux | grep \"main_cv.py\" | grep -v grep | awk '{print $2}')")
 
 run_id = 0
-for lr_idx in range(len(lr)):
-    for bs_idx in range(len(batch_size)):
-        current_lr, current_bs = lr[lr_idx], batch_size[bs_idx]
-        args.lr = current_lr
-        args.batch_size = current_bs
-        args.run_id = run_id
-        args.freeze_strategy = freeze_strategy
-        logging.info("current_lr = %f, current_bs = %d, freeze_strategy = %s" % (current_lr, current_bs, freeze_strategy))
 
-        os.system("nohup sh run_elastic_pipe.sh 8 2 0 192.168.11.2 11122 1 \"ib0\""
-                  " {args.lr} 400 imagenet /home/chaoyanghe/dataset/cv/imagenet 8 {args.freeze_strategy}> "
-                  "./PipeTransformer-imagenet-node{args.run_id}.log 2>&1 &".format(args=args))
+for bs_idx in range(len(batch_size)):
+    for freeze_strategy in freeze_strategies:
+        for lr_idx in range(len(lr)):
+            current_lr, current_bs = lr[lr_idx], batch_size[bs_idx]
+            args.lr = current_lr
+            args.batch_size = current_bs
+            args.run_id = run_id
+            args.freeze_strategy = freeze_strategy
+            logging.info("current_lr = %f, current_bs = %d, freeze_strategy = %s" % (current_lr, current_bs, freeze_strategy))
 
-        wait_for_the_training_process()
+            os.system("nohup sh run_elastic_pipe.sh 8 2 0 192.168.11.2 11122 1 \"ib0\""
+                      " {args.lr} 400 imagenet /home/chaoyanghe/dataset/cv/imagenet 8 {args.freeze_strategy}> "
+                      "./PipeTransformer-imagenet-node{args.run_id}.log 2>&1 &".format(args=args))
 
-        logging.info("cleaning the training...")
-        os.system("kill $(ps aux | grep \"main_cv.py\" | grep -v grep | awk '{print $2}')")
+            wait_for_the_training_process()
 
-        sleep(30)
-        run_id += 1
+            logging.info("cleaning the training...")
+            os.system("kill $(ps aux | grep \"main_cv.py\" | grep -v grep | awk '{print $2}')")
+
+            sleep(30)
+            run_id += 1
