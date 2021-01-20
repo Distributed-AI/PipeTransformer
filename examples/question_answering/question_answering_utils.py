@@ -359,7 +359,7 @@ def convert_example_to_feature(example_row):
         #         logger.info("answer: %s" % (answer_text))
 
         feature = InputFeatures(
-            original_id=,
+            original_id=example.original_id,
             unique_id=unique_id,
             example_index=example_index,
             doc_span_index=doc_span_index,
