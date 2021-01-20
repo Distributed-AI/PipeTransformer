@@ -74,7 +74,9 @@ nohup sh run_ddp.sh 8 2 1 192.168.11.1 11111 > ./machine2.txt 2>&1 &
 
 ```
 # kill all processes
-kill $(ps aux | grep "main.py" | grep -v grep | awk '{print $2}')
+kill $(ps aux | grep "main_cv.py" | grep -v grep | awk '{print $2}')
+kill $(ps aux | grep "main_tc.py" | grep -v grep | awk '{print $2}')
+kill $(ps aux | grep "main_qa.py" | grep -v grep | awk '{print $2}')
 ```
 
 
