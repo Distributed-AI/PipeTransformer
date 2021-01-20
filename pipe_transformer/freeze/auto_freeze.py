@@ -29,6 +29,8 @@ class AutoFreeze:
 
         self.shared_memory_mgr_frozen_layer_num = SharedMemoryManagerIntValue("frozen_layer_num")
 
+        self.freeze_strategy = config.freeze_strategy
+
     def update_status(self, num_freeze_layers, last_grad_norm_by_layer):
         logging.info("(%s) num_freeze_layers = %d, last_grad_norm_by_layer = %s" % (
             str(id(self)), num_freeze_layers, str(last_grad_norm_by_layer)))
@@ -68,17 +70,28 @@ class AutoFreeze:
     #     return num_freeze_layers
 
     def get_hand_crafted_frozen_layers_by_epoch(self, epoch):
-        num_freeze_layers = 0
-        if epoch == 0:
+        if self.freeze_strategy == "mild":
             num_freeze_layers = 0
-        elif epoch >= 1 and epoch <= 2:
-            num_freeze_layers = 6
-        elif epoch > 2 and epoch <= 5:
-            num_freeze_layers = 8
-        elif epoch > 5 and epoch <= 7:
-            num_freeze_layers = 10
-        elif epoch > 7:
+            if epoch == 0:
+                num_freeze_layers = 0
+            elif epoch >= 1 and epoch <= 2:
+                num_freeze_layers = 6
+            elif epoch > 2 and epoch <= 5:
+                num_freeze_layers = 8
+            elif epoch > 5 and epoch <= 7:
+                num_freeze_layers = 10
+            elif epoch > 7:
+                num_freeze_layers = 12
+        elif self.freeze_strategy == "start_from_freeze_all":
             num_freeze_layers = 12
+        elif self.freeze_strategy == "pipe_length_4":
+            num_freeze_layers = 6
+        elif self.freeze_strategy == "pipe_length_2":
+            num_freeze_layers = 8
+        elif self.freeze_strategy == "freeze_by_epoch":
+            num_freeze_layers = epoch
+        else:
+            raise Exception("no such strategy")
         if not self.shared_memory_mgr_frozen_layer_num.is_exist(epoch):
             self.shared_memory_mgr_frozen_layer_num.add_int_value(epoch, num_freeze_layers)
         return num_freeze_layers

@@ -56,6 +56,8 @@ def add_args():
     parser.add_argument("--num_chunks_of_micro_batches", default=1 * 8, type=int,
                         help="num_chunks_of_micro_batches")
 
+    parser.add_argument("--freeze_strategy", type=str, default="mild")
+
     parser.add_argument('--freeze', dest='b_freeze', action='store_true')
     parser.add_argument('--no_freeze', dest='b_freeze', action='store_false')
     parser.set_defaults(b_freeze=True)
@@ -71,6 +73,7 @@ def add_args():
     parser.add_argument('--cache', dest='b_cache', action='store_true')
     parser.add_argument('--no_cache', dest='b_cache', action='store_false')
     parser.set_defaults(b_cache=False)
+
 
     parser.add_argument("--is_debug_mode", default=0, type=int,
                         help="is_debug_mode")
@@ -181,6 +184,7 @@ if __name__ == "__main__":
     config.b_freeze = args.b_freeze
     config.b_auto_pipe = args.b_auto_pipe
     config.b_cache = args.b_cache
+    config.freeze_strategy = args.freeze_strategy
 
     config.is_infiniband = args.is_infiniband
     config.master_addr = args.master_addr
