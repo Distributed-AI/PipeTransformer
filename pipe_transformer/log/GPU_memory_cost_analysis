@@ -1,0 +1,43 @@
+1340489 2021-01-19,16:29:40.280 - {pipe_model_builder.py (309)} - create_pipe_styled_model(): create ViT pipeline
+1340489 2021-01-19,16:29:40.287 - {auto_pipe.py (69)} - transform(): len(pipe_model) = 27
+1340489 2021-01-19,16:29:40.287 - {auto_pipe.py (70)} - transform(): len(pipe_model paras_size) = 27
+1340489 2021-01-19,16:29:40.287 - {load_balance.py (39)} - generate_parameter_size_wise_balance(): total_param_size_to_be_assigned = 86.567656
+1340489 2021-01-19,16:29:40.287 - {load_balance.py (81)} - check_gap_all(): max_params_in_balanced_partition - min_params_in_balanced_partition = 0.770536
+1340489 2021-01-19,16:29:40.287 - {load_balance.py (97)} - check_gap_except_1st_layer(): max_params_in_balanced_partition - min_params_in_balanced_partition = 0.770536
+1340489 2021-01-19,16:29:40.287 - {auto_pipe.py (131)} - _auto_balanced_elastic_partition(): {0: 7, 1: 6, 2: 6, 3: 8}
+1340489 2021-01-19,16:29:40.287 - {auto_pipe.py (132)} - _auto_balanced_elastic_partition(): {0: 22.006271999999996, 1: 21.263616, 2: 21.263616, 3: 22.034152}
+
+Batch size 160, Memory cost on RTX2080Ti (11G) x 4:
+
+|-------------------------------+----------------------+----------------------+
+| GPU  Name        Persistence-M| Bus-Id        Disp.A | Volatile Uncorr. ECC |
+| Fan  Temp  Perf  Pwr:Usage/Cap|         Memory-Usage | GPU-Util  Compute M. |
+|                               |                      |               MIG M. |
+|===============================+======================+======================|
+|   0  GeForce RTX 208...  Off  | 00000000:19:00.0 Off |                  N/A |
+| 38%   56C    P2    79W / 250W |   8603MiB / 11019MiB |     31%      Default |
+|                               |                      |                  N/A |
++-------------------------------+----------------------+----------------------+
+|   1  GeForce RTX 208...  Off  | 00000000:1A:00.0 Off |                  N/A |
+| 44%   62C    P2    91W / 250W |   8377MiB / 11019MiB |     49%      Default |
+|                               |                      |                  N/A |
++-------------------------------+----------------------+----------------------+
+|   2  GeForce RTX 208...  Off  | 00000000:67:00.0 Off |                  N/A |
+| 46%   65C    P2    88W / 250W |   8377MiB / 11019MiB |     31%      Default |
+|                               |                      |                  N/A |
++-------------------------------+----------------------+----------------------+
+|   3  GeForce RTX 208...  Off  | 00000000:68:00.0  On |                  N/A |
+| 45%   63C    P2    95W / 250W |   9339MiB / 11016MiB |     38%      Default |
+|                               |                      |                  N/A |
++-------------------------------+----------------------+----------------------+
+
+
+
+BERT for QA
+Model size (M): 108.893186
+Batch size: 24
+|===============================+======================+======================|
+|   0  GeForce RTX 208...  Off  | 00000000:19:00.0 Off |                  N/A |
+| 44%   65C    P2   254W / 250W |   9175MiB / 11019MiB |     94%      Default |
+|                               |                      |                  N/A |
++-------------------------------+----------------------+----------------------+

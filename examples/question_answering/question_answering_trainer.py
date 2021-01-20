@@ -8,13 +8,6 @@ import os
 import torch
 from torch.utils.data import DataLoader, RandomSampler, SequentialSampler, TensorDataset
 from tqdm.auto import tqdm
-from transformers import (
-    AdamW,
-    BertConfig,
-    BertForQuestionAnswering,
-    BertTokenizer,
-    get_linear_schedule_with_warmup,
-)
 
 from examples.question_answering.model_args import QuestionAnsweringArgs
 from examples.question_answering.question_answering_utils import (
@@ -26,6 +19,13 @@ from examples.question_answering.question_answering_utils import (
     write_predictions,
     write_predictions_extended,
 )
+from transformers import (
+    AdamW,
+    BertConfig,
+    BertForQuestionAnswering,
+    BertTokenizer,
+    get_linear_schedule_with_warmup,
+)
 
 try:
     import wandb
@@ -35,6 +35,14 @@ except ImportError:
     wandb_available = False
 
 logger = logging.getLogger(__name__)
+
+
+def count_parameters(model, b_is_required_grad=True):
+    if b_is_required_grad:
+        params = sum(p.numel() for p in model.parameters() if p.requires_grad)
+    else:
+        params = sum(p.numel() for p in model.parameters())
+    return params / 1000000
 
 
 class QuestionAnsweringTrainer:
@@ -69,6 +77,8 @@ class QuestionAnsweringTrainer:
         self.tokenizer = tokenizer_class.from_pretrained(model_name, do_lower_case=self.args.do_lower_case, **kwargs)
 
         logging.info(self.model)
+        size_output_model = count_parameters(self.model, False)
+        logging.info(size_output_model)
 
         self.device = torch.device("cuda:0")
 
@@ -78,7 +88,8 @@ class QuestionAnsweringTrainer:
         self.results = {}
 
     def train_model(
-            self, train_data, train_id_mapping_dict, eval_data, test_id_mapping_dict, eval_data_path, output_dir=False, args=None, **kwargs
+            self, train_data, train_id_mapping_dict, eval_data, test_id_mapping_dict, eval_data_path, output_dir=False,
+            args=None, **kwargs
     ):
         """
         Trains the model using 'train_data'
@@ -188,8 +199,7 @@ class QuestionAnsweringTrainer:
                     global_step += 1
 
                     if self.args.evaluate_during_training and (self.args.evaluate_during_training_steps > 0
-                            and global_step % self.args.evaluate_during_training_steps == 0):
-
+                                                               and global_step % self.args.evaluate_during_training_steps == 0):
                         # results, _ = self.eval_model(eval_data, **kwargs)
                         result = self.eval_model_by_offical_script(eval_data, eval_data_path)
                         logging.info("result = %s" + str(result))

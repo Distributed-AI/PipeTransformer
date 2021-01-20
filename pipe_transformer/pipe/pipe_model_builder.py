@@ -65,7 +65,7 @@ class FrozenLayer(nn.Module):
             self.layers.append(frozen_layer_list[layer_i])
 
     def forward(self, x, layer_id=0):
-        logging.info(x)
+        # logging.info(x)
         if layer_id == self.num_frozen_layer:
             logging.info("no need to recompute")
             return x
@@ -166,7 +166,7 @@ def create_pipe_styled_model_vit(model_config, model_backbone, num_layer_in_tota
         Pin Memory: https://pytorch.org/docs/stable/notes/cuda.html#use-pinned-memory-buffers
         Prepare a Pin Memory model
     """
-    logging.info(model_backbone)
+#    logging.info(model_backbone)
     frozen_model = None
     pipe_model = nn.Sequential()
 
@@ -332,7 +332,7 @@ def convert_to_balanced_model(local_rank, global_rank,
         Pin Memory: https://pytorch.org/docs/stable/notes/cuda.html#use-pinned-memory-buffers
         Prepare a Pin Memory model
     """
-    logging.info("input = " + str(pipe))
+    # logging.info("input = " + str(pipe))
     logging.info("convert_to_balanced_model. local_rank = %d, global_rank = %d" % (local_rank, global_rank))
     time_start_loading = time.time()
     pipe_layer_idx = 0
@@ -354,7 +354,7 @@ def convert_to_balanced_model(local_rank, global_rank,
     time_end_loading = time.time()
     logging.info("CPU->GPU time cost = " + str(time_end_loading - time_start_loading))
     output_pipe_model = nn.Sequential(*balanced_pipe)
-    logging.info("output = " + str(output_pipe_model))
+#    logging.info("output = " + str(output_pipe_model))
     return output_pipe_model
 
 
