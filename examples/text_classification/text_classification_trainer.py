@@ -124,6 +124,7 @@ class TextClassificationTrainer:
         preds = np.empty((len(self.test_dataset), self.num_labels))
         out_label_ids = np.empty((len(self.test_dataset)))
         self.pipe_model.eval()
+        logging.info("len(test_dl) = %d, n_batches = %d" % (len(self.test_dl), n_batches))
         for i, batch in enumerate(self.test_dl):
             with torch.no_grad():
                 batch = tuple(t for t in batch)
@@ -142,6 +143,7 @@ class TextClassificationTrainer:
             nb_eval_steps += 1
             start_index = self.args.eval_batch_size * i
             end_index = start_index + self.args.eval_batch_size if i != (n_batches - 1) else len(self.test_dataset)
+            logging.info("batch index = %d, start_index = %d, end_index = %d" % (i, start_index, end_index))
             preds[start_index:end_index] = logits.detach().cpu().numpy()
             out_label_ids[start_index:end_index] = labels.detach().cpu().numpy()
 
