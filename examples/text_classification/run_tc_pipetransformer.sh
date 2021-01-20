@@ -8,6 +8,7 @@ IF_NAME=$7
 LR=$8
 BZ=$9
 RUN_ID=${10}
+B_FREEZE=${11}
 
 python -m launch \
 --nproc_per_node=$NPROC_PER_NODE --nnodes=$NNODE --node_rank=$NODE_RANK \
@@ -15,6 +16,7 @@ python -m launch \
 --master_port $MASTER_PORT \
 main_tc.py \
 --run_id $RUN_ID \
+--$B_FREEZE \
 --nnodes $NNODE \
 --nproc_per_node=$NPROC_PER_NODE \
 --node_rank $NODE_RANK \

@@ -42,7 +42,7 @@ logging.basicConfig(level=logging.INFO,
 parser = argparse.ArgumentParser()
 args = add_args(parser)
 
-lr = [1e-4, 2e-4, 3e-4, 1e-5, 2e-5, 3e-5, 4e-5, 5e-5]
+lr = [1e-5, 2e-5, 3e-5, 4e-5, 5e-5]
 batch_size = [16, 32]
 hpo_list = []
 
@@ -56,9 +56,10 @@ for lr_idx in range(len(lr)):
         args.batch_size = current_bs
         args.port = 10000 + run_id
         args.run_id = run_id
+        args.b_freeze = "no_freeze"
         logging.info("current_lr = %f, current_bs = %d" % (current_lr, current_bs))
         os.system('nohup sh run_tc_pipetransformer.sh 4 1 0 192.168.1.73 {args.port} 0 '
-                  '"wlx9cefd5fb3821" {args.lr} {args.batch_size} {args.run_id} > '
+                  '"wlx9cefd5fb3821" {args.lr} {args.batch_size} {args.run_id} {args.b_freeze} > '
                   './PipeTransformer-TC_run{args.run_id}.log 2>&1 &'.format(args=args))
 
         wait_for_the_training_process()
