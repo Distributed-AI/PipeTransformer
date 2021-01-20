@@ -3,7 +3,6 @@ import time
 
 import torch
 from torch import nn
-from torch.nn import CrossEntropyLoss, MSELoss
 
 from transformers421 import apply_chunking_to_forward
 
@@ -133,6 +132,7 @@ class BertForSequenceClassification_OutputHead(nn.Module):
         logits = self.classifier(pooled_output)
         return logits
 
+
 """
 Issues Description:
 the output of pipe is RRef，but DDP cannot recognize RRef object so DDP cannot find Tensor inside RRef.
@@ -166,7 +166,7 @@ def create_pipe_styled_model_vit(model_config, model_backbone, num_layer_in_tota
         Pin Memory: https://pytorch.org/docs/stable/notes/cuda.html#use-pinned-memory-buffers
         Prepare a Pin Memory model
     """
-#    logging.info(model_backbone)
+    #    logging.info(model_backbone)
     frozen_model = None
     pipe_model = nn.Sequential()
 
@@ -354,7 +354,7 @@ def convert_to_balanced_model(local_rank, global_rank,
     time_end_loading = time.time()
     logging.info("CPU->GPU time cost = " + str(time_end_loading - time_start_loading))
     output_pipe_model = nn.Sequential(*balanced_pipe)
-#    logging.info("output = " + str(output_pipe_model))
+    #    logging.info("output = " + str(output_pipe_model))
     return output_pipe_model
 
 
