@@ -64,18 +64,13 @@ class FrozenLayer(nn.Module):
             self.layers.append(frozen_layer_list[layer_i])
 
     def forward(self, x, layer_id=0):
-        # logging.info(x)
+        logging.info(x)
         if layer_id == self.num_frozen_layer:
             logging.info("no need to recompute")
             return x
         if layer_id == 0:
             logging.info("compute from layer 0")
-            if isinstance(x, dict):
-                # NLP
-                x = self.embedding(input_ids=x['input_ids'])
-            else:
-                # CV
-                x = self.embedding(x)
+            x = self.embedding(x)
             for id in range(0, self.num_frozen_layer):
                 x = self.layers[id](x)
             return x
@@ -132,6 +127,33 @@ class BertForSequenceClassification_OutputHead(nn.Module):
         logits = self.classifier(pooled_output)
         return logits
 
+
+class BertFrozenLayer(nn.Module):
+    def __init__(self, num_frozen_layer, frozen_emb, frozen_layer_list):
+        super().__init__()
+        self.num_frozen_layer = num_frozen_layer
+        self.embedding = frozen_emb
+        self.layers = nn.ModuleList()
+        logging.info("len(self.frozen_layer_list) = %d" % len(frozen_layer_list))
+        for layer_i in range(num_frozen_layer*2):
+            self.layers.append(frozen_layer_list[layer_i])
+        logging.info("len(self.layers) = %d" % len(self.layers))
+
+    def forward(self, x, layer_id=0):
+        if layer_id == self.num_frozen_layer:
+            logging.info("no need to recompute")
+            return x
+        if layer_id == 0:
+            logging.info("compute from layer 0")
+            x = self.embedding(x)
+            for id in range(0, self.num_frozen_layer*2):
+                x = self.layers[id](x)
+            return x
+        else:
+            logging.info("compute from layer %d-%d" % (layer_id, self.num_frozen_layer - 1))
+            for id in range(layer_id*2, self.num_frozen_layer*2):
+                x = self.layers[id](x)
+            return x
 
 """
 Issues Description:
@@ -192,7 +214,7 @@ def create_pipe_styled_model_vit(model_config, model_backbone, num_layer_in_tota
             size_layer_block = count_parameters(layer_block, False)
             parameters_size_frozen += size_layer_block
 
-        frozen_model = FrozenLayer(num_frozen_layer, frozen_emb, frozen_layer_list)
+        frozen_model = BertFrozenLayer(num_frozen_layer, frozen_emb, frozen_layer_list)
     else:
         pipe_model.add_module("embedding", model_backbone.transformer.embeddings)
         size_embedding = count_parameters(model_backbone.transformer.embeddings, False)
@@ -244,23 +266,25 @@ def create_pipe_styled_model_BERT_for_TC(model_config, model_backbone, num_layer
     if num_frozen_layer > 0:
         for param in model_backbone.bert.embeddings.parameters():
             param.requires_grad = False
-
         frozen_emb = model_backbone.bert.embeddings
-
-        size_embedding = count_parameters(model_backbone.bert.embeddings, False)
+        size_embedding = count_parameters(frozen_emb, False)
         parameters_size_frozen += size_embedding
 
-        frozen_layer_list = nn.ModuleList()
+        frozen_model_sequential = nn.Sequential()
+        # add transformer blocks needed to be trained
         for frozen_layer_index in range(num_frozen_layer):
             layer_block = model_backbone.bert.encoder.layer[frozen_layer_index]
             for param in layer_block.parameters():
                 param.requires_grad = False
-            frozen_layer_list.append(layer_block)
-
             size_layer_block = count_parameters(layer_block, False)
             parameters_size_frozen += size_layer_block
 
-        frozen_model = FrozenLayer(num_frozen_layer, frozen_emb, frozen_layer_list)
+            # each layer has two sub layers: attention and FFN
+            frozen_model_sequential.add_module("layer" + str(frozen_layer_index) + "attention", layer_block.attention)
+            ffn_layer = BertFFNLayer(model_config, layer_block.intermediate, layer_block.output)
+            frozen_model_sequential.add_module("layer" + str(frozen_layer_index) + "ffn_layer", ffn_layer)
+
+        frozen_model = BertFrozenLayer(num_frozen_layer, frozen_emb, frozen_model_sequential)
     else:
         pipe_model.add_module("embedding", model_backbone.bert.embeddings)
         size_embedding = count_parameters(model_backbone.bert.embeddings, False)

@@ -78,11 +78,8 @@ class TextClassificationTrainer:
                 sample_index_list = batch[0][0].cpu().numpy()
                 # logging.info(sample_index_list)
 
-                # outputs = self.pipe_transformer.forward(epoch, batch_idx, sample_index_list, inputs, True, True)
-                # outputs = self.pipe_model(**inputs)
-                # logging.info(self.pipe_model)
-                # outputs = self.pipe_model(**inputs)
-                logits = self.pipe_model(x)
+                logits = self.pipe_transformer.forward(epoch, batch_idx, sample_index_list, x, True, True)
+                # logits = self.pipe_model(x)
                 loss_fct = CrossEntropyLoss()
                 loss = loss_fct(logits.view(-1, self.num_labels), labels.view(-1))
 
@@ -108,7 +105,7 @@ class TextClassificationTrainer:
 
                     if self.args.evaluate_during_training and (self.args.evaluate_during_training_steps > 0
                                                                and global_step % self.args.evaluate_during_training_steps == 0):
-                        results, _, _ = self.eval_model()
+                        results, _, _ = self.eval_model(epoch)
                         logging.info(results)
 
                 if self.args.is_debug_mode == 1 and global_step > 3:
@@ -116,7 +113,7 @@ class TextClassificationTrainer:
 
         return global_step, tr_loss / global_step
 
-    def eval_model(self):
+    def eval_model(self, epoch):
         results = {}
 
         eval_loss = 0.0
@@ -131,7 +128,10 @@ class TextClassificationTrainer:
                 # inputs = {"input_ids": batch[0], "attention_mask": batch[1], "labels": batch[3]}
                 x = batch[0].to(self.device_first)
                 labels = batch[3].to(self.device_last)
-                logits = self.pipe_model(x)
+
+                sample_index_list = batch[0][0].cpu().numpy()
+                logits = self.pipe_transformer.forward(epoch, i, sample_index_list, x, False, False)
+
                 loss_fct = CrossEntropyLoss()
                 loss = loss_fct(logits.view(-1, self.num_labels), labels.view(-1))
                 eval_loss += loss.item()
