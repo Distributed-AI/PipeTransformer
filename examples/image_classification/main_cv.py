@@ -123,14 +123,14 @@ def add_args():
     return args
 
 
-def post_complete_message_to_sweep():
+def post_complete_message_to_sweep(args, config):
     pipe_path = "/tmp/pipe_transformer_training_status_cv"
     if not os.path.exists(pipe_path):
         os.mkfifo(pipe_path)
     pipe_fd = os.open(pipe_path, os.O_WRONLY)
 
     with os.fdopen(pipe_fd, 'w') as pipe:
-        pipe.write("training is finished!")
+        pipe.write("training is finished! \n%s\n%s" % (str(args), str(config)))
 
 
 if __name__ == "__main__":
@@ -233,4 +233,4 @@ if __name__ == "__main__":
         wandb.finish()
 
     if args.local_rank == 0:
-        post_complete_message_to_sweep()
+        post_complete_message_to_sweep(args, config)

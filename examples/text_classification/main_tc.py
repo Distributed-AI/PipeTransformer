@@ -181,7 +181,7 @@ def post_complete_message():
     pipe_fd = os.open(pipe_path, os.O_WRONLY)
 
     with os.fdopen(pipe_fd, 'w') as pipe:
-        pipe.write("training is finished!")
+        pipe.write("training is finished! \n%s\n%s" % (str(args), str(config)))
 
 
 if __name__ == "__main__":
@@ -277,4 +277,4 @@ if __name__ == "__main__":
         run.finish()
 
     if args.local_rank == 0:
-        post_complete_message()
+        post_complete_message(tc_args, config)
