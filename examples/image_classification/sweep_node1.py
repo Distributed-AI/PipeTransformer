@@ -37,7 +37,8 @@ logging.basicConfig(level=logging.INFO,
 parser = argparse.ArgumentParser()
 args = add_args(parser)
 
-lr = [0.1, 0.3, 0.01, 0.03, 0.001, 0.003]
+lr = [0.1, 0.3, 0.01, 0.03, 0.06, 0.001, 0.003]
+freeze_strategy = ["aggressive", "mild", "automated"]
 batch_size = [400]
 
 os.system("kill $(ps aux | grep \"main_cv.py\" | grep -v grep | awk '{print $2}')")

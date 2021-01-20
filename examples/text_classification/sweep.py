@@ -42,7 +42,7 @@ logging.basicConfig(level=logging.INFO,
 parser = argparse.ArgumentParser()
 args = add_args(parser)
 
-lr = [0.1, 0.3, 0.01, 0.03, 0.001, 0.003, 1e4, 2e4, 3e4, 1e5, 2e5, 3e5, 4e5, 5e5]
+lr = [1e-4, 2e-4, 3e-4, 1e-5, 2e-5, 3e-5, 4e-5, 5e-5]
 batch_size = [16, 32]
 hpo_list = []
 
