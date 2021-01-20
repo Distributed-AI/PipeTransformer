@@ -120,6 +120,16 @@ def add_args():
     return args
 
 
+def post_complete_message_to_sweep():
+    pipe_path = "/tmp/pipe_transformer_training_status_cv"
+    if not os.path.exists(pipe_path):
+        os.mkfifo(pipe_path)
+    pipe_fd = os.open(pipe_path, os.O_WRONLY)
+
+    with os.fdopen(pipe_fd, 'w') as pipe:
+        pipe.write("training is finished!")
+
+
 if __name__ == "__main__":
     args = add_args()
 
@@ -208,7 +218,7 @@ if __name__ == "__main__":
         Trainer related
     """
     trainer = CVTrainer(args, pipe_transformer)
-    trainer.train_and_eval()
+    # trainer.train_and_eval()
 
     """
         PipeTransformer related
@@ -217,3 +227,5 @@ if __name__ == "__main__":
 
     if args.global_rank == 0:
         wandb.finish()
+
+    post_complete_message_to_sweep()

@@ -18,6 +18,10 @@ class SharedMemoryManager:
 
     @lock
     def add_tensor(self, sample_uid, layer_id, tensor):
+        if tensor.shape[0] * tensor.shape[1] * 4 != self.config.seq_len * self.config.hidden_size * 4:
+            logging.info(tensor.shape)
+            logging.info(self.config)
+            raise Exception("size does not match!")
         shm_hidden_tensor_np = tensor.numpy()
         tensor_name = self._build_tensor_memory_name(sample_uid, layer_id)
         tensor_size = shm_hidden_tensor_np.nbytes
@@ -50,6 +54,7 @@ class SharedMemoryManager:
             # raise Exception("get_tensor not found")
             return None
         if len(shm.buf) != self.config.seq_len * self.config.hidden_size * 4:
+            logging.info(self.config)
             logging.info("len(shm.buf) = %d" % len(shm.buf))
             raise Exception("length is incorrect!")
         shm_hidden_tensor_np = np.ndarray(

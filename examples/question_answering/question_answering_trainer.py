@@ -19,7 +19,7 @@ from examples.question_answering.question_answering_utils import (
     write_predictions,
     write_predictions_extended,
 )
-from transformers421 import (
+from transformers import (
     AdamW,
     BertConfig,
     BertForQuestionAnswering,
@@ -515,6 +515,7 @@ class QuestionAnsweringTrainer:
                 torch.save(features, cached_features_file)
 
         # Convert to Tensors and build dataset
+        all_original_id = torch.tensor([f.original_id for f in features], dtype=torch.long)
         all_input_ids = torch.tensor([f.input_ids for f in features], dtype=torch.long)
         all_attention_masks = torch.tensor([f.attention_mask for f in features], dtype=torch.long)
         all_token_type_ids = torch.tensor([f.token_type_ids for f in features], dtype=torch.long)
@@ -525,12 +526,14 @@ class QuestionAnsweringTrainer:
         if evaluate:
             all_feature_index = torch.arange(all_input_ids.size(0), dtype=torch.long)
             dataset = TensorDataset(
-                all_input_ids, all_attention_masks, all_token_type_ids, all_feature_index, all_cls_index, all_p_mask
+                all_original_id, all_input_ids, all_attention_masks,
+                all_token_type_ids, all_feature_index, all_cls_index, all_p_mask
             )
         else:
             all_start_positions = torch.tensor([f.start_position for f in features], dtype=torch.long)
             all_end_positions = torch.tensor([f.end_position for f in features], dtype=torch.long)
             dataset = TensorDataset(
+                all_original_id,
                 all_input_ids,
                 all_attention_masks,
                 all_token_type_ids,

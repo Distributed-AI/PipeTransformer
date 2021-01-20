@@ -58,6 +58,8 @@ class TCDatasetManager(BaseDataManager):
         self.test_sampler = None
         self.train_sample_idx_list_by_epoch = dict()
         self.test_sample_idx_list_by_epoch = dict()
+        self.latest_train_sample_idx_list = dict()
+        self.latest_test_sample_idx_list = dict()
 
     def load_data(self, data_dir, dataset):
         print("Loading dataset = %s" % dataset)
@@ -170,13 +172,13 @@ class TCDatasetManager(BaseDataManager):
             if not no_cache:
                 torch.save(features, cached_features_file)
 
+        all_guid = torch.tensor([f.guid for f in features], dtype=torch.long)
         all_input_ids = torch.tensor([f.input_ids for f in features], dtype=torch.long)
         all_input_mask = torch.tensor([f.input_mask for f in features], dtype=torch.long)
         all_segment_ids = torch.tensor([f.segment_ids for f in features], dtype=torch.long)
-
         all_label_ids = torch.tensor([f.label_id for f in features], dtype=torch.long)
 
-        dataset = TensorDataset(all_input_ids, all_input_mask, all_segment_ids, all_label_ids)
+        dataset = TensorDataset(all_guid, all_input_ids, all_input_mask, all_segment_ids, all_label_ids)
 
         return dataset
 
@@ -191,6 +193,7 @@ class TCDatasetManager(BaseDataManager):
         indexes = list(iter(self.train_sampler))
         logging.info("global_rank = %d. train indexes len = %d" % (self.args.global_rank, len(indexes)))
         self.train_sample_idx_list_by_epoch[epoch] = indexes
+        self.latest_train_sample_idx_list = indexes
 
         if self.train_loader is not None:
             del self.train_loader
@@ -209,6 +212,7 @@ class TCDatasetManager(BaseDataManager):
         indexes = list(iter(self.test_sampler))
         logging.info("global_rank = %d. test indexes len = %d" % (self.args.global_rank, len(indexes)))
         self.test_sample_idx_list_by_epoch[epoch] = indexes
+        self.latest_test_sample_idx_list = indexes
 
         if self.test_loader is not None:
             del self.test_loader
@@ -225,6 +229,16 @@ class TCDatasetManager(BaseDataManager):
 
     def get_test_sample_index(self, epoch):
         return self.test_sample_idx_list_by_epoch[epoch]
+
+    def get_train_sample_len(self, epoch):
+        if epoch not in self.train_sample_idx_list_by_epoch.keys():
+            return len(self.latest_train_sample_idx_list)
+        return len(self.train_sample_idx_list_by_epoch[epoch])
+
+    def get_test_sample_len(self, epoch):
+        if epoch not in self.test_sample_idx_list_by_epoch.keys():
+            return len(self.latest_test_sample_idx_list)
+        return len(self.test_sample_idx_list_by_epoch[epoch])
 
     def set_seed(self, seed):
         torch.backends.cudnn.deterministic = True

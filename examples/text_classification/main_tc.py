@@ -26,7 +26,7 @@ import numpy as np
 import torch
 
 # this is a temporal import, we will refactor FedML as a package installation
-
+import wandb
 
 sys.path.insert(0, os.path.abspath(os.path.join(os.getcwd(), "")))
 sys.path.insert(0, os.path.abspath(os.path.join(os.getcwd(), "../../")))
@@ -48,6 +48,8 @@ def add_args(parser):
     return a parser added with args required by fit
     """
     # PipeTransformer related
+    parser.add_argument("--run_id", type=int, default=0)
+
     parser.add_argument("--nnodes", type=int, default=2)
 
     parser.add_argument("--nproc_per_node", type=int, default=8)
@@ -170,13 +172,21 @@ def create_model(args, num_labels):
     return config, model, tokenizer
 
 
+def post_complete_message():
+    pipe_path = "/tmp/pipe_transformer_training_status"
+    if not os.path.exists(pipe_path):
+        os.mkfifo(pipe_path)
+    pipe_fd = os.open(pipe_path, os.O_WRONLY)
+
+    with os.fdopen(pipe_fd, 'w') as pipe:
+        pipe.write("training is finished!")
+
+
 if __name__ == "__main__":
     # parse python script input parameters
     parser = argparse.ArgumentParser()
     args = add_args(parser)
-    # run = wandb.init(project="pipe_and_ddp",
-    #                  name="PipeTransformer""-" + str(args.dataset),
-    #                  config=args)
+
     # customize the log format
     logging.basicConfig(level=logging.INFO,
                         format='%(process)s %(asctime)s.%(msecs)03d - {%(module)s.py (%(lineno)d)} - %(funcName)s(): %(message)s',
@@ -239,22 +249,28 @@ if __name__ == "__main__":
     config.num_layer = model_config.num_hidden_layers
     config.output_dim = num_labels
     config.hidden_size = model_config.hidden_size
-    config.seq_len = model_config.max_position_embeddings
+    config.seq_len = tc_args.max_seq_length
     config.batch_size = args.train_batch_size
 
     config.is_debug_mode = args.is_debug_mode
 
     pipe_transformer = PipeTransformer(config, tc_data_manager, model_config, model)
     args.global_rank = pipe_transformer.get_global_rank()
+    logging.info("successfully create PipeTransformer. args = " + str(args))
 
-    logging.info("successfully create PipeTransformer")
+    tc_args.update_from_dict({"global_rank": args.global_rank})
+
+    if args.global_rank == 0:
+        run = wandb.init(project="pipe_and_ddp",
+                         name="PipeTransformer-r" + str(args.run_id) + "-" + str(args.dataset),
+                         config=args)
 
     # Create a ClassificationModel and start train
     trainer = TextClassificationTrainer(tc_args, tc_data_manager, pipe_transformer)
     trainer.train_model()
 
-    # Evaluate the model
-    result, model_outputs, wrong_predictions = trainer.eval_model()
-    logging.info("eval_res=%s" % (str(result)))
-
     pipe_transformer.finish()
+    if args.global_rank == 0:
+        run.finish()
+
+    post_complete_message()

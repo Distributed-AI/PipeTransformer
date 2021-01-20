@@ -134,10 +134,10 @@ class AutoCacheImpl:
                 logging.critical("(global_rank = %d) cached layer %d" % (self.config.global_rank, num_frozen_layer))
             logging.critical("(global_rank = %d) NO need to compute FP (END)" % self.config.global_rank)
         else:
-            logging.critical("(global_rank = %s, epoch = %d, batch_idx = %d, is_train_mode = %s, is_train_data = %s, "
+            logging.critical("(global_rank = %s, epoch = %s, batch_idx = %s, is_train_mode = %s, is_train_data = %s, "
                              "num_frozen_layer_last_epoch = %d, num_frozen_layer = %d) "
                              "cache to shared memory (START)"
-                             % (str(self.config.global_rank), epoch, batch_idx, str(is_train_mode), str(is_train_data),
+                             % (str(self.config.global_rank), str(epoch), str(batch_idx), str(is_train_mode), str(is_train_data),
                                 num_frozen_layer_last_epoch, num_frozen_layer))
             with torch.no_grad():
                 hidden_feature = model(x).detach().cpu()
@@ -168,7 +168,7 @@ class AutoCacheImpl:
             shared_memory_mgr_hidden_feature = self.shared_memory_mgr_hidden_feature_test
         sample_idx_in_batch = 0
         hidden_tensor_np = numpy.ndarray(
-            (self.config.batch_size, self.config.seq_len, self.config.hidden_size),
+            (len(batch_sample_idx), self.config.seq_len, self.config.hidden_size),
             dtype=numpy.float32
         )
         for sample_uid in batch_sample_idx:

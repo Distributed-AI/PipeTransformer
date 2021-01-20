@@ -12,6 +12,8 @@ data/cifar100
 pipe_transformer/data/data/cifar10/*
 
 examples/text_classification/output
+examples/text_classification/cache_dir/*
+examples/question_answering/cache_dir
 examples/question_answering/output
 examples/image_classification/output
 *.pth

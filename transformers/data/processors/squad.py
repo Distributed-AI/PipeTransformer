@@ -290,6 +290,7 @@ def squad_convert_example_to_features(
 
         features.append(
             SquadFeatures(
+                example.original_id,
                 span["input_ids"],
                 span["attention_mask"],
                 span["token_type_ids"],
@@ -692,7 +693,6 @@ class SquadV2Processor(SquadProcessor):
     train_file = "train-v2.0.json"
     dev_file = "dev-v2.0.json"
 
-
 class SquadExample:
     """
     A single training/test example for the Squad dataset, as loaded from disk.
@@ -710,6 +710,7 @@ class SquadExample:
 
     def __init__(
         self,
+        original_id,
         qas_id,
         question_text,
         context_text,
@@ -719,6 +720,7 @@ class SquadExample:
         answers=[],
         is_impossible=False,
     ):
+        self.original_id = original_id
         self.qas_id = qas_id
         self.question_text = question_text
         self.context_text = context_text
@@ -784,6 +786,7 @@ class SquadFeatures:
 
     def __init__(
         self,
+        original_id,
         input_ids,
         attention_mask,
         token_type_ids,
@@ -801,6 +804,7 @@ class SquadFeatures:
         qas_id: str = None,
         encoding: BatchEncoding = None,
     ):
+        self.original_id = original_id
         self.input_ids = input_ids
         self.attention_mask = attention_mask
         self.token_type_ids = token_type_ids

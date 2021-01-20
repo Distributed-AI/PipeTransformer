@@ -105,6 +105,7 @@ class CacheDaemon(mp.Process):
             sample = hidden_feature[sample_idx_in_batch, :, :]
             shared_memory_mgr.add_tensor(sample_uid, num_frozen_layer, sample)
             sample_idx_in_batch += 1
+        logging.info("successfully!")
 
     def _delete_previous_cached_batch(self, batch_sample_idx, cached_layer_id):
         sample_idx_in_batch = 0
