@@ -73,14 +73,11 @@ class TextClassificationTrainer:
 
                 batch = tuple(t for t in batch)
                 # inputs = {"input_ids": batch[0], "attention_mask": batch[1], "labels": batch[3]}
-                x = batch[0].to(self.device_first)
-                labels = batch[3].to(self.device_last)
+                sample_index_list = batch[0].to(self.device_first).cpu().numpy()
+                x = batch[1].to(self.device_first)
+                labels = batch[4].to(self.device_last)
 
-                logging.info(len(batch))
-                if len(batch) > 4:
-                    raise Exception("error!")
-                # TODO:
-                sample_index_list = []
+                # logging.info(batch)
                 # logging.info(sample_index_list)
 
                 logits = self.pipe_transformer.forward(epoch, batch_idx, sample_index_list, x, True, True)
@@ -130,15 +127,11 @@ class TextClassificationTrainer:
         for i, batch in enumerate(self.test_dl):
             with torch.no_grad():
                 batch = tuple(t for t in batch)
-                logging.info(len(batch))
-                if len(batch) > 4:
-                    raise Exception("error!")
-                # inputs = {"input_ids": batch[0], "attention_mask": batch[1], "labels": batch[3]}
-                x = batch[0].to(self.device_first)
-                labels = batch[3].to(self.device_last)
 
-                # TODO:
-                sample_index_list = []
+                sample_index_list = batch[0].to(self.device_first).cpu().numpy()
+                x = batch[1].to(self.device_first)
+                labels = batch[4].to(self.device_last)
+
                 logits = self.pipe_transformer.forward(epoch, i, sample_index_list, x, False, False)
 
                 loss_fct = CrossEntropyLoss()
