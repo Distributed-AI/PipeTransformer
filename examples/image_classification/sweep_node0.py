@@ -22,8 +22,8 @@ def wait_for_the_training_process():
         while True:
             message = pipe.read()
             if message:
-                print("Received: '%s'" % message)
-                print("Training is finished. Start the next training with...")
+                print("Received: '%s'\n" % message)
+                print("Training is finished. Start the next training with...\n")
                 return
             sleep(3)
             print("Daemon is alive. Waiting for the training result.")
