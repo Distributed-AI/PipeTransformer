@@ -48,6 +48,8 @@ def add_args(parser):
     return a parser added with args required by fit
     """
     # PipeTransformer related
+    parser.add_argument("--run_id", type=int, default=0)
+
     parser.add_argument("--nnodes", type=int, default=2)
 
     parser.add_argument("--nproc_per_node", type=int, default=8)
@@ -170,6 +172,16 @@ def create_model(args, num_labels):
     return config, model, tokenizer
 
 
+def post_complete_message():
+    pipe_path = "/tmp/pipe_transformer_training_status"
+    if not os.path.exists(pipe_path):
+        os.mkfifo(pipe_path)
+    pipe_fd = os.open(pipe_path, os.O_WRONLY)
+
+    with os.fdopen(pipe_fd, 'w') as pipe:
+        pipe.write("training is finished!")
+
+
 if __name__ == "__main__":
     # parse python script input parameters
     parser = argparse.ArgumentParser()
@@ -182,11 +194,6 @@ if __name__ == "__main__":
     logging.info(args)
 
     set_seed(0)
-
-    if args.global_rank == 0:
-        run = wandb.init(project="pipe_and_ddp",
-                         name="PipeTransformer""-" + str(args.dataset),
-                         config=args)
 
     # arguments
     model_type = args.model_type
@@ -249,8 +256,14 @@ if __name__ == "__main__":
 
     pipe_transformer = PipeTransformer(config, tc_data_manager, model_config, model)
     args.global_rank = pipe_transformer.get_global_rank()
+    logging.info("successfully create PipeTransformer. args = " + str(args))
 
-    logging.info("successfully create PipeTransformer")
+    tc_args.update_from_dict({"global_rank": args.global_rank})
+
+    if args.global_rank == 0:
+        run = wandb.init(project="pipe_and_ddp",
+                         name="PipeTransformer-r" + str(args.run_id) + "-" + str(args.dataset),
+                         config=args)
 
     # Create a ClassificationModel and start train
     trainer = TextClassificationTrainer(tc_args, tc_data_manager, pipe_transformer)
@@ -259,3 +272,5 @@ if __name__ == "__main__":
     pipe_transformer.finish()
     if args.global_rank == 0:
         run.finish()
+
+    post_complete_message()

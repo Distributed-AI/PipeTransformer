@@ -5,12 +5,16 @@ MASTER_ADDR=$4
 MASTER_PORT=$5
 IB=$6
 IF_NAME=$7
+LR=$8
+BZ=$9
+RUN_ID=${10}
 
 python -m launch \
 --nproc_per_node=$NPROC_PER_NODE --nnodes=$NNODE --node_rank=$NODE_RANK \
 --master_addr $MASTER_ADDR \
 --master_port $MASTER_PORT \
 main_tc.py \
+--run_id $RUN_ID \
 --nnodes $NNODE \
 --nproc_per_node=$NPROC_PER_NODE \
 --node_rank $NODE_RANK \
@@ -23,9 +27,9 @@ main_tc.py \
 --model_type bert \
 --model_name bert-base-uncased \
 --do_lower_case True \
---train_batch_size 16 \
---eval_batch_size 16 \
---max_seq_length 512 \
---learning_rate 3e-5 \
---num_train_epochs 5 \
+--train_batch_size $BZ \
+--eval_batch_size $BZ \
+--max_seq_length 256 \
+--learning_rate $LR \
+--num_train_epochs 3 \
 --output_dir "./output"
