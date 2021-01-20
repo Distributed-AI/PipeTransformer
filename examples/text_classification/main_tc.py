@@ -26,7 +26,7 @@ import numpy as np
 import torch
 
 # this is a temporal import, we will refactor FedML as a package installation
-
+import wandb
 
 sys.path.insert(0, os.path.abspath(os.path.join(os.getcwd(), "")))
 sys.path.insert(0, os.path.abspath(os.path.join(os.getcwd(), "../../")))
@@ -174,9 +174,9 @@ if __name__ == "__main__":
     # parse python script input parameters
     parser = argparse.ArgumentParser()
     args = add_args(parser)
-    # run = wandb.init(project="pipe_and_ddp",
-    #                  name="PipeTransformer""-" + str(args.dataset),
-    #                  config=args)
+    run = wandb.init(project="pipe_and_ddp",
+                     name="PipeTransformer""-" + str(args.dataset),
+                     config=args)
     # customize the log format
     logging.basicConfig(level=logging.INFO,
                         format='%(process)s %(asctime)s.%(msecs)03d - {%(module)s.py (%(lineno)d)} - %(funcName)s(): %(message)s',

@@ -76,6 +76,9 @@ class TextClassificationTrainer:
                 x = batch[0].to(self.device_first)
                 labels = batch[3].to(self.device_last)
                 sample_index_list = batch[0][0].cpu().numpy()
+                if batch_idx == 0:
+                    logging.info(batch[0])
+                    logging.info(sample_index_list)
                 # logging.info(sample_index_list)
 
                 logits = self.pipe_transformer.forward(epoch, batch_idx, sample_index_list, x, True, True)
