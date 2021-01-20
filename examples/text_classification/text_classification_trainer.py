@@ -40,7 +40,8 @@ class TextClassificationTrainer:
         self.device_first = None
         self.device_last = None
 
-        self.train_dataset, self.test_dataset, self.test_examples = tc_data_manager.get_dataset()
+        self.tc_data_manager = tc_data_manager
+        _, _, self.test_examples = tc_data_manager.get_dataset()
 
     def train_model(self):
         epoch_start = self.pipe_transformer.start()
@@ -112,7 +113,8 @@ class TextClassificationTrainer:
 
                 if self.args.is_debug_mode == 1 and global_step > 3:
                     break
-
+        results, _, _ = self.eval_model(self.args.num_train_epochs-1)
+        logging.info(results)
         return global_step, tr_loss / global_step
 
     def eval_model(self, epoch):
@@ -121,8 +123,10 @@ class TextClassificationTrainer:
         eval_loss = 0.0
         nb_eval_steps = 0
         n_batches = len(self.test_dl)
-        preds = np.empty((len(self.test_dataset), self.num_labels))
-        out_label_ids = np.empty((len(self.test_dataset)))
+        test_sample_len = self.tc_data_manager.get_test_sample_len(epoch)
+        preds = np.empty((test_sample_len, self.num_labels))
+
+        out_label_ids = np.empty(test_sample_len)
         self.pipe_model.eval()
         logging.info("len(test_dl) = %d, n_batches = %d" % (len(self.test_dl), n_batches))
         for i, batch in enumerate(self.test_dl):
@@ -130,11 +134,18 @@ class TextClassificationTrainer:
                 batch = tuple(t for t in batch)
 
                 sample_index_list = batch[0].to(self.device_first).cpu().numpy()
+                if i == len(self.test_dl) - 1:
+                    logging.info(batch)
                 x = batch[1].to(self.device_first)
                 labels = batch[4].to(self.device_last)
 
                 logits = self.pipe_transformer.forward(epoch, i, sample_index_list, x, False, False)
-
+                if i == len(self.test_dl) - 1:
+                    logging.info("i = " + str(i))
+                    logging.info("sample_index_list = " + str(sample_index_list))
+                    logging.info("x = %s, x.len = %d" % (str(x), len(x)))
+                    logging.info(labels)
+                    logging.info(logits)
                 loss_fct = CrossEntropyLoss()
                 loss = loss_fct(logits.view(-1, self.num_labels), labels.view(-1))
                 eval_loss += loss.item()
@@ -142,7 +153,8 @@ class TextClassificationTrainer:
 
             nb_eval_steps += 1
             start_index = self.args.eval_batch_size * i
-            end_index = start_index + self.args.eval_batch_size
+
+            end_index = start_index + self.args.eval_batch_size if i != (n_batches - 1) else test_sample_len
             logging.info("batch index = %d, start_index = %d, end_index = %d" % (i, start_index, end_index))
             preds[start_index:end_index] = logits.detach().cpu().numpy()
             out_label_ids[start_index:end_index] = labels.detach().cpu().numpy()
@@ -151,6 +163,8 @@ class TextClassificationTrainer:
 
         model_outputs = preds
         preds = np.argmax(preds, axis=1)
+        # logging.info("preds = " + str(preds))
+        # logging.info("out_label_ids = " + str(out_label_ids))
         result, wrong = self.compute_metrics(preds, out_label_ids, self.test_examples)
         result["eval_loss"] = eval_loss
         results.update(result)

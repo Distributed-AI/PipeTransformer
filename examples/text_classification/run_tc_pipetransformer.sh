@@ -25,7 +25,7 @@ main_tc.py \
 --do_lower_case True \
 --train_batch_size 32 \
 --eval_batch_size 32 \
---max_seq_length 256 \
---learning_rate 5e-5 \
---num_train_epochs 3 \
+--max_seq_length 512 \
+--learning_rate 3e-5 \
+--num_train_epochs 5 \
 --output_dir "./output"

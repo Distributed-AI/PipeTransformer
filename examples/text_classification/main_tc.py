@@ -239,7 +239,7 @@ if __name__ == "__main__":
     config.num_layer = model_config.num_hidden_layers
     config.output_dim = num_labels
     config.hidden_size = model_config.hidden_size
-    config.seq_len = model_config.max_position_embeddings
+    config.seq_len = tc_args.max_seq_length
     config.batch_size = args.train_batch_size
 
     config.is_debug_mode = args.is_debug_mode
@@ -252,9 +252,5 @@ if __name__ == "__main__":
     # Create a ClassificationModel and start train
     trainer = TextClassificationTrainer(tc_args, tc_data_manager, pipe_transformer)
     trainer.train_model()
-
-    # Evaluate the model
-    result, model_outputs, wrong_predictions = trainer.eval_model()
-    logging.info("eval_res=%s" % (str(result)))
 
     pipe_transformer.finish()

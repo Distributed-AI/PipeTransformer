@@ -168,7 +168,7 @@ class AutoCacheImpl:
             shared_memory_mgr_hidden_feature = self.shared_memory_mgr_hidden_feature_test
         sample_idx_in_batch = 0
         hidden_tensor_np = numpy.ndarray(
-            (self.config.batch_size, self.config.seq_len, self.config.hidden_size),
+            (len(batch_sample_idx), self.config.seq_len, self.config.hidden_size),
             dtype=numpy.float32
         )
         for sample_uid in batch_sample_idx:
