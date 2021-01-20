@@ -222,7 +222,7 @@ if __name__ == "__main__":
         Trainer related
     """
     trainer = CVTrainer(args, pipe_transformer)
-    # trainer.train_and_eval()
+    trainer.train_and_eval()
 
     """
         PipeTransformer related
