@@ -1,7 +1,7 @@
 import torch
 import torch.nn as nn
 from torch.nn import CrossEntropyLoss, MSELoss
-from transformers import BertPreTrainedModel, BertModel
+from transformers421 import BertPreTrainedModel, BertModel
 
 
 class BertForSequenceClassification(BertPreTrainedModel):

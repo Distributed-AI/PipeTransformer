@@ -19,7 +19,7 @@ from examples.question_answering.question_answering_utils import (
     write_predictions,
     write_predictions_extended,
 )
-from transformers import (
+from transformers421 import (
     AdamW,
     BertConfig,
     BertForQuestionAnswering,

@@ -5,7 +5,7 @@ import torch
 from torch import nn
 from torch.nn import CrossEntropyLoss, MSELoss
 
-from transformers import apply_chunking_to_forward
+from transformers421 import apply_chunking_to_forward
 
 """
 ViT

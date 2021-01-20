@@ -15,8 +15,8 @@ import torch
 from torch.utils.data import Dataset
 from tqdm import tqdm
 
-from transformers import SquadExample, XLMTokenizer, BasicTokenizer
-from transformers.data.processors.squad import (
+from transformers421 import SquadExample, XLMTokenizer, BasicTokenizer
+from transformers421.data.processors.squad import (
     squad_convert_example_to_features,
     squad_convert_example_to_features_init,
 )

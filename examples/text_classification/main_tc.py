@@ -31,7 +31,7 @@ import torch
 sys.path.insert(0, os.path.abspath(os.path.join(os.getcwd(), "")))
 sys.path.insert(0, os.path.abspath(os.path.join(os.getcwd(), "../../")))
 
-from transformers.models.bert import BertConfig, BertTokenizer, BertForSequenceClassification
+from transformers421.models.bert import BertConfig, BertTokenizer, BertForSequenceClassification
 
 from examples.text_classification.model_args import ClassificationArgs
 from pipe_transformer.data.tc_data_manager import TCDatasetManager

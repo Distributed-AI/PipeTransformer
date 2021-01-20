@@ -16,7 +16,7 @@ from sklearn.metrics import (
 )
 from torch.nn import CrossEntropyLoss
 
-from transformers import (
+from transformers421 import (
     AdamW,
     get_linear_schedule_with_warmup,
 )
