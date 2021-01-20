@@ -76,6 +76,9 @@ class TextClassificationTrainer:
                 x = batch[0].to(self.device_first)
                 labels = batch[3].to(self.device_last)
 
+                logging.info(len(batch))
+                if len(batch) > 4:
+                    raise Exception("error!")
                 # TODO:
                 sample_index_list = []
                 # logging.info(sample_index_list)
@@ -127,6 +130,9 @@ class TextClassificationTrainer:
         for i, batch in enumerate(self.test_dl):
             with torch.no_grad():
                 batch = tuple(t for t in batch)
+                logging.info(len(batch))
+                if len(batch) > 4:
+                    raise Exception("error!")
                 # inputs = {"input_ids": batch[0], "attention_mask": batch[1], "labels": batch[3]}
                 x = batch[0].to(self.device_first)
                 labels = batch[3].to(self.device_last)
