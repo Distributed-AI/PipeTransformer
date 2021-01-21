@@ -45,7 +45,8 @@ class QuestionAnsweringTrainer:
 
         # training results
         self.results = {}
-        self.best_accuracy = 0.0
+        self.best_em = 0.0
+        self.best_f1 = 0.0
 
         # Pipe Transformer
         self.pipe_transformer = pipe_transformer
@@ -117,11 +118,11 @@ class QuestionAnsweringTrainer:
                     if self.args.evaluate_during_training and (self.args.evaluate_during_training_steps > 0
                                                                and global_step % self.args.evaluate_during_training_steps == 0):
                         # results, _ = self.eval_model(eval_data, **kwargs)
-                        result = self.eval_model_by_offical_script(epoch)
+                        result = self.eval_model_by_offical_script(epoch, global_step)
                         logging.info("epoch = %d, global_step = %d, result = %s" % (epoch, global_step, str(result)))
                 if global_step > 3 and self.args.is_debug_mode:
                     break
-        result = self.eval_model_by_offical_script(self.args.num_train_epochs-1)
+        result = self.eval_model_by_offical_script(self.args.num_train_epochs-1, global_step)
         logging.info("epoch = %d, global_step = %d, result = %s" % (self.args.num_train_epochs-1, global_step, str(result)))
         return global_step, tr_loss / global_step
 
@@ -171,7 +172,7 @@ class QuestionAnsweringTrainer:
 
         return result, texts
 
-    def eval_model_by_offical_script(self, epoch):
+    def eval_model_by_offical_script(self, epoch, step):
 
         all_predictions, all_nbest_json, scores_diff_json, eval_loss = self.evaluate(epoch)
 
@@ -187,6 +188,20 @@ class QuestionAnsweringTrainer:
             self.args.eval_data_path, os.path.join(self.args.output_dir, "prediction.json")))
 
         result = f.read().strip()
+        em = float(result['exact_match'])
+        f1 = float(result['f1'])
+        if em > self.best_em:
+            self.best_em = em
+        if f1 > self.best_f1:
+            self.best_f1 = f1
+
+        logging.info("best_em = %f" % self.best_em)
+        logging.info("best_f1 = %f" % self.best_f1)
+        if self.args.global_rank == 0:
+            wandb.log({"Evaluation EM (best)": self.best_em, "step": step})
+            wandb.log({"Evaluation F1 (best)": self.best_f1, "step": step})
+            wandb.log({"Evaluation EM": em, "step": step})
+            wandb.log({"Evaluation F1": f1, "step": step})
         return result
 
     def evaluate(self, epoch):
