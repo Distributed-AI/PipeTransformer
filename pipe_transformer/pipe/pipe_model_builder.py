@@ -214,7 +214,7 @@ def create_pipe_styled_model_vit(model_config, model_backbone, num_layer_in_tota
             size_layer_block = count_parameters(layer_block, False)
             parameters_size_frozen += size_layer_block
 
-        frozen_model = BertFrozenLayer(num_frozen_layer, frozen_emb, frozen_layer_list)
+        frozen_model = FrozenLayer(num_frozen_layer, frozen_emb, frozen_layer_list)
     else:
         pipe_model.add_module("embedding", model_backbone.transformer.embeddings)
         size_embedding = count_parameters(model_backbone.transformer.embeddings, False)
