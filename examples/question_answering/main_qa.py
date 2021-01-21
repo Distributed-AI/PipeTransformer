@@ -24,10 +24,18 @@ import sys
 # this is a temporal import, we will refactor FedML as a package installation
 import wandb
 
+from pipe_transformer.config_args import ConfigArgs
+from pipe_transformer.pipe_transformer import PipeTransformer
+
 sys.path.insert(0, os.path.abspath(os.path.join(os.getcwd(), "")))
 sys.path.insert(0, os.path.abspath(os.path.join(os.getcwd(), "../../")))
+
+from pipe_transformer.data.qa_data_manager import QADatasetManager
+from transformers import BertConfig, BertTokenizer, BertForQuestionAnswering
+
+from examples.question_answering.model_args import QuestionAnsweringArgs
+
 from examples.question_answering.question_answering_trainer import QuestionAnsweringTrainer
-import pipe_transformer.data.SQuAD_1_1.data_loader
 
 
 def add_args(parser):
@@ -35,6 +43,55 @@ def add_args(parser):
     parser : argparse.ArgumentParser
     return a parser added with args required by fit
     """
+    # PipeTransformer related
+    parser.add_argument("--run_id", type=int, default=0)
+
+    parser.add_argument("--nnodes", type=int, default=2)
+
+    parser.add_argument("--nproc_per_node", type=int, default=8)
+
+    parser.add_argument("--node_rank", type=int, default=0)
+
+    parser.add_argument("--local_rank", type=int, default=0)
+
+    parser.add_argument("--global_rank", type=int, default=0)
+
+    parser.add_argument("--master_addr", type=str, default="192.168.11.2")
+
+    parser.add_argument("--master_port", type=int, default=22222)
+
+    parser.add_argument("--if_name", type=str, default="lo")
+
+    parser.add_argument("--pipe_len_at_the_beginning", default=4, type=int,
+                        help="pipe_len_at_the_beginning")
+
+    parser.add_argument("--is_infiniband", default=1, type=int,
+                        help="is_infiniband")
+
+    parser.add_argument("--num_chunks_of_micro_batches", default=1 * 8, type=int,
+                        help="num_chunks_of_micro_batches")
+
+    parser.add_argument("--freeze_strategy", type=str, default="mild")
+
+    parser.add_argument('--freeze', dest='b_freeze', action='store_true')
+    parser.add_argument('--no_freeze', dest='b_freeze', action='store_false')
+    parser.set_defaults(b_freeze=True)
+
+    parser.add_argument('--auto_pipe', dest='b_auto_pipe', action='store_true')
+    parser.add_argument('--do_auto_pipe', dest='b_auto_pipe', action='store_false')
+    parser.set_defaults(b_auto_pipe=True)
+
+    parser.add_argument('--auto_dp', dest='b_auto_dp', action='store_true')
+    parser.add_argument('--no_auto_dp', dest='b_auto_dp', action='store_false')
+    parser.set_defaults(b_auto_dp=True)
+
+    parser.add_argument('--cache', dest='b_cache', action='store_true')
+    parser.add_argument('--no_cache', dest='b_cache', action='store_false')
+    parser.set_defaults(b_cache=True)
+
+    parser.add_argument("--is_debug_mode", default=0, type=int,
+                        help="is_debug_mode")
+
     # Data related
     parser.add_argument('--dataset', type=str, default='squad_1.1', metavar='N',
                         help='dataset used for training')
@@ -92,93 +149,102 @@ def add_args(parser):
     return args
 
 
-def load_data(args, dataset):
-    data_loader = None
-    print("Loading dataset = %s" % dataset)
-    assert dataset in ["squad_1.1"]
-    # all_data = pickle.load(open(args.data_file, "rb"))
-    data_loader = pipe_transformer.data.SQuAD_1_1.data_loader.RawDataLoader(args.data_dir)
-    all_data = data_loader.data_loader()
-
-    context_X, question_X, question_ids, Y, attributes = all_data["context_X"], all_data["question_X"], all_data[
-        "question_ids"], all_data["Y"], all_data["attributes"]
-
-    def get_data_by_index_list(dataset, index_list):
-        data = dict()
-        for key in dataset.keys():
-            data[key] = []
-        for idx in index_list:
-            for key in dataset.keys():
-                data[key].append(dataset[key][idx])
-        data["original_index"] = index_list
-        return data
-
-    input_dataset = {"context_X": context_X, "question_X": question_X, "question_ids": question_ids, "Y": Y}
-    train_data = get_data_by_index_list(input_dataset, attributes["train_index_list"])
-    test_data = get_data_by_index_list(input_dataset, attributes["test_index_list"])
-
-    return train_data, test_data
+def create_model(args):
+    # create model, tokenizer, and model config (HuggingFace style)
+    MODEL_CLASSES = {
+        "bert": (BertConfig, BertForQuestionAnswering, BertTokenizer),
+    }
+    config_class, model_class, tokenizer_class = MODEL_CLASSES[model_type]
+    config = config_class.from_pretrained(model_name, **args.config)
+    model = model_class.from_pretrained(model_name, config=config)
+    tokenizer = tokenizer_class.from_pretrained(model_name, do_lower_case=args.do_lower_case)
+    return config, model, tokenizer
 
 
-def get_normal_format(dataset, cut_off=None):
+if __name__ == "__main__":
+    # parse python script input parameters
+    parser = argparse.ArgumentParser()
+    args = add_args(parser)
+
+    # customize the log format
+    logging.basicConfig(level=logging.INFO,
+                        format='%(process)s %(asctime)s.%(msecs)03d - {%(module)s.py (%(lineno)d)} - %(funcName)s(): %(message)s',
+                        datefmt='%Y-%m-%d,%H:%M:%S')
+    logging.info(args)
+
+    run = wandb.init(project="pipe_and_ddp",
+                     name="PipeTransformer""-" + str(args.dataset),
+                     config=args)
+
+    # arguments
+    model_type = args.model_type
+    model_name = args.model_name
+    qa_args = QuestionAnsweringArgs()
+    qa_args.load(args.model_name)
+    qa_args.model_name = model_name
+    qa_args.model_type = model_type
+    qa_args.update_from_dict({"num_train_epochs": args.num_train_epochs,
+                              "learning_rate": args.learning_rate,
+                              "gradient_accumulation_steps": args.gradient_accumulation_steps,
+                              "do_lower_case": args.do_lower_case,
+                              "manual_seed": args.manual_seed,
+                              "reprocess_input_data": False,
+                              "overwrite_output_dir": True,
+                              "max_seq_length": args.max_seq_length,
+                              "train_batch_size": args.train_batch_size,
+                              "eval_batch_size": args.eval_batch_size,
+                              "fp16": args.fp16,
+                              "n_gpu": args.n_gpu,
+                              "output_dir": args.output_dir,
+                              "process_count": 1})
+
+    model_config, model, tokenizer = create_model(qa_args)
+    tc_data_manager = QADatasetManager(model_config, args, tokenizer)
+
+
     """
-    reformat the dataset to normal version.
+        PipeTransformer related
     """
-    reformatted_data = []
-    id_mapping_dict = dict()
-    assert len(dataset["context_X"]) == len(dataset["question_X"]) == len(dataset["Y"]) == len(
-        dataset["question_ids"]) == len(dataset["original_index"])
-    for c, q, a, qid, oid in zip(dataset["context_X"], dataset["question_X"], dataset["Y"], dataset["question_ids"],
-                                 dataset["original_index"]):
-        item = {}
-        item["context"] = c
-        id_mapping_dict[len(reformatted_data) + 1] = oid
-        item["qas"] = [
-            {
-                "oid": oid,
-                "id": "%d" % (len(reformatted_data)+1),
-                "qid": qid,
-                "is_impossible": False,
-                "question": q,
-                "answers": [{"text": c[a[0]:a[1]], "answer_start": a[0]}],
-            }
-        ]
-        reformatted_data.append(item)
-    return reformatted_data[:cut_off], id_mapping_dict
+    config = ConfigArgs()
+    config.b_auto_dp = args.b_auto_dp
+    config.b_freeze = args.b_freeze
+    config.b_auto_pipe = args.b_auto_pipe
+    config.b_cache = args.b_cache
+    config.freeze_strategy = args.freeze_strategy
 
+    config.is_infiniband = args.is_infiniband
+    config.master_addr = args.master_addr
+    config.master_port = args.master_port
+    config.if_name = args.if_name
+    config.num_nodes = args.nnodes
+    config.node_rank = args.node_rank
+    config.local_rank = args.local_rank
 
-def main(args):
-    logging.basicConfig(level=logging.INFO)
-    transformers_logger = logging.getLogger("transformers")
-    transformers_logger.setLevel(logging.WARNING)
+    config.pipe_len_at_the_beginning = args.pipe_len_at_the_beginning
+    config.num_chunks_of_micro_batches = args.num_chunks_of_micro_batches
 
-    # Loading full data (for centralized learning)
-    train_data, test_data = load_data(args, args.dataset)
+    config.learning_task = config.LEARNING_TASK_QUESTION_ANSWERING
+    config.model_name = config.MODEL_BERT
+    config.num_layer = model_config.num_hidden_layers
+    config.hidden_size = model_config.hidden_size
+    config.seq_len = qa_args.max_seq_length
+    config.batch_size = args.train_batch_size
 
-    train_data, train_id_mapping_dict = get_normal_format(train_data, cut_off=None)
-    test_data, test_id_mapping_dict = get_normal_format(test_data, cut_off=None)
+    config.is_debug_mode = args.is_debug_mode
 
-    print("create model...")
+    pipe_transformer = PipeTransformer(config, tc_data_manager, model_config, model)
+    args.global_rank = pipe_transformer.get_global_rank()
+    logging.info("successfully create PipeTransformer. args = " + str(args))
+
+    qa_args.update_from_dict({"global_rank": args.global_rank})
+
+    if args.global_rank == 0:
+        run = wandb.init(project="pipe_and_ddp",
+                         name="PipeTransformer-r" + str(args.run_id) + "-" + str(args.dataset),
+                         config=args)
+
     # Create a ClassificationModel.
-    trainer = QuestionAnsweringTrainer(
-        args.model_type, args.model_name,
-        args={"num_train_epochs": args.num_train_epochs,
-              "learning_rate": args.learning_rate,
-              "gradient_accumulation_steps": args.gradient_accumulation_steps,
-              "do_lower_case": args.do_lower_case,
-              "manual_seed": args.manual_seed,
-              "reprocess_input_data": False,
-              "overwrite_output_dir": True,
-              "max_seq_length": args.max_seq_length,
-              "train_batch_size": args.train_batch_size,
-              "eval_batch_size": args.eval_batch_size,
-              "fp16": args.fp16,
-              "n_gpu": args.n_gpu,
-              "output_dir": args.output_dir,
-              "process_count": 1,
-              "wandb_project": "fednlp"})
-
-    # Strat training.
+    trainer = QuestionAnsweringTrainer(qa_args, tc_data_manager, pipe_transformer)
     trainer.train_model(train_data, train_id_mapping_dict, test_data, test_id_mapping_dict, args.eval_data_file)
 
     # # Evaluate the model
@@ -186,15 +252,6 @@ def main(args):
     # print(result)
 
     result = trainer.eval_model_by_offical_script(test_data, args.eval_data_file, output_dir=args.output_dir,
-                                                verbose=False, verbose_logging=False)
+                                                  verbose=False, verbose_logging=False)
+
     print(result)
-
-
-if __name__ == "__main__":
-    # parse python script input parameters
-    parser = argparse.ArgumentParser()
-    args = add_args(parser)
-    run = wandb.init(project="pipe_and_ddp",
-                     name="PipeTransformer""-" + str(args.dataset),
-                     config=args)
-    main(args)

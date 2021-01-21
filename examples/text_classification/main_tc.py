@@ -174,14 +174,14 @@ def create_model(args, num_labels):
     return config, model, tokenizer
 
 
-def post_complete_message():
+def post_complete_message(tc_args, config):
     pipe_path = "/tmp/pipe_transformer_training_status"
     if not os.path.exists(pipe_path):
         os.mkfifo(pipe_path)
     pipe_fd = os.open(pipe_path, os.O_WRONLY)
 
     with os.fdopen(pipe_fd, 'w') as pipe:
-        pipe.write("training is finished! \n%s\n%s" % (str(args), str(config)))
+        pipe.write("training is finished! \n%s\n%s" % (str(tc_args), str(config)))
 
 
 if __name__ == "__main__":

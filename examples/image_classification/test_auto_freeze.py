@@ -13,7 +13,7 @@ from examples.image_classification.utils import WarmupCosineSchedule, WarmupLine
 from model.cv.vision_transformer_origin import CONFIGS, VisionTransformer
 from pipe_transformer.data.cv_data_manager import CVDatasetManager
 from pipe_transformer.freeze.auto_freeze import AutoFreeze
-from pipe_transformer.pipe.pipe_model_builder import ViTOutputHead
+from pipe_transformer.pipe.model_partition.pipe_model_builder import ViTOutputHead
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(

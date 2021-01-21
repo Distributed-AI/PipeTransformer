@@ -943,7 +943,7 @@ class BertModel(BertPreTrainedModel):
 
     def __init__(self, config, add_pooling_layer=True):
         super().__init__(config)
-        # self.config = config
+        self.config = config
         logging.info(self.config)
 
         self.embeddings = BertEmbeddings(config)
@@ -1155,7 +1155,7 @@ class BertForPreTraining(BertPreTrainedModel):
 
         Example::
 
-            >>> from transformers421 import BertTokenizer, BertForPreTraining
+            >>> from transformers import BertTokenizer, BertForPreTraining
             >>> import torch
 
             >>> tokenizer = BertTokenizer.from_pretrained('bert-base-uncased')
@@ -1498,7 +1498,7 @@ class BertForNextSentencePrediction(BertPreTrainedModel):
 
         Example::
 
-            >>> from transformers421 import BertTokenizer, BertForNextSentencePrediction
+            >>> from transformers import BertTokenizer, BertForNextSentencePrediction
             >>> import torch
 
             >>> tokenizer = BertTokenizer.from_pretrained('bert-base-uncased')

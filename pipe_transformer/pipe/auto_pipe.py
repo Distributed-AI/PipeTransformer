@@ -4,7 +4,7 @@ import torch
 
 from . import Pipe
 from .load_balance import generate_parameter_size_wise_balance
-from .pipe_model_builder import convert_to_balanced_model, create_pipe_styled_model, PipeModelWrapper, ViTOutputHead
+from .model_partition.pipe_model_builder import convert_to_balanced_model, create_pipe_styled_model, PipeModelWrapper
 
 
 class AutoElasticPipe:
