@@ -1,0 +1,1180 @@
+1894877 2021-01-21,05:26:18.591 - {main_qa.py (164)} - <module>(): Namespace(b_auto_dp=True, b_auto_pipe=True, b_cache=True, b_freeze=False, data_dir='../../data/span_extraction/SQuAD_1.1/', data_file='../../data/span_extraction/SQuAD_1.1/squad_1.1_data.pkl', dataset='squad_1.1', do_lower_case=True, eval_batch_size=16, eval_data_file='../../data/span_extraction/SQuAD_1.1/dev-v1.1.json', fp16=False, freeze_strategy='mild', global_rank=0, gradient_accumulation_steps=1, if_name='wlx9cefd5fb3821', is_debug_mode=1, is_infiniband=0, learning_rate=2e-05, local_rank=1, manual_seed=42, master_addr='192.168.1.73', master_port=22222, max_seq_length=256, model_name='bert-base-uncased', model_type='bert', n_gpu=1, nnodes=1, node_rank=0, nproc_per_node=4, num_chunks_of_micro_batches=8, num_train_epochs=1, output_dir='./output', pipe_len_at_the_beginning=4, run_id=1, train_batch_size=16, weight_decay=0)
+1894876 2021-01-21,05:26:18.601 - {main_qa.py (164)} - <module>(): Namespace(b_auto_dp=True, b_auto_pipe=True, b_cache=True, b_freeze=False, data_dir='../../data/span_extraction/SQuAD_1.1/', data_file='../../data/span_extraction/SQuAD_1.1/squad_1.1_data.pkl', dataset='squad_1.1', do_lower_case=True, eval_batch_size=16, eval_data_file='../../data/span_extraction/SQuAD_1.1/dev-v1.1.json', fp16=False, freeze_strategy='mild', global_rank=0, gradient_accumulation_steps=1, if_name='wlx9cefd5fb3821', is_debug_mode=1, is_infiniband=0, learning_rate=2e-05, local_rank=0, manual_seed=42, master_addr='192.168.1.73', master_port=22222, max_seq_length=256, model_name='bert-base-uncased', model_type='bert', n_gpu=1, nnodes=1, node_rank=0, nproc_per_node=4, num_chunks_of_micro_batches=8, num_train_epochs=1, output_dir='./output', pipe_len_at_the_beginning=4, run_id=1, train_batch_size=16, weight_decay=0)
+1894878 2021-01-21,05:26:18.613 - {main_qa.py (164)} - <module>(): Namespace(b_auto_dp=True, b_auto_pipe=True, b_cache=True, b_freeze=False, data_dir='../../data/span_extraction/SQuAD_1.1/', data_file='../../data/span_extraction/SQuAD_1.1/squad_1.1_data.pkl', dataset='squad_1.1', do_lower_case=True, eval_batch_size=16, eval_data_file='../../data/span_extraction/SQuAD_1.1/dev-v1.1.json', fp16=False, freeze_strategy='mild', global_rank=0, gradient_accumulation_steps=1, if_name='wlx9cefd5fb3821', is_debug_mode=1, is_infiniband=0, learning_rate=2e-05, local_rank=2, manual_seed=42, master_addr='192.168.1.73', master_port=22222, max_seq_length=256, model_name='bert-base-uncased', model_type='bert', n_gpu=1, nnodes=1, node_rank=0, nproc_per_node=4, num_chunks_of_micro_batches=8, num_train_epochs=1, output_dir='./output', pipe_len_at_the_beginning=4, run_id=1, train_batch_size=16, weight_decay=0)
+1894879 2021-01-21,05:26:18.657 - {main_qa.py (164)} - <module>(): Namespace(b_auto_dp=True, b_auto_pipe=True, b_cache=True, b_freeze=False, data_dir='../../data/span_extraction/SQuAD_1.1/', data_file='../../data/span_extraction/SQuAD_1.1/squad_1.1_data.pkl', dataset='squad_1.1', do_lower_case=True, eval_batch_size=16, eval_data_file='../../data/span_extraction/SQuAD_1.1/dev-v1.1.json', fp16=False, freeze_strategy='mild', global_rank=0, gradient_accumulation_steps=1, if_name='wlx9cefd5fb3821', is_debug_mode=1, is_infiniband=0, learning_rate=2e-05, local_rank=3, manual_seed=42, master_addr='192.168.1.73', master_port=22222, max_seq_length=256, model_name='bert-base-uncased', model_type='bert', n_gpu=1, nnodes=1, node_rank=0, nproc_per_node=4, num_chunks_of_micro_batches=8, num_train_epochs=1, output_dir='./output', pipe_len_at_the_beginning=4, run_id=1, train_batch_size=16, weight_decay=0)
+wandb: Offline run mode, not syncing to the cloud.
+wandb: W&B syncing is set to `offline` in this directory.  Run `wandb online` to enable cloud syncing.
+wandb: Offline run mode, not syncing to the cloud.
+wandb: W&B syncing is set to `offline` in this directory.  Run `wandb online` to enable cloud syncing.
+wandb: Offline run mode, not syncing to the cloud.
+wandb: W&B syncing is set to `offline` in this directory.  Run `wandb online` to enable cloud syncing.
+wandb: Offline run mode, not syncing to the cloud.
+wandb: W&B syncing is set to `offline` in this directory.  Run `wandb online` to enable cloud syncing.
+1894879 2021-01-21,05:26:20.592 - {modeling_bert.py (947)} - __init__(): BertConfig {
+  "_name_or_path": "bert-base-uncased",
+  "architectures": [
+    "BertForMaskedLM"
+  ],
+  "attention_probs_dropout_prob": 0.1,
+  "gradient_checkpointing": false,
+  "hidden_act": "gelu",
+  "hidden_dropout_prob": 0.1,
+  "hidden_size": 768,
+  "initializer_range": 0.02,
+  "intermediate_size": 3072,
+  "layer_norm_eps": 1e-12,
+  "max_position_embeddings": 512,
+  "model_type": "bert",
+  "num_attention_heads": 12,
+  "num_hidden_layers": 12,
+  "pad_token_id": 0,
+  "position_embedding_type": "absolute",
+  "transformers_version": "4.3.0.dev0",
+  "type_vocab_size": 2,
+  "use_cache": true,
+  "vocab_size": 30522
+}
+
+1894878 2021-01-21,05:26:20.595 - {modeling_bert.py (947)} - __init__(): BertConfig {
+  "_name_or_path": "bert-base-uncased",
+  "architectures": [
+    "BertForMaskedLM"
+  ],
+  "attention_probs_dropout_prob": 0.1,
+  "gradient_checkpointing": false,
+  "hidden_act": "gelu",
+  "hidden_dropout_prob": 0.1,
+  "hidden_size": 768,
+  "initializer_range": 0.02,
+  "intermediate_size": 3072,
+  "layer_norm_eps": 1e-12,
+  "max_position_embeddings": 512,
+  "model_type": "bert",
+  "num_attention_heads": 12,
+  "num_hidden_layers": 12,
+  "pad_token_id": 0,
+  "position_embedding_type": "absolute",
+  "transformers_version": "4.3.0.dev0",
+  "type_vocab_size": 2,
+  "use_cache": true,
+  "vocab_size": 30522
+}
+
+1894876 2021-01-21,05:26:20.596 - {modeling_bert.py (947)} - __init__(): BertConfig {
+  "_name_or_path": "bert-base-uncased",
+  "architectures": [
+    "BertForMaskedLM"
+  ],
+  "attention_probs_dropout_prob": 0.1,
+  "gradient_checkpointing": false,
+  "hidden_act": "gelu",
+  "hidden_dropout_prob": 0.1,
+  "hidden_size": 768,
+  "initializer_range": 0.02,
+  "intermediate_size": 3072,
+  "layer_norm_eps": 1e-12,
+  "max_position_embeddings": 512,
+  "model_type": "bert",
+  "num_attention_heads": 12,
+  "num_hidden_layers": 12,
+  "pad_token_id": 0,
+  "position_embedding_type": "absolute",
+  "transformers_version": "4.3.0.dev0",
+  "type_vocab_size": 2,
+  "use_cache": true,
+  "vocab_size": 30522
+}
+
+1894877 2021-01-21,05:26:20.599 - {modeling_bert.py (947)} - __init__(): BertConfig {
+  "_name_or_path": "bert-base-uncased",
+  "architectures": [
+    "BertForMaskedLM"
+  ],
+  "attention_probs_dropout_prob": 0.1,
+  "gradient_checkpointing": false,
+  "hidden_act": "gelu",
+  "hidden_dropout_prob": 0.1,
+  "hidden_size": 768,
+  "initializer_range": 0.02,
+  "intermediate_size": 3072,
+  "layer_norm_eps": 1e-12,
+  "max_position_embeddings": 512,
+  "model_type": "bert",
+  "num_attention_heads": 12,
+  "num_hidden_layers": 12,
+  "pad_token_id": 0,
+  "position_embedding_type": "absolute",
+  "transformers_version": "4.3.0.dev0",
+  "type_vocab_size": 2,
+  "use_cache": true,
+  "vocab_size": 30522
+}
+
+Some weights of the model checkpoint at bert-base-uncased were not used when initializing BertForQuestionAnswering: ['cls.predictions.bias', 'cls.predictions.transform.dense.weight', 'cls.predictions.transform.dense.bias', 'cls.predictions.decoder.weight', 'cls.seq_relationship.weight', 'cls.seq_relationship.bias', 'cls.predictions.transform.LayerNorm.weight', 'cls.predictions.transform.LayerNorm.bias']
+- This IS expected if you are initializing BertForQuestionAnswering from the checkpoint of a model trained on another task or with another architecture (e.g. initializing a BertForSequenceClassification model from a BertForPreTraining model).
+- This IS NOT expected if you are initializing BertForQuestionAnswering from the checkpoint of a model that you expect to be exactly identical (initializing a BertForSequenceClassification model from a BertForSequenceClassification model).
+Some weights of BertForQuestionAnswering were not initialized from the model checkpoint at bert-base-uncased and are newly initialized: ['qa_outputs.weight', 'qa_outputs.bias']
+You should probably TRAIN this model on a down-stream task to be able to use it for predictions and inference.
+Some weights of the model checkpoint at bert-base-uncased were not used when initializing BertForQuestionAnswering: ['cls.predictions.bias', 'cls.predictions.transform.dense.weight', 'cls.predictions.transform.dense.bias', 'cls.predictions.decoder.weight', 'cls.seq_relationship.weight', 'cls.seq_relationship.bias', 'cls.predictions.transform.LayerNorm.weight', 'cls.predictions.transform.LayerNorm.bias']
+- This IS expected if you are initializing BertForQuestionAnswering from the checkpoint of a model trained on another task or with another architecture (e.g. initializing a BertForSequenceClassification model from a BertForPreTraining model).
+- This IS NOT expected if you are initializing BertForQuestionAnswering from the checkpoint of a model that you expect to be exactly identical (initializing a BertForSequenceClassification model from a BertForSequenceClassification model).
+Some weights of BertForQuestionAnswering were not initialized from the model checkpoint at bert-base-uncased and are newly initialized: ['qa_outputs.weight', 'qa_outputs.bias']
+You should probably TRAIN this model on a down-stream task to be able to use it for predictions and inference.
+Some weights of the model checkpoint at bert-base-uncased were not used when initializing BertForQuestionAnswering: ['cls.predictions.bias', 'cls.predictions.transform.dense.weight', 'cls.predictions.transform.dense.bias', 'cls.predictions.decoder.weight', 'cls.seq_relationship.weight', 'cls.seq_relationship.bias', 'cls.predictions.transform.LayerNorm.weight', 'cls.predictions.transform.LayerNorm.bias']
+- This IS expected if you are initializing BertForQuestionAnswering from the checkpoint of a model trained on another task or with another architecture (e.g. initializing a BertForSequenceClassification model from a BertForPreTraining model).
+- This IS NOT expected if you are initializing BertForQuestionAnswering from the checkpoint of a model that you expect to be exactly identical (initializing a BertForSequenceClassification model from a BertForSequenceClassification model).
+Some weights of BertForQuestionAnswering were not initialized from the model checkpoint at bert-base-uncased and are newly initialized: ['qa_outputs.weight', 'qa_outputs.bias']
+You should probably TRAIN this model on a down-stream task to be able to use it for predictions and inference.
+Some weights of the model checkpoint at bert-base-uncased were not used when initializing BertForQuestionAnswering: ['cls.predictions.bias', 'cls.predictions.transform.dense.weight', 'cls.predictions.transform.dense.bias', 'cls.predictions.decoder.weight', 'cls.seq_relationship.weight', 'cls.seq_relationship.bias', 'cls.predictions.transform.LayerNorm.weight', 'cls.predictions.transform.LayerNorm.bias']
+- This IS expected if you are initializing BertForQuestionAnswering from the checkpoint of a model trained on another task or with another architecture (e.g. initializing a BertForSequenceClassification model from a BertForPreTraining model).
+- This IS NOT expected if you are initializing BertForQuestionAnswering from the checkpoint of a model that you expect to be exactly identical (initializing a BertForSequenceClassification model from a BertForSequenceClassification model).
+Some weights of BertForQuestionAnswering were not initialized from the model checkpoint at bert-base-uncased and are newly initialized: ['qa_outputs.weight', 'qa_outputs.bias']
+You should probably TRAIN this model on a down-stream task to be able to use it for predictions and inference.
+Loading dataset = squad_1.1
+Loading dataset = squad_1.1
+Loading dataset = squad_1.1
+Loading dataset = squad_1.1
+1894877 2021-01-21,05:26:44.340 - {qa_data_manager.py (141)} - load_and_cache_examples(): cached_features_file = cache_dir/cached_train_bert_256_87599
+1894878 2021-01-21,05:26:44.418 - {qa_data_manager.py (141)} - load_and_cache_examples(): cached_features_file = cache_dir/cached_train_bert_256_87599
+1894879 2021-01-21,05:26:44.428 - {qa_data_manager.py (141)} - load_and_cache_examples(): cached_features_file = cache_dir/cached_train_bert_256_87599
+1894876 2021-01-21,05:26:44.611 - {qa_data_manager.py (141)} - load_and_cache_examples(): cached_features_file = cache_dir/cached_train_bert_256_87599
+1894877 2021-01-21,05:27:02.655 - {qa_data_manager.py (147)} - load_and_cache_examples():  Features loaded from cache at cache_dir/cached_train_bert_256_87599
+1894878 2021-01-21,05:27:02.770 - {qa_data_manager.py (147)} - load_and_cache_examples():  Features loaded from cache at cache_dir/cached_train_bert_256_87599
+1894879 2021-01-21,05:27:02.773 - {qa_data_manager.py (147)} - load_and_cache_examples():  Features loaded from cache at cache_dir/cached_train_bert_256_87599
+1894876 2021-01-21,05:27:02.868 - {qa_data_manager.py (147)} - load_and_cache_examples():  Features loaded from cache at cache_dir/cached_train_bert_256_87599
+1894877 2021-01-21,05:27:12.326 - {qa_data_manager.py (141)} - load_and_cache_examples(): cached_features_file = cache_dir/cached_dev_bert_256_34726
+1894879 2021-01-21,05:27:12.483 - {qa_data_manager.py (141)} - load_and_cache_examples(): cached_features_file = cache_dir/cached_dev_bert_256_34726
+1894878 2021-01-21,05:27:12.581 - {qa_data_manager.py (141)} - load_and_cache_examples(): cached_features_file = cache_dir/cached_dev_bert_256_34726
+1894876 2021-01-21,05:27:12.637 - {qa_data_manager.py (141)} - load_and_cache_examples(): cached_features_file = cache_dir/cached_dev_bert_256_34726
+1894877 2021-01-21,05:27:17.840 - {qa_data_manager.py (147)} - load_and_cache_examples():  Features loaded from cache at cache_dir/cached_dev_bert_256_34726
+1894879 2021-01-21,05:27:18.050 - {qa_data_manager.py (147)} - load_and_cache_examples():  Features loaded from cache at cache_dir/cached_dev_bert_256_34726
+1894878 2021-01-21,05:27:18.089 - {qa_data_manager.py (147)} - load_and_cache_examples():  Features loaded from cache at cache_dir/cached_dev_bert_256_34726
+1894876 2021-01-21,05:27:18.160 - {qa_data_manager.py (147)} - load_and_cache_examples():  Features loaded from cache at cache_dir/cached_dev_bert_256_34726
+1894877 2021-01-21,05:27:18.344 - {auto_dp.py (51)} - init_ddp(): Running DP on local rank 1.
+1894877 2021-01-21,05:27:18.344 - {auto_dp.py (73)} - init_ddp(): int(os.environ['RANK']) = 1
+1894877 2021-01-21,05:27:18.344 - {auto_dp.py (77)} - init_ddp(): world_size = 4
+1894879 2021-01-21,05:27:18.555 - {auto_dp.py (51)} - init_ddp(): Running DP on local rank 3.
+1894879 2021-01-21,05:27:18.555 - {auto_dp.py (73)} - init_ddp(): int(os.environ['RANK']) = 3
+1894879 2021-01-21,05:27:18.556 - {auto_dp.py (77)} - init_ddp(): world_size = 4
+1894878 2021-01-21,05:27:18.584 - {auto_dp.py (51)} - init_ddp(): Running DP on local rank 2.
+1894878 2021-01-21,05:27:18.584 - {auto_dp.py (73)} - init_ddp(): int(os.environ['RANK']) = 2
+1894878 2021-01-21,05:27:18.584 - {auto_dp.py (77)} - init_ddp(): world_size = 4
+1894876 2021-01-21,05:27:18.652 - {auto_dp.py (51)} - init_ddp(): Running DP on local rank 0.
+1894876 2021-01-21,05:27:18.652 - {auto_dp.py (73)} - init_ddp(): int(os.environ['RANK']) = 0
+1894876 2021-01-21,05:27:18.652 - {auto_dp.py (77)} - init_ddp(): world_size = 4
+1894877 2021-01-21,05:27:19.610 - {auto_dp.py (82)} - init_ddp(): init_process_group. local_rank = 1, global_rank = 1
+1894879 2021-01-21,05:27:19.610 - {auto_dp.py (82)} - init_ddp(): init_process_group. local_rank = 3, global_rank = 3
+1894878 2021-01-21,05:27:19.610 - {auto_dp.py (82)} - init_ddp(): init_process_group. local_rank = 2, global_rank = 2
+1894876 2021-01-21,05:27:19.610 - {auto_dp.py (82)} - init_ddp(): init_process_group. local_rank = 0, global_rank = 0
+1894877 2021-01-21,05:27:20.733 - {auto_dp.py (117)} - init_rpc(): init_rpc
+1894879 2021-01-21,05:27:20.733 - {auto_dp.py (117)} - init_rpc(): init_rpc
+1894876 2021-01-21,05:27:20.734 - {auto_dp.py (117)} - init_rpc(): init_rpc
+1894878 2021-01-21,05:27:20.733 - {auto_dp.py (117)} - init_rpc(): init_rpc
+1894879 2021-01-21,05:27:20.818 - {main_qa.py (231)} - <module>(): successfully create PipeTransformer. args = Namespace(b_auto_dp=True, b_auto_pipe=True, b_cache=True, b_freeze=False, data_dir='../../data/span_extraction/SQuAD_1.1/', data_file='../../data/span_extraction/SQuAD_1.1/squad_1.1_data.pkl', dataset='squad_1.1', do_lower_case=True, eval_batch_size=16, eval_data_file='../../data/span_extraction/SQuAD_1.1/dev-v1.1.json', fp16=False, freeze_strategy='mild', global_rank=3, gradient_accumulation_steps=1, if_name='wlx9cefd5fb3821', is_debug_mode=1, is_infiniband=0, learning_rate=2e-05, local_rank=3, manual_seed=42, master_addr='192.168.1.73', master_port=22222, max_seq_length=256, model_name='bert-base-uncased', model_type='bert', n_gpu=1, nnodes=1, node_rank=0, nproc_per_node=4, num_chunks_of_micro_batches=8, num_train_epochs=1, output_dir='./output', pipe_len_at_the_beginning=4, run_id=1, train_batch_size=16, weight_decay=0)
+1894878 2021-01-21,05:27:20.818 - {main_qa.py (231)} - <module>(): successfully create PipeTransformer. args = Namespace(b_auto_dp=True, b_auto_pipe=True, b_cache=True, b_freeze=False, data_dir='../../data/span_extraction/SQuAD_1.1/', data_file='../../data/span_extraction/SQuAD_1.1/squad_1.1_data.pkl', dataset='squad_1.1', do_lower_case=True, eval_batch_size=16, eval_data_file='../../data/span_extraction/SQuAD_1.1/dev-v1.1.json', fp16=False, freeze_strategy='mild', global_rank=2, gradient_accumulation_steps=1, if_name='wlx9cefd5fb3821', is_debug_mode=1, is_infiniband=0, learning_rate=2e-05, local_rank=2, manual_seed=42, master_addr='192.168.1.73', master_port=22222, max_seq_length=256, model_name='bert-base-uncased', model_type='bert', n_gpu=1, nnodes=1, node_rank=0, nproc_per_node=4, num_chunks_of_micro_batches=8, num_train_epochs=1, output_dir='./output', pipe_len_at_the_beginning=4, run_id=1, train_batch_size=16, weight_decay=0)
+1894878 2021-01-21,05:27:20.818 - {auto_dp.py (155)} - update_active_ranks(): active ranks = []
+1894878 2021-01-21,05:27:20.818 - {auto_dp.py (167)} - create_active_process_group(): get_active_process_group - auto_pipe.get_active_ranks() = [0]
+1894878 2021-01-21,05:27:20.818 - {auto_dp.py (168)} - create_active_process_group(): local_rank = 2, global_rank = 2 - *************************create_active_process_group*********
+1894879 2021-01-21,05:27:20.819 - {auto_dp.py (155)} - update_active_ranks(): active ranks = []
+1894879 2021-01-21,05:27:20.819 - {auto_dp.py (167)} - create_active_process_group(): get_active_process_group - auto_pipe.get_active_ranks() = [0]
+1894879 2021-01-21,05:27:20.819 - {auto_dp.py (168)} - create_active_process_group(): local_rank = 3, global_rank = 3 - *************************create_active_process_group*********
+1894876 2021-01-21,05:27:20.817 - {main_qa.py (231)} - <module>(): successfully create PipeTransformer. args = Namespace(b_auto_dp=True, b_auto_pipe=True, b_cache=True, b_freeze=False, data_dir='../../data/span_extraction/SQuAD_1.1/', data_file='../../data/span_extraction/SQuAD_1.1/squad_1.1_data.pkl', dataset='squad_1.1', do_lower_case=True, eval_batch_size=16, eval_data_file='../../data/span_extraction/SQuAD_1.1/dev-v1.1.json', fp16=False, freeze_strategy='mild', global_rank=0, gradient_accumulation_steps=1, if_name='wlx9cefd5fb3821', is_debug_mode=1, is_infiniband=0, learning_rate=2e-05, local_rank=0, manual_seed=42, master_addr='192.168.1.73', master_port=22222, max_seq_length=256, model_name='bert-base-uncased', model_type='bert', n_gpu=1, nnodes=1, node_rank=0, nproc_per_node=4, num_chunks_of_micro_batches=8, num_train_epochs=1, output_dir='./output', pipe_len_at_the_beginning=4, run_id=1, train_batch_size=16, weight_decay=0)
+1894876 2021-01-21,05:27:20.824 - {auto_dp.py (155)} - update_active_ranks(): active ranks = []
+1894876 2021-01-21,05:27:20.824 - {auto_dp.py (167)} - create_active_process_group(): get_active_process_group - auto_pipe.get_active_ranks() = [0]
+1894876 2021-01-21,05:27:20.824 - {auto_dp.py (168)} - create_active_process_group(): local_rank = 0, global_rank = 0 - *************************create_active_process_group*********
+1894877 2021-01-21,05:27:20.824 - {main_qa.py (231)} - <module>(): successfully create PipeTransformer. args = Namespace(b_auto_dp=True, b_auto_pipe=True, b_cache=True, b_freeze=False, data_dir='../../data/span_extraction/SQuAD_1.1/', data_file='../../data/span_extraction/SQuAD_1.1/squad_1.1_data.pkl', dataset='squad_1.1', do_lower_case=True, eval_batch_size=16, eval_data_file='../../data/span_extraction/SQuAD_1.1/dev-v1.1.json', fp16=False, freeze_strategy='mild', global_rank=1, gradient_accumulation_steps=1, if_name='wlx9cefd5fb3821', is_debug_mode=1, is_infiniband=0, learning_rate=2e-05, local_rank=1, manual_seed=42, master_addr='192.168.1.73', master_port=22222, max_seq_length=256, model_name='bert-base-uncased', model_type='bert', n_gpu=1, nnodes=1, node_rank=0, nproc_per_node=4, num_chunks_of_micro_batches=8, num_train_epochs=1, output_dir='./output', pipe_len_at_the_beginning=4, run_id=1, train_batch_size=16, weight_decay=0)
+1894877 2021-01-21,05:27:20.825 - {auto_dp.py (155)} - update_active_ranks(): active ranks = []
+1894877 2021-01-21,05:27:20.825 - {auto_dp.py (167)} - create_active_process_group(): get_active_process_group - auto_pipe.get_active_ranks() = [0]
+1894877 2021-01-21,05:27:20.825 - {auto_dp.py (168)} - create_active_process_group(): local_rank = 1, global_rank = 1 - *************************create_active_process_group*********
+1894879 2021-01-21,05:27:20.826 - {auto_dp.py (174)} - create_broadcast_process_group(): create_broadcast_process_group - auto_pipe.get_active_ranks() = [0]
+1894878 2021-01-21,05:27:20.826 - {auto_dp.py (174)} - create_broadcast_process_group(): create_broadcast_process_group - auto_pipe.get_active_ranks() = [0]
+1894879 2021-01-21,05:27:20.826 - {auto_dp.py (175)} - create_broadcast_process_group(): local_rank = 3, global_rank = 3 - *************************create_broadcast_process_group*********
+1894878 2021-01-21,05:27:20.826 - {auto_dp.py (175)} - create_broadcast_process_group(): local_rank = 2, global_rank = 2 - *************************create_broadcast_process_group*********
+1894876 2021-01-21,05:27:20.826 - {auto_dp.py (174)} - create_broadcast_process_group(): create_broadcast_process_group - auto_pipe.get_active_ranks() = [0]
+1894877 2021-01-21,05:27:20.826 - {auto_dp.py (174)} - create_broadcast_process_group(): create_broadcast_process_group - auto_pipe.get_active_ranks() = [0]
+1894877 2021-01-21,05:27:20.826 - {auto_dp.py (175)} - create_broadcast_process_group(): local_rank = 1, global_rank = 1 - *************************create_broadcast_process_group*********
+1894876 2021-01-21,05:27:20.826 - {auto_dp.py (175)} - create_broadcast_process_group(): local_rank = 0, global_rank = 0 - *************************create_broadcast_process_group*********
+1894876 2021-01-21,05:27:21.798 - {auto_pipe.py (55)} - transform(): ---local_rank = 0, global_rank = 0 -------------freeze layer number = 0---------------
+1894876 2021-01-21,05:27:21.798 - {pipe_model_builder.py (43)} - create_pipe_styled_model(): create BERT for QA pipeline
+1894876 2021-01-21,05:27:21.798 - {bert_qa_partition.py (89)} - create_pipe_styled_model_BERT_for_QA(): BertForQuestionAnswering(
+  (bert): BertModel(
+    (embeddings): BertEmbeddings(
+      (word_embeddings): Embedding(30522, 768, padding_idx=0)
+      (position_embeddings): Embedding(512, 768)
+      (token_type_embeddings): Embedding(2, 768)
+      (LayerNorm): LayerNorm((768,), eps=1e-12, elementwise_affine=True)
+      (dropout): Dropout(p=0.1, inplace=False)
+    )
+    (encoder): BertEncoder(
+      (layer): ModuleList(
+        (0): BertLayer(
+          (attention): BertAttention(
+            (self): BertSelfAttention(
+              (query): Linear(in_features=768, out_features=768, bias=True)
+              (key): Linear(in_features=768, out_features=768, bias=True)
+              (value): Linear(in_features=768, out_features=768, bias=True)
+              (dropout): Dropout(p=0.1, inplace=False)
+            )
+            (output): BertSelfOutput(
+              (dense): Linear(in_features=768, out_features=768, bias=True)
+              (LayerNorm): LayerNorm((768,), eps=1e-12, elementwise_affine=True)
+              (dropout): Dropout(p=0.1, inplace=False)
+            )
+          )
+          (intermediate): BertIntermediate(
+            (dense): Linear(in_features=768, out_features=3072, bias=True)
+          )
+          (output): BertOutput(
+            (dense): Linear(in_features=3072, out_features=768, bias=True)
+            (LayerNorm): LayerNorm((768,), eps=1e-12, elementwise_affine=True)
+            (dropout): Dropout(p=0.1, inplace=False)
+          )
+        )
+        (1): BertLayer(
+          (attention): BertAttention(
+            (self): BertSelfAttention(
+              (query): Linear(in_features=768, out_features=768, bias=True)
+              (key): Linear(in_features=768, out_features=768, bias=True)
+              (value): Linear(in_features=768, out_features=768, bias=True)
+              (dropout): Dropout(p=0.1, inplace=False)
+            )
+            (output): BertSelfOutput(
+              (dense): Linear(in_features=768, out_features=768, bias=True)
+              (LayerNorm): LayerNorm((768,), eps=1e-12, elementwise_affine=True)
+              (dropout): Dropout(p=0.1, inplace=False)
+            )
+          )
+          (intermediate): BertIntermediate(
+            (dense): Linear(in_features=768, out_features=3072, bias=True)
+          )
+          (output): BertOutput(
+            (dense): Linear(in_features=3072, out_features=768, bias=True)
+            (LayerNorm): LayerNorm((768,), eps=1e-12, elementwise_affine=True)
+            (dropout): Dropout(p=0.1, inplace=False)
+          )
+        )
+        (2): BertLayer(
+          (attention): BertAttention(
+            (self): BertSelfAttention(
+              (query): Linear(in_features=768, out_features=768, bias=True)
+              (key): Linear(in_features=768, out_features=768, bias=True)
+              (value): Linear(in_features=768, out_features=768, bias=True)
+              (dropout): Dropout(p=0.1, inplace=False)
+            )
+            (output): BertSelfOutput(
+              (dense): Linear(in_features=768, out_features=768, bias=True)
+              (LayerNorm): LayerNorm((768,), eps=1e-12, elementwise_affine=True)
+              (dropout): Dropout(p=0.1, inplace=False)
+            )
+          )
+          (intermediate): BertIntermediate(
+            (dense): Linear(in_features=768, out_features=3072, bias=True)
+          )
+          (output): BertOutput(
+            (dense): Linear(in_features=3072, out_features=768, bias=True)
+            (LayerNorm): LayerNorm((768,), eps=1e-12, elementwise_affine=True)
+            (dropout): Dropout(p=0.1, inplace=False)
+          )
+        )
+        (3): BertLayer(
+          (attention): BertAttention(
+            (self): BertSelfAttention(
+              (query): Linear(in_features=768, out_features=768, bias=True)
+              (key): Linear(in_features=768, out_features=768, bias=True)
+              (value): Linear(in_features=768, out_features=768, bias=True)
+              (dropout): Dropout(p=0.1, inplace=False)
+            )
+            (output): BertSelfOutput(
+              (dense): Linear(in_features=768, out_features=768, bias=True)
+              (LayerNorm): LayerNorm((768,), eps=1e-12, elementwise_affine=True)
+              (dropout): Dropout(p=0.1, inplace=False)
+            )
+          )
+          (intermediate): BertIntermediate(
+            (dense): Linear(in_features=768, out_features=3072, bias=True)
+          )
+          (output): BertOutput(
+            (dense): Linear(in_features=3072, out_features=768, bias=True)
+            (LayerNorm): LayerNorm((768,), eps=1e-12, elementwise_affine=True)
+            (dropout): Dropout(p=0.1, inplace=False)
+          )
+        )
+        (4): BertLayer(
+          (attention): BertAttention(
+            (self): BertSelfAttention(
+              (query): Linear(in_features=768, out_features=768, bias=True)
+              (key): Linear(in_features=768, out_features=768, bias=True)
+              (value): Linear(in_features=768, out_features=768, bias=True)
+              (dropout): Dropout(p=0.1, inplace=False)
+            )
+            (output): BertSelfOutput(
+              (dense): Linear(in_features=768, out_features=768, bias=True)
+              (LayerNorm): LayerNorm((768,), eps=1e-12, elementwise_affine=True)
+              (dropout): Dropout(p=0.1, inplace=False)
+            )
+          )
+          (intermediate): BertIntermediate(
+            (dense): Linear(in_features=768, out_features=3072, bias=True)
+          )
+          (output): BertOutput(
+            (dense): Linear(in_features=3072, out_features=768, bias=True)
+            (LayerNorm): LayerNorm((768,), eps=1e-12, elementwise_affine=True)
+            (dropout): Dropout(p=0.1, inplace=False)
+          )
+        )
+        (5): BertLayer(
+          (attention): BertAttention(
+            (self): BertSelfAttention(
+              (query): Linear(in_features=768, out_features=768, bias=True)
+              (key): Linear(in_features=768, out_features=768, bias=True)
+              (value): Linear(in_features=768, out_features=768, bias=True)
+              (dropout): Dropout(p=0.1, inplace=False)
+            )
+            (output): BertSelfOutput(
+              (dense): Linear(in_features=768, out_features=768, bias=True)
+              (LayerNorm): LayerNorm((768,), eps=1e-12, elementwise_affine=True)
+              (dropout): Dropout(p=0.1, inplace=False)
+            )
+          )
+          (intermediate): BertIntermediate(
+            (dense): Linear(in_features=768, out_features=3072, bias=True)
+          )
+          (output): BertOutput(
+            (dense): Linear(in_features=3072, out_features=768, bias=True)
+            (LayerNorm): LayerNorm((768,), eps=1e-12, elementwise_affine=True)
+            (dropout): Dropout(p=0.1, inplace=False)
+          )
+        )
+        (6): BertLayer(
+          (attention): BertAttention(
+            (self): BertSelfAttention(
+              (query): Linear(in_features=768, out_features=768, bias=True)
+              (key): Linear(in_features=768, out_features=768, bias=True)
+              (value): Linear(in_features=768, out_features=768, bias=True)
+              (dropout): Dropout(p=0.1, inplace=False)
+            )
+            (output): BertSelfOutput(
+              (dense): Linear(in_features=768, out_features=768, bias=True)
+              (LayerNorm): LayerNorm((768,), eps=1e-12, elementwise_affine=True)
+              (dropout): Dropout(p=0.1, inplace=False)
+            )
+          )
+          (intermediate): BertIntermediate(
+            (dense): Linear(in_features=768, out_features=3072, bias=True)
+          )
+          (output): BertOutput(
+            (dense): Linear(in_features=3072, out_features=768, bias=True)
+            (LayerNorm): LayerNorm((768,), eps=1e-12, elementwise_affine=True)
+            (dropout): Dropout(p=0.1, inplace=False)
+          )
+        )
+        (7): BertLayer(
+          (attention): BertAttention(
+            (self): BertSelfAttention(
+              (query): Linear(in_features=768, out_features=768, bias=True)
+              (key): Linear(in_features=768, out_features=768, bias=True)
+              (value): Linear(in_features=768, out_features=768, bias=True)
+              (dropout): Dropout(p=0.1, inplace=False)
+            )
+            (output): BertSelfOutput(
+              (dense): Linear(in_features=768, out_features=768, bias=True)
+              (LayerNorm): LayerNorm((768,), eps=1e-12, elementwise_affine=True)
+              (dropout): Dropout(p=0.1, inplace=False)
+            )
+          )
+          (intermediate): BertIntermediate(
+            (dense): Linear(in_features=768, out_features=3072, bias=True)
+          )
+          (output): BertOutput(
+            (dense): Linear(in_features=3072, out_features=768, bias=True)
+            (LayerNorm): LayerNorm((768,), eps=1e-12, elementwise_affine=True)
+            (dropout): Dropout(p=0.1, inplace=False)
+          )
+        )
+        (8): BertLayer(
+          (attention): BertAttention(
+            (self): BertSelfAttention(
+              (query): Linear(in_features=768, out_features=768, bias=True)
+              (key): Linear(in_features=768, out_features=768, bias=True)
+              (value): Linear(in_features=768, out_features=768, bias=True)
+              (dropout): Dropout(p=0.1, inplace=False)
+            )
+            (output): BertSelfOutput(
+              (dense): Linear(in_features=768, out_features=768, bias=True)
+              (LayerNorm): LayerNorm((768,), eps=1e-12, elementwise_affine=True)
+              (dropout): Dropout(p=0.1, inplace=False)
+            )
+          )
+          (intermediate): BertIntermediate(
+            (dense): Linear(in_features=768, out_features=3072, bias=True)
+          )
+          (output): BertOutput(
+            (dense): Linear(in_features=3072, out_features=768, bias=True)
+            (LayerNorm): LayerNorm((768,), eps=1e-12, elementwise_affine=True)
+            (dropout): Dropout(p=0.1, inplace=False)
+          )
+        )
+        (9): BertLayer(
+          (attention): BertAttention(
+            (self): BertSelfAttention(
+              (query): Linear(in_features=768, out_features=768, bias=True)
+              (key): Linear(in_features=768, out_features=768, bias=True)
+              (value): Linear(in_features=768, out_features=768, bias=True)
+              (dropout): Dropout(p=0.1, inplace=False)
+            )
+            (output): BertSelfOutput(
+              (dense): Linear(in_features=768, out_features=768, bias=True)
+              (LayerNorm): LayerNorm((768,), eps=1e-12, elementwise_affine=True)
+              (dropout): Dropout(p=0.1, inplace=False)
+            )
+          )
+          (intermediate): BertIntermediate(
+            (dense): Linear(in_features=768, out_features=3072, bias=True)
+          )
+          (output): BertOutput(
+            (dense): Linear(in_features=3072, out_features=768, bias=True)
+            (LayerNorm): LayerNorm((768,), eps=1e-12, elementwise_affine=True)
+            (dropout): Dropout(p=0.1, inplace=False)
+          )
+        )
+        (10): BertLayer(
+          (attention): BertAttention(
+            (self): BertSelfAttention(
+              (query): Linear(in_features=768, out_features=768, bias=True)
+              (key): Linear(in_features=768, out_features=768, bias=True)
+              (value): Linear(in_features=768, out_features=768, bias=True)
+              (dropout): Dropout(p=0.1, inplace=False)
+            )
+            (output): BertSelfOutput(
+              (dense): Linear(in_features=768, out_features=768, bias=True)
+              (LayerNorm): LayerNorm((768,), eps=1e-12, elementwise_affine=True)
+              (dropout): Dropout(p=0.1, inplace=False)
+            )
+          )
+          (intermediate): BertIntermediate(
+            (dense): Linear(in_features=768, out_features=3072, bias=True)
+          )
+          (output): BertOutput(
+            (dense): Linear(in_features=3072, out_features=768, bias=True)
+            (LayerNorm): LayerNorm((768,), eps=1e-12, elementwise_affine=True)
+            (dropout): Dropout(p=0.1, inplace=False)
+          )
+        )
+        (11): BertLayer(
+          (attention): BertAttention(
+            (self): BertSelfAttention(
+              (query): Linear(in_features=768, out_features=768, bias=True)
+              (key): Linear(in_features=768, out_features=768, bias=True)
+              (value): Linear(in_features=768, out_features=768, bias=True)
+              (dropout): Dropout(p=0.1, inplace=False)
+            )
+            (output): BertSelfOutput(
+              (dense): Linear(in_features=768, out_features=768, bias=True)
+              (LayerNorm): LayerNorm((768,), eps=1e-12, elementwise_affine=True)
+              (dropout): Dropout(p=0.1, inplace=False)
+            )
+          )
+          (intermediate): BertIntermediate(
+            (dense): Linear(in_features=768, out_features=3072, bias=True)
+          )
+          (output): BertOutput(
+            (dense): Linear(in_features=3072, out_features=768, bias=True)
+            (LayerNorm): LayerNorm((768,), eps=1e-12, elementwise_affine=True)
+            (dropout): Dropout(p=0.1, inplace=False)
+          )
+        )
+      )
+    )
+  )
+  (qa_outputs): Linear(in_features=768, out_features=2, bias=True)
+)
+1894876 2021-01-21,05:27:21.802 - {bert_qa_partition.py (91)} - create_pipe_styled_model_BERT_for_QA(): bert.embeddings.word_embeddings.weight
+1894876 2021-01-21,05:27:21.802 - {bert_qa_partition.py (91)} - create_pipe_styled_model_BERT_for_QA(): bert.embeddings.position_embeddings.weight
+1894876 2021-01-21,05:27:21.802 - {bert_qa_partition.py (91)} - create_pipe_styled_model_BERT_for_QA(): bert.embeddings.token_type_embeddings.weight
+1894876 2021-01-21,05:27:21.802 - {bert_qa_partition.py (91)} - create_pipe_styled_model_BERT_for_QA(): bert.embeddings.LayerNorm.weight
+1894876 2021-01-21,05:27:21.802 - {bert_qa_partition.py (91)} - create_pipe_styled_model_BERT_for_QA(): bert.embeddings.LayerNorm.bias
+1894876 2021-01-21,05:27:21.802 - {bert_qa_partition.py (91)} - create_pipe_styled_model_BERT_for_QA(): bert.encoder.layer.0.attention.self.query.weight
+1894876 2021-01-21,05:27:21.802 - {bert_qa_partition.py (91)} - create_pipe_styled_model_BERT_for_QA(): bert.encoder.layer.0.attention.self.query.bias
+1894876 2021-01-21,05:27:21.802 - {bert_qa_partition.py (91)} - create_pipe_styled_model_BERT_for_QA(): bert.encoder.layer.0.attention.self.key.weight
+1894876 2021-01-21,05:27:21.802 - {bert_qa_partition.py (91)} - create_pipe_styled_model_BERT_for_QA(): bert.encoder.layer.0.attention.self.key.bias
+1894876 2021-01-21,05:27:21.802 - {bert_qa_partition.py (91)} - create_pipe_styled_model_BERT_for_QA(): bert.encoder.layer.0.attention.self.value.weight
+1894876 2021-01-21,05:27:21.802 - {bert_qa_partition.py (91)} - create_pipe_styled_model_BERT_for_QA(): bert.encoder.layer.0.attention.self.value.bias
+1894876 2021-01-21,05:27:21.802 - {bert_qa_partition.py (91)} - create_pipe_styled_model_BERT_for_QA(): bert.encoder.layer.0.attention.output.dense.weight
+1894876 2021-01-21,05:27:21.802 - {bert_qa_partition.py (91)} - create_pipe_styled_model_BERT_for_QA(): bert.encoder.layer.0.attention.output.dense.bias
+1894876 2021-01-21,05:27:21.802 - {bert_qa_partition.py (91)} - create_pipe_styled_model_BERT_for_QA(): bert.encoder.layer.0.attention.output.LayerNorm.weight
+1894876 2021-01-21,05:27:21.802 - {bert_qa_partition.py (91)} - create_pipe_styled_model_BERT_for_QA(): bert.encoder.layer.0.attention.output.LayerNorm.bias
+1894876 2021-01-21,05:27:21.802 - {bert_qa_partition.py (91)} - create_pipe_styled_model_BERT_for_QA(): bert.encoder.layer.0.intermediate.dense.weight
+1894876 2021-01-21,05:27:21.802 - {bert_qa_partition.py (91)} - create_pipe_styled_model_BERT_for_QA(): bert.encoder.layer.0.intermediate.dense.bias
+1894876 2021-01-21,05:27:21.803 - {bert_qa_partition.py (91)} - create_pipe_styled_model_BERT_for_QA(): bert.encoder.layer.0.output.dense.weight
+1894876 2021-01-21,05:27:21.803 - {bert_qa_partition.py (91)} - create_pipe_styled_model_BERT_for_QA(): bert.encoder.layer.0.output.dense.bias
+1894876 2021-01-21,05:27:21.803 - {bert_qa_partition.py (91)} - create_pipe_styled_model_BERT_for_QA(): bert.encoder.layer.0.output.LayerNorm.weight
+1894876 2021-01-21,05:27:21.803 - {bert_qa_partition.py (91)} - create_pipe_styled_model_BERT_for_QA(): bert.encoder.layer.0.output.LayerNorm.bias
+1894876 2021-01-21,05:27:21.803 - {bert_qa_partition.py (91)} - create_pipe_styled_model_BERT_for_QA(): bert.encoder.layer.1.attention.self.query.weight
+1894876 2021-01-21,05:27:21.803 - {bert_qa_partition.py (91)} - create_pipe_styled_model_BERT_for_QA(): bert.encoder.layer.1.attention.self.query.bias
+1894876 2021-01-21,05:27:21.803 - {bert_qa_partition.py (91)} - create_pipe_styled_model_BERT_for_QA(): bert.encoder.layer.1.attention.self.key.weight
+1894876 2021-01-21,05:27:21.803 - {bert_qa_partition.py (91)} - create_pipe_styled_model_BERT_for_QA(): bert.encoder.layer.1.attention.self.key.bias
+1894876 2021-01-21,05:27:21.803 - {bert_qa_partition.py (91)} - create_pipe_styled_model_BERT_for_QA(): bert.encoder.layer.1.attention.self.value.weight
+1894876 2021-01-21,05:27:21.803 - {bert_qa_partition.py (91)} - create_pipe_styled_model_BERT_for_QA(): bert.encoder.layer.1.attention.self.value.bias
+1894876 2021-01-21,05:27:21.803 - {bert_qa_partition.py (91)} - create_pipe_styled_model_BERT_for_QA(): bert.encoder.layer.1.attention.output.dense.weight
+1894876 2021-01-21,05:27:21.803 - {bert_qa_partition.py (91)} - create_pipe_styled_model_BERT_for_QA(): bert.encoder.layer.1.attention.output.dense.bias
+1894876 2021-01-21,05:27:21.803 - {bert_qa_partition.py (91)} - create_pipe_styled_model_BERT_for_QA(): bert.encoder.layer.1.attention.output.LayerNorm.weight
+1894876 2021-01-21,05:27:21.803 - {bert_qa_partition.py (91)} - create_pipe_styled_model_BERT_for_QA(): bert.encoder.layer.1.attention.output.LayerNorm.bias
+1894876 2021-01-21,05:27:21.803 - {bert_qa_partition.py (91)} - create_pipe_styled_model_BERT_for_QA(): bert.encoder.layer.1.intermediate.dense.weight
+1894876 2021-01-21,05:27:21.803 - {bert_qa_partition.py (91)} - create_pipe_styled_model_BERT_for_QA(): bert.encoder.layer.1.intermediate.dense.bias
+1894876 2021-01-21,05:27:21.803 - {bert_qa_partition.py (91)} - create_pipe_styled_model_BERT_for_QA(): bert.encoder.layer.1.output.dense.weight
+1894876 2021-01-21,05:27:21.803 - {bert_qa_partition.py (91)} - create_pipe_styled_model_BERT_for_QA(): bert.encoder.layer.1.output.dense.bias
+1894876 2021-01-21,05:27:21.803 - {bert_qa_partition.py (91)} - create_pipe_styled_model_BERT_for_QA(): bert.encoder.layer.1.output.LayerNorm.weight
+1894876 2021-01-21,05:27:21.803 - {bert_qa_partition.py (91)} - create_pipe_styled_model_BERT_for_QA(): bert.encoder.layer.1.output.LayerNorm.bias
+1894876 2021-01-21,05:27:21.803 - {bert_qa_partition.py (91)} - create_pipe_styled_model_BERT_for_QA(): bert.encoder.layer.2.attention.self.query.weight
+1894876 2021-01-21,05:27:21.803 - {bert_qa_partition.py (91)} - create_pipe_styled_model_BERT_for_QA(): bert.encoder.layer.2.attention.self.query.bias
+1894876 2021-01-21,05:27:21.803 - {bert_qa_partition.py (91)} - create_pipe_styled_model_BERT_for_QA(): bert.encoder.layer.2.attention.self.key.weight
+1894876 2021-01-21,05:27:21.803 - {bert_qa_partition.py (91)} - create_pipe_styled_model_BERT_for_QA(): bert.encoder.layer.2.attention.self.key.bias
+1894876 2021-01-21,05:27:21.803 - {bert_qa_partition.py (91)} - create_pipe_styled_model_BERT_for_QA(): bert.encoder.layer.2.attention.self.value.weight
+1894876 2021-01-21,05:27:21.803 - {bert_qa_partition.py (91)} - create_pipe_styled_model_BERT_for_QA(): bert.encoder.layer.2.attention.self.value.bias
+1894876 2021-01-21,05:27:21.803 - {bert_qa_partition.py (91)} - create_pipe_styled_model_BERT_for_QA(): bert.encoder.layer.2.attention.output.dense.weight
+1894876 2021-01-21,05:27:21.803 - {bert_qa_partition.py (91)} - create_pipe_styled_model_BERT_for_QA(): bert.encoder.layer.2.attention.output.dense.bias
+1894876 2021-01-21,05:27:21.803 - {bert_qa_partition.py (91)} - create_pipe_styled_model_BERT_for_QA(): bert.encoder.layer.2.attention.output.LayerNorm.weight
+1894876 2021-01-21,05:27:21.803 - {bert_qa_partition.py (91)} - create_pipe_styled_model_BERT_for_QA(): bert.encoder.layer.2.attention.output.LayerNorm.bias
+1894876 2021-01-21,05:27:21.803 - {bert_qa_partition.py (91)} - create_pipe_styled_model_BERT_for_QA(): bert.encoder.layer.2.intermediate.dense.weight
+1894876 2021-01-21,05:27:21.803 - {bert_qa_partition.py (91)} - create_pipe_styled_model_BERT_for_QA(): bert.encoder.layer.2.intermediate.dense.bias
+1894876 2021-01-21,05:27:21.803 - {bert_qa_partition.py (91)} - create_pipe_styled_model_BERT_for_QA(): bert.encoder.layer.2.output.dense.weight
+1894876 2021-01-21,05:27:21.803 - {bert_qa_partition.py (91)} - create_pipe_styled_model_BERT_for_QA(): bert.encoder.layer.2.output.dense.bias
+1894876 2021-01-21,05:27:21.803 - {bert_qa_partition.py (91)} - create_pipe_styled_model_BERT_for_QA(): bert.encoder.layer.2.output.LayerNorm.weight
+1894876 2021-01-21,05:27:21.803 - {bert_qa_partition.py (91)} - create_pipe_styled_model_BERT_for_QA(): bert.encoder.layer.2.output.LayerNorm.bias
+1894876 2021-01-21,05:27:21.803 - {bert_qa_partition.py (91)} - create_pipe_styled_model_BERT_for_QA(): bert.encoder.layer.3.attention.self.query.weight
+1894876 2021-01-21,05:27:21.803 - {bert_qa_partition.py (91)} - create_pipe_styled_model_BERT_for_QA(): bert.encoder.layer.3.attention.self.query.bias
+1894876 2021-01-21,05:27:21.803 - {bert_qa_partition.py (91)} - create_pipe_styled_model_BERT_for_QA(): bert.encoder.layer.3.attention.self.key.weight
+1894876 2021-01-21,05:27:21.803 - {bert_qa_partition.py (91)} - create_pipe_styled_model_BERT_for_QA(): bert.encoder.layer.3.attention.self.key.bias
+1894876 2021-01-21,05:27:21.803 - {bert_qa_partition.py (91)} - create_pipe_styled_model_BERT_for_QA(): bert.encoder.layer.3.attention.self.value.weight
+1894876 2021-01-21,05:27:21.803 - {bert_qa_partition.py (91)} - create_pipe_styled_model_BERT_for_QA(): bert.encoder.layer.3.attention.self.value.bias
+1894876 2021-01-21,05:27:21.803 - {bert_qa_partition.py (91)} - create_pipe_styled_model_BERT_for_QA(): bert.encoder.layer.3.attention.output.dense.weight
+1894876 2021-01-21,05:27:21.803 - {bert_qa_partition.py (91)} - create_pipe_styled_model_BERT_for_QA(): bert.encoder.layer.3.attention.output.dense.bias
+1894876 2021-01-21,05:27:21.803 - {bert_qa_partition.py (91)} - create_pipe_styled_model_BERT_for_QA(): bert.encoder.layer.3.attention.output.LayerNorm.weight
+1894876 2021-01-21,05:27:21.804 - {bert_qa_partition.py (91)} - create_pipe_styled_model_BERT_for_QA(): bert.encoder.layer.3.attention.output.LayerNorm.bias
+1894876 2021-01-21,05:27:21.804 - {bert_qa_partition.py (91)} - create_pipe_styled_model_BERT_for_QA(): bert.encoder.layer.3.intermediate.dense.weight
+1894876 2021-01-21,05:27:21.804 - {bert_qa_partition.py (91)} - create_pipe_styled_model_BERT_for_QA(): bert.encoder.layer.3.intermediate.dense.bias
+1894876 2021-01-21,05:27:21.804 - {bert_qa_partition.py (91)} - create_pipe_styled_model_BERT_for_QA(): bert.encoder.layer.3.output.dense.weight
+1894876 2021-01-21,05:27:21.804 - {bert_qa_partition.py (91)} - create_pipe_styled_model_BERT_for_QA(): bert.encoder.layer.3.output.dense.bias
+1894876 2021-01-21,05:27:21.804 - {bert_qa_partition.py (91)} - create_pipe_styled_model_BERT_for_QA(): bert.encoder.layer.3.output.LayerNorm.weight
+1894876 2021-01-21,05:27:21.804 - {bert_qa_partition.py (91)} - create_pipe_styled_model_BERT_for_QA(): bert.encoder.layer.3.output.LayerNorm.bias
+1894876 2021-01-21,05:27:21.804 - {bert_qa_partition.py (91)} - create_pipe_styled_model_BERT_for_QA(): bert.encoder.layer.4.attention.self.query.weight
+1894876 2021-01-21,05:27:21.804 - {bert_qa_partition.py (91)} - create_pipe_styled_model_BERT_for_QA(): bert.encoder.layer.4.attention.self.query.bias
+1894876 2021-01-21,05:27:21.804 - {bert_qa_partition.py (91)} - create_pipe_styled_model_BERT_for_QA(): bert.encoder.layer.4.attention.self.key.weight
+1894876 2021-01-21,05:27:21.804 - {bert_qa_partition.py (91)} - create_pipe_styled_model_BERT_for_QA(): bert.encoder.layer.4.attention.self.key.bias
+1894876 2021-01-21,05:27:21.804 - {bert_qa_partition.py (91)} - create_pipe_styled_model_BERT_for_QA(): bert.encoder.layer.4.attention.self.value.weight
+1894876 2021-01-21,05:27:21.804 - {bert_qa_partition.py (91)} - create_pipe_styled_model_BERT_for_QA(): bert.encoder.layer.4.attention.self.value.bias
+1894876 2021-01-21,05:27:21.804 - {bert_qa_partition.py (91)} - create_pipe_styled_model_BERT_for_QA(): bert.encoder.layer.4.attention.output.dense.weight
+1894876 2021-01-21,05:27:21.804 - {bert_qa_partition.py (91)} - create_pipe_styled_model_BERT_for_QA(): bert.encoder.layer.4.attention.output.dense.bias
+1894876 2021-01-21,05:27:21.804 - {bert_qa_partition.py (91)} - create_pipe_styled_model_BERT_for_QA(): bert.encoder.layer.4.attention.output.LayerNorm.weight
+1894876 2021-01-21,05:27:21.804 - {bert_qa_partition.py (91)} - create_pipe_styled_model_BERT_for_QA(): bert.encoder.layer.4.attention.output.LayerNorm.bias
+1894876 2021-01-21,05:27:21.804 - {bert_qa_partition.py (91)} - create_pipe_styled_model_BERT_for_QA(): bert.encoder.layer.4.intermediate.dense.weight
+1894876 2021-01-21,05:27:21.804 - {bert_qa_partition.py (91)} - create_pipe_styled_model_BERT_for_QA(): bert.encoder.layer.4.intermediate.dense.bias
+1894876 2021-01-21,05:27:21.804 - {bert_qa_partition.py (91)} - create_pipe_styled_model_BERT_for_QA(): bert.encoder.layer.4.output.dense.weight
+1894876 2021-01-21,05:27:21.804 - {bert_qa_partition.py (91)} - create_pipe_styled_model_BERT_for_QA(): bert.encoder.layer.4.output.dense.bias
+1894876 2021-01-21,05:27:21.804 - {bert_qa_partition.py (91)} - create_pipe_styled_model_BERT_for_QA(): bert.encoder.layer.4.output.LayerNorm.weight
+1894876 2021-01-21,05:27:21.804 - {bert_qa_partition.py (91)} - create_pipe_styled_model_BERT_for_QA(): bert.encoder.layer.4.output.LayerNorm.bias
+1894876 2021-01-21,05:27:21.804 - {bert_qa_partition.py (91)} - create_pipe_styled_model_BERT_for_QA(): bert.encoder.layer.5.attention.self.query.weight
+1894876 2021-01-21,05:27:21.804 - {bert_qa_partition.py (91)} - create_pipe_styled_model_BERT_for_QA(): bert.encoder.layer.5.attention.self.query.bias
+1894876 2021-01-21,05:27:21.804 - {bert_qa_partition.py (91)} - create_pipe_styled_model_BERT_for_QA(): bert.encoder.layer.5.attention.self.key.weight
+1894876 2021-01-21,05:27:21.804 - {bert_qa_partition.py (91)} - create_pipe_styled_model_BERT_for_QA(): bert.encoder.layer.5.attention.self.key.bias
+1894876 2021-01-21,05:27:21.804 - {bert_qa_partition.py (91)} - create_pipe_styled_model_BERT_for_QA(): bert.encoder.layer.5.attention.self.value.weight
+1894876 2021-01-21,05:27:21.804 - {bert_qa_partition.py (91)} - create_pipe_styled_model_BERT_for_QA(): bert.encoder.layer.5.attention.self.value.bias
+1894876 2021-01-21,05:27:21.804 - {bert_qa_partition.py (91)} - create_pipe_styled_model_BERT_for_QA(): bert.encoder.layer.5.attention.output.dense.weight
+1894876 2021-01-21,05:27:21.804 - {bert_qa_partition.py (91)} - create_pipe_styled_model_BERT_for_QA(): bert.encoder.layer.5.attention.output.dense.bias
+1894876 2021-01-21,05:27:21.804 - {bert_qa_partition.py (91)} - create_pipe_styled_model_BERT_for_QA(): bert.encoder.layer.5.attention.output.LayerNorm.weight
+1894876 2021-01-21,05:27:21.804 - {bert_qa_partition.py (91)} - create_pipe_styled_model_BERT_for_QA(): bert.encoder.layer.5.attention.output.LayerNorm.bias
+1894876 2021-01-21,05:27:21.804 - {bert_qa_partition.py (91)} - create_pipe_styled_model_BERT_for_QA(): bert.encoder.layer.5.intermediate.dense.weight
+1894876 2021-01-21,05:27:21.804 - {bert_qa_partition.py (91)} - create_pipe_styled_model_BERT_for_QA(): bert.encoder.layer.5.intermediate.dense.bias
+1894876 2021-01-21,05:27:21.804 - {bert_qa_partition.py (91)} - create_pipe_styled_model_BERT_for_QA(): bert.encoder.layer.5.output.dense.weight
+1894876 2021-01-21,05:27:21.804 - {bert_qa_partition.py (91)} - create_pipe_styled_model_BERT_for_QA(): bert.encoder.layer.5.output.dense.bias
+1894876 2021-01-21,05:27:21.804 - {bert_qa_partition.py (91)} - create_pipe_styled_model_BERT_for_QA(): bert.encoder.layer.5.output.LayerNorm.weight
+1894876 2021-01-21,05:27:21.804 - {bert_qa_partition.py (91)} - create_pipe_styled_model_BERT_for_QA(): bert.encoder.layer.5.output.LayerNorm.bias
+1894876 2021-01-21,05:27:21.804 - {bert_qa_partition.py (91)} - create_pipe_styled_model_BERT_for_QA(): bert.encoder.layer.6.attention.self.query.weight
+1894876 2021-01-21,05:27:21.804 - {bert_qa_partition.py (91)} - create_pipe_styled_model_BERT_for_QA(): bert.encoder.layer.6.attention.self.query.bias
+1894876 2021-01-21,05:27:21.804 - {bert_qa_partition.py (91)} - create_pipe_styled_model_BERT_for_QA(): bert.encoder.layer.6.attention.self.key.weight
+1894876 2021-01-21,05:27:21.804 - {bert_qa_partition.py (91)} - create_pipe_styled_model_BERT_for_QA(): bert.encoder.layer.6.attention.self.key.bias
+1894876 2021-01-21,05:27:21.804 - {bert_qa_partition.py (91)} - create_pipe_styled_model_BERT_for_QA(): bert.encoder.layer.6.attention.self.value.weight
+1894876 2021-01-21,05:27:21.805 - {bert_qa_partition.py (91)} - create_pipe_styled_model_BERT_for_QA(): bert.encoder.layer.6.attention.self.value.bias
+1894876 2021-01-21,05:27:21.805 - {bert_qa_partition.py (91)} - create_pipe_styled_model_BERT_for_QA(): bert.encoder.layer.6.attention.output.dense.weight
+1894876 2021-01-21,05:27:21.805 - {bert_qa_partition.py (91)} - create_pipe_styled_model_BERT_for_QA(): bert.encoder.layer.6.attention.output.dense.bias
+1894876 2021-01-21,05:27:21.805 - {bert_qa_partition.py (91)} - create_pipe_styled_model_BERT_for_QA(): bert.encoder.layer.6.attention.output.LayerNorm.weight
+1894876 2021-01-21,05:27:21.805 - {bert_qa_partition.py (91)} - create_pipe_styled_model_BERT_for_QA(): bert.encoder.layer.6.attention.output.LayerNorm.bias
+1894876 2021-01-21,05:27:21.805 - {bert_qa_partition.py (91)} - create_pipe_styled_model_BERT_for_QA(): bert.encoder.layer.6.intermediate.dense.weight
+1894876 2021-01-21,05:27:21.805 - {bert_qa_partition.py (91)} - create_pipe_styled_model_BERT_for_QA(): bert.encoder.layer.6.intermediate.dense.bias
+1894876 2021-01-21,05:27:21.805 - {bert_qa_partition.py (91)} - create_pipe_styled_model_BERT_for_QA(): bert.encoder.layer.6.output.dense.weight
+1894876 2021-01-21,05:27:21.805 - {bert_qa_partition.py (91)} - create_pipe_styled_model_BERT_for_QA(): bert.encoder.layer.6.output.dense.bias
+1894876 2021-01-21,05:27:21.805 - {bert_qa_partition.py (91)} - create_pipe_styled_model_BERT_for_QA(): bert.encoder.layer.6.output.LayerNorm.weight
+1894876 2021-01-21,05:27:21.805 - {bert_qa_partition.py (91)} - create_pipe_styled_model_BERT_for_QA(): bert.encoder.layer.6.output.LayerNorm.bias
+1894876 2021-01-21,05:27:21.805 - {bert_qa_partition.py (91)} - create_pipe_styled_model_BERT_for_QA(): bert.encoder.layer.7.attention.self.query.weight
+1894876 2021-01-21,05:27:21.805 - {bert_qa_partition.py (91)} - create_pipe_styled_model_BERT_for_QA(): bert.encoder.layer.7.attention.self.query.bias
+1894876 2021-01-21,05:27:21.805 - {bert_qa_partition.py (91)} - create_pipe_styled_model_BERT_for_QA(): bert.encoder.layer.7.attention.self.key.weight
+1894876 2021-01-21,05:27:21.805 - {bert_qa_partition.py (91)} - create_pipe_styled_model_BERT_for_QA(): bert.encoder.layer.7.attention.self.key.bias
+1894876 2021-01-21,05:27:21.805 - {bert_qa_partition.py (91)} - create_pipe_styled_model_BERT_for_QA(): bert.encoder.layer.7.attention.self.value.weight
+1894876 2021-01-21,05:27:21.805 - {bert_qa_partition.py (91)} - create_pipe_styled_model_BERT_for_QA(): bert.encoder.layer.7.attention.self.value.bias
+1894876 2021-01-21,05:27:21.805 - {bert_qa_partition.py (91)} - create_pipe_styled_model_BERT_for_QA(): bert.encoder.layer.7.attention.output.dense.weight
+1894876 2021-01-21,05:27:21.805 - {bert_qa_partition.py (91)} - create_pipe_styled_model_BERT_for_QA(): bert.encoder.layer.7.attention.output.dense.bias
+1894876 2021-01-21,05:27:21.805 - {bert_qa_partition.py (91)} - create_pipe_styled_model_BERT_for_QA(): bert.encoder.layer.7.attention.output.LayerNorm.weight
+1894876 2021-01-21,05:27:21.805 - {bert_qa_partition.py (91)} - create_pipe_styled_model_BERT_for_QA(): bert.encoder.layer.7.attention.output.LayerNorm.bias
+1894876 2021-01-21,05:27:21.805 - {bert_qa_partition.py (91)} - create_pipe_styled_model_BERT_for_QA(): bert.encoder.layer.7.intermediate.dense.weight
+1894876 2021-01-21,05:27:21.805 - {bert_qa_partition.py (91)} - create_pipe_styled_model_BERT_for_QA(): bert.encoder.layer.7.intermediate.dense.bias
+1894876 2021-01-21,05:27:21.805 - {bert_qa_partition.py (91)} - create_pipe_styled_model_BERT_for_QA(): bert.encoder.layer.7.output.dense.weight
+1894876 2021-01-21,05:27:21.805 - {bert_qa_partition.py (91)} - create_pipe_styled_model_BERT_for_QA(): bert.encoder.layer.7.output.dense.bias
+1894876 2021-01-21,05:27:21.805 - {bert_qa_partition.py (91)} - create_pipe_styled_model_BERT_for_QA(): bert.encoder.layer.7.output.LayerNorm.weight
+1894876 2021-01-21,05:27:21.805 - {bert_qa_partition.py (91)} - create_pipe_styled_model_BERT_for_QA(): bert.encoder.layer.7.output.LayerNorm.bias
+1894876 2021-01-21,05:27:21.805 - {bert_qa_partition.py (91)} - create_pipe_styled_model_BERT_for_QA(): bert.encoder.layer.8.attention.self.query.weight
+1894876 2021-01-21,05:27:21.805 - {bert_qa_partition.py (91)} - create_pipe_styled_model_BERT_for_QA(): bert.encoder.layer.8.attention.self.query.bias
+1894876 2021-01-21,05:27:21.805 - {bert_qa_partition.py (91)} - create_pipe_styled_model_BERT_for_QA(): bert.encoder.layer.8.attention.self.key.weight
+1894876 2021-01-21,05:27:21.805 - {bert_qa_partition.py (91)} - create_pipe_styled_model_BERT_for_QA(): bert.encoder.layer.8.attention.self.key.bias
+1894876 2021-01-21,05:27:21.805 - {bert_qa_partition.py (91)} - create_pipe_styled_model_BERT_for_QA(): bert.encoder.layer.8.attention.self.value.weight
+1894876 2021-01-21,05:27:21.805 - {bert_qa_partition.py (91)} - create_pipe_styled_model_BERT_for_QA(): bert.encoder.layer.8.attention.self.value.bias
+1894876 2021-01-21,05:27:21.805 - {bert_qa_partition.py (91)} - create_pipe_styled_model_BERT_for_QA(): bert.encoder.layer.8.attention.output.dense.weight
+1894876 2021-01-21,05:27:21.805 - {bert_qa_partition.py (91)} - create_pipe_styled_model_BERT_for_QA(): bert.encoder.layer.8.attention.output.dense.bias
+1894876 2021-01-21,05:27:21.805 - {bert_qa_partition.py (91)} - create_pipe_styled_model_BERT_for_QA(): bert.encoder.layer.8.attention.output.LayerNorm.weight
+1894876 2021-01-21,05:27:21.805 - {bert_qa_partition.py (91)} - create_pipe_styled_model_BERT_for_QA(): bert.encoder.layer.8.attention.output.LayerNorm.bias
+1894876 2021-01-21,05:27:21.805 - {bert_qa_partition.py (91)} - create_pipe_styled_model_BERT_for_QA(): bert.encoder.layer.8.intermediate.dense.weight
+1894876 2021-01-21,05:27:21.805 - {bert_qa_partition.py (91)} - create_pipe_styled_model_BERT_for_QA(): bert.encoder.layer.8.intermediate.dense.bias
+1894876 2021-01-21,05:27:21.805 - {bert_qa_partition.py (91)} - create_pipe_styled_model_BERT_for_QA(): bert.encoder.layer.8.output.dense.weight
+1894876 2021-01-21,05:27:21.805 - {bert_qa_partition.py (91)} - create_pipe_styled_model_BERT_for_QA(): bert.encoder.layer.8.output.dense.bias
+1894876 2021-01-21,05:27:21.805 - {bert_qa_partition.py (91)} - create_pipe_styled_model_BERT_for_QA(): bert.encoder.layer.8.output.LayerNorm.weight
+1894876 2021-01-21,05:27:21.805 - {bert_qa_partition.py (91)} - create_pipe_styled_model_BERT_for_QA(): bert.encoder.layer.8.output.LayerNorm.bias
+1894876 2021-01-21,05:27:21.805 - {bert_qa_partition.py (91)} - create_pipe_styled_model_BERT_for_QA(): bert.encoder.layer.9.attention.self.query.weight
+1894876 2021-01-21,05:27:21.805 - {bert_qa_partition.py (91)} - create_pipe_styled_model_BERT_for_QA(): bert.encoder.layer.9.attention.self.query.bias
+1894876 2021-01-21,05:27:21.806 - {bert_qa_partition.py (91)} - create_pipe_styled_model_BERT_for_QA(): bert.encoder.layer.9.attention.self.key.weight
+1894876 2021-01-21,05:27:21.806 - {bert_qa_partition.py (91)} - create_pipe_styled_model_BERT_for_QA(): bert.encoder.layer.9.attention.self.key.bias
+1894876 2021-01-21,05:27:21.806 - {bert_qa_partition.py (91)} - create_pipe_styled_model_BERT_for_QA(): bert.encoder.layer.9.attention.self.value.weight
+1894876 2021-01-21,05:27:21.806 - {bert_qa_partition.py (91)} - create_pipe_styled_model_BERT_for_QA(): bert.encoder.layer.9.attention.self.value.bias
+1894876 2021-01-21,05:27:21.806 - {bert_qa_partition.py (91)} - create_pipe_styled_model_BERT_for_QA(): bert.encoder.layer.9.attention.output.dense.weight
+1894876 2021-01-21,05:27:21.806 - {bert_qa_partition.py (91)} - create_pipe_styled_model_BERT_for_QA(): bert.encoder.layer.9.attention.output.dense.bias
+1894876 2021-01-21,05:27:21.806 - {bert_qa_partition.py (91)} - create_pipe_styled_model_BERT_for_QA(): bert.encoder.layer.9.attention.output.LayerNorm.weight
+1894876 2021-01-21,05:27:21.806 - {bert_qa_partition.py (91)} - create_pipe_styled_model_BERT_for_QA(): bert.encoder.layer.9.attention.output.LayerNorm.bias
+1894876 2021-01-21,05:27:21.806 - {bert_qa_partition.py (91)} - create_pipe_styled_model_BERT_for_QA(): bert.encoder.layer.9.intermediate.dense.weight
+1894876 2021-01-21,05:27:21.806 - {bert_qa_partition.py (91)} - create_pipe_styled_model_BERT_for_QA(): bert.encoder.layer.9.intermediate.dense.bias
+1894876 2021-01-21,05:27:21.806 - {bert_qa_partition.py (91)} - create_pipe_styled_model_BERT_for_QA(): bert.encoder.layer.9.output.dense.weight
+1894876 2021-01-21,05:27:21.806 - {bert_qa_partition.py (91)} - create_pipe_styled_model_BERT_for_QA(): bert.encoder.layer.9.output.dense.bias
+1894876 2021-01-21,05:27:21.806 - {bert_qa_partition.py (91)} - create_pipe_styled_model_BERT_for_QA(): bert.encoder.layer.9.output.LayerNorm.weight
+1894876 2021-01-21,05:27:21.806 - {bert_qa_partition.py (91)} - create_pipe_styled_model_BERT_for_QA(): bert.encoder.layer.9.output.LayerNorm.bias
+1894876 2021-01-21,05:27:21.806 - {bert_qa_partition.py (91)} - create_pipe_styled_model_BERT_for_QA(): bert.encoder.layer.10.attention.self.query.weight
+1894876 2021-01-21,05:27:21.806 - {bert_qa_partition.py (91)} - create_pipe_styled_model_BERT_for_QA(): bert.encoder.layer.10.attention.self.query.bias
+1894876 2021-01-21,05:27:21.806 - {bert_qa_partition.py (91)} - create_pipe_styled_model_BERT_for_QA(): bert.encoder.layer.10.attention.self.key.weight
+1894876 2021-01-21,05:27:21.806 - {bert_qa_partition.py (91)} - create_pipe_styled_model_BERT_for_QA(): bert.encoder.layer.10.attention.self.key.bias
+1894876 2021-01-21,05:27:21.806 - {bert_qa_partition.py (91)} - create_pipe_styled_model_BERT_for_QA(): bert.encoder.layer.10.attention.self.value.weight
+1894876 2021-01-21,05:27:21.806 - {bert_qa_partition.py (91)} - create_pipe_styled_model_BERT_for_QA(): bert.encoder.layer.10.attention.self.value.bias
+1894876 2021-01-21,05:27:21.806 - {bert_qa_partition.py (91)} - create_pipe_styled_model_BERT_for_QA(): bert.encoder.layer.10.attention.output.dense.weight
+1894876 2021-01-21,05:27:21.806 - {bert_qa_partition.py (91)} - create_pipe_styled_model_BERT_for_QA(): bert.encoder.layer.10.attention.output.dense.bias
+1894876 2021-01-21,05:27:21.806 - {bert_qa_partition.py (91)} - create_pipe_styled_model_BERT_for_QA(): bert.encoder.layer.10.attention.output.LayerNorm.weight
+1894876 2021-01-21,05:27:21.806 - {bert_qa_partition.py (91)} - create_pipe_styled_model_BERT_for_QA(): bert.encoder.layer.10.attention.output.LayerNorm.bias
+1894876 2021-01-21,05:27:21.806 - {bert_qa_partition.py (91)} - create_pipe_styled_model_BERT_for_QA(): bert.encoder.layer.10.intermediate.dense.weight
+1894876 2021-01-21,05:27:21.806 - {bert_qa_partition.py (91)} - create_pipe_styled_model_BERT_for_QA(): bert.encoder.layer.10.intermediate.dense.bias
+1894876 2021-01-21,05:27:21.806 - {bert_qa_partition.py (91)} - create_pipe_styled_model_BERT_for_QA(): bert.encoder.layer.10.output.dense.weight
+1894876 2021-01-21,05:27:21.806 - {bert_qa_partition.py (91)} - create_pipe_styled_model_BERT_for_QA(): bert.encoder.layer.10.output.dense.bias
+1894876 2021-01-21,05:27:21.806 - {bert_qa_partition.py (91)} - create_pipe_styled_model_BERT_for_QA(): bert.encoder.layer.10.output.LayerNorm.weight
+1894876 2021-01-21,05:27:21.806 - {bert_qa_partition.py (91)} - create_pipe_styled_model_BERT_for_QA(): bert.encoder.layer.10.output.LayerNorm.bias
+1894876 2021-01-21,05:27:21.806 - {bert_qa_partition.py (91)} - create_pipe_styled_model_BERT_for_QA(): bert.encoder.layer.11.attention.self.query.weight
+1894876 2021-01-21,05:27:21.807 - {bert_qa_partition.py (91)} - create_pipe_styled_model_BERT_for_QA(): bert.encoder.layer.11.attention.self.query.bias
+1894876 2021-01-21,05:27:21.807 - {bert_qa_partition.py (91)} - create_pipe_styled_model_BERT_for_QA(): bert.encoder.layer.11.attention.self.key.weight
+1894876 2021-01-21,05:27:21.807 - {bert_qa_partition.py (91)} - create_pipe_styled_model_BERT_for_QA(): bert.encoder.layer.11.attention.self.key.bias
+1894876 2021-01-21,05:27:21.807 - {bert_qa_partition.py (91)} - create_pipe_styled_model_BERT_for_QA(): bert.encoder.layer.11.attention.self.value.weight
+1894876 2021-01-21,05:27:21.807 - {bert_qa_partition.py (91)} - create_pipe_styled_model_BERT_for_QA(): bert.encoder.layer.11.attention.self.value.bias
+1894876 2021-01-21,05:27:21.807 - {bert_qa_partition.py (91)} - create_pipe_styled_model_BERT_for_QA(): bert.encoder.layer.11.attention.output.dense.weight
+1894876 2021-01-21,05:27:21.807 - {bert_qa_partition.py (91)} - create_pipe_styled_model_BERT_for_QA(): bert.encoder.layer.11.attention.output.dense.bias
+1894876 2021-01-21,05:27:21.807 - {bert_qa_partition.py (91)} - create_pipe_styled_model_BERT_for_QA(): bert.encoder.layer.11.attention.output.LayerNorm.weight
+1894876 2021-01-21,05:27:21.807 - {bert_qa_partition.py (91)} - create_pipe_styled_model_BERT_for_QA(): bert.encoder.layer.11.attention.output.LayerNorm.bias
+1894876 2021-01-21,05:27:21.807 - {bert_qa_partition.py (91)} - create_pipe_styled_model_BERT_for_QA(): bert.encoder.layer.11.intermediate.dense.weight
+1894876 2021-01-21,05:27:21.807 - {bert_qa_partition.py (91)} - create_pipe_styled_model_BERT_for_QA(): bert.encoder.layer.11.intermediate.dense.bias
+1894876 2021-01-21,05:27:21.807 - {bert_qa_partition.py (91)} - create_pipe_styled_model_BERT_for_QA(): bert.encoder.layer.11.output.dense.weight
+1894876 2021-01-21,05:27:21.807 - {bert_qa_partition.py (91)} - create_pipe_styled_model_BERT_for_QA(): bert.encoder.layer.11.output.dense.bias
+1894876 2021-01-21,05:27:21.807 - {bert_qa_partition.py (91)} - create_pipe_styled_model_BERT_for_QA(): bert.encoder.layer.11.output.LayerNorm.weight
+1894876 2021-01-21,05:27:21.807 - {bert_qa_partition.py (91)} - create_pipe_styled_model_BERT_for_QA(): bert.encoder.layer.11.output.LayerNorm.bias
+1894876 2021-01-21,05:27:21.807 - {bert_qa_partition.py (91)} - create_pipe_styled_model_BERT_for_QA(): qa_outputs.weight
+1894876 2021-01-21,05:27:21.807 - {bert_qa_partition.py (91)} - create_pipe_styled_model_BERT_for_QA(): qa_outputs.bias
+1894876 2021-01-21,05:27:21.808 - {bert_qa_partition.py (51)} - __init__(): config.num_labels = 2
+1894876 2021-01-21,05:27:21.809 - {bert_qa_partition.py (151)} - create_pipe_styled_model_BERT_for_QA(): None
+1894876 2021-01-21,05:27:21.809 - {bert_qa_partition.py (152)} - create_pipe_styled_model_BERT_for_QA(): 0.0
+1894876 2021-01-21,05:27:21.809 - {bert_qa_partition.py (153)} - create_pipe_styled_model_BERT_for_QA(): Sequential(
+  (embedding): BertEmbeddings(
+    (word_embeddings): Embedding(30522, 768, padding_idx=0)
+    (position_embeddings): Embedding(512, 768)
+    (token_type_embeddings): Embedding(2, 768)
+    (LayerNorm): LayerNorm((768,), eps=1e-12, elementwise_affine=True)
+    (dropout): Dropout(p=0.1, inplace=False)
+  )
+  (layer0attention): BertAttention(
+    (self): BertSelfAttention(
+      (query): Linear(in_features=768, out_features=768, bias=True)
+      (key): Linear(in_features=768, out_features=768, bias=True)
+      (value): Linear(in_features=768, out_features=768, bias=True)
+      (dropout): Dropout(p=0.1, inplace=False)
+    )
+    (output): BertSelfOutput(
+      (dense): Linear(in_features=768, out_features=768, bias=True)
+      (LayerNorm): LayerNorm((768,), eps=1e-12, elementwise_affine=True)
+      (dropout): Dropout(p=0.1, inplace=False)
+    )
+  )
+  (layer0ffn_layer): BertFFNLayerForQA(
+    (intermediate): BertIntermediate(
+      (dense): Linear(in_features=768, out_features=3072, bias=True)
+    )
+    (output): BertOutput(
+      (dense): Linear(in_features=3072, out_features=768, bias=True)
+      (LayerNorm): LayerNorm((768,), eps=1e-12, elementwise_affine=True)
+      (dropout): Dropout(p=0.1, inplace=False)
+    )
+  )
+  (layer1attention): BertAttention(
+    (self): BertSelfAttention(
+      (query): Linear(in_features=768, out_features=768, bias=True)
+      (key): Linear(in_features=768, out_features=768, bias=True)
+      (value): Linear(in_features=768, out_features=768, bias=True)
+      (dropout): Dropout(p=0.1, inplace=False)
+    )
+    (output): BertSelfOutput(
+      (dense): Linear(in_features=768, out_features=768, bias=True)
+      (LayerNorm): LayerNorm((768,), eps=1e-12, elementwise_affine=True)
+      (dropout): Dropout(p=0.1, inplace=False)
+    )
+  )
+  (layer1ffn_layer): BertFFNLayerForQA(
+    (intermediate): BertIntermediate(
+      (dense): Linear(in_features=768, out_features=3072, bias=True)
+    )
+    (output): BertOutput(
+      (dense): Linear(in_features=3072, out_features=768, bias=True)
+      (LayerNorm): LayerNorm((768,), eps=1e-12, elementwise_affine=True)
+      (dropout): Dropout(p=0.1, inplace=False)
+    )
+  )
+  (layer2attention): BertAttention(
+    (self): BertSelfAttention(
+      (query): Linear(in_features=768, out_features=768, bias=True)
+      (key): Linear(in_features=768, out_features=768, bias=True)
+      (value): Linear(in_features=768, out_features=768, bias=True)
+      (dropout): Dropout(p=0.1, inplace=False)
+    )
+    (output): BertSelfOutput(
+      (dense): Linear(in_features=768, out_features=768, bias=True)
+      (LayerNorm): LayerNorm((768,), eps=1e-12, elementwise_affine=True)
+      (dropout): Dropout(p=0.1, inplace=False)
+    )
+  )
+  (layer2ffn_layer): BertFFNLayerForQA(
+    (intermediate): BertIntermediate(
+      (dense): Linear(in_features=768, out_features=3072, bias=True)
+    )
+    (output): BertOutput(
+      (dense): Linear(in_features=3072, out_features=768, bias=True)
+      (LayerNorm): LayerNorm((768,), eps=1e-12, elementwise_affine=True)
+      (dropout): Dropout(p=0.1, inplace=False)
+    )
+  )
+  (layer3attention): BertAttention(
+    (self): BertSelfAttention(
+      (query): Linear(in_features=768, out_features=768, bias=True)
+      (key): Linear(in_features=768, out_features=768, bias=True)
+      (value): Linear(in_features=768, out_features=768, bias=True)
+      (dropout): Dropout(p=0.1, inplace=False)
+    )
+    (output): BertSelfOutput(
+      (dense): Linear(in_features=768, out_features=768, bias=True)
+      (LayerNorm): LayerNorm((768,), eps=1e-12, elementwise_affine=True)
+      (dropout): Dropout(p=0.1, inplace=False)
+    )
+  )
+  (layer3ffn_layer): BertFFNLayerForQA(
+    (intermediate): BertIntermediate(
+      (dense): Linear(in_features=768, out_features=3072, bias=True)
+    )
+    (output): BertOutput(
+      (dense): Linear(in_features=3072, out_features=768, bias=True)
+      (LayerNorm): LayerNorm((768,), eps=1e-12, elementwise_affine=True)
+      (dropout): Dropout(p=0.1, inplace=False)
+    )
+  )
+  (layer4attention): BertAttention(
+    (self): BertSelfAttention(
+      (query): Linear(in_features=768, out_features=768, bias=True)
+      (key): Linear(in_features=768, out_features=768, bias=True)
+      (value): Linear(in_features=768, out_features=768, bias=True)
+      (dropout): Dropout(p=0.1, inplace=False)
+    )
+    (output): BertSelfOutput(
+      (dense): Linear(in_features=768, out_features=768, bias=True)
+      (LayerNorm): LayerNorm((768,), eps=1e-12, elementwise_affine=True)
+      (dropout): Dropout(p=0.1, inplace=False)
+    )
+  )
+  (layer4ffn_layer): BertFFNLayerForQA(
+    (intermediate): BertIntermediate(
+      (dense): Linear(in_features=768, out_features=3072, bias=True)
+    )
+    (output): BertOutput(
+      (dense): Linear(in_features=3072, out_features=768, bias=True)
+      (LayerNorm): LayerNorm((768,), eps=1e-12, elementwise_affine=True)
+      (dropout): Dropout(p=0.1, inplace=False)
+    )
+  )
+  (layer5attention): BertAttention(
+    (self): BertSelfAttention(
+      (query): Linear(in_features=768, out_features=768, bias=True)
+      (key): Linear(in_features=768, out_features=768, bias=True)
+      (value): Linear(in_features=768, out_features=768, bias=True)
+      (dropout): Dropout(p=0.1, inplace=False)
+    )
+    (output): BertSelfOutput(
+      (dense): Linear(in_features=768, out_features=768, bias=True)
+      (LayerNorm): LayerNorm((768,), eps=1e-12, elementwise_affine=True)
+      (dropout): Dropout(p=0.1, inplace=False)
+    )
+  )
+  (layer5ffn_layer): BertFFNLayerForQA(
+    (intermediate): BertIntermediate(
+      (dense): Linear(in_features=768, out_features=3072, bias=True)
+    )
+    (output): BertOutput(
+      (dense): Linear(in_features=3072, out_features=768, bias=True)
+      (LayerNorm): LayerNorm((768,), eps=1e-12, elementwise_affine=True)
+      (dropout): Dropout(p=0.1, inplace=False)
+    )
+  )
+  (layer6attention): BertAttention(
+    (self): BertSelfAttention(
+      (query): Linear(in_features=768, out_features=768, bias=True)
+      (key): Linear(in_features=768, out_features=768, bias=True)
+      (value): Linear(in_features=768, out_features=768, bias=True)
+      (dropout): Dropout(p=0.1, inplace=False)
+    )
+    (output): BertSelfOutput(
+      (dense): Linear(in_features=768, out_features=768, bias=True)
+      (LayerNorm): LayerNorm((768,), eps=1e-12, elementwise_affine=True)
+      (dropout): Dropout(p=0.1, inplace=False)
+    )
+  )
+  (layer6ffn_layer): BertFFNLayerForQA(
+    (intermediate): BertIntermediate(
+      (dense): Linear(in_features=768, out_features=3072, bias=True)
+    )
+    (output): BertOutput(
+      (dense): Linear(in_features=3072, out_features=768, bias=True)
+      (LayerNorm): LayerNorm((768,), eps=1e-12, elementwise_affine=True)
+      (dropout): Dropout(p=0.1, inplace=False)
+    )
+  )
+  (layer7attention): BertAttention(
+    (self): BertSelfAttention(
+      (query): Linear(in_features=768, out_features=768, bias=True)
+      (key): Linear(in_features=768, out_features=768, bias=True)
+      (value): Linear(in_features=768, out_features=768, bias=True)
+      (dropout): Dropout(p=0.1, inplace=False)
+    )
+    (output): BertSelfOutput(
+      (dense): Linear(in_features=768, out_features=768, bias=True)
+      (LayerNorm): LayerNorm((768,), eps=1e-12, elementwise_affine=True)
+      (dropout): Dropout(p=0.1, inplace=False)
+    )
+  )
+  (layer7ffn_layer): BertFFNLayerForQA(
+    (intermediate): BertIntermediate(
+      (dense): Linear(in_features=768, out_features=3072, bias=True)
+    )
+    (output): BertOutput(
+      (dense): Linear(in_features=3072, out_features=768, bias=True)
+      (LayerNorm): LayerNorm((768,), eps=1e-12, elementwise_affine=True)
+      (dropout): Dropout(p=0.1, inplace=False)
+    )
+  )
+  (layer8attention): BertAttention(
+    (self): BertSelfAttention(
+      (query): Linear(in_features=768, out_features=768, bias=True)
+      (key): Linear(in_features=768, out_features=768, bias=True)
+      (value): Linear(in_features=768, out_features=768, bias=True)
+      (dropout): Dropout(p=0.1, inplace=False)
+    )
+    (output): BertSelfOutput(
+      (dense): Linear(in_features=768, out_features=768, bias=True)
+      (LayerNorm): LayerNorm((768,), eps=1e-12, elementwise_affine=True)
+      (dropout): Dropout(p=0.1, inplace=False)
+    )
+  )
+  (layer8ffn_layer): BertFFNLayerForQA(
+    (intermediate): BertIntermediate(
+      (dense): Linear(in_features=768, out_features=3072, bias=True)
+    )
+    (output): BertOutput(
+      (dense): Linear(in_features=3072, out_features=768, bias=True)
+      (LayerNorm): LayerNorm((768,), eps=1e-12, elementwise_affine=True)
+      (dropout): Dropout(p=0.1, inplace=False)
+    )
+  )
+  (layer9attention): BertAttention(
+    (self): BertSelfAttention(
+      (query): Linear(in_features=768, out_features=768, bias=True)
+      (key): Linear(in_features=768, out_features=768, bias=True)
+      (value): Linear(in_features=768, out_features=768, bias=True)
+      (dropout): Dropout(p=0.1, inplace=False)
+    )
+    (output): BertSelfOutput(
+      (dense): Linear(in_features=768, out_features=768, bias=True)
+      (LayerNorm): LayerNorm((768,), eps=1e-12, elementwise_affine=True)
+      (dropout): Dropout(p=0.1, inplace=False)
+    )
+  )
+  (layer9ffn_layer): BertFFNLayerForQA(
+    (intermediate): BertIntermediate(
+      (dense): Linear(in_features=768, out_features=3072, bias=True)
+    )
+    (output): BertOutput(
+      (dense): Linear(in_features=3072, out_features=768, bias=True)
+      (LayerNorm): LayerNorm((768,), eps=1e-12, elementwise_affine=True)
+      (dropout): Dropout(p=0.1, inplace=False)
+    )
+  )
+  (layer10attention): BertAttention(
+    (self): BertSelfAttention(
+      (query): Linear(in_features=768, out_features=768, bias=True)
+      (key): Linear(in_features=768, out_features=768, bias=True)
+      (value): Linear(in_features=768, out_features=768, bias=True)
+      (dropout): Dropout(p=0.1, inplace=False)
+    )
+    (output): BertSelfOutput(
+      (dense): Linear(in_features=768, out_features=768, bias=True)
+      (LayerNorm): LayerNorm((768,), eps=1e-12, elementwise_affine=True)
+      (dropout): Dropout(p=0.1, inplace=False)
+    )
+  )
+  (layer10ffn_layer): BertFFNLayerForQA(
+    (intermediate): BertIntermediate(
+      (dense): Linear(in_features=768, out_features=3072, bias=True)
+    )
+    (output): BertOutput(
+      (dense): Linear(in_features=3072, out_features=768, bias=True)
+      (LayerNorm): LayerNorm((768,), eps=1e-12, elementwise_affine=True)
+      (dropout): Dropout(p=0.1, inplace=False)
+    )
+  )
+  (layer11attention): BertAttention(
+    (self): BertSelfAttention(
+      (query): Linear(in_features=768, out_features=768, bias=True)
+      (key): Linear(in_features=768, out_features=768, bias=True)
+      (value): Linear(in_features=768, out_features=768, bias=True)
+      (dropout): Dropout(p=0.1, inplace=False)
+    )
+    (output): BertSelfOutput(
+      (dense): Linear(in_features=768, out_features=768, bias=True)
+      (LayerNorm): LayerNorm((768,), eps=1e-12, elementwise_affine=True)
+      (dropout): Dropout(p=0.1, inplace=False)
+    )
+  )
+  (layer11ffn_layer): BertFFNLayerForQA(
+    (intermediate): BertIntermediate(
+      (dense): Linear(in_features=768, out_features=3072, bias=True)
+    )
+    (output): BertOutput(
+      (dense): Linear(in_features=3072, out_features=768, bias=True)
+      (LayerNorm): LayerNorm((768,), eps=1e-12, elementwise_affine=True)
+      (dropout): Dropout(p=0.1, inplace=False)
+    )
+  )
+  (output_head): BertForQA_OutputHead(
+    (qa_outputs): Linear(in_features=768, out_features=2, bias=True)
+  )
+)
+1894876 2021-01-21,05:27:21.809 - {bert_qa_partition.py (154)} - create_pipe_styled_model_BERT_for_QA(): [23.837184, 2.363904, 4.723968, 2.363904, 4.723968, 2.363904, 4.723968, 2.363904, 4.723968, 2.363904, 4.723968, 2.363904, 4.723968, 2.363904, 4.723968, 2.363904, 4.723968, 2.363904, 4.723968, 2.363904, 4.723968, 2.363904, 4.723968, 2.363904, 4.723968, 0.001538]
+1894876 2021-01-21,05:27:21.810 - {auto_pipe.py (69)} - transform(): len(pipe_model) = 26
+1894876 2021-01-21,05:27:21.810 - {auto_pipe.py (70)} - transform(): len(pipe_model paras_size) = 26
+1894876 2021-01-21,05:27:21.810 - {load_balance.py (39)} - generate_parameter_size_wise_balance(): total_param_size_to_be_assigned = 108.893186
+1894876 2021-01-21,05:27:21.810 - {load_balance.py (81)} - check_gap_all(): max_params_in_balanced_partition - min_params_in_balanced_partition = 7.297536
+1894876 2021-01-21,05:27:21.810 - {load_balance.py (97)} - check_gap_except_1st_layer(): max_params_in_balanced_partition - min_params_in_balanced_partition = 4.725506
+1894876 2021-01-21,05:27:21.810 - {auto_pipe.py (131)} - _auto_balanced_elastic_partition(): {0: 3, 1: 7, 2: 7, 3: 9}
+1894876 2021-01-21,05:27:21.810 - {auto_pipe.py (132)} - _auto_balanced_elastic_partition(): {0: 30.925055999999998, 1: 23.627519999999997, 2: 25.987584, 3: 28.353025999999996}
+1894876 2021-01-21,05:27:21.810 - {auto_pipe.py (78)} - transform(): self.max_parameter_per_gpu_at_beginning = 30.925056
+1894876 2021-01-21,05:27:21.810 - {pipe_model_builder.py (61)} - convert_to_balanced_model(): convert_to_balanced_model. local_rank = 0, global_rank = 0
+1894876 2021-01-21,05:27:21.810 - {pipe_model_builder.py (73)} - convert_to_balanced_model(): ######################local_rank = 0, global_rank = 0, device id: 0
+1894876 2021-01-21,05:27:23.740 - {pipe_model_builder.py (73)} - convert_to_balanced_model(): ######################local_rank = 0, global_rank = 0, device id: 1
+1894876 2021-01-21,05:27:25.126 - {pipe_model_builder.py (73)} - convert_to_balanced_model(): ######################local_rank = 0, global_rank = 0, device id: 2
+1894876 2021-01-21,05:27:26.529 - {pipe_model_builder.py (73)} - convert_to_balanced_model(): ######################local_rank = 0, global_rank = 0, device id: 3
+1894876 2021-01-21,05:27:27.989 - {pipe_model_builder.py (80)} - convert_to_balanced_model(): CPU->GPU time cost = 6.178627252578735
+1894876 2021-01-21,05:27:28.198 - {qa_data_manager.py (200)} - get_data_loader_with_node_rank(): ---node_rank = 0, num_replicas = 1, local_rank = 0 --------------
+1894876 2021-01-21,05:27:28.198 - {qa_data_manager.py (202)} - get_data_loader_with_node_rank(): train dataset len = 88311, test dataset len = 35246
+1894876 2021-01-21,05:27:28.203 - {qa_data_manager.py (209)} - get_data_loader_with_node_rank(): global_rank = 0. train indexes len = 88311
+1894876 2021-01-21,05:27:28.204 - {qa_data_manager.py (228)} - get_data_loader_with_node_rank(): global_rank = 0. test indexes len = 35246
+1894876 2021-01-21,05:27:28.205 - {pipe_transformer.py (86)} - _update_data_and_cache(): global_rank = 0. is_frozen_layer_changed: True
+1894876 2021-01-21,05:27:28.205 - {auto_pipe.py (111)} - get_device_first(): cuda:0
+1894876 2021-01-21,05:27:28.205 - {auto_pipe.py (116)} - get_device_last(): cuda:3
+1894876 2021-01-21,05:27:28.205 - {question_answering_trainer.py (343)} - build_optimizer(): warmup steps = 332
+1895350 2021-01-21,05:27:28.220 - {cache_daemon_process.py (70)} - run(): Message.MSG_TYPE_UPDATE_INDEX
+1895350 2021-01-21,05:27:28.220 - {cache_daemon_process.py (86)} - run(): subprocess is running
+1894876 2021-01-21,05:27:29.458 - {question_answering_trainer.py (102)} - train_model(): epoch = 0, batch_idx = 0/5520, loss = tensor(5.7465, device='cuda:3', grad_fn=<DivBackward0>)
+1894876 2021-01-21,05:27:30.164 - {question_answering_trainer.py (102)} - train_model(): epoch = 0, batch_idx = 1/5520, loss = tensor(5.7354, device='cuda:3', grad_fn=<DivBackward0>)
+1894876 2021-01-21,05:27:30.744 - {question_answering_trainer.py (102)} - train_model(): epoch = 0, batch_idx = 2/5520, loss = tensor(5.8107, device='cuda:3', grad_fn=<DivBackward0>)
+1894876 2021-01-21,05:27:31.332 - {question_answering_trainer.py (102)} - train_model(): epoch = 0, batch_idx = 3/5520, loss = tensor(5.7623, device='cuda:3', grad_fn=<DivBackward0>)
+1894876 2021-01-21,05:27:31.571 - {question_answering_trainer.py (199)} - evaluate(): evaluation. epoch = 0, batch index = 0/2202
+1894876 2021-01-21,05:27:31.905 - {question_answering_trainer.py (199)} - evaluate(): evaluation. epoch = 0, batch index = 1/2202
+1894876 2021-01-21,05:27:32.247 - {question_answering_trainer.py (199)} - evaluate(): evaluation. epoch = 0, batch index = 2/2202
+1894876 2021-01-21,05:27:32.616 - {question_answering_trainer.py (199)} - evaluate(): evaluation. epoch = 0, batch index = 3/2202
+1894876 2021-01-21,05:27:32.962 - {question_answering_trainer.py (199)} - evaluate(): evaluation. epoch = 0, batch index = 4/2202
+1894876 2021-01-21,05:27:33.281 - {question_answering_trainer.py (199)} - evaluate(): evaluation. epoch = 0, batch index = 5/2202
+1894876 2021-01-21,05:27:33.645 - {question_answering_trainer.py (199)} - evaluate(): evaluation. epoch = 0, batch index = 6/2202
+1894876 2021-01-21,05:27:34.009 - {question_answering_trainer.py (199)} - evaluate(): evaluation. epoch = 0, batch index = 7/2202
+1894876 2021-01-21,05:27:34.349 - {question_answering_trainer.py (199)} - evaluate(): evaluation. epoch = 0, batch index = 8/2202
+1894876 2021-01-21,05:27:34.725 - {question_answering_trainer.py (199)} - evaluate(): evaluation. epoch = 0, batch index = 9/2202
+1894876 2021-01-21,05:27:35.080 - {question_answering_trainer.py (199)} - evaluate(): evaluation. epoch = 0, batch index = 10/2202
+1894876 2021-01-21,05:27:35.448 - {question_answering_trainer.py (199)} - evaluate(): evaluation. epoch = 0, batch index = 11/2202
+1894876 2021-01-21,05:27:35.810 - {question_answering_trainer.py (199)} - evaluate(): evaluation. epoch = 0, batch index = 12/2202
+1894876 2021-01-21,05:27:36.171 - {question_answering_trainer.py (199)} - evaluate(): evaluation. epoch = 0, batch index = 13/2202
+1894876 2021-01-21,05:27:36.517 - {question_answering_trainer.py (199)} - evaluate(): evaluation. epoch = 0, batch index = 14/2202
+1894876 2021-01-21,05:27:36.865 - {question_answering_trainer.py (199)} - evaluate(): evaluation. epoch = 0, batch index = 15/2202
+1894876 2021-01-21,05:27:37.238 - {question_answering_trainer.py (199)} - evaluate(): evaluation. epoch = 0, batch index = 16/2202
+1894876 2021-01-21,05:27:37.608 - {question_answering_trainer.py (199)} - evaluate(): evaluation. epoch = 0, batch index = 17/2202
+1894876 2021-01-21,05:27:37.907 - {question_answering_trainer.py (199)} - evaluate(): evaluation. epoch = 0, batch index = 18/2202
+1894876 2021-01-21,05:27:38.245 - {question_answering_trainer.py (199)} - evaluate(): evaluation. epoch = 0, batch index = 19/2202
+1894876 2021-01-21,05:27:38.561 - {question_answering_trainer.py (199)} - evaluate(): evaluation. epoch = 0, batch index = 20/2202
+1894876 2021-01-21,05:27:38.919 - {question_answering_trainer.py (199)} - evaluate(): evaluation. epoch = 0, batch index = 21/2202
+1894876 2021-01-21,05:27:39.236 - {question_answering_trainer.py (199)} - evaluate(): evaluation. epoch = 0, batch index = 22/2202
+1894876 2021-01-21,05:27:39.609 - {question_answering_trainer.py (199)} - evaluate(): evaluation. epoch = 0, batch index = 23/2202
+1894876 2021-01-21,05:27:39.974 - {question_answering_trainer.py (199)} - evaluate(): evaluation. epoch = 0, batch index = 24/2202
+1894876 2021-01-21,05:27:40.294 - {question_answering_trainer.py (199)} - evaluate(): evaluation. epoch = 0, batch index = 25/2202
+1894876 2021-01-21,05:27:40.600 - {question_answering_trainer.py (199)} - evaluate(): evaluation. epoch = 0, batch index = 26/2202
+1894876 2021-01-21,05:27:40.929 - {question_answering_trainer.py (199)} - evaluate(): evaluation. epoch = 0, batch index = 27/2202
+1894876 2021-01-21,05:27:41.290 - {question_answering_trainer.py (199)} - evaluate(): evaluation. epoch = 0, batch index = 28/2202
+1894876 2021-01-21,05:27:41.633 - {question_answering_trainer.py (199)} - evaluate(): evaluation. epoch = 0, batch index = 29/2202
+1894876 2021-01-21,05:27:42.001 - {question_answering_trainer.py (199)} - evaluate(): evaluation. epoch = 0, batch index = 30/2202
+1894876 2021-01-21,05:27:42.375 - {question_answering_trainer.py (199)} - evaluate(): evaluation. epoch = 0, batch index = 31/2202
+1894876 2021-01-21,05:27:42.679 - {question_answering_trainer.py (199)} - evaluate(): evaluation. epoch = 0, batch index = 32/2202
+1894876 2021-01-21,05:27:43.044 - {question_answering_trainer.py (199)} - evaluate(): evaluation. epoch = 0, batch index = 33/2202
+1894876 2021-01-21,05:27:43.388 - {question_answering_trainer.py (199)} - evaluate(): evaluation. epoch = 0, batch index = 34/2202
+1894876 2021-01-21,05:27:43.743 - {question_answering_trainer.py (199)} - evaluate(): evaluation. epoch = 0, batch index = 35/2202
+1894876 2021-01-21,05:27:44.112 - {question_answering_trainer.py (199)} - evaluate(): evaluation. epoch = 0, batch index = 36/2202
+1894876 2021-01-21,05:27:44.477 - {question_answering_trainer.py (199)} - evaluate(): evaluation. epoch = 0, batch index = 37/2202
+1894876 2021-01-21,05:27:44.822 - {question_answering_trainer.py (199)} - evaluate(): evaluation. epoch = 0, batch index = 38/2202
+1894876 2021-01-21,05:27:45.135 - {question_answering_trainer.py (199)} - evaluate(): evaluation. epoch = 0, batch index = 39/2202
+1894876 2021-01-21,05:27:45.514 - {question_answering_trainer.py (199)} - evaluate(): evaluation. epoch = 0, batch index = 40/2202
+1894876 2021-01-21,05:27:45.879 - {question_answering_trainer.py (199)} - evaluate(): evaluation. epoch = 0, batch index = 41/2202
+1894876 2021-01-21,05:27:46.219 - {question_answering_trainer.py (199)} - evaluate(): evaluation. epoch = 0, batch index = 42/2202
+1894876 2021-01-21,05:27:46.597 - {question_answering_trainer.py (199)} - evaluate(): evaluation. epoch = 0, batch index = 43/2202
+1894876 2021-01-21,05:27:46.935 - {question_answering_trainer.py (199)} - evaluate(): evaluation. epoch = 0, batch index = 44/2202
+1894876 2021-01-21,05:27:47.294 - {question_answering_trainer.py (199)} - evaluate(): evaluation. epoch = 0, batch index = 45/2202
+1894876 2021-01-21,05:27:47.633 - {question_answering_trainer.py (199)} - evaluate(): evaluation. epoch = 0, batch index = 46/2202
+1894876 2021-01-21,05:27:47.978 - {question_answering_trainer.py (199)} - evaluate(): evaluation. epoch = 0, batch index = 47/2202
+1894876 2021-01-21,05:27:48.344 - {question_answering_trainer.py (199)} - evaluate(): evaluation. epoch = 0, batch index = 48/2202
+1894876 2021-01-21,05:27:48.705 - {question_answering_trainer.py (199)} - evaluate(): evaluation. epoch = 0, batch index = 49/2202
+1894876 2021-01-21,05:27:49.074 - {question_answering_trainer.py (199)} - evaluate(): evaluation. epoch = 0, batch index = 50/2202
+1894876 2021-01-21,05:27:49.445 - {question_answering_trainer.py (199)} - evaluate(): evaluation. epoch = 0, batch index = 51/2202
+1894876 2021-01-21,05:27:49.804 - {question_answering_trainer.py (199)} - evaluate(): evaluation. epoch = 0, batch index = 52/2202
+1894876 2021-01-21,05:27:50.186 - {question_answering_trainer.py (199)} - evaluate(): evaluation. epoch = 0, batch index = 53/2202
+1894876 2021-01-21,05:27:50.548 - {question_answering_trainer.py (199)} - evaluate(): evaluation. epoch = 0, batch index = 54/2202
+1894876 2021-01-21,05:27:50.931 - {question_answering_trainer.py (199)} - evaluate(): evaluation. epoch = 0, batch index = 55/2202
+1894876 2021-01-21,05:27:51.289 - {question_answering_trainer.py (199)} - evaluate(): evaluation. epoch = 0, batch index = 56/2202
+1894876 2021-01-21,05:27:51.628 - {question_answering_trainer.py (199)} - evaluate(): evaluation. epoch = 0, batch index = 57/2202
+1894876 2021-01-21,05:27:51.994 - {question_answering_trainer.py (199)} - evaluate(): evaluation. epoch = 0, batch index = 58/2202
+1894876 2021-01-21,05:27:52.321 - {question_answering_trainer.py (199)} - evaluate(): evaluation. epoch = 0, batch index = 59/2202
+1894876 2021-01-21,05:27:52.683 - {question_answering_trainer.py (199)} - evaluate(): evaluation. epoch = 0, batch index = 60/2202
+1894876 2021-01-21,05:27:53.044 - {question_answering_trainer.py (199)} - evaluate(): evaluation. epoch = 0, batch index = 61/2202
+1894876 2021-01-21,05:27:53.398 - {question_answering_trainer.py (199)} - evaluate(): evaluation. epoch = 0, batch index = 62/2202
+1894876 2021-01-21,05:27:53.745 - {question_answering_trainer.py (199)} - evaluate(): evaluation. epoch = 0, batch index = 63/2202
+1894876 2021-01-21,05:27:54.107 - {question_answering_trainer.py (199)} - evaluate(): evaluation. epoch = 0, batch index = 64/2202
+1894876 2021-01-21,05:27:54.488 - {question_answering_trainer.py (199)} - evaluate(): evaluation. epoch = 0, batch index = 65/2202
+1894876 2021-01-21,05:27:54.830 - {question_answering_trainer.py (199)} - evaluate(): evaluation. epoch = 0, batch index = 66/2202
+1894876 2021-01-21,05:27:55.195 - {question_answering_trainer.py (199)} - evaluate(): evaluation. epoch = 0, batch index = 67/2202
+1894876 2021-01-21,05:27:55.566 - {question_answering_trainer.py (199)} - evaluate(): evaluation. epoch = 0, batch index = 68/2202
+1894876 2021-01-21,05:27:55.900 - {question_answering_trainer.py (199)} - evaluate(): evaluation. epoch = 0, batch index = 69/2202
+1894876 2021-01-21,05:27:56.265 - {question_answering_trainer.py (199)} - evaluate(): evaluation. epoch = 0, batch index = 70/2202
+1894876 2021-01-21,05:27:56.632 - {question_answering_trainer.py (199)} - evaluate(): evaluation. epoch = 0, batch index = 71/2202
+1894876 2021-01-21,05:27:56.991 - {question_answering_trainer.py (199)} - evaluate(): evaluation. epoch = 0, batch index = 72/2202
+1894876 2021-01-21,05:27:57.307 - {question_answering_trainer.py (199)} - evaluate(): evaluation. epoch = 0, batch index = 73/2202
+1894876 2021-01-21,05:27:57.632 - {question_answering_trainer.py (199)} - evaluate(): evaluation. epoch = 0, batch index = 74/2202
+1894876 2021-01-21,05:27:58.021 - {question_answering_trainer.py (199)} - evaluate(): evaluation. epoch = 0, batch index = 75/2202
+1894876 2021-01-21,05:27:58.348 - {question_answering_trainer.py (199)} - evaluate(): evaluation. epoch = 0, batch index = 76/2202
+1894876 2021-01-21,05:27:58.709 - {question_answering_trainer.py (199)} - evaluate(): evaluation. epoch = 0, batch index = 77/2202
+1894876 2021-01-21,05:27:59.090 - {question_answering_trainer.py (199)} - evaluate(): evaluation. epoch = 0, batch index = 78/2202
+1894876 2021-01-21,05:27:59.417 - {question_answering_trainer.py (199)} - evaluate(): evaluation. epoch = 0, batch index = 79/2202
+1894876 2021-01-21,05:27:59.754 - {question_answering_trainer.py (199)} - evaluate(): evaluation. epoch = 0, batch index = 80/2202
+1894876 2021-01-21,05:28:00.106 - {question_answering_trainer.py (199)} - evaluate(): evaluation. epoch = 0, batch index = 81/2202
+1894876 2021-01-21,05:28:00.487 - {question_answering_trainer.py (199)} - evaluate(): evaluation. epoch = 0, batch index = 82/2202
+1894876 2021-01-21,05:28:00.824 - {question_answering_trainer.py (199)} - evaluate(): evaluation. epoch = 0, batch index = 83/2202
+1894876 2021-01-21,05:28:01.198 - {question_answering_trainer.py (199)} - evaluate(): evaluation. epoch = 0, batch index = 84/2202
+1894876 2021-01-21,05:28:01.570 - {question_answering_trainer.py (199)} - evaluate(): evaluation. epoch = 0, batch index = 85/2202
+1894876 2021-01-21,05:28:01.885 - {question_answering_trainer.py (199)} - evaluate(): evaluation. epoch = 0, batch index = 86/2202
+1894876 2021-01-21,05:28:02.225 - {question_answering_trainer.py (199)} - evaluate(): evaluation. epoch = 0, batch index = 87/2202
+1894876 2021-01-21,05:28:02.591 - {question_answering_trainer.py (199)} - evaluate(): evaluation. epoch = 0, batch index = 88/2202
+1894876 2021-01-21,05:28:02.959 - {question_answering_trainer.py (199)} - evaluate(): evaluation. epoch = 0, batch index = 89/2202
+1894876 2021-01-21,05:28:03.324 - {question_answering_trainer.py (199)} - evaluate(): evaluation. epoch = 0, batch index = 90/2202
+1894876 2021-01-21,05:28:03.668 - {question_answering_trainer.py (199)} - evaluate(): evaluation. epoch = 0, batch index = 91/2202
+1894876 2021-01-21,05:28:03.982 - {question_answering_trainer.py (199)} - evaluate(): evaluation. epoch = 0, batch index = 92/2202
+1894876 2021-01-21,05:28:04.276 - {question_answering_trainer.py (199)} - evaluate(): evaluation. epoch = 0, batch index = 93/2202
+1894876 2021-01-21,05:28:04.690 - {question_answering_trainer.py (199)} - evaluate(): evaluation. epoch = 0, batch index = 94/2202
+1894876 2021-01-21,05:28:05.086 - {question_answering_trainer.py (199)} - evaluate(): evaluation. epoch = 0, batch index = 95/2202
+1894876 2021-01-21,05:28:05.423 - {question_answering_trainer.py (199)} - evaluate(): evaluation. epoch = 0, batch index = 96/2202
+1894876 2021-01-21,05:28:05.660 - {question_answering_trainer.py (199)} - evaluate(): evaluation. epoch = 0, batch index = 97/2202
+1894876 2021-01-21,05:28:05.938 - {question_answering_trainer.py (199)} - evaluate(): evaluation. epoch = 0, batch index = 98/2202
+1894876 2021-01-21,05:28:06.251 - {question_answering_trainer.py (199)} - evaluate(): evaluation. epoch = 0, batch index = 99/2202
+1894876 2021-01-21,05:28:06.547 - {question_answering_trainer.py (199)} - evaluate(): evaluation. epoch = 0, batch index = 100/2202
+1894876 2021-01-21,05:28:06.816 - {question_answering_trainer.py (199)} - evaluate(): evaluation. epoch = 0, batch index = 101/2202
+1894876 2021-01-21,05:28:07.125 - {question_answering_trainer.py (199)} - evaluate(): evaluation. epoch = 0, batch index = 102/2202
+1894876 2021-01-21,05:28:07.483 - {question_answering_trainer.py (199)} - evaluate(): evaluation. epoch = 0, batch index = 103/2202
+1894876 2021-01-21,05:28:07.865 - {question_answering_trainer.py (199)} - evaluate(): evaluation. epoch = 0, batch index = 104/2202
+1894876 2021-01-21,05:28:08.060 - {question_answering_trainer.py (199)} - evaluate(): evaluation. epoch = 0, batch index = 105/2202
+1894876 2021-01-21,05:28:08.252 - {question_answering_trainer.py (199)} - evaluate(): evaluation. epoch = 0, batch index = 106/2202
+1894876 2021-01-21,05:28:08.562 - {question_answering_trainer.py (199)} - evaluate(): evaluation. epoch = 0, batch index = 107/2202
+1894876 2021-01-21,05:28:08.913 - {question_answering_trainer.py (199)} - evaluate(): evaluation. epoch = 0, batch index = 108/2202
+1894876 2021-01-21,05:28:09.251 - {question_answering_trainer.py (199)} - evaluate(): evaluation. epoch = 0, batch index = 109/2202
+1894876 2021-01-21,05:28:09.581 - {question_answering_trainer.py (199)} - evaluate(): evaluation. epoch = 0, batch index = 110/2202
+1894876 2021-01-21,05:28:09.947 - {question_answering_trainer.py (199)} - evaluate(): evaluation. epoch = 0, batch index = 111/2202
+1894876 2021-01-21,05:28:10.294 - {question_answering_trainer.py (199)} - evaluate(): evaluation. epoch = 0, batch index = 112/2202
+1894876 2021-01-21,05:28:10.601 - {question_answering_trainer.py (199)} - evaluate(): evaluation. epoch = 0, batch index = 113/2202
+1894876 2021-01-21,05:28:10.966 - {question_answering_trainer.py (199)} - evaluate(): evaluation. epoch = 0, batch index = 114/2202
+1894876 2021-01-21,05:28:11.289 - {question_answering_trainer.py (199)} - evaluate(): evaluation. epoch = 0, batch index = 115/2202
+1894876 2021-01-21,05:28:11.611 - {question_answering_trainer.py (199)} - evaluate(): evaluation. epoch = 0, batch index = 116/2202
+1894876 2021-01-21,05:28:11.926 - {question_answering_trainer.py (199)} - evaluate(): evaluation. epoch = 0, batch index = 117/2202
+1894876 2021-01-21,05:28:12.279 - {question_answering_trainer.py (199)} - evaluate(): evaluation. epoch = 0, batch index = 118/2202
+1894876 2021-01-21,05:28:12.649 - {question_answering_trainer.py (199)} - evaluate(): evaluation. epoch = 0, batch index = 119/2202
+1894876 2021-01-21,05:28:12.990 - {question_answering_trainer.py (199)} - evaluate(): evaluation. epoch = 0, batch index = 120/2202
+1894876 2021-01-21,05:28:13.368 - {question_answering_trainer.py (199)} - evaluate(): evaluation. epoch = 0, batch index = 121/2202
+1894876 2021-01-21,05:28:13.732 - {question_answering_trainer.py (199)} - evaluate(): evaluation. epoch = 0, batch index = 122/2202
+1894876 2021-01-21,05:28:14.082 - {question_answering_trainer.py (199)} - evaluate(): evaluation. epoch = 0, batch index = 123/2202
+1894876 2021-01-21,05:28:14.447 - {question_answering_trainer.py (199)} - evaluate(): evaluation. epoch = 0, batch index = 124/2202
+1894876 2021-01-21,05:28:14.815 - {question_answering_trainer.py (199)} - evaluate(): evaluation. epoch = 0, batch index = 125/2202
+1894876 2021-01-21,05:28:15.147 - {question_answering_trainer.py (199)} - evaluate(): evaluation. epoch = 0, batch index = 126/2202
+1894876 2021-01-21,05:28:15.495 - {question_answering_trainer.py (199)} - evaluate(): evaluation. epoch = 0, batch index = 127/2202
+1894876 2021-01-21,05:28:15.862 - {question_answering_trainer.py (199)} - evaluate(): evaluation. epoch = 0, batch index = 128/2202
+1894876 2021-01-21,05:28:16.232 - {question_answering_trainer.py (199)} - evaluate(): evaluation. epoch = 0, batch index = 129/2202
+1894876 2021-01-21,05:28:16.554 - {question_answering_trainer.py (199)} - evaluate(): evaluation. epoch = 0, batch index = 130/2202
+1894876 2021-01-21,05:28:16.916 - {question_answering_trainer.py (199)} - evaluate(): evaluation. epoch = 0, batch index = 131/2202
+1894876 2021-01-21,05:28:17.294 - {question_answering_trainer.py (199)} - evaluate(): evaluation. epoch = 0, batch index = 132/2202
+1894876 2021-01-21,05:28:17.658 - {question_answering_trainer.py (199)} - evaluate(): evaluation. epoch = 0, batch index = 133/2202
+1894876 2021-01-21,05:28:18.000 - {question_answering_trainer.py (199)} - evaluate(): evaluation. epoch = 0, batch index = 134/2202
+1894876 2021-01-21,05:28:18.349 - {question_answering_trainer.py (199)} - evaluate(): evaluation. epoch = 0, batch index = 135/2202
+1894876 2021-01-21,05:28:18.720 - {question_answering_trainer.py (199)} - evaluate(): evaluation. epoch = 0, batch index = 136/2202
+1894876 2021-01-21,05:28:19.051 - {question_answering_trainer.py (199)} - evaluate(): evaluation. epoch = 0, batch index = 137/2202
+1894876 2021-01-21,05:28:19.425 - {question_answering_trainer.py (199)} - evaluate(): evaluation. epoch = 0, batch index = 138/2202
+1894876 2021-01-21,05:28:19.815 - {question_answering_trainer.py (199)} - evaluate(): evaluation. epoch = 0, batch index = 139/2202
+1894876 2021-01-21,05:28:20.130 - {question_answering_trainer.py (199)} - evaluate(): evaluation. epoch = 0, batch index = 140/2202
+1894876 2021-01-21,05:28:20.506 - {question_answering_trainer.py (199)} - evaluate(): evaluation. epoch = 0, batch index = 141/2202
+1894876 2021-01-21,05:28:20.842 - {question_answering_trainer.py (199)} - evaluate(): evaluation. epoch = 0, batch index = 142/2202
+1894876 2021-01-21,05:28:21.205 - {question_answering_trainer.py (199)} - evaluate(): evaluation. epoch = 0, batch index = 143/2202
+1894876 2021-01-21,05:28:21.516 - {question_answering_trainer.py (199)} - evaluate(): evaluation. epoch = 0, batch index = 144/2202
+1894876 2021-01-21,05:28:21.882 - {question_answering_trainer.py (199)} - evaluate(): evaluation. epoch = 0, batch index = 145/2202
+1894876 2021-01-21,05:28:22.261 - {question_answering_trainer.py (199)} - evaluate(): evaluation. epoch = 0, batch index = 146/2202
+1894876 2021-01-21,05:28:22.606 - {question_answering_trainer.py (199)} - evaluate(): evaluation. epoch = 0, batch index = 147/2202
+1894876 2021-01-21,05:28:22.939 - {question_answering_trainer.py (199)} - evaluate(): evaluation. epoch = 0, batch index = 148/2202
+1894876 2021-01-21,05:28:23.255 - {question_answering_trainer.py (199)} - evaluate(): evaluation. epoch = 0, batch index = 149/2202
+1894876 2021-01-21,05:28:23.623 - {question_answering_trainer.py (199)} - evaluate(): evaluation. epoch = 0, batch index = 150/2202
+1894876 2021-01-21,05:28:23.979 - {question_answering_trainer.py (199)} - evaluate(): evaluation. epoch = 0, batch index = 151/2202
+Process CacheDaemon-2:
+Process CacheDaemon-2:
+Process CacheDaemon-2:
+*****************************************
+Setting OMP_NUM_THREADS environment variable for each process to be 1 in default, to avoid your system being overloaded, please further tune the variable for optimal performance in your application as needed. 
+*****************************************
+Killing subprocess 1894876
+Killing subprocess 1894877
+Killing subprocess 1894878
+Killing subprocess 1894879
+Main process received SIGINT, exiting
+/home/chaoyanghe/miniconda/envs/pipe_transformer_v38/lib/python3.8/multiprocessing/resource_tracker.py:203: UserWarning: resource_tracker: There appear to be 6 leaked semaphore objects to clean up at shutdown
+  warnings.warn('resource_tracker: There appear to be %d '
+/home/chaoyanghe/miniconda/envs/pipe_transformer_v38/lib/python3.8/multiprocessing/resource_tracker.py:203: UserWarning: resource_tracker: There appear to be 6 leaked semaphore objects to clean up at shutdown
+  warnings.warn('resource_tracker: There appear to be %d '
+/home/chaoyanghe/miniconda/envs/pipe_transformer_v38/lib/python3.8/multiprocessing/resource_tracker.py:203: UserWarning: resource_tracker: There appear to be 6 leaked semaphore objects to clean up at shutdown
+  warnings.warn('resource_tracker: There appear to be %d '
+/home/chaoyanghe/miniconda/envs/pipe_transformer_v38/lib/python3.8/multiprocessing/resource_tracker.py:203: UserWarning: resource_tracker: There appear to be 6 leaked semaphore objects to clean up at shutdown
+  warnings.warn('resource_tracker: There appear to be %d '

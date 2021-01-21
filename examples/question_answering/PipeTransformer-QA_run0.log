@@ -1,0 +1,136 @@
+1895700 2021-01-21,05:28:40.418 - {main_qa.py (164)} - <module>(): Namespace(b_auto_dp=True, b_auto_pipe=True, b_cache=True, b_freeze=False, data_dir='../../data/span_extraction/SQuAD_1.1/', data_file='../../data/span_extraction/SQuAD_1.1/squad_1.1_data.pkl', dataset='squad_1.1', do_lower_case=True, eval_batch_size=16, eval_data_file='../../data/span_extraction/SQuAD_1.1/dev-v1.1.json', fp16=False, freeze_strategy='mild', global_rank=0, gradient_accumulation_steps=1, if_name='wlx9cefd5fb3821', is_debug_mode=0, is_infiniband=0, learning_rate=1e-05, local_rank=1, manual_seed=42, master_addr='192.168.1.73', master_port=22222, max_seq_length=256, model_name='bert-base-uncased', model_type='bert', n_gpu=1, nnodes=1, node_rank=0, nproc_per_node=4, num_chunks_of_micro_batches=8, num_train_epochs=1, output_dir='./output', pipe_len_at_the_beginning=4, run_id=0, train_batch_size=16, weight_decay=0)
+1895702 2021-01-21,05:28:40.440 - {main_qa.py (164)} - <module>(): Namespace(b_auto_dp=True, b_auto_pipe=True, b_cache=True, b_freeze=False, data_dir='../../data/span_extraction/SQuAD_1.1/', data_file='../../data/span_extraction/SQuAD_1.1/squad_1.1_data.pkl', dataset='squad_1.1', do_lower_case=True, eval_batch_size=16, eval_data_file='../../data/span_extraction/SQuAD_1.1/dev-v1.1.json', fp16=False, freeze_strategy='mild', global_rank=0, gradient_accumulation_steps=1, if_name='wlx9cefd5fb3821', is_debug_mode=0, is_infiniband=0, learning_rate=1e-05, local_rank=3, manual_seed=42, master_addr='192.168.1.73', master_port=22222, max_seq_length=256, model_name='bert-base-uncased', model_type='bert', n_gpu=1, nnodes=1, node_rank=0, nproc_per_node=4, num_chunks_of_micro_batches=8, num_train_epochs=1, output_dir='./output', pipe_len_at_the_beginning=4, run_id=0, train_batch_size=16, weight_decay=0)
+1895701 2021-01-21,05:28:40.448 - {main_qa.py (164)} - <module>(): Namespace(b_auto_dp=True, b_auto_pipe=True, b_cache=True, b_freeze=False, data_dir='../../data/span_extraction/SQuAD_1.1/', data_file='../../data/span_extraction/SQuAD_1.1/squad_1.1_data.pkl', dataset='squad_1.1', do_lower_case=True, eval_batch_size=16, eval_data_file='../../data/span_extraction/SQuAD_1.1/dev-v1.1.json', fp16=False, freeze_strategy='mild', global_rank=0, gradient_accumulation_steps=1, if_name='wlx9cefd5fb3821', is_debug_mode=0, is_infiniband=0, learning_rate=1e-05, local_rank=2, manual_seed=42, master_addr='192.168.1.73', master_port=22222, max_seq_length=256, model_name='bert-base-uncased', model_type='bert', n_gpu=1, nnodes=1, node_rank=0, nproc_per_node=4, num_chunks_of_micro_batches=8, num_train_epochs=1, output_dir='./output', pipe_len_at_the_beginning=4, run_id=0, train_batch_size=16, weight_decay=0)
+1895699 2021-01-21,05:28:40.459 - {main_qa.py (164)} - <module>(): Namespace(b_auto_dp=True, b_auto_pipe=True, b_cache=True, b_freeze=False, data_dir='../../data/span_extraction/SQuAD_1.1/', data_file='../../data/span_extraction/SQuAD_1.1/squad_1.1_data.pkl', dataset='squad_1.1', do_lower_case=True, eval_batch_size=16, eval_data_file='../../data/span_extraction/SQuAD_1.1/dev-v1.1.json', fp16=False, freeze_strategy='mild', global_rank=0, gradient_accumulation_steps=1, if_name='wlx9cefd5fb3821', is_debug_mode=0, is_infiniband=0, learning_rate=1e-05, local_rank=0, manual_seed=42, master_addr='192.168.1.73', master_port=22222, max_seq_length=256, model_name='bert-base-uncased', model_type='bert', n_gpu=1, nnodes=1, node_rank=0, nproc_per_node=4, num_chunks_of_micro_batches=8, num_train_epochs=1, output_dir='./output', pipe_len_at_the_beginning=4, run_id=0, train_batch_size=16, weight_decay=0)
+wandb: Offline run mode, not syncing to the cloud.
+wandb: W&B syncing is set to `offline` in this directory.  Run `wandb online` to enable cloud syncing.
+wandb: Offline run mode, not syncing to the cloud.
+wandb: W&B syncing is set to `offline` in this directory.  Run `wandb online` to enable cloud syncing.
+wandb: Offline run mode, not syncing to the cloud.
+wandb: W&B syncing is set to `offline` in this directory.  Run `wandb online` to enable cloud syncing.
+wandb: Offline run mode, not syncing to the cloud.
+wandb: W&B syncing is set to `offline` in this directory.  Run `wandb online` to enable cloud syncing.
+1895701 2021-01-21,05:28:42.233 - {modeling_bert.py (947)} - __init__(): BertConfig {
+  "_name_or_path": "bert-base-uncased",
+  "architectures": [
+    "BertForMaskedLM"
+  ],
+  "attention_probs_dropout_prob": 0.1,
+  "gradient_checkpointing": false,
+  "hidden_act": "gelu",
+  "hidden_dropout_prob": 0.1,
+  "hidden_size": 768,
+  "initializer_range": 0.02,
+  "intermediate_size": 3072,
+  "layer_norm_eps": 1e-12,
+  "max_position_embeddings": 512,
+  "model_type": "bert",
+  "num_attention_heads": 12,
+  "num_hidden_layers": 12,
+  "pad_token_id": 0,
+  "position_embedding_type": "absolute",
+  "transformers_version": "4.3.0.dev0",
+  "type_vocab_size": 2,
+  "use_cache": true,
+  "vocab_size": 30522
+}
+
+1895699 2021-01-21,05:28:42.233 - {modeling_bert.py (947)} - __init__(): BertConfig {
+  "_name_or_path": "bert-base-uncased",
+  "architectures": [
+    "BertForMaskedLM"
+  ],
+  "attention_probs_dropout_prob": 0.1,
+  "gradient_checkpointing": false,
+  "hidden_act": "gelu",
+  "hidden_dropout_prob": 0.1,
+  "hidden_size": 768,
+  "initializer_range": 0.02,
+  "intermediate_size": 3072,
+  "layer_norm_eps": 1e-12,
+  "max_position_embeddings": 512,
+  "model_type": "bert",
+  "num_attention_heads": 12,
+  "num_hidden_layers": 12,
+  "pad_token_id": 0,
+  "position_embedding_type": "absolute",
+  "transformers_version": "4.3.0.dev0",
+  "type_vocab_size": 2,
+  "use_cache": true,
+  "vocab_size": 30522
+}
+
+1895702 2021-01-21,05:28:42.234 - {modeling_bert.py (947)} - __init__(): BertConfig {
+  "_name_or_path": "bert-base-uncased",
+  "architectures": [
+    "BertForMaskedLM"
+  ],
+  "attention_probs_dropout_prob": 0.1,
+  "gradient_checkpointing": false,
+  "hidden_act": "gelu",
+  "hidden_dropout_prob": 0.1,
+  "hidden_size": 768,
+  "initializer_range": 0.02,
+  "intermediate_size": 3072,
+  "layer_norm_eps": 1e-12,
+  "max_position_embeddings": 512,
+  "model_type": "bert",
+  "num_attention_heads": 12,
+  "num_hidden_layers": 12,
+  "pad_token_id": 0,
+  "position_embedding_type": "absolute",
+  "transformers_version": "4.3.0.dev0",
+  "type_vocab_size": 2,
+  "use_cache": true,
+  "vocab_size": 30522
+}
+
+1895700 2021-01-21,05:28:42.234 - {modeling_bert.py (947)} - __init__(): BertConfig {
+  "_name_or_path": "bert-base-uncased",
+  "architectures": [
+    "BertForMaskedLM"
+  ],
+  "attention_probs_dropout_prob": 0.1,
+  "gradient_checkpointing": false,
+  "hidden_act": "gelu",
+  "hidden_dropout_prob": 0.1,
+  "hidden_size": 768,
+  "initializer_range": 0.02,
+  "intermediate_size": 3072,
+  "layer_norm_eps": 1e-12,
+  "max_position_embeddings": 512,
+  "model_type": "bert",
+  "num_attention_heads": 12,
+  "num_hidden_layers": 12,
+  "pad_token_id": 0,
+  "position_embedding_type": "absolute",
+  "transformers_version": "4.3.0.dev0",
+  "type_vocab_size": 2,
+  "use_cache": true,
+  "vocab_size": 30522
+}
+
+Some weights of the model checkpoint at bert-base-uncased were not used when initializing BertForQuestionAnswering: ['cls.predictions.bias', 'cls.predictions.transform.dense.weight', 'cls.predictions.transform.dense.bias', 'cls.predictions.decoder.weight', 'cls.seq_relationship.weight', 'cls.seq_relationship.bias', 'cls.predictions.transform.LayerNorm.weight', 'cls.predictions.transform.LayerNorm.bias']
+- This IS expected if you are initializing BertForQuestionAnswering from the checkpoint of a model trained on another task or with another architecture (e.g. initializing a BertForSequenceClassification model from a BertForPreTraining model).
+- This IS NOT expected if you are initializing BertForQuestionAnswering from the checkpoint of a model that you expect to be exactly identical (initializing a BertForSequenceClassification model from a BertForSequenceClassification model).
+Some weights of BertForQuestionAnswering were not initialized from the model checkpoint at bert-base-uncased and are newly initialized: ['qa_outputs.weight', 'qa_outputs.bias']
+You should probably TRAIN this model on a down-stream task to be able to use it for predictions and inference.
+Some weights of the model checkpoint at bert-base-uncased were not used when initializing BertForQuestionAnswering: ['cls.predictions.bias', 'cls.predictions.transform.dense.weight', 'cls.predictions.transform.dense.bias', 'cls.predictions.decoder.weight', 'cls.seq_relationship.weight', 'cls.seq_relationship.bias', 'cls.predictions.transform.LayerNorm.weight', 'cls.predictions.transform.LayerNorm.bias']
+- This IS expected if you are initializing BertForQuestionAnswering from the checkpoint of a model trained on another task or with another architecture (e.g. initializing a BertForSequenceClassification model from a BertForPreTraining model).
+- This IS NOT expected if you are initializing BertForQuestionAnswering from the checkpoint of a model that you expect to be exactly identical (initializing a BertForSequenceClassification model from a BertForSequenceClassification model).
+Some weights of the model checkpoint at bert-base-uncased were not used when initializing BertForQuestionAnswering: ['cls.predictions.bias', 'cls.predictions.transform.dense.weight', 'cls.predictions.transform.dense.bias', 'cls.predictions.decoder.weight', 'cls.seq_relationship.weight', 'cls.seq_relationship.bias', 'cls.predictions.transform.LayerNorm.weight', 'cls.predictions.transform.LayerNorm.bias']
+- This IS expected if you are initializing BertForQuestionAnswering from the checkpoint of a model trained on another task or with another architecture (e.g. initializing a BertForSequenceClassification model from a BertForPreTraining model).
+- This IS NOT expected if you are initializing BertForQuestionAnswering from the checkpoint of a model that you expect to be exactly identical (initializing a BertForSequenceClassification model from a BertForSequenceClassification model).
+Some weights of the model checkpoint at bert-base-uncased were not used when initializing BertForQuestionAnswering: ['cls.predictions.bias', 'cls.predictions.transform.dense.weight', 'cls.predictions.transform.dense.bias', 'cls.predictions.decoder.weight', 'cls.seq_relationship.weight', 'cls.seq_relationship.bias', 'cls.predictions.transform.LayerNorm.weight', 'cls.predictions.transform.LayerNorm.bias']
+- This IS expected if you are initializing BertForQuestionAnswering from the checkpoint of a model trained on another task or with another architecture (e.g. initializing a BertForSequenceClassification model from a BertForPreTraining model).
+- This IS NOT expected if you are initializing BertForQuestionAnswering from the checkpoint of a model that you expect to be exactly identical (initializing a BertForSequenceClassification model from a BertForSequenceClassification model).
+Some weights of BertForQuestionAnswering were not initialized from the model checkpoint at bert-base-uncased and are newly initialized: ['qa_outputs.weight', 'qa_outputs.bias']
+You should probably TRAIN this model on a down-stream task to be able to use it for predictions and inference.
+Some weights of BertForQuestionAnswering were not initialized from the model checkpoint at bert-base-uncased and are newly initialized: ['qa_outputs.weight', 'qa_outputs.bias']
+You should probably TRAIN this model on a down-stream task to be able to use it for predictions and inference.
+Some weights of BertForQuestionAnswering were not initialized from the model checkpoint at bert-base-uncased and are newly initialized: ['qa_outputs.weight', 'qa_outputs.bias']
+You should probably TRAIN this model on a down-stream task to be able to use it for predictions and inference.
+Loading dataset = squad_1.1
+Loading dataset = squad_1.1
+Loading dataset = squad_1.1
+Loading dataset = squad_1.1

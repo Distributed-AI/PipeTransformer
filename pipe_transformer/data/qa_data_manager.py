@@ -1,7 +1,9 @@
 import json
 import logging
 import os
+import random
 
+import numpy as np
 import torch
 from torch.utils.data import DataLoader, TensorDataset
 from torch.utils.data import DistributedSampler
@@ -23,7 +25,9 @@ class QADatasetManager(BaseDataManager):
         self.eval_batch_size = model_args.eval_batch_size
         self.tokenizer = tokenizer
 
-        self.train_dataset, self.test_dataset = self.load_data(data_dir=model_args.data_dir, dataset=model_args.dataset)
+        self.train_dataset, self.test_dataset, \
+        self.train_data, self.test_data, \
+        self.examples, self.features = self.load_data(data_dir=model_args.data_dir, dataset=model_args.dataset)
 
         self.train_loader = None
         self.test_loader = None
@@ -34,6 +38,11 @@ class QADatasetManager(BaseDataManager):
         self.latest_train_sample_idx_list = dict()
         self.latest_test_sample_idx_list = dict()
 
+    def get_dataset(self):
+        return self.train_dataset, self.test_dataset, \
+        self.train_data, self.test_data, \
+        self.examples, self.features
+
     def load_data(self, data_dir, dataset):
         print("Loading dataset = %s" % dataset)
         assert dataset in ["squad_1.1"]
@@ -42,8 +51,7 @@ class QADatasetManager(BaseDataManager):
         all_data = data_loader.data_loader()
 
         context_X, question_X, question_ids, Y, attributes = all_data["context_X"], all_data["question_X"], \
-                                                             all_data[
-                                                                 "question_ids"], all_data["Y"], all_data[
+                                                             all_data["question_ids"], all_data["Y"], all_data[
                                                                  "attributes"]
 
         def get_data_by_index_list(dataset, index_list):
@@ -80,7 +88,7 @@ class QADatasetManager(BaseDataManager):
         eval_dataset, examples, features = self.load_and_cache_examples(
             eval_examples, evaluate=True, output_examples=True
         )
-        return train_dataset, eval_dataset
+        return train_dataset, eval_dataset, train_data, test_data, examples, features
 
     def _get_normal_format(self, dataset, cut_off=None):
         """
@@ -109,9 +117,6 @@ class QADatasetManager(BaseDataManager):
             reformatted_data.append(item)
         return reformatted_data[:cut_off], id_mapping_dict
 
-    def get_dataset(self):
-        pass
-
     def load_and_cache_examples(self, examples, evaluate=False, no_cache=False, output_examples=False):
         """
         Converts a list of examples to a TensorDataset containing InputFeatures. Caches the InputFeatures.
@@ -119,13 +124,13 @@ class QADatasetManager(BaseDataManager):
         Utility function for train() and eval() methods. Not intended to be used directly.
         """
         tokenizer = self.tokenizer
-        args = self.args
+        args = self.model_args
 
         if not no_cache:
             no_cache = args.no_cache
 
         if not no_cache:
-            os.makedirs(self.args.cache_dir, exist_ok=True)
+            os.makedirs(args.cache_dir, exist_ok=True)
 
         examples = get_examples(examples, is_training=not evaluate)
 
@@ -135,7 +140,8 @@ class QADatasetManager(BaseDataManager):
         )
         logging.info("cached_features_file = %s" % cached_features_file)
         if os.path.exists(cached_features_file) and (
-                (not args.reprocess_input_data and not no_cache) or (mode == "dev" and args.use_cached_eval_features)
+                (not args.reprocess_input_data and not no_cache)
+                or (mode == "dev" and args.use_cached_eval_features)
         ):
             features = torch.load(cached_features_file)
             logging.info(f" Features loaded from cache at {cached_features_file}")
@@ -234,7 +240,25 @@ class QADatasetManager(BaseDataManager):
         return self.train_loader, self.test_loader
 
     def get_train_sample_index(self, epoch):
-        pass
+        return self.train_sample_idx_list_by_epoch[epoch]
 
     def get_test_sample_index(self, epoch):
-        pass
+        return self.test_sample_idx_list_by_epoch[epoch]
+
+    def get_train_sample_len(self, epoch):
+        if epoch not in self.train_sample_idx_list_by_epoch.keys():
+            return len(self.latest_train_sample_idx_list)
+        return len(self.train_sample_idx_list_by_epoch[epoch])
+
+    def get_test_sample_len(self, epoch):
+        if epoch not in self.test_sample_idx_list_by_epoch.keys():
+            return len(self.latest_test_sample_idx_list)
+        return len(self.test_sample_idx_list_by_epoch[epoch])
+
+    def set_seed(self, seed):
+        torch.backends.cudnn.deterministic = True
+        torch.backends.cudnn.benchmark = False
+        torch.manual_seed(seed)
+        torch.cuda.manual_seed_all(seed)
+        np.random.seed(seed)
+        random.seed(seed)

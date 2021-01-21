@@ -1,21 +1,3 @@
-"""
-An example of running centralized experiments of fed-transformer models in FedNLP.
-Example usage: 
-(under the root folder)
-  python -m experiments.centralized.transformer_exps.question_answering_raw_data \
-    --dataset squad_1.1 \
-    --data_file data/data_loaders/squad_1.1_data_loader.pkl \
-    --model_type distilbert \
-    --model_name distilbert-base-uncased \
-    --do_lower_case True \
-    --train_batch_size 64 \
-    --eval_batch_size 64 \
-    --max_seq_length 256 \
-    --learning_rate 1e-5 \
-    --num_train_epochs 2 \
-    --output_dir /tmp/squad_1.1/ \
-    --fp16
-"""
 import argparse
 import logging
 import os
@@ -24,11 +6,10 @@ import sys
 # this is a temporal import, we will refactor FedML as a package installation
 import wandb
 
-from pipe_transformer.config_args import ConfigArgs
-from pipe_transformer.pipe_transformer import PipeTransformer
-
 sys.path.insert(0, os.path.abspath(os.path.join(os.getcwd(), "")))
 sys.path.insert(0, os.path.abspath(os.path.join(os.getcwd(), "../../")))
+from pipe_transformer.config_args import ConfigArgs
+from pipe_transformer.pipe_transformer import PipeTransformer
 
 from pipe_transformer.data.qa_data_manager import QADatasetManager
 from transformers import BertConfig, BertTokenizer, BertForQuestionAnswering
@@ -161,6 +142,16 @@ def create_model(args):
     return config, model, tokenizer
 
 
+def post_complete_message_to_sweep(tc_args, config):
+    pipe_path = "/tmp/pipe_transformer_qa"
+    if not os.path.exists(pipe_path):
+        os.mkfifo(pipe_path)
+    pipe_fd = os.open(pipe_path, os.O_WRONLY)
+
+    with os.fdopen(pipe_fd, 'w') as pipe:
+        pipe.write("training is finished! \n%s\n%s" % (str(tc_args), str(config)))
+
+
 if __name__ == "__main__":
     # parse python script input parameters
     parser = argparse.ArgumentParser()
@@ -195,12 +186,15 @@ if __name__ == "__main__":
                               "eval_batch_size": args.eval_batch_size,
                               "fp16": args.fp16,
                               "n_gpu": args.n_gpu,
+                              "data_dir": args.data_dir,
+                              "dataset": args.dataset,
                               "output_dir": args.output_dir,
-                              "process_count": 1})
+                              "process_count": 1,
+                              "is_debug_mode": args.is_debug_mode,
+                              "eval_data_path": args.eval_data_file})
 
     model_config, model, tokenizer = create_model(qa_args)
-    tc_data_manager = QADatasetManager(model_config, args, tokenizer)
-
+    tc_data_manager = QADatasetManager(qa_args, args, tokenizer)
 
     """
         PipeTransformer related
@@ -245,13 +239,8 @@ if __name__ == "__main__":
 
     # Create a ClassificationModel.
     trainer = QuestionAnsweringTrainer(qa_args, tc_data_manager, pipe_transformer)
-    trainer.train_model(train_data, train_id_mapping_dict, test_data, test_id_mapping_dict, args.eval_data_file)
+    trainer.train_model()
+    logging.info("finished the training")
 
-    # # Evaluate the model
-    # result, texts = trainer.eval_model(test_data)
-    # print(result)
-
-    result = trainer.eval_model_by_offical_script(test_data, args.eval_data_file, output_dir=args.output_dir,
-                                                  verbose=False, verbose_logging=False)
-
-    print(result)
+    if args.local_rank == 0:
+        post_complete_message_to_sweep(qa_args, config)

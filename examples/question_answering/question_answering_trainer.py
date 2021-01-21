@@ -7,7 +7,6 @@ import os
 
 import torch
 from torch.nn import CrossEntropyLoss
-from tqdm.auto import tqdm
 
 from examples.question_answering.question_answering_utils import (
     RawResult,
@@ -18,6 +17,7 @@ from transformers import (
     AdamW,
     get_linear_schedule_with_warmup,
 )
+from transformers.testing_utils import _RunOutput
 
 try:
     import wandb
@@ -29,7 +29,7 @@ except ImportError:
 
 
 class QuestionAnsweringTrainer:
-    def __init__(self, args, tc_data_manager, pipe_transformer):
+    def __init__(self, args, qa_data_manager, pipe_transformer):
         """
         Initializes a QuestionAnsweringModel model.
 
@@ -56,7 +56,10 @@ class QuestionAnsweringTrainer:
         self.device_first = None
         self.device_last = None
 
-        self.tc_data_manager = tc_data_manager
+        self.tc_data_manager = qa_data_manager
+        self.train_dataset, self.test_dataset, \
+               self.train_data, self.test_data, \
+               self.examples, self.features = qa_data_manager.get_dataset()
 
     def train_model(self):
         epoch_start = self.pipe_transformer.start()
@@ -84,20 +87,20 @@ class QuestionAnsweringTrainer:
 
             for batch_idx, batch in enumerate(self.train_dl):
                 batch = tuple(t for t in batch)
-                inputs = {"input_ids": batch[1], "attention_mask": batch[2],
-                          "token_type_ids": batch[3], "start_positions": batch[4], "end_positions": batch[5]}
+                # inputs = {"original_id": batch[0], "input_ids": batch[1], "attention_mask": batch[2],
+                #           "token_type_ids": batch[3], "start_positions": batch[4], "end_positions": batch[5]}
 
                 sample_index_list = batch[0].to(self.device_first).cpu().numpy()
                 x = batch[1].to(self.device_first)
                 start_positions = batch[4].to(self.device_last)
-                end_positions = batch[6].to(self.device_last)
+                end_positions = batch[5].to(self.device_last)
 
                 logits = self.pipe_transformer.forward(epoch, batch_idx, sample_index_list, x, True, True)
 
-                loss = self._calculate_loss(logits, start_positions, end_positions)
+                loss, _, _ = self._calculate_loss(logits, start_positions, end_positions)
 
                 logging.info("epoch = %d, batch_idx = %d/%d, loss = %s" % (epoch, batch_idx,
-                                                                           len(self.train_dl), current_loss))
+                                                                           len(self.train_dl), loss))
                 if self.args.gradient_accumulation_steps > 1:
                     loss = loss / self.args.gradient_accumulation_steps
 
@@ -113,10 +116,13 @@ class QuestionAnsweringTrainer:
 
                     if self.args.evaluate_during_training and (self.args.evaluate_during_training_steps > 0
                                                                and global_step % self.args.evaluate_during_training_steps == 0):
-                # results, _ = self.eval_model(eval_data, **kwargs)
-                # result = self.eval_model_by_offical_script(eval_data, eval_data_path)
-                # logging.info("result = %s" + str(result))
-
+                        # results, _ = self.eval_model(eval_data, **kwargs)
+                        result = self.eval_model_by_offical_script(epoch)
+                        logging.info("epoch = %d, global_step = %d, result = %s" % (epoch, global_step, str(result)))
+                if global_step > 3 and self.args.is_debug_mode:
+                    break
+        result = self.eval_model_by_offical_script(self.args.num_train_epochs-1)
+        logging.info("epoch = %d, global_step = %d, result = %s" % (self.args.num_train_epochs-1, global_step, str(result)))
         return global_step, tr_loss / global_step
 
     def _calculate_loss(self, logits, start_positions, end_positions):
@@ -143,7 +149,7 @@ class QuestionAnsweringTrainer:
             end_loss = loss_fct(end_logits, end_positions)
             total_loss = (start_loss + end_loss) / 2
 
-        return total_loss
+        return total_loss, start_logits, end_logits
 
     def eval_model(self, eval_data, **kwargs):
         output_dir = self.args.output_dir
@@ -161,86 +167,104 @@ class QuestionAnsweringTrainer:
 
         self.results.update(result)
 
-        logger.info(self.results)
+        logging.info(self.results)
 
         return result, texts
 
-    def eval_model_by_offical_script(self, eval_data, eval_data_path, output_dir=None, verbose=False,
-                                     verbose_logging=False, **kwargs):
-        if not output_dir:
-            output_dir = self.args.output_dir
+    def eval_model_by_offical_script(self, epoch):
 
-        all_predictions, all_nbest_json, scores_diff_json, eval_loss = self.evaluate(eval_data, output_dir)
+        all_predictions, all_nbest_json, scores_diff_json, eval_loss = self.evaluate(epoch)
 
         prediction_dict = dict()
         for i, prediction in all_predictions.items():
-            qid = eval_data[int(i) - 1]["qas"][0]["qid"]
+            qid = self.test_data[int(i) - 1]["qas"][0]["qid"]
             prediction_dict[qid] = prediction
 
-        with open(os.path.join(output_dir, "prediction.json"), "w") as f:
+        with open(os.path.join(self.args.output_dir, "prediction.json"), "w") as f:
             json.dump(prediction_dict, f)
 
         f = os.popen("python ./evaluate-v1.1.py %s %s" % (
-            eval_data_path, os.path.join(output_dir, "prediction.json")))
+            self.args.eval_data_path, os.path.join(self.args.output_dir, "prediction.json")))
 
         result = f.read().strip()
         return result
 
-    def evaluate(self, eval_data, output_dir, verbose_logging=False):
+    def evaluate(self, epoch):
         eval_loss = 0.0
         nb_eval_steps = 0
-        model.eval()
 
         all_results = []
-        for batch in tqdm(eval_dataloader, disable=args.silent, desc="Running Evaluation"):
-            batch = tuple(t.to(device) for t in batch)
-
+        self.pipe_model.eval()
+        for i, batch in enumerate(self.test_dl):
+            logging.info("evaluation. epoch = %d, batch index = %d/%d" % (epoch, i, len(self.test_dl)-1))
             with torch.no_grad():
-                inputs = {
-                    "input_ids": batch[1],
-                    "attention_mask": batch[2],
-                    "token_type_ids": batch[3],
-                }
+                batch = tuple(t for t in batch)
+                # inputs = {"original_id": batch[0], "input_ids": batch[1], "attention_mask": batch[2],
+                #           "token_type_ids": batch[3], "start_positions": batch[4], "end_positions": batch[5]}
 
-                example_indices = batch[3]
+                sample_index_list = batch[0].to(self.device_first).cpu().numpy()
+                x = batch[1].to(self.device_first)
+                start_positions = batch[4].to(self.device_last)
+                end_positions = batch[5].to(self.device_last)
+                example_indices = batch[4]
 
-                outputs = model(**inputs)
-                eval_loss += outputs[0].mean().item()
+                logits = self.pipe_transformer.forward(epoch, i, sample_index_list, x, False, False)
+
+                loss, start_logits, end_logits = self._calculate_loss(logits, start_positions, end_positions)
+                eval_loss += loss
 
                 for i, example_index in enumerate(example_indices):
-                    eval_feature = features[example_index.item()]
+                    eval_feature = self.features[example_index.item()]
                     unique_id = int(eval_feature.unique_id)
                     result = RawResult(
                         unique_id=unique_id,
-                        start_logits=to_list(outputs[0][i]),
-                        end_logits=to_list(outputs[1][i]),
+                        start_logits=to_list(start_logits[i]),
+                        end_logits=to_list(end_logits[i]),
                     )
                     all_results.append(result)
 
             nb_eval_steps += 1
+            # if nb_eval_steps > 3 and self.args.is_debug_mode:
+            #     break
 
         eval_loss = eval_loss / nb_eval_steps
 
         prefix = "test"
-        os.makedirs(output_dir, exist_ok=True)
+        os.makedirs(self.args.output_dir, exist_ok=True)
 
-        output_prediction_file = os.path.join(output_dir, "predictions_{}.json".format(prefix))
-        output_nbest_file = os.path.join(output_dir, "nbest_predictions_{}.json".format(prefix))
-        output_null_log_odds_file = os.path.join(output_dir, "null_odds_{}.json".format(prefix))
+        output_prediction_file = os.path.join(self.args.output_dir, "predictions_{}.json".format(prefix))
+        output_nbest_file = os.path.join(self.args.output_dir, "nbest_predictions_{}.json".format(prefix))
+        output_null_log_odds_file = os.path.join(self.args.output_dir, "null_odds_{}.json".format(prefix))
 
+        """
+        def write_predictions(
+        all_examples,
+        all_features,
+        all_results,
+        n_best_size,
+        max_answer_length,
+        do_lower_case,
+        output_prediction_file,
+        output_nbest_file,
+        output_null_log_odds_file,
+        verbose_logging,
+        version_2_with_negative,
+        null_score_diff_threshold,
+):
+        """
         all_predictions, all_nbest_json, scores_diff_json = write_predictions(
-            examples,
-            features,
+            self.examples,
+            self.features,
             all_results,
-            args.n_best_size,
-            args.max_answer_length,
+            self.args.n_best_size,
+            self.args.max_answer_length,
             False,
             output_prediction_file,
             output_nbest_file,
             output_null_log_odds_file,
-            verbose_logging,
+            False,
             True,
-            args.null_score_diff_threshold,
+            self.args.null_score_diff_threshold,
         )
 
         return all_predictions, all_nbest_json, scores_diff_json, eval_loss

@@ -141,12 +141,7 @@ class TextClassificationTrainer:
                 labels = batch[4].to(self.device_last)
 
                 logits = self.pipe_transformer.forward(epoch, i, sample_index_list, x, False, False)
-                if i == len(self.test_dl) - 1:
-                    logging.info("i = " + str(i))
-                    logging.info("sample_index_list = " + str(sample_index_list))
-                    logging.info("x = %s, x.len = %d" % (str(x), len(x)))
-                    logging.info(labels)
-                    logging.info(logits)
+
                 loss_fct = CrossEntropyLoss()
                 loss = loss_fct(logits.view(-1, self.num_labels), labels.view(-1))
                 eval_loss += loss.item()

@@ -3,7 +3,6 @@ import logging
 from torch import nn
 
 from transformers import apply_chunking_to_forward
-from .utils import count_parameters
 
 """
 For BERT + QA
@@ -13,6 +12,14 @@ This model architecture is normal in practice, such as Transformer Multi Head At
 
 Without such support, the partition can only be coarse-grained, which is hard to make the word load balanced in pipeline.
 """
+
+
+def count_parameters(model, b_is_required_grad=True):
+    if b_is_required_grad:
+        params = sum(p.numel() for p in model.parameters() if p.requires_grad)
+    else:
+        params = sum(p.numel() for p in model.parameters())
+    return params / 1000000
 
 
 class BertFFNLayerForQA(nn.Module):
@@ -41,14 +48,11 @@ class BertFFNLayerForQA(nn.Module):
 class BertForQA_OutputHead(nn.Module):
     def __init__(self, config):
         super().__init__()
-        self.num_labels = config.num_labels
-
-        self.dropout = nn.Dropout(config.hidden_dropout_prob)
-        self.classifier = nn.Linear(config.hidden_size, config.num_labels)
+        logging.info("config.num_labels = %d" % config.num_labels)
+        self.qa_outputs = nn.Linear(config.hidden_size, config.num_labels)
 
     def forward(self, bert_outputs):
-        pooled_output = self.dropout(bert_outputs)
-        logits = self.classifier(pooled_output)
+        logits = self.qa_outputs(bert_outputs)
         return logits
 
 
@@ -85,7 +89,6 @@ def create_pipe_styled_model_BERT_for_QA(model_config, model_backbone, num_layer
     logging.info(model_backbone)
     for name, p in model_backbone.named_parameters():
         logging.info(name)
-
     frozen_model = None
     pipe_model = nn.Sequential()
 
@@ -135,9 +138,10 @@ def create_pipe_styled_model_BERT_for_QA(model_config, model_backbone, num_layer
         parameters_list_pipe.append(size_layer_ffn_layer)
         # logging.info(size_layer_ffn_layer)
 
-    pipe_model.add_module("pooler", model_backbone.bert.pooler)
-    size_pooler = count_parameters(model_backbone.bert.pooler, False)
-    parameters_list_pipe.append(size_pooler)
+    # QA model does not has the "pooler" layer
+    # pipe_model.add_module("pooler", model_backbone.bert.pooler)
+    # size_pooler = count_parameters(model_backbone.bert.pooler, False)
+    # parameters_list_pipe.append(size_pooler)
 
     output_head = BertForQA_OutputHead(model_config)
     pipe_model.add_module("output_head", output_head)
