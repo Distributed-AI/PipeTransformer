@@ -57,7 +57,7 @@ for bs_idx in range(len(batch_size)):
 
             os.system("nohup sh run_elastic_pipe.sh 8 2 0 192.168.11.2 11122 1 \"ib0\""
                       " {args.lr} 400 imagenet /home/chaoyanghe/dataset/cv/imagenet 8 {args.freeze_strategy}> "
-                      "./PipeTransformer-imagenet-node{args.run_id}.log 2>&1 &".format(args=args))
+                      "./PipeTransformer-imagenet-node0_r{args.run_id}.log 2>&1 &".format(args=args))
 
             wait_for_the_training_process()
 
