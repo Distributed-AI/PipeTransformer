@@ -44,7 +44,7 @@ args = add_args(parser)
 
 lr = [5e-5, 4e-5, 3e-5, 2e-5, 1e-5]
 batch_size = [32, 16]
-hpo_list = []
+b_freeze_hpo = ["no_freeze", "freeze"]
 
 os.system("kill $(ps aux | grep \"main_qa.py\" | grep -v grep | awk '{print $2}')")
 

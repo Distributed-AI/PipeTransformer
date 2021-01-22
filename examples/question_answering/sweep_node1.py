@@ -44,7 +44,7 @@ args = add_args(parser)
 
 lr = [5e-5, 4e-5, 3e-5, 2e-5, 1e-5]
 batch_size = [32, 16]
-hpo_list = []
+b_freeze_hpo = ["no_freeze", "freeze"]
 
 os.system("kill $(ps aux | grep \"main_qa.py\" | grep -v grep | awk '{print $2}')")
 
@@ -58,7 +58,7 @@ for lr_idx in range(len(lr)):
         args.run_id = run_id
         args.b_freeze = "no_freeze"
         logging.info("current_lr = %f, current_bs = %d" % (current_lr, current_bs))
-        os.system('nohup sh run_squad.sh 8 2 0 192.168.11.2 {args.port} 0 '
+        os.system('nohup sh run_squad.sh 8 2 1 192.168.11.2 {args.port} 1 '
                   '"ib0" {args.lr} {args.batch_size} {args.run_id} {args.b_freeze} > '
                   './PipeTransformer-QA_run{args.run_id}.log 2>&1 &'.format(args=args))
 
