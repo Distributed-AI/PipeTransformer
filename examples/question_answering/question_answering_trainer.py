@@ -27,7 +27,6 @@ except ImportError:
     wandb_available = False
 
 
-
 class QuestionAnsweringTrainer:
     def __init__(self, args, qa_data_manager, pipe_transformer):
         """
@@ -187,7 +186,7 @@ class QuestionAnsweringTrainer:
         f = os.popen("python ./evaluate-v1.1.py %s %s" % (
             self.args.eval_data_path, os.path.join(self.args.output_dir, "prediction.json")))
 
-        result = f.read().strip()
+        result = eval(f.read().strip())
         em = float(result['exact_match'])
         f1 = float(result['f1'])
         if em > self.best_em:
