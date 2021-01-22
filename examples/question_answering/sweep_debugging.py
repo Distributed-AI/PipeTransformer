@@ -59,7 +59,7 @@ for lr_idx in range(len(lr)):
         args.b_freeze = "no_freeze"
         logging.info("current_lr = %f, current_bs = %d" % (current_lr, current_bs))
         os.system('nohup sh run_squad.sh 4 1 0 192.168.1.73 {args.port} 0 '
-                  '"wlx9cefd5fb3821" {args.lr} {args.batch_size} {args.run_id} {args.b_freeze} > '
+                  '"wlx9cefd5fb3821" {args.lr} {args.batch_size} {args.run_id} {args.b_freeze} 4 > '
                   './PipeTransformer-QA_run{args.run_id}.log 2>&1 &'.format(args=args))
 
         wait_for_the_training_process()
