@@ -142,7 +142,6 @@ if __name__ == "__main__":
     logging.basicConfig(level=logging.DEBUG,
                         format='%(process)s %(asctime)s.%(msecs)03d - {%(module)s.py (%(lineno)d)} - %(funcName)s(): %(message)s',
                         datefmt='%Y-%m-%d,%H:%M:%S')
-    logging.info(args)
 
     hostname = socket.gethostname()
     logging.info("#############process ID = " +
@@ -212,6 +211,7 @@ if __name__ == "__main__":
     pipe_transformer = PipeTransformer(config, cv_data_manager, model_config, model)
     args.global_rank = pipe_transformer.get_global_rank()
 
+    logging.info(args)
     """
         Logging related
     """

@@ -161,7 +161,7 @@ if __name__ == "__main__":
     logging.basicConfig(level=logging.INFO,
                         format='%(process)s %(asctime)s.%(msecs)03d - {%(module)s.py (%(lineno)d)} - %(funcName)s(): %(message)s',
                         datefmt='%Y-%m-%d,%H:%M:%S')
-    logging.info(args)
+
 
     run = wandb.init(project="pipe_and_ddp",
                      name="PipeTransformer""-" + str(args.dataset),
@@ -228,10 +228,10 @@ if __name__ == "__main__":
 
     pipe_transformer = PipeTransformer(config, tc_data_manager, model_config, model)
     args.global_rank = pipe_transformer.get_global_rank()
+    qa_args.update_from_dict({"global_rank": args.global_rank})
     logging.info("successfully create PipeTransformer. args = " + str(args))
 
-    qa_args.update_from_dict({"global_rank": args.global_rank})
-
+    logging.info(args)
     if args.global_rank == 0:
         run = wandb.init(project="pipe_and_ddp",
                          name="PipeTransformer-r" + str(args.run_id) + "-" + str(args.dataset),
