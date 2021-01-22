@@ -124,16 +124,16 @@ def create_pipe_styled_model_BERT_for_QA(model_config, model_backbone, num_layer
         parameters_list_pipe.append(size_embedding)
 
         word_embeddings_size = count_parameters(model_backbone.bert.embeddings.word_embeddings, False)
-        logging.info("word_embeddings_size = %d" % word_embeddings_size)
+        logging.info("word_embeddings_size = %f" % word_embeddings_size)
 
         position_embeddings_size = count_parameters(model_backbone.bert.embeddings.position_embeddings, False)
-        logging.info("position_embeddings_size = %d" % position_embeddings_size)
+        logging.info("position_embeddings_size = %f" % position_embeddings_size)
 
         token_type_embeddings_size = count_parameters(model_backbone.bert.embeddings.token_type_embeddings, False)
-        logging.info("token_type_embeddings_size = %d" % token_type_embeddings_size)
+        logging.info("token_type_embeddings_size = %f" % token_type_embeddings_size)
 
         LayerNorm_size = count_parameters(model_backbone.bert.embeddings.LayerNorm, False)
-        logging.info("LayerNorm_size = %d" % LayerNorm_size)
+        logging.info("LayerNorm_size = %f" % LayerNorm_size)
 
     # add transformer blocks needed to be trained
     for layer_index in range(num_frozen_layer, num_layer_in_total):
