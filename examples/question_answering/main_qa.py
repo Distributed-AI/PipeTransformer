@@ -1,8 +1,11 @@
 import argparse
 import logging
 import os
+import random
 import sys
 
+import numpy as np
+import torch
 # this is a temporal import, we will refactor FedML as a package installation
 import wandb
 
@@ -152,6 +155,15 @@ def post_complete_message_to_sweep(tc_args, config):
         pipe.write("training is finished! \n%s\n%s" % (str(tc_args), str(config)))
 
 
+def set_seed(seed):
+    torch.backends.cudnn.deterministic = True
+    torch.backends.cudnn.benchmark = False
+    torch.manual_seed(seed)
+    torch.cuda.manual_seed_all(seed)
+    np.random.seed(seed)
+    random.seed(seed)
+
+
 if __name__ == "__main__":
     # parse python script input parameters
     parser = argparse.ArgumentParser()
@@ -161,6 +173,8 @@ if __name__ == "__main__":
     logging.basicConfig(level=logging.INFO,
                         format='%(process)s %(asctime)s.%(msecs)03d - {%(module)s.py (%(lineno)d)} - %(funcName)s(): %(message)s',
                         datefmt='%Y-%m-%d,%H:%M:%S')
+
+    set_seed(7)
 
     # arguments
     model_type = args.model_type
