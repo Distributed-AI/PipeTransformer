@@ -19,13 +19,7 @@ from transformers import (
 )
 from transformers.testing_utils import _RunOutput
 
-try:
-    import wandb
-
-    wandb_available = True
-except ImportError:
-    wandb_available = False
-
+import wandb
 
 class QuestionAnsweringTrainer:
     def __init__(self, args, qa_data_manager, pipe_transformer):

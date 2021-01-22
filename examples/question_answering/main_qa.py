@@ -162,11 +162,6 @@ if __name__ == "__main__":
                         format='%(process)s %(asctime)s.%(msecs)03d - {%(module)s.py (%(lineno)d)} - %(funcName)s(): %(message)s',
                         datefmt='%Y-%m-%d,%H:%M:%S')
 
-
-    run = wandb.init(project="pipe_and_ddp",
-                     name="PipeTransformer""-" + str(args.dataset),
-                     config=args)
-
     # arguments
     model_type = args.model_type
     model_name = args.model_name

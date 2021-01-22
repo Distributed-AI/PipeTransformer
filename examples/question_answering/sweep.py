@@ -42,8 +42,8 @@ logging.basicConfig(level=logging.INFO,
 parser = argparse.ArgumentParser()
 args = add_args(parser)
 
-lr = [1e-5, 2e-5, 3e-5, 4e-5, 5e-5]
-batch_size = [16]
+lr = [5e-5, 4e-5, 3e-5, 2e-5, 1e-5]
+batch_size = [32, 16]
 hpo_list = []
 
 os.system("kill $(ps aux | grep \"main_qa.py\" | grep -v grep | awk '{print $2}')")

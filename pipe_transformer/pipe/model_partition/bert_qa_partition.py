@@ -44,6 +44,16 @@ class BertFFNLayerForQA(nn.Module):
         layer_output = self.output(intermediate_output, attention_output)
         return layer_output
 
+    #  device 0 ------>  device 1
+    #  attention_output --> intermediate_output, attention_output   ----> GPU to GPU ---> device 1
+    # ----> self.output(intermediate_output, attention_output)  ---> classifier
+    #     def feed_forward_chunk(self, attention_output):
+    #         intermediate_output = self.intermediate(attention_output)
+    #         return intermediate_output, attention_output
+    #
+    #     def forward(self, intermediate_output, attention_output):
+    #         layer_output = self.output(intermediate_output, attention_output)
+    #         return layer_output
 
 class BertForQA_OutputHead(nn.Module):
     def __init__(self, config):
