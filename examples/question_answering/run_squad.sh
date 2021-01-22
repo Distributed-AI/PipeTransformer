@@ -10,6 +10,7 @@ LR=$8
 BZ=$9
 RUN_ID=${10}
 B_FREEZE=${11}
+PIPE_LEN=${12}
 
 python -m launch \
 --nproc_per_node=$NPROC_PER_NODE --nnodes=$NNODE --node_rank=$NODE_RANK \
@@ -24,6 +25,7 @@ main_qa.py \
 --is_infiniband $IB \
 --master_addr $MASTER_ADDR \
 --if_name $IF_NAME \
+--pipe_len_at_the_beginning $PIPE_LEN \
 --dataset squad_1.1 \
 --data_dir "../../data/span_extraction/SQuAD_1.1/" \
 --data_file "../../data/span_extraction/SQuAD_1.1/squad_1.1_data.pkl" \
@@ -34,5 +36,5 @@ main_qa.py \
 --eval_batch_size $BZ \
 --max_seq_length 256 \
 --learning_rate $LR \
---num_train_epochs 1 \
+--num_train_epochs 3 \
 --output_dir "./output"

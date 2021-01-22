@@ -9,6 +9,7 @@ LR=$8
 BZ=$9
 RUN_ID=${10}
 B_FREEZE=${11}
+PIPE_LEN=${12}
 
 python -m launch \
 --nproc_per_node=$NPROC_PER_NODE --nnodes=$NNODE --node_rank=$NODE_RANK \
@@ -23,6 +24,7 @@ main_tc.py \
 --is_infiniband $IB \
 --master_addr $MASTER_ADDR \
 --if_name $IF_NAME \
+--pipe_len_at_the_beginning $PIPE_LEN \
 --dataset "sst_2" \
 --data_dir "../../data/text_classification/SST-2/trees" \
 --data_file "../../data/text_classification/SST-2/sst_2_data.pkl" \
