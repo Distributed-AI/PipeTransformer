@@ -22,30 +22,27 @@ def count_parameters(model, b_is_required_grad=True):
     return params / 1000000
 
 
-class BertIntermediateLayerForQA(nn.Module):
-    def __init__(self, config, intermediate):
+class BertFFNLayerForQA(nn.Module):
+    def __init__(self, config, intermediate, output):
         super().__init__()
         self.chunk_size_feed_forward = config.chunk_size_feed_forward
         self.seq_len_dim = 1
         self.intermediate = intermediate
+        self.output = output
 
     def forward(self, self_attention_outputs):
         attention_output = self_attention_outputs[0]
-        # outputs = self_attention_outputs[1:]  # add self attentions if we output attention weights
-        # layer_output = apply_chunking_to_forward(
-        #     self.feed_forward_chunk, self.chunk_size_feed_forward, self.seq_len_dim, attention_output
-        # )
+        outputs = self_attention_outputs[1:]  # add self attentions if we output attention weights
+        layer_output = apply_chunking_to_forward(
+            self.feed_forward_chunk, self.chunk_size_feed_forward, self.seq_len_dim, attention_output
+        )
+        # outputs = (layer_output,) + outputs
+        return layer_output
+
+    def feed_forward_chunk(self, attention_output):
         intermediate_output = self.intermediate(attention_output)
-        return intermediate_output, attention_output
-
-
-class BertOutputLayerForQA(nn.Module):
-    def __init__(self, config, output):
-        super().__init__()
-        self.output = output
-
-    def forward(self, intermediate_output, attention_output):
-        return self.output(intermediate_output, attention_output)
+        layer_output = self.output(intermediate_output, attention_output)
+        return layer_output
 
 
 class BertForQA_OutputHead(nn.Module):
@@ -116,13 +113,9 @@ def create_pipe_styled_model_BERT_for_QA(model_config, model_backbone, num_layer
 
             frozen_model_sequential.add_module("layer" + str(frozen_layer_index) + "attention", layer_block.attention)
 
-            intermediate_layer = BertIntermediateLayerForQA(model_config, layer_block.intermediate)
-            frozen_model_sequential.add_module("layer" + str(frozen_layer_index) + "intermediate_layer",
-                                               intermediate_layer)
-            bert_output_layer = BertOutputLayerForQA(model_config, layer_block.output)
-            frozen_model_sequential.add_module("layer" + str(frozen_layer_index) + "output_layer",
-                                               bert_output_layer)
-
+            ffn_layer = BertFFNLayerForQA(model_config, layer_block.intermediate, layer_block.output)
+            frozen_model_sequential.add_module("layer" + str(frozen_layer_index) + "ffn_layer",
+                                               ffn_layer)
 
         frozen_model = BertFrozenLayerForQA(num_frozen_layer, frozen_emb, frozen_model_sequential)
     else:
@@ -139,16 +132,10 @@ def create_pipe_styled_model_BERT_for_QA(model_config, model_backbone, num_layer
         parameters_list_pipe.append(size_layer_block_attention)
         # logging.info(size_layer_block_attention)
 
-        intermediate_layer = BertIntermediateLayerForQA(model_config, layer_block.intermediate)
-        pipe_model.add_module("layer" + str(layer_index) + "intermediate_layer",
-                                           intermediate_layer)
-        size_layer_intermediate_layer = count_parameters(intermediate_layer, False)
+        ffn_layer = BertFFNLayerForQA(model_config, layer_block.intermediate, layer_block.output)
+        pipe_model.add_module("layer" + str(layer_index) + "ffn_layer", ffn_layer)
+        size_layer_intermediate_layer = count_parameters(ffn_layer, False)
         parameters_list_pipe.append(size_layer_intermediate_layer)
-
-        bert_output_layer = BertOutputLayerForQA(model_config, layer_block.output)
-        pipe_model.add_module("layer" + str(layer_index) + "output_layer", bert_output_layer)
-        size_layer_output_layer = count_parameters(bert_output_layer, False)
-        parameters_list_pipe.append(size_layer_output_layer)
 
     # QA model does not has the "pooler" layer
     # pipe_model.add_module("pooler", model_backbone.bert.pooler)
