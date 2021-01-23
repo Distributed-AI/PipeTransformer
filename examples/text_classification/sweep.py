@@ -57,8 +57,23 @@ for lr_idx in range(len(lr)):
         args.port = 10000 + run_id
         args.run_id = run_id
         args.b_freeze = "no_freeze"
+
+        """
+        NPROC_PER_NODE=$1
+        NNODE=$2
+        NODE_RANK=$3
+        MASTER_ADDR=$4
+        MASTER_PORT=$5
+        IB=$6
+        IF_NAME=$7
+        LR=$8
+        BZ=$9
+        RUN_ID=${10}
+        B_FREEZE=${11}
+        PIPE_LEN=${12}
+        """
         logging.info("current_lr = %f, current_bs = %d" % (current_lr, current_bs))
-        os.system('nohup sh run_tc_pipetransformer.sh 4 1 0 192.168.1.73 {args.port} 0'
+        os.system('nohup sh run_tc_pipetransformer.sh 4 1 0 192.168.1.73 {args.port} 0 '
                   '"wlx9cefd5fb3821" {args.lr} {args.batch_size} {args.run_id} {args.b_freeze} 4 > '
                   './PipeTransformer-TC_run{args.run_id}.log 2>&1 &'.format(args=args))
 

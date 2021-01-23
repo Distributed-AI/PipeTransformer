@@ -40,7 +40,7 @@ class ModelArgs:
     eval_batch_size: int = 8
     evaluate_during_training: bool = True
     evaluate_during_training_silent: bool = True
-    evaluate_during_training_steps: int = 500
+    evaluate_during_training_steps: int = 1000
     evaluate_during_training_verbose: bool = False
     evaluate_each_epoch: bool = True
     fp16: bool = True
