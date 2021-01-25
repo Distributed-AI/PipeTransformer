@@ -31,7 +31,7 @@ def wait_for_the_training_process():
                 print("Training is finished. Start the next training with...")
                 return
             sleep(3)
-            print("Daemon is alive. Waiting for the training result.")
+            # print("Daemon is alive. Waiting for the training result.")
 
 
 # customize the log format
@@ -48,7 +48,7 @@ b_freeze_hpo = ["no_freeze", "freeze"]
 
 os.system("kill $(ps aux | grep \"main_qa.py\" | grep -v grep | awk '{print $2}')")
 
-finished_run_id = 2
+finished_run_id = 3
 run_id = 0
 for lr_idx in range(len(lr)):
     for bs_idx in range(len(batch_size)):
