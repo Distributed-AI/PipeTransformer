@@ -48,7 +48,7 @@ b_freeze_hpo = ["no_freeze", "freeze"]
 
 os.system("kill $(ps aux | grep \"main_qa.py\" | grep -v grep | awk '{print $2}')")
 
-finished_run_id = 4
+finished_run_id = 5
 run_id = 0
 for lr_idx in range(len(lr)):
     for bs_idx in range(len(batch_size)):
