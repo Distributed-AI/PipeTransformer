@@ -60,7 +60,7 @@ for lr_idx in range(len(lr)):
         args.batch_size = current_bs
         args.port = 10000 + run_id
         args.run_id = run_id
-        args.b_freeze = "no_freeze"
+        args.b_freeze = "freeze"
         logging.info("current_lr = %f, current_bs = %d" % (current_lr, current_bs))
         os.system('nohup sh run_squad.sh 8 2 1 192.168.11.2 {args.port} 1 '
                   '"ib0" {args.lr} {args.batch_size} {args.run_id} {args.b_freeze} 8 > '
