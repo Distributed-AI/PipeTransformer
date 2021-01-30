@@ -113,11 +113,13 @@ class QuestionAnsweringTrainer:
                                                                and global_step % self.args.evaluate_during_training_steps == 0):
                         # results, _ = self.eval_model(eval_data, **kwargs)
                         result = self.eval_model_by_offical_script(epoch, global_step)
-                        logging.info("epoch = %d, global_step = %d, result = %s" % (epoch, global_step, str(result)))
+                        if result is not None:
+                            logging.info("epoch = %d, global_step = %d, result = %s" % (epoch, global_step, str(result)))
                 if global_step > 3 and self.args.is_debug_mode:
                     break
         result = self.eval_model_by_offical_script(self.args.num_train_epochs-1, global_step)
-        logging.info("epoch = %d, global_step = %d, result = %s" % (self.args.num_train_epochs-1, global_step, str(result)))
+        if result is not None:
+            logging.info("epoch = %d, global_step = %d, result = %s" % (self.args.num_train_epochs-1, global_step, str(result)))
         return global_step, tr_loss / global_step
 
     def _calculate_loss(self, logits, start_positions, end_positions):
@@ -169,6 +171,8 @@ class QuestionAnsweringTrainer:
     def eval_model_by_offical_script(self, epoch, step):
 
         all_predictions, all_nbest_json, scores_diff_json, eval_loss = self.evaluate(epoch)
+        if self.args.global_rank != 0:
+            return None
 
         prediction_dict = dict()
         for i, prediction in all_predictions.items():
