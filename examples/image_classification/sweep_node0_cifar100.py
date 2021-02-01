@@ -38,7 +38,7 @@ parser = argparse.ArgumentParser()
 args = add_args(parser)
 
 lr = [0.03]
-freeze_strategies = ["mild", "start_from_freeze_all", "freeze_by_epoch"]
+freeze_strategies = ["mild"]
 batch_size = [320]
 # freeze_hpo = ["freeze", "no_freeze"]
 freeze_hpo = ["no_freeze"]
