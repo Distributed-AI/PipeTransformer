@@ -1,9 +1,10 @@
 Time Cost Disect:
 
+# log: https://storage.googleapis.com/wandb-production.appspot.com/automl/pipe_and_ddp/34yg8afz/output.log?Expires=1612151154&GoogleAccessId=wandb-production%40appspot.gserviceaccount.com&Signature=gok%2FsPzITI7GlEXjnBhN7OXjaOjU1uGp3MckAwPdVRUxFsk9uOtJRMAWfjZvkfEDKi%2B2q%2FVcVg8tJFGcYoRTfCYfd7etc9ag965jhQ3E4ZXIHIk1hqW81wpizd8D5%2BPDnHxVnQMTRpNYhSYoiQz9Osmi7VIp8US%2FCXwmYNYGpQOnF8kY1HVluqzmAMsCdBhCxjNRLQKpFLsagNlb0XtgnSZ%2FDB2%2FQ5rQ%2FKjVkHuhSyzhyK2HxICVeNoK3TJqbS6fRX32qtcEukht4f2A2i6651pNH%2FKt5sIjPrBTYiA0xaXFMpn2javvD4k3%2BYhPH1IWr1JBZYGQUllD6fcXKSeQ%2Bg%3D%3D
 CPU->GPU:
-1. 17.6s ----8GPUs/pipe
-2. 14.4s (node0) / 29.3s (node1)      ----4GPUs/pipe, add 1 pipe/node
-3. 7s (node0) / 14s (node1)    -----2GPUs/pipe, add 2 pipes/node
+1. 16.6s / 18.2s----8GPUs/pipe
+2. 8.3s / 10.2s (node1)      ----4GPUs/pipe, add 1 pipe/node
+3. 3.8s (node0) / 11.3s (node1)    -----2GPUs/pipe, add 2 pipes/node
 
 DDP rebuilt:
 1. 5S ----- 8GPUs/pipe
