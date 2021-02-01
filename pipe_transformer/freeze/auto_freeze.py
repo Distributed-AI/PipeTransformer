@@ -86,7 +86,10 @@ class AutoFreeze:
     #     return num_freeze_layers
 
     def get_frozen_layer_num_by_epoch(self, epoch):
-        return self.frozen_layer_num_dict[epoch]
+        num_freeze_layers = self.frozen_layer_num_dict[epoch]
+        if not self.shared_memory_mgr_frozen_layer_num.is_exist(epoch):
+            self.shared_memory_mgr_frozen_layer_num.add_int_value(epoch, num_freeze_layers)
+        return num_freeze_layers
 
     # def get_hand_crafted_frozen_layers_by_epoch(self, epoch):
     #     if self.freeze_strategy == "linear":
