@@ -14,10 +14,11 @@ DATASET=${10}
 DATADIR=${11}
 PIPE_LEN=${12}
 
-B_FREEZE=${13}
-B_PIPE=${14}
-B_DP=${15}
-B_CACHE=${16}
+FREEZE_ALPHA=${13}
+B_FREEZE=${14}
+B_PIPE=${15}
+B_DP=${16}
+B_CACHE=${17}
 
 python -m launch \
 --nproc_per_node=$NPROC_PER_NODE --nnodes=$NNODE --node_rank=$NODE_RANK \
@@ -28,6 +29,7 @@ main_cv.py \
 --$B_PIPE \
 --$B_DP \
 --$B_CACHE \
+--$FREEZE_ALPHA \
 --nnodes $NNODE \
 --nproc_per_node=$NPROC_PER_NODE \
 --node_rank $NODE_RANK \

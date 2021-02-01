@@ -30,13 +30,15 @@ class AutoFreeze:
 
         self.shared_memory_mgr_frozen_layer_num = SharedMemoryManagerIntValue("frozen_layer_num")
 
-        self.freeze_strategy = "linear"
+        self.freeze_strategy_alpha = config.freeze_strategy_alpha
 
-        self.frozen_layer_linear = dict()
-        epochs = 10
-        for e in range(epochs):
-            progress = math.ceil(((e+1)/epochs)*self.num_layer)
-            self.frozen_layer_linear[e] = int(progress)
+        # generate freeze strategy
+        self.alpha = self.freeze_strategy_alpha
+        self.frozen_layer_num_dict = dict()
+        self.frozen_layer_num_dict[0] = 0
+        for e in range(1, 10):
+            self.frozen_layer_num_dict[e] = math.ceil(self.calculate_frozen_layer_num(self.num_layer, self.alpha, e))
+        print(self.frozen_layer_num_dict)
 
     def update_status(self, num_freeze_layers, last_grad_norm_by_layer):
         logging.info("(%s) num_freeze_layers = %d, last_grad_norm_by_layer = %s" % (
@@ -58,6 +60,13 @@ class AutoFreeze:
         self.shared_memory_mgr_frozen_layer_num.cleanup()
         pass
 
+    def calculate_frozen_layer_num(self, layer_num, alpha, epoch):
+        second_term = 0.0
+        for e in range(2, epoch + 1):
+            second_term += ((layer_num * alpha) / pow(1 - alpha, e))
+        return pow(1 - alpha, epoch) * ((layer_num * alpha) / (1 - alpha) + second_term)
+
+
     # def get_hand_crafted_frozen_layers_by_epoch(self, epoch):
     #     num_freeze_layers = 0
     #     if not self.shared_memory_mgr_frozen_layer_num.is_exist(epoch):
@@ -76,34 +85,37 @@ class AutoFreeze:
     #         self.shared_memory_mgr_frozen_layer_num.add_int_value(epoch, num_freeze_layers)
     #     return num_freeze_layers
 
-    def get_hand_crafted_frozen_layers_by_epoch(self, epoch):
-        if self.freeze_strategy == "linear":
-            num_freeze_layers = self.frozen_layer_linear[epoch]
-        elif self.freeze_strategy == "mild":
-            num_freeze_layers = 0
-            if epoch == 0:
-                num_freeze_layers = 0
-            elif epoch >= 1 and epoch <= 2:
-                num_freeze_layers = 6
-            elif epoch > 2 and epoch <= 5:
-                num_freeze_layers = 8
-            elif epoch > 5 and epoch <= 7:
-                num_freeze_layers = 10
-            elif epoch > 7:
-                num_freeze_layers = 12
-        elif self.freeze_strategy == "start_from_freeze_all":
-            num_freeze_layers = 12
-        elif self.freeze_strategy == "pipe_length_4":
-            num_freeze_layers = 6
-        elif self.freeze_strategy == "pipe_length_2":
-            num_freeze_layers = 8
-        elif self.freeze_strategy == "freeze_by_epoch":
-            num_freeze_layers = epoch
-        else:
-            raise Exception("no such strategy")
-        if not self.shared_memory_mgr_frozen_layer_num.is_exist(epoch):
-            self.shared_memory_mgr_frozen_layer_num.add_int_value(epoch, num_freeze_layers)
-        return num_freeze_layers
+    def get_frozen_layer_num_by_epoch(self, epoch):
+        return self.frozen_layer_num_dict[epoch]
+
+    # def get_hand_crafted_frozen_layers_by_epoch(self, epoch):
+    #     if self.freeze_strategy == "linear":
+    #         num_freeze_layers = self.frozen_layer_linear[epoch]
+    #     elif self.freeze_strategy == "mild":
+    #         num_freeze_layers = 0
+    #         if epoch == 0:
+    #             num_freeze_layers = 0
+    #         elif epoch >= 1 and epoch <= 2:
+    #             num_freeze_layers = 6
+    #         elif epoch > 2 and epoch <= 5:
+    #             num_freeze_layers = 8
+    #         elif epoch > 5 and epoch <= 7:
+    #             num_freeze_layers = 10
+    #         elif epoch > 7:
+    #             num_freeze_layers = 12
+    #     elif self.freeze_strategy == "start_from_freeze_all":
+    #         num_freeze_layers = 12
+    #     elif self.freeze_strategy == "pipe_length_4":
+    #         num_freeze_layers = 6
+    #     elif self.freeze_strategy == "pipe_length_2":
+    #         num_freeze_layers = 8
+    #     elif self.freeze_strategy == "freeze_by_epoch":
+    #         num_freeze_layers = epoch
+    #     else:
+    #         raise Exception("no such strategy")
+    #     if not self.shared_memory_mgr_frozen_layer_num.is_exist(epoch):
+    #         self.shared_memory_mgr_frozen_layer_num.add_int_value(epoch, num_freeze_layers)
+    #     return num_freeze_layers
 
     def get_num_of_frozen_layer(self, epoch):
         return self.shared_memory_mgr_frozen_layer_num.get_int_value(epoch)
@@ -122,7 +134,7 @@ class AutoFreeze:
     def freeze(self, epoch):
         logging.info("-----------------------------%s" % (id(self)))
         if self.is_hand_crafted:
-            return self.get_hand_crafted_frozen_layers_by_epoch(epoch)
+            return self.get_frozen_layer_num_by_epoch(epoch)
         if epoch == 0:
             return 0
 

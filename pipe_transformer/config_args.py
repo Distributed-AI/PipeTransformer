@@ -42,3 +42,5 @@ class ConfigArgs:
 
     is_debug_mode: bool = False
 
+    freeze_strategy_alpha: float = 0.5
+

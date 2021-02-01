@@ -49,6 +49,8 @@ autodp_hpo = ["auto_dp"]
 # autocache_hpo = ["cache", "no_cache"]
 autocache_hpo = ["cache"]
 
+freeze_strategy_alpha_hpo = [0.2, 0.3, 0.4, 0.5]
+
 os.system("kill $(ps aux | grep \"main_cv.py\" | grep -v grep | awk '{print $2}')")
 
 run_id = 0
@@ -60,26 +62,28 @@ for bs_idx in range(len(batch_size)):
                 for autopipe in autopipe_hpo:
                     for autodp in autodp_hpo:
                         for autocache in autocache_hpo:
-                            current_lr, current_bs = lr[lr_idx], batch_size[bs_idx]
-                            args.lr = current_lr
-                            args.batch_size = current_bs
-                            args.run_id = run_id
-                            args.freeze_strategy = freeze_strategy
-                            args.auto_freeze = auto_freeze
-                            args.autopipe = autopipe
-                            args.autodp = autodp
-                            args.autocache = autocache
-                            logging.info("current_lr = %f, current_bs = %d, freeze_strategy = %s" % (current_lr, current_bs, freeze_strategy))
+                            for freeze_strategy_alpha in freeze_strategy_alpha_hpo:
+                                current_lr, current_bs = lr[lr_idx], batch_size[bs_idx]
+                                args.lr = current_lr
+                                args.batch_size = current_bs
+                                args.run_id = run_id
+                                args.freeze_strategy = freeze_strategy
+                                args.auto_freeze = auto_freeze
+                                args.autopipe = autopipe
+                                args.autodp = autodp
+                                args.autocache = autocache
+                                args.freeze_strategy_alpha = freeze_strategy_alpha
+                                logging.info("current_lr = %f, current_bs = %d, freeze_strategy = %s" % (current_lr, current_bs, freeze_strategy))
 
-                            # sh run_elastic_pipe.sh 8 2 1 192.168.11.2 22222 1 ib0 0.03 320 cifar100 ./../../data/cifar100/ 8 no_freeze no_auto_pipe no_auto_dp no_cache
-                            os.system("nohup sh run_elastic_pipe.sh 8 2 1 192.168.11.2 22222 1 \"ib0\""
-                                      " {args.lr} 320 cifar10 ./../../data/cifar10/ 8 {args.auto_freeze} {args.autopipe} {args.autodp} {args.autocache} > "
-                                      "./PipeTransformer-cifar100-node0_r{args.run_id}.log 2>&1 &".format(args=args))
+                                # sh run_elastic_pipe.sh 8 2 1 192.168.11.2 22222 1 ib0 0.03 320 cifar100 ./../../data/cifar100/ 8 no_freeze no_auto_pipe no_auto_dp no_cache
+                                os.system("nohup sh run_elastic_pipe.sh 8 2 1 192.168.11.2 22222 1 \"ib0\""
+                                          " {args.lr} 320 cifar10 ./../../data/cifar10/ 8 {args.freeze_strategy_alpha} {args.auto_freeze} {args.autopipe} {args.autodp} {args.autocache} > "
+                                          "./PipeTransformer-cifar100-node0_r{args.run_id}.log 2>&1 &".format(args=args))
 
-                            wait_for_the_training_process()
+                                wait_for_the_training_process()
 
-                            logging.info("cleaning the training...")
-                            os.system("kill $(ps aux | grep \"main_cv.py\" | grep -v grep | awk '{print $2}')")
+                                logging.info("cleaning the training...")
+                                os.system("kill $(ps aux | grep \"main_cv.py\" | grep -v grep | awk '{print $2}')")
 
-                            sleep(30)
-                            run_id += 1
+                                sleep(30)
+                                run_id += 1
