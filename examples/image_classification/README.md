@@ -153,3 +153,9 @@ https://www.tecmint.com/nethogs-monitor-per-process-network-bandwidth-usage-in-r
 https://www.tecmint.com/linux-network-bandwidth-monitoring-tools/
 
 https://www.debugpoint.com/2016/10/3-best-command-line-tool-network-bandwidth-monitoring-ubuntu-linux/
+
+
+TODO:
+1. CIFAR 100 break down
+2. what if freeze + pipeline + DP
+3. communication cost
