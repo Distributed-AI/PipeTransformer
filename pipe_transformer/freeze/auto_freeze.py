@@ -35,7 +35,7 @@ class AutoFreeze:
         self.frozen_layer_linear = dict()
         epochs = 10
         for e in range(epochs):
-            progress = math.ceil((e+1)/epochs)
+            progress = math.ceil(((e+1)/epochs)*self.num_layer)
             self.frozen_layer_linear[e] = int(progress)
 
     def update_status(self, num_freeze_layers, last_grad_norm_by_layer):
