@@ -41,13 +41,13 @@ lr = [0.03]
 freeze_strategies = ["mild"]
 batch_size = [320]
 # freeze_hpo = ["freeze", "no_freeze"]
-freeze_hpo = ["no_freeze"]
+freeze_hpo = ["freeze"]
 # autopipe_hpo = ["auto_pipe", "no_auto_pipe"]
-autopipe_hpo = ["no_auto_pipe"]
+autopipe_hpo = ["auto_pipe"]
 # autodp_hpo = ["auto_dp", "no_auto_dp"]
-autodp_hpo = ["no_auto_dp"]
+autodp_hpo = ["auto_dp"]
 # autocache_hpo = ["cache", "no_cache"]
-autocache_hpo = ["no_cache"]
+autocache_hpo = ["cache"]
 
 os.system("kill $(ps aux | grep \"main_cv.py\" | grep -v grep | awk '{print $2}')")
 
