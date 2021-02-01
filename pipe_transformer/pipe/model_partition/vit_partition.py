@@ -62,7 +62,7 @@ class FrozenLayer(nn.Module):
             self.layers.append(frozen_layer_list[layer_i])
 
     def forward(self, x, layer_id=0):
-        logging.info(x)
+        # logging.info(x)
         if layer_id == self.num_frozen_layer:
             logging.info("no need to recompute")
             return x
