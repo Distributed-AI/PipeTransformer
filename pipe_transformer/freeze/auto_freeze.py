@@ -30,7 +30,7 @@ class AutoFreeze:
 
         self.shared_memory_mgr_frozen_layer_num = SharedMemoryManagerIntValue("frozen_layer_num")
 
-        self.freeze_strategy = config.freeze_strategy
+        self.freeze_strategy = "linear"
 
         self.frozen_layer_linear = dict()
         epochs = 10
