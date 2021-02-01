@@ -1,5 +1,6 @@
 import copy
 import logging
+import math
 
 import numpy as np
 import torch
@@ -30,6 +31,12 @@ class AutoFreeze:
         self.shared_memory_mgr_frozen_layer_num = SharedMemoryManagerIntValue("frozen_layer_num")
 
         self.freeze_strategy = config.freeze_strategy
+
+        self.frozen_layer_linear = dict()
+        epochs = 10
+        for e in range(epochs):
+            progress = math.ceil((e+1)/epochs)
+            self.frozen_layer_linear[e] = int(progress)
 
     def update_status(self, num_freeze_layers, last_grad_norm_by_layer):
         logging.info("(%s) num_freeze_layers = %d, last_grad_norm_by_layer = %s" % (
@@ -70,7 +77,9 @@ class AutoFreeze:
     #     return num_freeze_layers
 
     def get_hand_crafted_frozen_layers_by_epoch(self, epoch):
-        if self.freeze_strategy == "mild":
+        if self.freeze_strategy == "linear":
+            num_freeze_layers = self.frozen_layer_linear[epoch]
+        elif self.freeze_strategy == "mild":
             num_freeze_layers = 0
             if epoch == 0:
                 num_freeze_layers = 0

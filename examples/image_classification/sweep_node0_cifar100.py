@@ -38,10 +38,10 @@ parser = argparse.ArgumentParser()
 args = add_args(parser)
 
 lr = [0.03]
-freeze_strategies = ["mild"]
+freeze_strategies = ["linear"]
 batch_size = [320]
 # freeze_hpo = ["freeze", "no_freeze"]
-freeze_hpo = ["no_freeze"]
+freeze_hpo = ["freeze"]
 # autopipe_hpo = ["auto_pipe", "no_auto_pipe"]
 autopipe_hpo = ["auto_pipe"]
 # autodp_hpo = ["auto_dp", "no_auto_dp"]
