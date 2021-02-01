@@ -126,19 +126,21 @@ class CVDatasetManager(BaseDataManager):
             output_dim = 10
         else:
             trainset = CIFAR100(root=args.data_dir,
-                                batch_size=args.batch_size,
-                                node_num=node_num,
-                                node_rank=node_rank,
-                                train=True,
-                                download=True,
-                                transform=transform_train)
-            testset = CIFAR100(root=args.data_dir,
                                batch_size=args.batch_size,
                                node_num=node_num,
+                               nproc_per_node=nproc_per_node,
                                node_rank=node_rank,
-                               train=False,
+                               train=True,
                                download=True,
-                               transform=transform_test)
+                               transform=transform_train)
+            testset = CIFAR100(root=args.data_dir,
+                              batch_size=args.batch_size,
+                              node_num=node_num,
+                              nproc_per_node=nproc_per_node,
+                              node_rank=node_rank,
+                              train=False,
+                              download=True,
+                              transform=transform_test)
             output_dim = 100
 
         # if args.is_distributed == 1:

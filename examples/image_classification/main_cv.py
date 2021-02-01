@@ -84,10 +84,10 @@ def add_args():
     parser.add_argument('--model', type=str, default='transformer', metavar='N',
                         help='neural network used in training')
 
-    parser.add_argument('--dataset', type=str, default='cifar10', metavar='N',
+    parser.add_argument('--dataset', type=str, default='cifar100', metavar='N',
                         help='dataset used for training')
 
-    parser.add_argument('--data_dir', type=str, default='./data/cifar10',
+    parser.add_argument('--data_dir', type=str, default='./data/cifar100',
                         help='data directory')
 
     parser.add_argument('--batch_size', type=int, default=128, metavar='N',
@@ -149,6 +149,7 @@ if __name__ == "__main__":
                  ", process ID = " + str(os.getpid()) +
                  ", process Name = " + str(psutil.Process(os.getpid())))
 
+    logging.info(args)
     """
         Dataset related
     """
