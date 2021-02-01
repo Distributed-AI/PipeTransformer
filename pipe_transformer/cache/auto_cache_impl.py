@@ -135,10 +135,10 @@ class AutoCacheImpl:
             logging.critical("(global_rank = %d) NO need to compute FP (END)" % self.config.global_rank)
         else:
             logging.critical("(global_rank = %s, epoch = %s, batch_idx = %s, is_train_mode = %s, is_train_data = %s, "
-                             "num_frozen_layer_last_epoch = %d, num_frozen_layer = %d) "
+                             "num_frozen_layer_last_epoch = %s, num_frozen_layer = %s) "
                              "cache to shared memory (START)"
                              % (str(self.config.global_rank), str(epoch), str(batch_idx), str(is_train_mode), str(is_train_data),
-                                num_frozen_layer_last_epoch, num_frozen_layer))
+                                str(num_frozen_layer_last_epoch), str(num_frozen_layer)))
             with torch.no_grad():
                 hidden_feature = model(x).detach().cpu()
             self._send_to_daemon_for_cache(epoch, batch_idx, batch_sample_idx, hidden_feature,
