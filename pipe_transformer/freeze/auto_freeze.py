@@ -37,8 +37,10 @@ class AutoFreeze:
         self.frozen_layer_num_dict = dict()
         self.frozen_layer_num_dict[0] = 0
         for e in range(1, 10):
-            self.frozen_layer_num_dict[e] = math.ceil(self.calculate_frozen_layer_num(self.num_layer, self.alpha, e))
-        print(self.frozen_layer_num_dict)
+            frozen_layer_num = math.ceil(self.calculate_frozen_layer_num(self.num_layer, self.alpha, e))
+            # logging.info(frozen_layer_num)
+            self.frozen_layer_num_dict[e] = frozen_layer_num
+        logging.info(self.frozen_layer_num_dict)
 
     def update_status(self, num_freeze_layers, last_grad_norm_by_layer):
         logging.info("(%s) num_freeze_layers = %d, last_grad_norm_by_layer = %s" % (
@@ -64,6 +66,8 @@ class AutoFreeze:
         second_term = 0.0
         for e in range(2, epoch + 1):
             second_term += ((layer_num * alpha) / pow(1 - alpha, e))
+
+        # logging.info("second_term = %f" % second_term)
         return pow(1 - alpha, epoch) * ((layer_num * alpha) / (1 - alpha) + second_term)
 
 
