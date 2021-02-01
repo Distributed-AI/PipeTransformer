@@ -29,7 +29,7 @@ main_cv.py \
 --$B_PIPE \
 --$B_DP \
 --$B_CACHE \
---$FREEZE_ALPHA \
+--freeze_strategy_alpha $FREEZE_ALPHA \
 --nnodes $NNODE \
 --nproc_per_node=$NPROC_PER_NODE \
 --node_rank $NODE_RANK \
