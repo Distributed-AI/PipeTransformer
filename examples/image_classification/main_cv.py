@@ -65,7 +65,7 @@ def add_args():
     parser.set_defaults(b_freeze=True)
 
     parser.add_argument('--auto_pipe', dest='b_auto_pipe', action='store_true')
-    parser.add_argument('--do_auto_pipe', dest='b_auto_pipe', action='store_false')
+    parser.add_argument('--no_auto_pipe', dest='b_auto_pipe', action='store_false')
     parser.set_defaults(b_auto_pipe=True)
 
     parser.add_argument('--auto_dp', dest='b_auto_dp', action='store_true')
@@ -74,7 +74,7 @@ def add_args():
 
     parser.add_argument('--cache', dest='b_cache', action='store_true')
     parser.add_argument('--no_cache', dest='b_cache', action='store_false')
-    parser.set_defaults(b_cache=False)
+    parser.set_defaults(b_cache=True)
 
 
     parser.add_argument("--is_debug_mode", default=0, type=int,

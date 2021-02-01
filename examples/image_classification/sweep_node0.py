@@ -55,6 +55,7 @@ for bs_idx in range(len(batch_size)):
             args.freeze_strategy = freeze_strategy
             logging.info("current_lr = %f, current_bs = %d, freeze_strategy = %s" % (current_lr, current_bs, freeze_strategy))
 
+            # sh run_elastic_pipe.sh 8 2 1 192.168.11.2 22222 1 "ib0" 0.03 320 cifar10 ./data/cifar10/ 8
             os.system("nohup sh run_elastic_pipe.sh 8 2 0 192.168.11.2 11122 1 \"ib0\""
                       " {args.lr} 400 imagenet /home/chaoyanghe/dataset/cv/imagenet 8 {args.freeze_strategy}> "
                       "./PipeTransformer-imagenet-node0_r{args.run_id}.log 2>&1 &".format(args=args))
