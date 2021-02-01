@@ -76,7 +76,6 @@ def add_args():
     parser.add_argument('--no_cache', dest='b_cache', action='store_false')
     parser.set_defaults(b_cache=True)
 
-
     parser.add_argument("--is_debug_mode", default=0, type=int,
                         help="is_debug_mode")
 

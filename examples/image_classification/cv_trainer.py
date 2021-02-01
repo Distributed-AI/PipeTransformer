@@ -1,9 +1,12 @@
 import logging
+import random
 import time
 
 import torch
 import wandb
 from torch import nn
+
+import numpy as np
 
 from examples.image_classification.utils import WarmupCosineSchedule, WarmupLinearSchedule
 
@@ -23,6 +26,7 @@ class CVTrainer:
     def train_and_eval(self):
         epoch_start = self.pipe_transformer.start()
         for epoch in range(epoch_start, self.args.epochs):
+            self.set_seeds(epoch)
 
             self.pipe_transformer.transform(epoch)
 
@@ -218,3 +222,11 @@ class CVTrainer:
             scheduler = WarmupLinearSchedule(optimizer, warmup_steps=self.args.warmup_steps,
                                              t_total=self.args.epochs)
         return optimizer, scheduler
+
+    def set_seeds(self, seed):
+        torch.backends.cudnn.deterministic = False
+        torch.backends.cudnn.benchmark = False
+        torch.manual_seed(seed)
+        torch.cuda.manual_seed_all(seed)
+        np.random.seed(seed)
+        random.seed(seed)
