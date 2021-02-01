@@ -47,7 +47,7 @@ autopipe_hpo = ["auto_pipe"]
 # autodp_hpo = ["auto_dp", "no_auto_dp"]
 autodp_hpo = ["auto_dp"]
 # autocache_hpo = ["cache", "no_cache"]
-autocache_hpo = ["cache"]
+autocache_hpo = ["no_cache"]
 
 freeze_strategy_alpha_hpo = [0.2, 0.3, 0.4, 0.5]
 
