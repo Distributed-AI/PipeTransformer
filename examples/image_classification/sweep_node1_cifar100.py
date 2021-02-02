@@ -37,7 +37,7 @@ logging.basicConfig(level=logging.INFO,
 parser = argparse.ArgumentParser()
 args = add_args(parser)
 
-lr = [0.03]
+lr = [0.03, 0.01, 0.001, 0.003]
 freeze_strategies = ["linear"]
 batch_size = [320]
 # freeze_hpo = ["freeze", "no_freeze"]
@@ -47,7 +47,7 @@ autopipe_hpo = ["auto_pipe"]
 # autodp_hpo = ["auto_dp", "no_auto_dp"]
 autodp_hpo = ["auto_dp"]
 # autocache_hpo = ["cache", "no_cache"]
-autocache_hpo = ["no_cache"]
+autocache_hpo = ["cache"]
 
 freeze_strategy_alpha_hpo = [0.2, 0.3, 0.4, 0.5]
 
