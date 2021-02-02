@@ -75,7 +75,7 @@ for bs_idx in range(len(batch_size)):
                                 args.freeze_strategy_alpha = freeze_strategy_alpha
                                 logging.info("current_lr = %f, current_bs = %d, freeze_strategy = %s" % (current_lr, current_bs, freeze_strategy))
 
-                                # sh run_elastic_pipe.sh 8 2 1 192.168.11.2 22222 1 ib0 0.03 320 cifar100 ./../../data/cifar100/ 8 no_freeze no_auto_pipe no_auto_dp no_cache
+                                # sh run_elastic_pipe.sh 8 2 0 192.168.11.2 22222 1 ib0 0.03 320 cifar100 ./../../data/cifar100/ 8 no_freeze no_auto_pipe no_auto_dp no_cache
                                 os.system("nohup sh run_elastic_pipe.sh 8 2 1 192.168.11.2 22222 1 \"ib0\""
                                           " {args.lr} 320 cifar100 ./../../data/cifar100/ 8 {args.freeze_strategy_alpha} {args.auto_freeze} {args.autopipe} {args.autodp} {args.autocache} > "
                                           "./PipeTransformer-cifar100-node0_r{args.run_id}.log 2>&1 &".format(args=args))
