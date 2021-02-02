@@ -40,7 +40,7 @@ class CVTrainer:
     def train(self, epoch):
 
         criterion = nn.CrossEntropyLoss()
-        optimizer, scheduler = self.build_optimizer(self.pipe_model)
+        optimizer, scheduler = self.build_optimizer(epoch, self.pipe_model)
 
         # measure latency with cuda event:
         # https://discuss.pytorch.org/t/distributed-training-slower-than-dataparallel/81539/4
@@ -204,7 +204,7 @@ class CVTrainer:
 
         return test_acc, test_total, test_loss
 
-    def build_optimizer(self, model):
+    def build_optimizer(self, epoch, model):
         if self.args.client_optimizer == "sgd":
             optimizer = torch.optim.SGD(filter(lambda p: p.requires_grad, model.parameters()),
                                         lr=self.args.lr,
@@ -221,6 +221,7 @@ class CVTrainer:
         else:
             scheduler = WarmupLinearSchedule(optimizer, warmup_steps=self.args.warmup_steps,
                                              t_total=self.args.epochs)
+        scheduler.step(epoch)
         return optimizer, scheduler
 
     def set_seeds(self, seed):
