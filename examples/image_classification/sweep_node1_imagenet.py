@@ -37,9 +37,9 @@ logging.basicConfig(level=logging.INFO,
 parser = argparse.ArgumentParser()
 args = add_args(parser)
 
-lr = [0.1, 0.3, 0.001, 0.003]
+lr = [0.03]
 freeze_strategies = ["linear"]
-batch_size = [320]
+batch_size = [400]
 # freeze_hpo = ["freeze", "no_freeze"]
 freeze_hpo = ["freeze"]
 # autopipe_hpo = ["auto_pipe", "no_auto_pipe"]
@@ -49,7 +49,7 @@ autodp_hpo = ["auto_dp"]
 # autocache_hpo = ["cache", "no_cache"]
 autocache_hpo = ["cache"]
 
-freeze_strategy_alpha_hpo = [0.2, 0.3, 0.4, 0.5]
+freeze_strategy_alpha_hpo = [0.3]
 
 os.system("kill $(ps aux | grep \"main_cv.py\" | grep -v grep | awk '{print $2}')")
 
