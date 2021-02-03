@@ -213,7 +213,7 @@ if __name__ == "__main__":
     config.b_freeze = args.b_freeze
     config.b_auto_pipe = args.b_auto_pipe
     config.b_cache = args.b_cache
-    config.freeze_strategy = args.freeze_strategy
+    config.freeze_strategy_alpha = args.freeze_strategy_alpha
 
     config.is_infiniband = args.is_infiniband
     config.master_addr = args.master_addr
