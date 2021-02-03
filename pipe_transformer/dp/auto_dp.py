@@ -184,8 +184,8 @@ class AutoDataParallel:
 
     def generate_ddp_model(self, model, gpu_num_per_process, num_frozen_layers):
         self.pipe_len = gpu_num_per_process
-        ddp_params_to_skip = get_ddp_ignored_params_name(model, num_frozen_layers)
-        DDP._set_params_and_buffers_to_ignore_for_model(model, ddp_params_to_skip)
+        # ddp_params_to_skip = get_ddp_ignored_params_name(model, num_frozen_layers)
+        # DDP._set_params_and_buffers_to_ignore_for_model(model, ddp_params_to_skip)
         if gpu_num_per_process > 1:
             # find_unused_parameters = True can avoid bucket rebuilt, which takes around 20s
             model = DDP(model, process_group=self.active_process_group,

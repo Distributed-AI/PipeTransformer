@@ -9,8 +9,13 @@ IF_NAME=$7
 LR=$8
 BZ=$9
 RUN_ID=${10}
-B_FREEZE=${11}
-PIPE_LEN=${12}
+PIPE_LEN=${11}
+
+FREEZE_ALPHA=${12}
+B_FREEZE=${13}
+B_PIPE=${14}
+B_DP=${15}
+B_CACHE=${16}
 
 python -m launch \
 --nproc_per_node=$NPROC_PER_NODE --nnodes=$NNODE --node_rank=$NODE_RANK \
@@ -19,6 +24,10 @@ python -m launch \
 main_qa.py \
 --run_id $RUN_ID \
 --$B_FREEZE \
+--$B_PIPE \
+--$B_DP \
+--$B_CACHE \
+--freeze_strategy_alpha $FREEZE_ALPHA \
 --nnodes $NNODE \
 --nproc_per_node=$NPROC_PER_NODE \
 --node_rank $NODE_RANK \

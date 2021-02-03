@@ -44,7 +44,18 @@ args = add_args(parser)
 
 lr = [5e-5, 4e-5, 3e-5, 2e-5, 1e-5]
 batch_size = [64, 32]
-b_freeze_hpo = ["no_freeze", "freeze"]
+
+# freeze_hpo = ["freeze", "no_freeze"]
+freeze_hpo = ["freeze"]
+# autopipe_hpo = ["auto_pipe", "no_auto_pipe"]
+autopipe_hpo = ["auto_pipe"]
+# autodp_hpo = ["auto_dp", "no_auto_dp"]
+autodp_hpo = ["auto_dp"]
+# autocache_hpo = ["cache", "no_cache"]
+autocache_hpo = ["cache"]
+
+# freeze_strategy_alpha_hpo = [0.2, 0.3, 0.4, 0.5]
+freeze_strategy_alpha_hpo = [1/3]
 
 os.system("kill $(ps aux | grep \"main_qa.py\" | grep -v grep | awk '{print $2}')")
 
@@ -52,24 +63,33 @@ finished_run_id = -1
 run_id = 0
 for lr_idx in range(len(lr)):
     for bs_idx in range(len(batch_size)):
-        if run_id <= finished_run_id:
-            run_id += 1
-            continue
-        current_lr, current_bs = lr[lr_idx], batch_size[bs_idx]
-        args.lr = current_lr
-        args.batch_size = current_bs
-        args.port = 10000 + run_id
-        args.run_id = run_id
-        args.b_freeze = "freeze"
-        logging.info("current_lr = %f, current_bs = %d" % (current_lr, current_bs))
-        os.system('nohup sh run_squad.sh 8 2 1 192.168.11.2 {args.port} 1 '
-                  '"ib0" {args.lr} {args.batch_size} {args.run_id} {args.b_freeze} 8 > '
-                  './PipeTransformer-QA_run{args.run_id}.log 2>&1 &'.format(args=args))
+        for auto_freeze in freeze_hpo:
+            for autopipe in autopipe_hpo:
+                for autodp in autodp_hpo:
+                    for autocache in autocache_hpo:
+                        for freeze_strategy_alpha in freeze_strategy_alpha_hpo:
+                            if run_id <= finished_run_id:
+                                run_id += 1
+                                continue
+                            current_lr, current_bs = lr[lr_idx], batch_size[bs_idx]
+                            args.lr = current_lr
+                            args.batch_size = current_bs
+                            args.port = 10000 + run_id
+                            args.run_id = run_id
+                            args.auto_freeze = auto_freeze
+                            args.autopipe = autopipe
+                            args.autodp = autodp
+                            args.autocache = autocache
+                            args.freeze_strategy_alpha = freeze_strategy_alpha
+                            logging.info("current_lr = %f, current_bs = %d" % (current_lr, current_bs))
+                            os.system('nohup sh run_squad.sh 8 2 1 192.168.11.2 {args.port} 1 '
+                                      '"ib0" {args.lr} {args.batch_size} {args.run_id} 8 {args.freeze_strategy_alpha} {args.auto_freeze} {args.autopipe} {args.autodp} {args.autocache} > '
+                                      './PipeTransformer-QA_run{args.run_id}.log 2>&1 &'.format(args=args))
 
-        wait_for_the_training_process()
+                            wait_for_the_training_process()
 
-        logging.info("cleaning the training...")
-        os.system("kill $(ps aux | grep \"main_qa.py\" | grep -v grep | awk '{print $2}')")
+                            logging.info("cleaning the training...")
+                            os.system("kill $(ps aux | grep \"main_qa.py\" | grep -v grep | awk '{print $2}')")
 
-        sleep(10)
-        run_id += 1
+                            sleep(10)
+                            run_id += 1

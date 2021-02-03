@@ -55,7 +55,7 @@ def add_args(parser):
     parser.add_argument("--num_chunks_of_micro_batches", default=1 * 8, type=int,
                         help="num_chunks_of_micro_batches")
 
-    parser.add_argument("--freeze_strategy", type=str, default="mild")
+    parser.add_argument("--freeze_strategy_alpha", type=float, default=0.33)
 
     parser.add_argument('--freeze', dest='b_freeze', action='store_true')
     parser.add_argument('--no_freeze', dest='b_freeze', action='store_false')
