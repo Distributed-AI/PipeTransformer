@@ -43,6 +43,9 @@ class AutoDataParallel:
         self.init_ddp()
         self.init_rpc()
 
+    def is_enable(self):
+        return self.enable_new_pipe
+
     def get_ddp_model(self, model, local_rank):
         return DDP(model, device_ids=[local_rank], output_device=local_rank)
 

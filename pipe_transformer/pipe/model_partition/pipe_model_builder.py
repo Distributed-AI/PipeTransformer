@@ -6,7 +6,7 @@ from torch import nn
 
 from .bert_qa_partition import create_pipe_styled_model_BERT_for_QA
 from .bert_tc_partition import create_pipe_styled_model_BERT_for_TC
-from .vit_partition import create_pipe_styled_model_vit
+from .vit_partition import create_pipe_styled_model_vit, freeze_vit_only
 
 """
 Issues Description:
@@ -43,6 +43,23 @@ def create_pipe_styled_model(config, model_config, model_backbone, num_layer_in_
         logging.info("create BERT for QA pipeline")
         return create_pipe_styled_model_BERT_for_QA(model_config, model_backbone, num_layer_in_total,
                                                     num_frozen_layer)
+    else:
+        raise Exception("does not exist")
+
+
+def freeze_only(config, model_config, model_backbone, num_layer_in_total, num_frozen_layer):
+    if config.learning_task == config.LEARNING_TASK_IMAGE_CLASSIFICATION and \
+            config.model_name == config.MODEL_VIT:
+        logging.info("create ViT pipeline")
+        return freeze_vit_only(model_backbone, num_frozen_layer)
+
+    elif config.learning_task == config.LEARNING_TASK_TEXT_CLASSIFICATION and \
+            config.model_name == config.MODEL_BERT:
+        logging.info("create BERT for text classification pipeline")
+
+    elif config.learning_task == config.LEARNING_TASK_QUESTION_ANSWERING and \
+            config.model_name == config.MODEL_BERT:
+        logging.info("create BERT for QA pipeline")
     else:
         raise Exception("does not exist")
 

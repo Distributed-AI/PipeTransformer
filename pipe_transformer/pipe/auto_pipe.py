@@ -4,7 +4,8 @@ import torch
 
 from . import Pipe
 from .load_balance import generate_parameter_size_wise_balance
-from .model_partition.pipe_model_builder import convert_to_balanced_model, create_pipe_styled_model, PipeModelWrapper
+from .model_partition.pipe_model_builder import convert_to_balanced_model, create_pipe_styled_model, PipeModelWrapper, \
+    freeze_only
 
 
 class AutoElasticPipe:
@@ -62,35 +63,43 @@ class AutoElasticPipe:
         self.num_frozen_layers = num_frozen_layers
         # frozen_model, parameters_size_frozen, pipe_model, parameters_list_pipe
 
-        frozen_model, parameters_size_frozen, \
-        model, self.pipe_model_params_size_list = create_pipe_styled_model(self.config, self.model_config,
-                                                                           self.model_backbone,
-                                                                           self.num_layer_in_total, num_frozen_layers)
-        logging.info("len(pipe_model) = %d" % len(model))
-        logging.info("len(pipe_model paras_size) = %d" % len(self.pipe_model_params_size_list))
+        if self.b_enable:
+            frozen_model, parameters_size_frozen, \
+            model, self.pipe_model_params_size_list = create_pipe_styled_model(self.config, self.model_config,
+                                                                               self.model_backbone,
+                                                                               self.num_layer_in_total,
+                                                                               num_frozen_layers)
+            logging.info("len(pipe_model) = %d" % len(model))
+            logging.info("len(pipe_model paras_size) = %d" % len(self.pipe_model_params_size_list))
 
-        # when b_enable = False, the load balance is not even, may lead to lower training speed.
-        if num_frozen_layers == 0 or not self.b_enable:
-            # set the num_frozen_layers = 0 because we put all frozen layers into frozen_model
-            balanced_sub_layer_distribution, balanced_params_size_distribution = self._auto_balanced_elastic_partition(
-                0)
-            self.max_parameter_per_gpu_at_beginning = max(balanced_params_size_distribution.values())
-            logging.info("self.max_parameter_per_gpu_at_beginning = %f" % self.max_parameter_per_gpu_at_beginning)
+            # when b_enable = False, the load balance is not even, may lead to lower training speed.
+            if num_frozen_layers == 0:
+                # set the num_frozen_layers = 0 because we put all frozen layers into frozen_model
+                balanced_sub_layer_distribution, balanced_params_size_distribution = self._auto_balanced_elastic_partition(
+                    0)
+                self.max_parameter_per_gpu_at_beginning = max(balanced_params_size_distribution.values())
+                logging.info("self.max_parameter_per_gpu_at_beginning = %f" % self.max_parameter_per_gpu_at_beginning)
+            else:
+                self._auto_pipe_length(num_frozen_layers)
+                # set the num_frozen_layers = 0 because we put all frozen layers into frozen_model
+                balanced_sub_layer_distribution, _ = self._auto_balanced_elastic_partition(0)
+
+            device_idx_start = self.local_rank * self.pipe_len
+            model = convert_to_balanced_model(self.local_rank, self.global_rank,
+                                              device_idx_start, model, balanced_sub_layer_distribution)
+            # frozen model is always in device 0
+            if frozen_model is not None:
+                frozen_model.to(device_idx_start)
+
+            pipe_model = self._get_pipe(model)
+
+            # params_to_skip = get_ddp_ignored_params_name(pipe_model, num_frozen_layers)
         else:
-            self._auto_pipe_length(num_frozen_layers)
-            # set the num_frozen_layers = 0 because we put all frozen layers into frozen_model
-            balanced_sub_layer_distribution, _ = self._auto_balanced_elastic_partition(0)
-
-        device_idx_start = self.local_rank * self.pipe_len
-        model = convert_to_balanced_model(self.local_rank, self.global_rank,
-                                          device_idx_start, model, balanced_sub_layer_distribution)
-        # frozen model is always in device 0
-        if frozen_model is not None:
-            frozen_model.to(device_idx_start)
-
-        pipe_model = self._get_pipe(model)
-
-        # params_to_skip = get_ddp_ignored_params_name(pipe_model, num_frozen_layers)
+            freeze_only(self.config, self.model_config,
+                        self.model_backbone,
+                        self.num_layer_in_total, num_frozen_layers)
+            frozen_model = None
+            pipe_model = self._get_pipe(self.model_backbone)
 
         return frozen_model, PipeModelWrapper(pipe_model), self.pipe_len
 

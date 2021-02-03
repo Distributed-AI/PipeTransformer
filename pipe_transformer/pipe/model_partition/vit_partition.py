@@ -146,3 +146,17 @@ def create_pipe_styled_model_vit(model_config, model_backbone, num_layer_in_tota
     # logging.info(parameters_list_pipe)
 
     return frozen_model, parameters_size_frozen, pipe_model, parameters_list_pipe
+
+
+def freeze_vit_only(model_backbone, num_frozen_layer):
+    """
+    Optimization:
+        Pin Memory: https://pytorch.org/docs/stable/notes/cuda.html#use-pinned-memory-buffers
+        Prepare a Pin Memory model
+    """
+    for param in model_backbone.transformer.embeddings.parameters():
+        param.requires_grad = False
+    for frozen_layer_index in range(num_frozen_layer):
+        layer_block = model_backbone.transformer.encoder.layer[frozen_layer_index]
+        for param in layer_block.parameters():
+            param.requires_grad = False
