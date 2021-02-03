@@ -221,7 +221,7 @@ class CVTrainer:
         else:
             scheduler = WarmupLinearSchedule(optimizer, warmup_steps=self.args.warmup_steps,
                                              t_total=self.args.epochs)
-        scheduler.step(epoch)
+        # scheduler.step(epoch)
         return optimizer, scheduler
 
     def set_seeds(self, seed):
