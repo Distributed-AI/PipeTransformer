@@ -11,6 +11,7 @@ from torch.nn.parallel import DistributedDataParallel as DDP
 from art import *
 
 from .distributed_communicator import dist_broadcast
+from ..pipe.model_partition.pipe_model_builder import get_ddp_ignored_params_name
 
 
 class AutoDataParallel:
@@ -181,9 +182,10 @@ class AutoDataParallel:
         self.comm_broadcast_group = dist.new_group(ranks=[i for i in range(self.world_size)], backend=Backend.GLOO,
                                                    timeout=timedelta(days=365))
 
-    def generate_ddp_model(self, model, gpu_num_per_process):
+    def generate_ddp_model(self, model, gpu_num_per_process, num_frozen_layers):
         self.pipe_len = gpu_num_per_process
-        # DDP._set_params_and_buffers_to_ignore_for_model(model, ddp_params_to_skip)
+        ddp_params_to_skip = get_ddp_ignored_params_name(model, num_frozen_layers)
+        DDP._set_params_and_buffers_to_ignore_for_model(model, ddp_params_to_skip)
         if gpu_num_per_process > 1:
             # find_unused_parameters = True can avoid bucket rebuilt, which takes around 20s
             model = DDP(model, process_group=self.active_process_group,
@@ -239,7 +241,7 @@ class AutoDataParallel:
             logging.info("####### broad cast control message (num_frozen_layers, pipe_len) to all processes #######")
             self.clear_memory()
             is_pipe_len_changed = True
-            pipe_model = self.generate_ddp_model(pipe_model, pipe_len)
+            pipe_model = self.generate_ddp_model(pipe_model, pipe_len, num_frozen_layers)
             return frozen_model, pipe_model, is_pipe_len_changed, is_frozen_layer_changed
 
         if self.compressed_pipe_len != pipe_len:
@@ -270,7 +272,7 @@ class AutoDataParallel:
             self.create_active_process_group()
             self.clear_memory()
             is_pipe_len_changed = True
-        pipe_model = self.generate_ddp_model(pipe_model, pipe_len)
+        pipe_model = self.generate_ddp_model(pipe_model, pipe_len, num_frozen_layers)
         return frozen_model, pipe_model, is_pipe_len_changed, is_frozen_layer_changed
 
     def _inactive_process_impl(self, auto_pipe, auto_freeze):
