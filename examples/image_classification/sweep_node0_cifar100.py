@@ -50,7 +50,7 @@ autodp_hpo = ["auto_dp"]
 autocache_hpo = ["cache"]
 
 # freeze_strategy_alpha_hpo = [0.2, 0.3, 0.4, 0.5]
-freeze_strategy_alpha_hpo = [1/4, 1/3, 1/2]
+freeze_strategy_alpha_hpo = [1/4, 1/3]
 
 os.system("kill $(ps aux | grep \"main_cv.py\" | grep -v grep | awk '{print $2}')")
 
