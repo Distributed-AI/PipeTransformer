@@ -170,7 +170,7 @@ if __name__ == "__main__":
 
     logging.info("Vision Transformer Configuration: " + str(model_config))
     model = VisionTransformer(model_config, args.img_size, zero_head=True, num_classes=output_dim, vis=False)
-    model.load_from(np.load(args.pretrained_dir))
+    # model.load_from(np.load(args.pretrained_dir))
     model_size = sum(p.numel() for p in model.parameters() if p.requires_grad) / 1e6
     logging.info("model_size = " + str(model_size))
 
