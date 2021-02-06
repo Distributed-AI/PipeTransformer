@@ -98,7 +98,7 @@ def add_args():
     parser.add_argument('--lr', type=float, default=0.03, metavar='LR',
                         help='learning rate (default: 0.03)')
 
-    parser.add_argument('--wd', help='weight decay parameter;', type=float, default=0)
+    parser.add_argument('--wd', help='weight decay parameter;', type=float, default=0.3)
 
     parser.add_argument('--client_optimizer', type=str, default='sgd',
                         help='SGD with momentum; adam')
