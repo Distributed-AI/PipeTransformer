@@ -106,10 +106,10 @@ def add_args():
     parser.add_argument("--decay_type", choices=["cosine", "linear"], default="cosine",
                         help="How to decay the learning rate.")
 
-    parser.add_argument("--warmup_steps", default=2, type=int,
+    parser.add_argument("--warmup_steps", default=30, type=int,
                         help="Step of training to perform learning rate warmup for.")
 
-    parser.add_argument('--epochs', type=int, default=10, metavar='EP',
+    parser.add_argument('--epochs', type=int, default=300, metavar='EP',
                         help='how many epochs will be trained locally')
 
     parser.add_argument("--freq_eval_train_acc", default=4, type=int)
