@@ -297,7 +297,7 @@ class AutoDataParallel:
             logging.info("global_rank %d is activated!" % self.global_rank)
 
             frozen_model, pipe_model, pipe_len = auto_pipe.transform(num_frozen_layers)
-            pipe_model = self.generate_ddp_model(pipe_model, pipe_len)
+            pipe_model = self.generate_ddp_model(pipe_model, pipe_len, num_frozen_layers)
 
             # load model state for frozen_layer
             frozen_model.load_state_dict(torch.load(self._build_path_for_frozen_layer_model_state(num_frozen_layers)))
