@@ -79,7 +79,7 @@ for bs_idx in range(len(batch_size)):
                                 # sh run_elastic_pipe.sh 8 2 1 192.168.11.2 22222 1 ib0 0.03 320 cifar100 ./../../data/cifar100/ 8 no_freeze no_auto_pipe no_auto_dp no_cache
                                 os.system("nohup sh run_elastic_pipe.sh 8 2 1 192.168.11.2 22222 1 \"ib0\""
                                           " {args.lr} 400 imagenet /home/chaoyanghe/dataset/cv/imagenet 8 {args.freeze_strategy_alpha} {args.auto_freeze} {args.autopipe} {args.autodp} {args.autocache} > "
-                                          "./PipeTransformer-imagenet-node0_r{args.run_id}.log 2>&1 &".format(args=args))
+                                          "./PipeTransformer-imagenet-node1_r{args.run_id}.log 2>&1 &".format(args=args))
 
                                 wait_for_the_training_process()
 
