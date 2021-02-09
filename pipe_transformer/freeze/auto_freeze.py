@@ -36,7 +36,7 @@ class AutoFreeze:
         self.alpha = self.freeze_strategy_alpha
         self.frozen_layer_num_dict = dict()
         self.frozen_layer_num_dict[0] = 0
-        for e in range(1, 10):
+        for e in range(1, config.epochs):
             frozen_layer_num = math.ceil(self.calculate_frozen_layer_num(self.num_layer, self.alpha, e))
             # logging.info(frozen_layer_num)
             self.frozen_layer_num_dict[e] = frozen_layer_num

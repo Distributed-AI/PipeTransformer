@@ -39,6 +39,7 @@ class ConfigArgs:
     output_dim: int = 10
     hidden_size: int = 768
     seq_len: int = 197
+    epochs: int = 10
 
     is_debug_mode: bool = False
 

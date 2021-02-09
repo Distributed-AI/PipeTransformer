@@ -232,6 +232,7 @@ if __name__ == "__main__":
     config.hidden_size = model_config.hidden_size
     config.seq_len = qa_args.max_seq_length
     config.batch_size = args.train_batch_size
+    config.epochs = args.epochs
 
     config.is_debug_mode = args.is_debug_mode
 

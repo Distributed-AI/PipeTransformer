@@ -205,6 +205,7 @@ if __name__ == "__main__":
     config.hidden_size = args.transformer_hidden_size
     config.seq_len = args.seq_len
     config.batch_size = args.batch_size
+    config.epochs = args.epochs
 
     config.is_debug_mode = args.is_debug_mode
 
