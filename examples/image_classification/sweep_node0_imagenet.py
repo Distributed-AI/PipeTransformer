@@ -37,7 +37,7 @@ logging.basicConfig(level=logging.INFO,
 parser = argparse.ArgumentParser()
 args = add_args(parser)
 
-lr = [0.003]
+lr = [0.3]
 freeze_strategies = ["linear"]
 batch_size = [400]
 # freeze_hpo = ["freeze", "no_freeze"]

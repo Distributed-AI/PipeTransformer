@@ -98,7 +98,6 @@ def add_args(parser):
                         help='transformer model name')
 
     # Learning related
-
     parser.add_argument('--train_batch_size', type=int, default=8, metavar='N',
                         help='input batch size for training (default: 8)')
     parser.add_argument('--eval_batch_size', type=int, default=8, metavar='N',
@@ -124,7 +123,6 @@ def add_args(parser):
                         help='random seed')
 
     # IO realted
-
     parser.add_argument('--output_dir', type=str, default="/tmp/squad_1.1", metavar='N',
                         help='path to save the trained results and ckpts')
 
