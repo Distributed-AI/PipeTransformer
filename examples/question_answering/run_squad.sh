@@ -39,7 +39,7 @@ main_qa.py \
 --data_dir "../../data/span_extraction/SQuAD_1.1/" \
 --data_file "../../data/span_extraction/SQuAD_1.1/squad_1.1_data.pkl" \
 --model_type bert \
---model_name bert-base-uncased \
+--model_name bert-large-uncased \
 --do_lower_case True \
 --train_batch_size $BZ \
 --eval_batch_size $BZ \
