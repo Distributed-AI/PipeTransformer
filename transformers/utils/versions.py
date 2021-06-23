@@ -84,7 +84,7 @@ def require_version(requirement: str, hint: Optional[str] = None) -> None:
     # check that the right version is installed if version number was provided
     if want_ver is not None and not ops[op](version.parse(got_ver), version.parse(want_ver)):
         raise pkg_resources.VersionConflict(
-            f"{requirement} is required for a normal functioning of this module, but found {pkg}=={got_ver}.{hint}"
+            f"{requirement} is required for a normal functioning of this module (local version), but found {pkg}=={got_ver}.{hint}"
         )
 
 

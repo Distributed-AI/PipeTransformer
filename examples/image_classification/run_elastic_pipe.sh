@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 export GLOO_SOCKET_IFNAME=eno1,eno2,ib0,lo
 
+# sh run_elastic_pipe.sh 8 2 1 192.168.11.2 11122 1 ib0 {args.lr} 400 imagenet /home/chaoyanghe/dataset/cv/imagenet 8 {args.freeze_strategy}
 NPROC_PER_NODE=$1
 NNODE=$2
 NODE_RANK=$3

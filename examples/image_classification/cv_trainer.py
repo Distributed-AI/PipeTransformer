@@ -23,6 +23,8 @@ class CVTrainer:
         self.device_first = None
         self.device_last = None
 
+        logging.info("initialized")
+
     def train_and_eval(self):
         epoch_start = self.pipe_transformer.start()
         for epoch in range(epoch_start, self.args.epochs):

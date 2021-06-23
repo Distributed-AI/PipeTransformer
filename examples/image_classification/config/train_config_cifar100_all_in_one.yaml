@@ -1,0 +1,32 @@
+dist_args:
+  is_distributed: 1
+  is_infiniband: 0
+  if_name: eth0 # note: please use 'ifconfig' command to check the interface name.
+  pipe_len_at_the_beginning: 8
+pipetransformer_args:
+  num_chunks_of_micro_batches: 8
+  freeze_strategy_alpha: 0.5
+  b_freeze: True
+  b_auto_pipe: True
+  b_auto_dp: True
+  b_cache: True
+model_args:
+  model: transformer
+  pretrained_dir: ./../../model/cv/pretrained/ViT-B_16.npz
+dataset_args:
+  dataset: cifar100
+  data_dir: ./data/cifar100
+  img_size: 224
+optimizer_args:
+  batch_size: 320
+  lr: 0.1
+  wd: 0.3
+  client_optimizer: sgd
+  decay_type: cosine
+  warmup_steps: 2
+  epochs: 10
+log_tracking_args:
+  freq_eval_train_acc: 4
+  freq_eval_test_acc: 1
+debug_args:
+  is_debug_mode: 0
