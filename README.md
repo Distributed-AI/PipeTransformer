@@ -32,7 +32,8 @@ https://videos.files.wordpress.com/3vsRzoiw/pipetransformer-animation_m4v_hd.mp4
     <source src="https://videos.files.wordpress.com/3vsRzoiw/pipetransformer-animation_m4v_hd.mp4" type="video/mp4">
   </video>
 </figure>
-![Animation](https://videos.files.wordpress.com/3vsRzoiw/pipetransformer-animation_m4v_hd.mp4)
+
+![Animation](https://chaoyanghe.com/wp-content/uploads/2021/06/PipeTransformer-Animation.gif)
 
 
 ## 2. Installation
