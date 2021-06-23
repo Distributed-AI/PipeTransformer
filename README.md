@@ -25,7 +25,7 @@ We also provide various performance analyses for a more comprehensive understand
 ## 3. Slides
 [https://docs.google.com/presentation/d/1t6HWL33KIQo2as0nSHeBpXYtTBcy0nXCoLiKd0EashY/edit?usp=sharing](https://docs.google.com/presentation/d/1t6HWL33KIQo2as0nSHeBpXYtTBcy0nXCoLiKd0EashY/edit?usp=sharing)
 
-## 3. Understanding PipeTransformer by Animation 
+## 4. Understanding PipeTransformer by Animation 
 https://videos.files.wordpress.com/3vsRzoiw/pipetransformer-animation_m4v_hd.mp4
 <figure class="video_container">
   <video controls="true" allowfullscreen="true">
@@ -36,10 +36,10 @@ https://videos.files.wordpress.com/3vsRzoiw/pipetransformer-animation_m4v_hd.mp4
 ![Animation](https://chaoyanghe.com/wp-content/uploads/2021/06/PipeTransformer-Animation.gif)
 
 
-## 2. Installation
+## 5. Installation
 Please follow `INSTALL-CONDA.md`.
 
-## 3. Experiments
+## 6. Experiments
 check README.md at 
 
 examples/image_classification
@@ -48,7 +48,7 @@ examples/question_answering
 
 examples/text_classification
 
-## 5. Citation
+## 7. Citation
 
 If you use any part of this code in your research or any engineering project, please cite our paper: 
 ```
@@ -61,7 +61,7 @@ If you use any part of this code in your research or any engineering project, pl
 ```
 
 
-## 6. Contacts
+## 8. Contacts
 
 Chaoyang He \
 https://chaoyanghe.com \
