@@ -21,6 +21,10 @@ We also provide various performance analyses for a more comprehensive understand
 ## 2. Overall Design
 <img src="https://chaoyanghe.com/wp-content/uploads/2021/02/PipeTransformer-overall-design.png" alt="PipeTransformer"/>
 
+
+## 3. Slides
+[https://docs.google.com/presentation/d/1t6HWL33KIQo2as0nSHeBpXYtTBcy0nXCoLiKd0EashY/edit?usp=sharing](https://docs.google.com/presentation/d/1t6HWL33KIQo2as0nSHeBpXYtTBcy0nXCoLiKd0EashY/edit?usp=sharing)
+
 ## 3. Understanding PipeTransformer by Animation 
 https://videos.files.wordpress.com/3vsRzoiw/pipetransformer-animation_m4v_hd.mp4
 <figure class="video_container">
@@ -28,9 +32,7 @@ https://videos.files.wordpress.com/3vsRzoiw/pipetransformer-animation_m4v_hd.mp4
     <source src="https://videos.files.wordpress.com/3vsRzoiw/pipetransformer-animation_m4v_hd.mp4" type="video/mp4">
   </video>
 </figure>
-
-See slides page 15-21
-[https://docs.google.com/presentation/d/1t6HWL33KIQo2as0nSHeBpXYtTBcy0nXCoLiKd0EashY/edit?usp=sharing](https://docs.google.com/presentation/d/1t6HWL33KIQo2as0nSHeBpXYtTBcy0nXCoLiKd0EashY/edit?usp=sharing)
+![Animation](https://videos.files.wordpress.com/3vsRzoiw/pipetransformer-animation_m4v_hd.mp4)
 
 
 ## 2. Installation
