@@ -25,8 +25,6 @@ We also provide various performance analyses for a more comprehensive understand
 See slides page 15-21
 [https://docs.google.com/presentation/d/1t6HWL33KIQo2as0nSHeBpXYtTBcy0nXCoLiKd0EashY/edit?usp=sharing](https://docs.google.com/presentation/d/1t6HWL33KIQo2as0nSHeBpXYtTBcy0nXCoLiKd0EashY/edit?usp=sharing)
 
-<iframe src="https://docs.google.com/presentation/d/e/2PACX-1vSbWDhzL2-ghYYGz_uZPS2y2CTx-WHbxskUNzxrC4MzHhjXUw9X01x4PoXnh7tD68vhYiKDZWnXg138/embed?start=true&loop=true&delayms=3000" frameborder="0" width="960" height="569" allowfullscreen="true" mozallowfullscreen="true" webkitallowfullscreen="true"></iframe>
-
 
 ## 2. Installation
 Please follow `INSTALL-CONDA.md`.
