@@ -53,7 +53,7 @@ examples/text_classification
 If you use any part of this code in your research or any engineering project, please cite our paper: 
 ```
 @article{he2021pipetransformer,
-  title={Pipetransformer: Automated elastic pipelining for distributed training of transformers},
+  title={Pipetransformer: Automated Elastic Pipelining for Distributed Training of Large-scale Models},
   author={He, Chaoyang and Li, Shen and Soltanolkotabi, Mahdi and Avestimehr, Salman},
   journal={Thirty-eighth International Conference on Machine Learning},
   year={2021}
