@@ -213,6 +213,43 @@ To redistribute the dataset, we implement a variant of DistributedSampler that c
 
 The above design also naturally helps to reduce DDP communication overhead. More specifically, when transitioning from T0 to T1, processes 0 and 1 destroy the existing DDP instances, and active processes construct a new DDP training group using cached pipelined model (AutoPipe stores frozen model and cached model separately).
 
+We uses the following APIs to implement the design above.
+
+```python
+import torch.distributed as dist
+from torch.nn.parallel import DistributedDataParallel as DDP
+
+# initialize the process group (this must be called in the initialization of PyTorch DDP)
+dist.init_process_group(init_method='tcp://' + str(self.config.master_addr) + ':' + str(self.config.master_port), backend=Backend.GLOO, rank=self.global_rank, world_size=self.world_size)
+...
+
+# create active process group (yellow color)
+self.active_process_group = dist.new_group(ranks=self.active_ranks, backend=Backend.NCCL, timeout=timedelta(days=365))
+...
+
+# create message process group (yellow color)
+self.comm_broadcast_group = dist.new_group(ranks=[i for i in range(self.world_size)], backend=Backend.GLOO, timeout=timedelta(days=365))
+...
+
+# create DDP-enabled model when the number of data-parallel workers is changed. Note:
+# 1. The process group to be used for distributed data all-reduction. If None, the default process group, which is created by torch.distributed.init_process_group, will be used. In our case, we set it as self.active_process_group
+# 2. device_ids should be set when the pipeline length = 1 (the model resides on a single CUDA device).
+
+self.pipe_len = gpu_num_per_process
+
+if gpu_num_per_process > 1:
+    model = DDP(model, process_group=self.active_process_group, find_unused_parameters=True)
+else:
+    model = DDP(model, device_ids=[self.local_rank], process_group=self.active_process_group, find_unused_parameters=True)
+    
+# to broadcast message among processes, we use dist.broadcast_object_list
+def dist_broadcast(object_list, src, group):
+    """Broadcasts a given object to all parties."""
+    dist.broadcast_object_list(object_list, src, group=group)
+    return object_list
+```
+
+
 # Experiments
 
 This section first summarizes experiment setups and then evaluates PipeTransformer using computer vision and natural language processing tasks.
