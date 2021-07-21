@@ -46,7 +46,7 @@ Existing distributed training solutions, however, only study scenarios where all
 
 * Freeze Training: Singular Vector Canonical Correlation Analysis for Deep Learning Dynamics and Interpretability. NeurIPS 2017
 * Efficient Training of BERT by Progressively Stacking. ICML 2019
-* Accelerating Training of Transformer-Based Language Models with Progressive Layer Dropping. NeurIPS 2020. Minjia Zhang
+* Accelerating Training of Transformer-Based Language Models with Progressive Layer Dropping. NeurIPS 2020.
 * On the Transformer Growth for Progressive BERT Training. NACCL 2021
 
 
@@ -220,7 +220,8 @@ import torch.distributed as dist
 from torch.nn.parallel import DistributedDataParallel as DDP
 
 # initialize the process group (this must be called in the initialization of PyTorch DDP)
-dist.init_process_group(init_method='tcp://' + str(self.config.master_addr) + ':' + str(self.config.master_port), backend=Backend.GLOO, rank=self.global_rank, world_size=self.world_size)
+dist.init_process_group(init_method='tcp://' + str(self.config.master_addr) + ':' + 
+str(self.config.master_port), backend=Backend.GLOO, rank=self.global_rank, world_size=self.world_size)
 ...
 
 # create active process group (yellow color)
@@ -232,8 +233,11 @@ self.comm_broadcast_group = dist.new_group(ranks=[i for i in range(self.world_si
 ...
 
 # create DDP-enabled model when the number of data-parallel workers is changed. Note:
-# 1. The process group to be used for distributed data all-reduction. If None, the default process group, which is created by torch.distributed.init_process_group, will be used. In our case, we set it as self.active_process_group
+# 1. The process group to be used for distributed data all-reduction. 
+If None, the default process group, which is created by torch.distributed.init_process_group, will be used. 
+In our case, we set it as self.active_process_group
 # 2. device_ids should be set when the pipeline length = 1 (the model resides on a single CUDA device).
+
 self.pipe_len = gpu_num_per_process
 if gpu_num_per_process > 1:
     model = DDP(model, process_group=self.active_process_group, find_unused_parameters=True)
