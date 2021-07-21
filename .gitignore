@@ -1,6 +1,7 @@
 .idea
 *.pyc
 *.gz
+.DS_Store
 
 
 wandb
