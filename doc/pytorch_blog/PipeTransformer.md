@@ -186,7 +186,7 @@ Additionally, such a technique can also speed up training by shrinking the size 
 
 Prior pipeline parallel systems use a fixed number of micro-batches per mini-batch ($M$). GPipe suggests $M \geq 4 \times K$, where $K$ is the number of partitions (pipeline length). However, given that that PipeTransformer dynamically configures $K$, we find it to be sub-optimal to maintain a static $M$ during training. Moreover, when integrated with DDP, the value of $M$ also has an impact on the efficiency of DDP gradient synchronizations. Since DDP must wait for the last micro-batch to finish its backward computation on a parameter before launching its gradient synchronization, finer micro-batches lead to a smaller overlap between computation and communication. Hence, instead of using a static value, PipeTransformer searches for optimal $M$ on the fly in the hybrid of DDP environment by enumerating $M$ values ranging from $K$ to $6K$. For a specific training environment, the profiling needs only to be done once (see Algorithm 1 line 35).
 
-
+For the complete source code, please refer to `https://github.com/Distributed-AI/PipeTransformer/blob/master/pipe_transformer/pipe/auto_pipe.py`.
 
 ## AutoDP: Spawning More Pipeline Replicas
 As AutoPipe compresses the same pipeline into fewer GPUs, AutoDP can automatically spawn new pipeline replicas to increase data-parallel width. 
@@ -212,6 +212,41 @@ In T0, only processes 0 and 8 are active. During the transition to T1, process 0
 To redistribute the dataset, we implement a variant of DistributedSampler that can seamlessly adjust data samples to match the number of active pipeline replicas.
 
 The above design also naturally helps to reduce DDP communication overhead. More specifically, when transitioning from T0 to T1, processes 0 and 1 destroy the existing DDP instances, and active processes construct a new DDP training group using a cached pipelined model (AutoPipe stores frozen model and cached model separately).
+
+We use the following APIs to implement the design above.
+
+```python
+import torch.distributed as dist
+from torch.nn.parallel import DistributedDataParallel as DDP
+
+# initialize the process group (this must be called in the initialization of PyTorch DDP)
+dist.init_process_group(init_method='tcp://' + str(self.config.master_addr) + ':' + str(self.config.master_port), backend=Backend.GLOO, rank=self.global_rank, world_size=self.world_size)
+...
+
+# create active process group (yellow color)
+self.active_process_group = dist.new_group(ranks=self.active_ranks, backend=Backend.NCCL, timeout=timedelta(days=365))
+...
+
+# create message process group (yellow color)
+self.comm_broadcast_group = dist.new_group(ranks=[i for i in range(self.world_size)], backend=Backend.GLOO, timeout=timedelta(days=365))
+...
+
+# create DDP-enabled model when the number of data-parallel workers is changed. Note:
+# 1. The process group to be used for distributed data all-reduction. If None, the default process group, which is created by torch.distributed.init_process_group, will be used. In our case, we set it as self.active_process_group
+# 2. device_ids should be set when the pipeline length = 1 (the model resides on a single CUDA device).
+self.pipe_len = gpu_num_per_process
+if gpu_num_per_process > 1:
+    model = DDP(model, process_group=self.active_process_group, find_unused_parameters=True)
+else:
+    model = DDP(model, device_ids=[self.local_rank], process_group=self.active_process_group, find_unused_parameters=True)
+    
+# to broadcast message among processes, we use dist.broadcast_object_list
+def dist_broadcast(object_list, src, group):
+    """Broadcasts a given object to all parties."""
+    dist.broadcast_object_list(object_list, src, group=group)
+    return object_list
+```
+For the complete source code, please refer to `https://github.com/Distributed-AI/PipeTransformer/blob/master/pipe_transformer/dp/auto_dp.py`.
 
 # Experiments
 
