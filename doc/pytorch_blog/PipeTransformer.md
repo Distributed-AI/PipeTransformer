@@ -23,7 +23,7 @@ Authors: Chaoyang He (USC), Shen Li (Facebook), Mahdi Soltanolkotabi (USC), Salm
 
 In this blog post, we describe the first peer-reviewed research paper that explores accelerating the hybrid of PyTorch DDP (`torch.nn.parallel.DistributedDataParallel`) [1] and Pipeline (`torch.distributed.pipeline`) - [PipeTransformer: Automated Elastic Pipelining for Distributed Training of Large-scale Models](http://proceedings.mlr.press/v139/he21a.html) (Transformers such as BERT [2]  and ViT [3]), published at ICML 2021. 
 
-PipeTransformer leverages automated elastic pipelining for efficient distributed training of Transformer models. In PipeTransformer, we design an adaptive on-the-fly freeze algorithm that can identify and freeze some layers gradually during training and an elastic pipelining system that can dynamically allocate resources to train the remaining active layers. More specifically, PipeTransformer automatically excludes frozen layers from the pipeline, packs active layers into fewer GPUs, and forks more replicas to increase data-parallel width. We evaluate PipeTransformer using Vision Transformer (ViT) on ImageNet and BERT on SQuAD and GLUE datasets. Our results show that compared to the state-of-the-art baseline, PipeTransformer attains up to 2.83-fold speedup without losing accuracy. We also provide various performance analyses for a more comprehensive understanding of our algorithmic and system-wise design.
+PipeTransformer leverages automated elastic pipelining for efficient distributed training of Transformer models. In PipeTransformer, we designed an adaptive on-the-fly freeze algorithm that can identify and freeze some layers gradually during training and an elastic pipelining system that can dynamically allocate resources to train the remaining active layers. More specifically, PipeTransformer automatically excludes frozen layers from the pipeline, packs active layers into fewer GPUs, and forks more replicas to increase data-parallel width. We evaluate PipeTransformer using Vision Transformer (ViT) on ImageNet and BERT on SQuAD and GLUE datasets. Our results show that compared to the state-of-the-art baseline, PipeTransformer attains up to 2.83-fold speedup without losing accuracy. We also provide various performance analyses for a more comprehensive understanding of our algorithmic and system-wise design.
 
 Next, we will introduce the background, motivation, our idea, design, and how we implement the algorithm and system with PyTorch Distributed APIs. 
 
@@ -39,7 +39,7 @@ Figure 1: the Parameter Number of Transformer Models Increases Dramatically.
 </p>
 
 
-Large Transformer models [4][5] have powered accuracy breakthroughs in both natural language processing and computer vision. GPT-3 [4] hit a new record high accuracy for nearly all NLP tasks. Vision Transformer (ViT) [3] also achieved 89\% top-1 accuracy in ImageNet, outperforming state-of-the-art convolutional networks ResNet-152 and EfficientNet. To tackle the growth in model sizes, researchers have proposed various distributed training techniques, including parameter servers [6][7][8], pipeline parallel [9][10][11][12], intra-layer parallel [13][14][15], and zero redundancy data-parallel [16].
+Large Transformer models [4][5] have powered accuracy breakthroughs in both natural language processing and computer vision. GPT-3 [4] hit a new record high accuracy for nearly all NLP tasks. Vision Transformer (ViT) [3] also achieved 89\% top-1 accuracy in ImageNet, outperforming state-of-the-art convolutional networks ResNet-152 and EfficientNet. To tackle the growth in model sizes, researchers have proposed various distributed training techniques, including parameter servers [6][7][8], pipeline parallelism [9][10][11][12], intra-layer parallelism [13][14][15], and zero redundancy data-parallel [16].
 
 
 Existing distributed training solutions, however, only study scenarios where all model weights are required to be optimized throughout the training (i.e., computation and communication overhead remains relatively static over different iterations). Recent works on <em>progressive training</em> suggest that parameters in neural networks can be trained dynamically:
@@ -103,12 +103,12 @@ Under these settings, our goal is to accelerate training by leveraging freeze tr
 Figure 5. Overview of PipeTransformer Training System
 </p>
 
-PipeTransformer co-designs an on the fly freeze algorithm and an automated elastic pipelining training system that can dynamically transform the scope of the pipelined model and the number of pipeline replicas. The overall system architecture is illustrated in Figure 5.  To support PipeTransformer’s elastic pipelining, we maintain a customized version of PyTorch Pipeline. For data parallelism, we use PyTorch DDP as a baseline. Other libraries are standard mechanisms of an operating system (e.g.,multi-processing) and thus avoid specialized software or hardware customization requirements. To ensure the generality of our framework, we have decoupled the training system into four core components: <strong>freeze algorithm</strong>, <strong>AutoPipe</strong>, <strong>AutoDP</strong>, and <strong>AutoCache</strong>. The <strong>freeze algorithm</strong> (grey) samples indicators from the training loop and makes layer-wise freezing decisions, which will be shared with <strong>AutoPipe</strong> (green). AutoPipeis an elastic pipeline module that speeds up training by excluding frozen layers from the pipeline and packing the active layers into fewer GPUs (pink), leading to both fewer cross-GPU communications and smaller pipeline bubbles. Subsequently, <strong>AutoPipe</strong> passes pipeline length information to <strong>AutoDP</strong> (purple), which then spawns more pipeline replicas to increase data-parallel width, if possible. The illustration also includes an example in which AutoDP introduces a new replica (purple). <strong>AutoCache</strong> (orange edges) is a cross-pipeline caching module, as illustrated by connections between pipelines. The source code architecture is aligned with Figure 5 for readability and generality.
+PipeTransformer co-designs an on the fly freeze algorithm and an automated elastic pipelining training system that can dynamically transform the scope of the pipelined model and the number of pipeline replicas. The overall system architecture is illustrated in Figure 5.  To support PipeTransformer’s elastic pipelining, we maintain a customized version of PyTorch Pipeline. For data parallelism, we use PyTorch DDP as a baseline. Other libraries are standard mechanisms of an operating system (e.g.,multi-processing) and thus avoid specialized software or hardware customization requirements. To ensure the generality of our framework, we have decoupled the training system into four core components: <strong>freeze algorithm</strong>, <strong>AutoPipe</strong>, <strong>AutoDP</strong>, and <strong>AutoCache</strong>. The <strong>freeze algorithm</strong> (grey) samples indicators from the training loop and makes layer-wise freezing decisions, which will be shared with <strong>AutoPipe</strong> (green). AutoPipe is an elastic pipeline module that speeds up training by excluding frozen layers from the pipeline and packing the active layers into fewer GPUs (pink), leading to both fewer cross-GPU communications and smaller pipeline bubbles. Subsequently, <strong>AutoPipe</strong> passes pipeline length information to <strong>AutoDP</strong> (purple), which then spawns more pipeline replicas to increase data-parallel width, if possible. The illustration also includes an example in which AutoDP introduces a new replica (purple). <strong>AutoCache</strong> (orange edges) is a cross-pipeline caching module, as illustrated by connections between pipelines. The source code architecture is aligned with Figure 5 for readability and generality.
 
 
 # Implementation Using PyTorch APIs
 
-As can see from Figure 5, PipeTransformers contain four components: Freeze Algorithm, AutoPipe, AutoDP, and AutoCache. Among them, AutoPipe and AutoDP relies on PyTorch DDP (`torch.nn.parallel.DistributedDataParallel`) [1] and Pipeline (`torch.distributed.pipeline`), respectively. In this blog, we only highlight the key implementation details of AutoPipe and AutoDP. For details of Freeze Algorithm and AutoCache, please refer to our paper.
+As can be seen from Figure 5, PipeTransformers contain four components: Freeze Algorithm, AutoPipe, AutoDP, and AutoCache. Among them, AutoPipe and AutoDP relies on PyTorch DDP (`torch.nn.parallel.DistributedDataParallel`) [1] and Pipeline (`torch.distributed.pipeline`), respectively. In this blog, we only highlight the key implementation details of AutoPipe and AutoDP. For details of Freeze Algorithm and AutoCache, please refer to our paper.
 
 ## AutoPipe: Elastic Pipelining
 
@@ -123,7 +123,7 @@ Before diving into details of AutoPipe, let us warm up the basic usage of PyTorc
 fc1 = nn.Linear(16, 8).cuda(0)
 fc2 = nn.Linear(8, 4).cuda(1)
 
-# Step 2: wrapper two layers with nn.Sequential
+# Step 2: wrap the two layers with nn.Sequential
 model = nn.Sequential(fc1, fc2)
 
 # Step 3: build Pipe (torch.distributed.pipeline.sync.Pipe)
@@ -134,12 +134,12 @@ input = torch.rand(16, 16).cuda(0)
 output_rref = model(input)
 ```
 
-In this basic example, we can see that before initializing `Pipe`, we need to partition the model `nn.Sequential` into multiple GPU devices and set optimal chunk number (`chunks`). Balancing computation time across partitions is critical to pipeline training speed, as skewed workload distributions across stages can lead to stragglers, forcing devices with lighter workloads to wait. The chunk number may also have a non-trivial influence on the throughput of the pipeline.
+In this basic example, we can see that before initializing `Pipe`, we need to partition the model `nn.Sequential` into multiple GPU devices and set optimal chunk number (`chunks`). Balancing computation time across partitions is critical to pipeline training speed, as skewed workload distributions across stages can lead to stragglers and forcing devices with lighter workloads to wait. The chunk number may also have a non-trivial influence on the throughput of the pipeline.
 
 
 ### Balanced Pipeline Partitioning
 
-In dynamic training system such as PipeTransformer, maintaining optimally balanced partitions in terms of paramter numbers does not guarantee the fastest training speed because other factors also play a crucial role:
+In dynamic training system such as PipeTransformer, maintaining optimally balanced partitions in terms of parameter numbers does not guarantee the fastest training speed because other factors also play a crucial role:
 
 <p align="center">
 <img src="./figure/balancing_partition.png" width="560">
@@ -186,7 +186,7 @@ Additionally, such a technique can also speed up training by shrinking the size 
 
 Prior pipeline parallel systems use a fixed number of micro-batches per mini-batch ($M$). GPipe suggests $M \geq 4 \times K$, where $K$ is the number of partitions (pipeline length). However, given that that PipeTransformer dynamically configures $K$, we find it to be sub-optimal to maintain a static $M$ during training. Moreover, when integrated with DDP, the value of $M$ also has an impact on the efficiency of DDP gradient synchronizations. Since DDP must wait for the last micro-batch to finish its backward computation on a parameter before launching its gradient synchronization, finer micro-batches lead to a smaller overlap between computation and communication. Hence, instead of using a static value, PipeTransformer searches for optimal $M$ on the fly in the hybrid of DDP environment by enumerating $M$ values ranging from $K$ to $6K$. For a specific training environment, the profiling needs only to be done once (see Algorithm 1 line 35).
 
-For the complete source code, please refer to `https://github.com/Distributed-AI/PipeTransformer/blob/master/pipe_transformer/pipe/auto_pipe.py`.
+
 
 ## AutoDP: Spawning More Pipeline Replicas
 As AutoPipe compresses the same pipeline into fewer GPUs, AutoDP can automatically spawn new pipeline replicas to increase data-parallel width. 
@@ -211,43 +211,7 @@ To tackle these challenges, we create double communication process groups for DD
 In T0, only processes 0 and 8 are active. During the transition to T1, process 0 activates processes 1 and 9 (newly added pipeline replicas) and synchronizes necessary information mentioned above using the message group. The four active processes then form a new training group, allowing static collective communications adaptive to dynamic memberships.
 To redistribute the dataset, we implement a variant of DistributedSampler that can seamlessly adjust data samples to match the number of active pipeline replicas.
 
-The above design also naturally helps to reduce DDP communication overhead. More specifically, when transitioning from T0 to T1, processes 0 and 1 destroy the existing DDP instances, and active processes construct a new DDP training group using cached pipelined model (AutoPipe stores frozen model and cached model separately).
-
-We use the following APIs to implement the design above.
-
-```python
-import torch.distributed as dist
-from torch.nn.parallel import DistributedDataParallel as DDP
-
-# initialize the process group (this must be called in the initialization of PyTorch DDP)
-dist.init_process_group(init_method='tcp://' + str(self.config.master_addr) + ':' + str(self.config.master_port), backend=Backend.GLOO, rank=self.global_rank, world_size=self.world_size)
-...
-
-# create active process group (yellow color)
-self.active_process_group = dist.new_group(ranks=self.active_ranks, backend=Backend.NCCL, timeout=timedelta(days=365))
-...
-
-# create message process group (yellow color)
-self.comm_broadcast_group = dist.new_group(ranks=[i for i in range(self.world_size)], backend=Backend.GLOO, timeout=timedelta(days=365))
-...
-
-# create DDP-enabled model when the number of data-parallel workers is changed. Note:
-# 1. The process group to be used for distributed data all-reduction. If None, the default process group, which is created by torch.distributed.init_process_group, will be used. In our case, we set it as self.active_process_group
-# 2. device_ids should be set when the pipeline length = 1 (the model resides on a single CUDA device).
-self.pipe_len = gpu_num_per_process
-if gpu_num_per_process > 1:
-    model = DDP(model, process_group=self.active_process_group, find_unused_parameters=True)
-else:
-    model = DDP(model, device_ids=[self.local_rank], process_group=self.active_process_group, find_unused_parameters=True)
-    
-# to broadcast message among processes, we use dist.broadcast_object_list
-def dist_broadcast(object_list, src, group):
-    """Broadcasts a given object to all parties."""
-    dist.broadcast_object_list(object_list, src, group=group)
-    return object_list
-```
-For the complete source code, please refer to `https://github.com/Distributed-AI/PipeTransformer/blob/master/pipe_transformer/dp/auto_dp.py`.
-
+The above design also naturally helps to reduce DDP communication overhead. More specifically, when transitioning from T0 to T1, processes 0 and 1 destroy the existing DDP instances, and active processes construct a new DDP training group using a cached pipelined model (AutoPipe stores frozen model and cached model separately).
 
 # Experiments
 
@@ -259,7 +223,7 @@ This section first summarizes experiment setups and then evaluates PipeTransform
 
 <strong>Models and Datasets.</strong> Experiments employ two representative Transformers in CV and NLP: Vision Transformer (ViT) and BERT. ViT was run on an image classification task, initialized with pre-trained weights on ImageNet21K and fine-tuned on ImageNet and CIFAR-100. BERT was run on two tasks, text classification on the SST-2 dataset from the General Language Understanding Evaluation (GLUE) benchmark, and question answering on the SQuAD v1.1 Dataset (Stanford Question Answering), which is a collection of 100k crowdsourced question/answer pairs.
 
-<strong>Training Schemes.</strong> Given that large models normally would require thousands of GPU-days (\emph{e.g.}, GPT-3) if trained from scratch, fine-tuning downstream tasks using pre-trained models has become a trend in CV and NLP communities. Moreover, PipeTransformer is a complex training system that involves multiple core components. Thus, for the first version of PipeTransformer system development and algorithmic research, it is not cost-efficient to develop and evaluate from scratch using large-scale pre-training. Therefore, the experiments presented in this section focuses on pre-trained models. Note that since the model architectures in pre-training and fine-tuning are the same, PipeTransformer can serve both. We discussed pre-training results in the Appendix.
+<strong>Training Schemes.</strong> Given that large models normally would require thousands of GPU-days {\emph{e.g.}, GPT-3) if trained from scratch, fine-tuning downstream tasks using pre-trained models has become a trend in CV and NLP communities. Moreover, PipeTransformer is a complex training system that involves multiple core components. Thus, for the first version of PipeTransformer system development and algorithmic research, it is not cost-efficient to develop and evaluate from scratch using large-scale pre-training. Therefore, the experiments presented in this section focuses on pre-trained models. Note that since the model architectures in pre-training and fine-tuning are the same, PipeTransformer can serve both. We discussed pre-training results in the Appendix.
 
 <strong>Baseline.</strong> Experiments in this section compares PipeTransformer to the state-of-the-art framework, a hybrid scheme of PyTorch Pipeline (PyTorch’s implementation of GPipe) and PyTorch DDP. Since this is the first paper that studies accelerating distributed training by freezing layers, there are no perfectly aligned counterpart solutions yet.
 
