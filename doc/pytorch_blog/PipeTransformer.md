@@ -186,7 +186,7 @@ Additionally, such a technique can also speed up training by shrinking the size 
 
 Prior pipeline parallel systems use a fixed number of micro-batches per mini-batch ($M$). GPipe suggests $M \geq 4 \times K$, where $K$ is the number of partitions (pipeline length). However, given that that PipeTransformer dynamically configures $K$, we find it to be sub-optimal to maintain a static $M$ during training. Moreover, when integrated with DDP, the value of $M$ also has an impact on the efficiency of DDP gradient synchronizations. Since DDP must wait for the last micro-batch to finish its backward computation on a parameter before launching its gradient synchronization, finer micro-batches lead to a smaller overlap between computation and communication. Hence, instead of using a static value, PipeTransformer searches for optimal $M$ on the fly in the hybrid of DDP environment by enumerating $M$ values ranging from $K$ to $6K$. For a specific training environment, the profiling needs only to be done once (see Algorithm 1 line 35).
 
-
+For the complete source code, please refer to `https://github.com/Distributed-AI/PipeTransformer/blob/master/pipe_transformer/pipe/auto_pipe.py`.
 
 ## AutoDP: Spawning More Pipeline Replicas
 As AutoPipe compresses the same pipeline into fewer GPUs, AutoDP can automatically spawn new pipeline replicas to increase data-parallel width. 
@@ -213,7 +213,7 @@ To redistribute the dataset, we implement a variant of DistributedSampler that c
 
 The above design also naturally helps to reduce DDP communication overhead. More specifically, when transitioning from T0 to T1, processes 0 and 1 destroy the existing DDP instances, and active processes construct a new DDP training group using cached pipelined model (AutoPipe stores frozen model and cached model separately).
 
-We uses the following APIs to implement the design above.
+We use the following APIs to implement the design above.
 
 ```python
 import torch.distributed as dist
@@ -248,6 +248,7 @@ def dist_broadcast(object_list, src, group):
     dist.broadcast_object_list(object_list, src, group=group)
     return object_list
 ```
+For the complete source code, please refer to `https://github.com/Distributed-AI/PipeTransformer/blob/master/pipe_transformer/dp/auto_dp.py`.
 
 
 # Experiments
