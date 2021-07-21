@@ -234,9 +234,7 @@ self.comm_broadcast_group = dist.new_group(ranks=[i for i in range(self.world_si
 # create DDP-enabled model when the number of data-parallel workers is changed. Note:
 # 1. The process group to be used for distributed data all-reduction. If None, the default process group, which is created by torch.distributed.init_process_group, will be used. In our case, we set it as self.active_process_group
 # 2. device_ids should be set when the pipeline length = 1 (the model resides on a single CUDA device).
-
 self.pipe_len = gpu_num_per_process
-
 if gpu_num_per_process > 1:
     model = DDP(model, process_group=self.active_process_group, find_unused_parameters=True)
 else:
