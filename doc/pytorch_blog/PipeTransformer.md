@@ -21,11 +21,11 @@ MathJax.Hub.Queue(function() {
 
 Authors: Chaoyang He (USC), Shen Li (Facebook), Mahdi Soltanolkotabi (USC), Salman Avestimehr (USC)
 
-In this blogpost, we describe the first peer-reviewed research paper that explores accelerating the hybrid of PyTorch DDP (`torch.nn.parallel.DistributedDataParallel`) [1] and Pipeline (`torch.distributed.pipeline`) - [PipeTransformer: Automated Elastic Pipelining for Distributed Training of Large-scale Models](http://proceedings.mlr.press/v139/he21a.html) (Transformers such as BERT [2]  and ViT [3]), published at ICML 2021. 
+In this blog post, we describe the first peer-reviewed research paper that explores accelerating the hybrid of PyTorch DDP (`torch.nn.parallel.DistributedDataParallel`) [1] and Pipeline (`torch.distributed.pipeline`) - [PipeTransformer: Automated Elastic Pipelining for Distributed Training of Large-scale Models](http://proceedings.mlr.press/v139/he21a.html) (Transformers such as BERT [2]  and ViT [3]), published at ICML 2021. 
 
-PipeTransformer leverages automated elastic pipelining for efficient distributed training of Transformer models. In PipeTransformer, we design an adaptive on the fly freeze algorithm that can identify and freeze some layers gradually during training, and an elastic pipelining system that can dynamically allocate resources to train the remaining active layers. More specifically, PipeTransformer automatically excludes frozen layers from the pipeline, packs active layers into fewer GPUs, and forks more replicas to increase data-parallel width. We evaluate PipeTransformer using Vision Transformer (ViT) on ImageNet and BERT on SQuAD and GLUE datasets. Our results show that compared to the state-of-the-art baseline, PipeTransformer attains up to 2.83-fold speedup without losing accuracy. We also provide various performance analyses for a more comprehensive understanding of our algorithmic and system-wise design.
+PipeTransformer leverages automated elastic pipelining for efficient distributed training of Transformer models. In PipeTransformer, we design an adaptive on-the-fly freeze algorithm that can identify and freeze some layers gradually during training and an elastic pipelining system that can dynamically allocate resources to train the remaining active layers. More specifically, PipeTransformer automatically excludes frozen layers from the pipeline, packs active layers into fewer GPUs, and forks more replicas to increase data-parallel width. We evaluate PipeTransformer using Vision Transformer (ViT) on ImageNet and BERT on SQuAD and GLUE datasets. Our results show that compared to the state-of-the-art baseline, PipeTransformer attains up to 2.83-fold speedup without losing accuracy. We also provide various performance analyses for a more comprehensive understanding of our algorithmic and system-wise design.
 
-Next we will introduce the background, motivation, our idea, design, and how we implement the algorithm and system with PyTorch Distributed APIs. 
+Next, we will introduce the background, motivation, our idea, design, and how we implement the algorithm and system with PyTorch Distributed APIs. 
 
 * Paper: [http://proceedings.mlr.press/v139/he21a.html](http://proceedings.mlr.press/v139/he21a.html)
 * Source Code: [https://DistML.ai](https://distml.ai).
@@ -39,10 +39,10 @@ Figure 1: the Parameter Number of Transformer Models Increases Dramatically.
 </p>
 
 
-Large Transformer models [4][5] have powered accuracy breakthroughs in both natural language processing and computer vision. GPT-3 [4] hit a new record high accuracy for nearly all NLP tasks. Vision Transformer (ViT) [3] also achieved 89\% top-1 accuracy in ImageNet, outperforming state-of-the-art convolutional networks ResNet-152 and EfficientNet. To tackle the growth in model sizes, researchers have proposed various distributed training techniques, including parameter servers [6][7][8], pipeline parallel [9][10][11][12], intra-layer parallel [13][14][15], and zero redundancy data parallel [16].
+Large Transformer models [4][5] have powered accuracy breakthroughs in both natural language processing and computer vision. GPT-3 [4] hit a new record high accuracy for nearly all NLP tasks. Vision Transformer (ViT) [3] also achieved 89\% top-1 accuracy in ImageNet, outperforming state-of-the-art convolutional networks ResNet-152 and EfficientNet. To tackle the growth in model sizes, researchers have proposed various distributed training techniques, including parameter servers [6][7][8], pipeline parallel [9][10][11][12], intra-layer parallel [13][14][15], and zero redundancy data-parallel [16].
 
 
-Existing distributed training solutions, however, only study scenarios where all model weights are required to be optimized throughout the training (i.e., computation and communication overhead remains relatively static over different iterations). Recent works on <em>progressive training</em> suggest that parameters in neural networks can be trained dnamically:
+Existing distributed training solutions, however, only study scenarios where all model weights are required to be optimized throughout the training (i.e., computation and communication overhead remains relatively static over different iterations). Recent works on <em>progressive training</em> suggest that parameters in neural networks can be trained dynamically:
 
 * Freeze Training: Singular Vector Canonical Correlation Analysis for Deep Learning Dynamics and Interpretability. NeurIPS 2017
 * Efficient Training of BERT by Progressively Stacking. ICML 2019
@@ -54,9 +54,9 @@ Existing distributed training solutions, however, only study scenarios where all
 <img src="./figure/freeze_training.png" alt="Freeze Training" width="560">
 <br>
 </p>
-Figure 2. Interpretable Freeze Training: DNNs converge bottom up (Results on CIFAR10 using ResNet). Each pane shows layer-by-layer similarity using SVCCA [17][18]
+Figure 2. Interpretable Freeze Training: DNNs converge bottom-up (Results on CIFAR10 using ResNet). Each pane shows layer-by-layer similarity using SVCCA [17][18]
 
-For example, in freeze training [17][18], neural network usually converge from the bottom-up (i.e., not all layers need to be trained all the way through training). Figure 2 shows an example of how weights gradually stabilize during training in this approach. This observation motivates us to utilize freeze training for distributed training of Transformer models to accelerate training by dynamically allocating resources to focus on a shrinking set of active layers. Such a layer freezing strategy is especially pertinent to pipeline parallelism, as excluding consecutive bottom layers from the pipeline can reduce computation, memory, and communication overhead. 
+For example, in freeze training [17][18], neural networks usually converge from the bottom-up (i.e., not all layers need to be trained all the way through training). Figure 2 shows an example of how weights gradually stabilize during training in this approach. This observation motivates us to utilize freeze training for distributed training of Transformer models to accelerate training by dynamically allocating resources to focus on a shrinking set of active layers. Such a layer freezing strategy is especially pertinent to pipeline parallelism, as excluding consecutive bottom layers from the pipeline can reduce computation, memory, and communication overhead. 
 
 <p align="center">
 <img src="./figure/PipeTransformer.png" alt="Freeze Training">
@@ -65,9 +65,9 @@ Figure 3. The process of PipeTransformer’s automated and elastic pipelining to
 </p>
 
 
-We propose PipeTransformer, an elastic pipelining training acceleration framework that automatically reacts to frozen layers by dynamically transforming the scope of the pipelined model and the number of pipeline replicas. To the best of our knowledge, this is the first paper that studies layer freezing in the context of both pipeline and data-parallel training. Figure 3 demonstrates the benefits of such a combation. First, by excluding frozen layers from the pipeline, the same model can be packed into fewer GPUs, leading to both fewer cross-GPU communications and smaller pipeline bubbles. Second, after packing the model into fewer GPUs, the same cluster can accommodate more pipeline replicas, increasing the width of data parallelism. More importantly, the speedups acquired from these two benefits are multiplicative rather than additive, further accelerating the training.
+We propose PipeTransformer, an elastic pipelining training acceleration framework that automatically reacts to frozen layers by dynamically transforming the scope of the pipelined model and the number of pipeline replicas. To the best of our knowledge, this is the first paper that studies layer freezing in the context of both pipeline and data-parallel training. Figure 3 demonstrates the benefits of such a combination. First, by excluding frozen layers from the pipeline, the same model can be packed into fewer GPUs, leading to both fewer cross-GPU communications and smaller pipeline bubbles. Second, after packing the model into fewer GPUs, the same cluster can accommodate more pipeline replicas, increasing the width of data parallelism. More importantly, the speedups acquired from these two benefits are multiplicative rather than additive, further accelerating the training.
 
-The design of PipeTransformer faces four major challenges. First, the freeze algorithm must make on the fly and adaptive freezing decisions; however, existing work [17][18] only provides a posterior analysis tool. Second, the efficiency of pipeline re-partitioning results is influenced by multiple factors, including partition granularity, cross-partition activation size, and the chunking (the number of micro-batches) in mini-batches, which require reasoning and searching in a large solution space. Third, to dynamically introduce additional pipeline replicas, PipeTransformer must overcome the static nature of collective communications and avoid potentially complex cross-process messaging protocols when onboarding new processes (one pipeline is handled by one process). Finally, caching can save time for repeated forward propagation of frozen layers, but it must be shared between existing pipelines and newly added ones, as the system cannot afford to create and warm up a dedicated cache for each replica.
+The design of PipeTransformer faces four major challenges. First, the freeze algorithm must make on-the-fly and adaptive freezing decisions; however, existing work [17][18] only provides a posterior analysis tool. Second, the efficiency of pipeline re-partitioning results is influenced by multiple factors, including partition granularity, cross-partition activation size, and the chunking (the number of micro-batches) in mini-batches, which require reasoning and searching in a large solution space. Third, to dynamically introduce additional pipeline replicas, PipeTransformer must overcome the static nature of collective communications and avoid potentially complex cross-process messaging protocols when onboarding new processes (one pipeline is handled by one process). Finally, caching can save time for repeated forward propagation of frozen layers, but it must be shared between existing pipelines and newly added ones, as the system cannot afford to create and warm up a dedicated cache for each replica.
 
 <p align="center">
 <img src="./figure/PipeTransformer-Animation.gif" alt="Freeze Training">
@@ -75,7 +75,7 @@ The design of PipeTransformer faces four major challenges. First, the freeze alg
 Figure 4: An Animation to Show the Dynamics of PipeTransformer
 </p>
 
-As show in the animation (Figure 4), PipeTransformer is designed with four core building blocks to address the aforementioned challenges. First, we design a tunable and adaptive algorithm to generate signals that guide the selection of layers to freeze over different iterations (Freeze Algorithm). Once triggered by these signals, our elastic pipelining module (AutoPipe), then packs the remaining active layers into fewer GPUs by taking both activation sizes and variances of workloads across heterogeneous partitions (frozen layers and active layers) into account. It then splits a mini-batch into an optimal number of micro-batches based on prior profiling results for different pipeline lengths. Our next module, AutoDP, spawns additional pipeline replicas to occupy freed-up GPUs and maintains hierarchical communication process groups to attain dynamic membership for collective communications. Our final module, AutoCache, efficiently shares activations across existing and new data-parallel processes and automatically replaces stale caches during transitions.
+As shown in the animation (Figure 4), PipeTransformer is designed with four core building blocks to address the aforementioned challenges. First, we design a tunable and adaptive algorithm to generate signals that guide the selection of layers to freeze over different iterations (Freeze Algorithm). Once triggered by these signals, our elastic pipelining module (AutoPipe), then packs the remaining active layers into fewer GPUs by taking both activation sizes and variances of workloads across heterogeneous partitions (frozen layers and active layers) into account. It then splits a mini-batch into an optimal number of micro-batches based on prior profiling results for different pipeline lengths. Our next module, AutoDP, spawns additional pipeline replicas to occupy freed-up GPUs and maintains hierarchical communication process groups to attain dynamic membership for collective communications. Our final module, AutoCache, efficiently shares activations across existing and new data-parallel processes and automatically replaces stale caches during transitions.
 
 
 Overall, PipeTransformer combines the Freeze Algorithm, AutoPipe, AutoDP, and AutoCache modules to provide a significant training speedup.
@@ -90,9 +90,9 @@ Suppose we aim to train a massive model in a distributed training system where t
 
 <strong>Training infrastructure.</strong> Assume the training infrastructure contains a GPU cluster that has $N$ GPU servers (i.e. nodes). Each node has $I$ GPUs. Our cluster is homogeneous, meaning that each GPU and server have the same hardware configuration. Each GPU's memory capacity is $M_\text{GPU}$. Servers are connected by a high bandwidth network interface such as InfiniBand interconnect.
 
-<strong>Pipeline parallelism.</strong> In each machine, we load a model $\mathcal{F}$ into a pipeline $\mathcal{P}$ which has $K$ partitions ($K$ also represents the pipeline length). The $k$th partition $p_k$ consists of consecutive layers. We assume each partition is handled by a single GPU device. $1 \leq K \leq I$, meaning that we can build multiple pipelines for multiple model replicas in a single machine. We assume all GPU devices in a pipeline belong to the same machine. Our pipeline is a synchronous pipeline, which does not involve stale gradients, and the number of micro-batches is $M$. In the Linux OS, each pipeline is handled by a single process. We refer the reader to GPipe [10] for more details.
+<strong>Pipeline parallelism.</strong> In each machine, we load a model $\mathcal{F}$ into a pipeline $\mathcal{P}$ which has $K$ partitions ($K$ also represents the pipeline length). The $k$th partition $p_k$ consists of consecutive layers. We assume each partition is handled by a single GPU device. $1 \leq K \leq I$, meaning that we can build multiple pipelines for multiple model replicas in a single machine. We assume all GPU devices in a pipeline belonging to the same machine. Our pipeline is synchronous pipeline, which does not involve stale gradients, and the number of micro-batches is $M$. In the Linux OS, each pipeline is handled by a single process. We refer the reader to GPipe [10] for more details.
 
-<strong>Data parallelism.</strong> DDP is a cross-machine distributed data parallel process group within $R$ parallel workers. Each worker is a pipeline replica (a single process). The $r$th worker's index (ID) is rank $r$. For any two pipelines in DDP, they can belong to either the same GPU server or different GPU servers, and they can exchange gradients with the AllReduce algorithm.
+<strong>Data parallelism.</strong> DDP is a cross-machine distributed data-parallel process group within $R$ parallel workers. Each worker is a pipeline replica (a single process). The $r$th worker's index (ID) is rank $r$. For any two pipelines in DDP, they can belong to either the same GPU server or different GPU servers, and they can exchange gradients with the AllReduce algorithm.
 
 Under these settings, our goal is to accelerate training by leveraging freeze training, which does not require all layers to be trained throughout the duration of the training. Additionally, it may help save computation, communication, memory cost, and potentially prevent overfitting by consecutively freezing layers. However, these benefits can only be achieved by overcoming the four challenges of designing an adaptive freezing algorithm, dynamical pipeline re-partitioning, efficient resource reallocation, and cross-process caching, as discussed in the introduction.
 
@@ -103,12 +103,12 @@ Under these settings, our goal is to accelerate training by leveraging freeze tr
 Figure 5. Overview of PipeTransformer Training System
 </p>
 
-PipeTransformer co-designs an on the fly freeze algorithm and an automated elastic pipelining training systemthat can dynamically transform the scope of the pipelinedmodel and the number of pipeline replicas. The overallsystem architecture is illustrated in Figure 5.  To support PipeTransformer’s elastic pipelining, we maintain acustomized version of PyTorch Pipeline. For data parallelism, we usePyTorch DDP as a baseline. Other libraries are standard mechanisms ofan operating system (e.g.,multi-processing) and thusavoid specialized software or hardware customization requirements. To ensure the generality of our framework, wehave decoupled the training system into four core components: <strong>freeze algorithm</strong>, <strong>AutoPipe</strong>, <strong>AutoDP</strong>, and <strong>AutoCache</strong>. The <strong>freeze algorithm</strong> (grey) samples indicators from the training loop and makes layer-wise freezing decisions, which will be shared with <strong>AutoPipe</strong> (green). AutoPipeis an elastic pipeline module that speeds uptraining by excluding frozen layers from the pipeline andpacking the active layers into fewer GPUs (pink), leading toboth fewer cross-GPU communications and smaller pipelinebubbles. Subsequently, <strong>AutoPipe</strong> passes pipeline lengthinformation to <strong>AutoDP</strong> (purple), which then spawns morepipeline replicas to increase data-parallel width, if possible. The illustration also includes an example in which AutoDP introduces a new replica (purple). <strong>AutoCache</strong> (orange edges) is a cross-pipeline caching module, as illustrated by connections between pipelines. The source code architecture is aligned with Figure 5 for readability and generality.
+PipeTransformer co-designs an on the fly freeze algorithm and an automated elastic pipelining training system that can dynamically transform the scope of the pipelined model and the number of pipeline replicas. The overall system architecture is illustrated in Figure 5.  To support PipeTransformer’s elastic pipelining, we maintain a customized version of PyTorch Pipeline. For data parallelism, we use PyTorch DDP as a baseline. Other libraries are standard mechanisms of an operating system (e.g.,multi-processing) and thus avoid specialized software or hardware customization requirements. To ensure the generality of our framework, we have decoupled the training system into four core components: <strong>freeze algorithm</strong>, <strong>AutoPipe</strong>, <strong>AutoDP</strong>, and <strong>AutoCache</strong>. The <strong>freeze algorithm</strong> (grey) samples indicators from the training loop and makes layer-wise freezing decisions, which will be shared with <strong>AutoPipe</strong> (green). AutoPipeis an elastic pipeline module that speeds up training by excluding frozen layers from the pipeline and packing the active layers into fewer GPUs (pink), leading to both fewer cross-GPU communications and smaller pipeline bubbles. Subsequently, <strong>AutoPipe</strong> passes pipeline length information to <strong>AutoDP</strong> (purple), which then spawns more pipeline replicas to increase data-parallel width, if possible. The illustration also includes an example in which AutoDP introduces a new replica (purple). <strong>AutoCache</strong> (orange edges) is a cross-pipeline caching module, as illustrated by connections between pipelines. The source code architecture is aligned with Figure 5 for readability and generality.
 
 
 # Implementation Using PyTorch APIs
 
-As can see from Figure 5, PipeTransformers contain four components: Freeze Algorithm, AutoPipe, AutoDP, and AutoCache. Among them, AutoPipe and AutoDP relies on PyTorch DDP (`torch.nn.parallel.DistributedDataParallel`) [1] and Pipeline (`torch.distributed.pipeline`), respectively. In this blog, we only highlight the key implmentation details of AutoPipe and AutoDP. For details of Freeze Algorithm and AutoCache, please refer to our paper.
+As can see from Figure 5, PipeTransformers contain four components: Freeze Algorithm, AutoPipe, AutoDP, and AutoCache. Among them, AutoPipe and AutoDP relies on PyTorch DDP (`torch.nn.parallel.DistributedDataParallel`) [1] and Pipeline (`torch.distributed.pipeline`), respectively. In this blog, we only highlight the key implementation details of AutoPipe and AutoDP. For details of Freeze Algorithm and AutoCache, please refer to our paper.
 
 ## AutoPipe: Elastic Pipelining
 
@@ -134,7 +134,7 @@ input = torch.rand(16, 16).cuda(0)
 output_rref = model(input)
 ```
 
-In this basic example, we can see that before initiliazing `Pipe`, we need to partition the model `nn.Sequential` into multiple GPU devices and set optimal chunk number (`chunks`). Balancing computation time across partitions is critical to pipeline training speed, as skewed workload distributions across stages can lead to stragglers, forcing devices with lighter workloads to wait. The chunk number may also has non-trival influence to the throughput of pipeline.
+In this basic example, we can see that before initializing `Pipe`, we need to partition the model `nn.Sequential` into multiple GPU devices and set optimal chunk number (`chunks`). Balancing computation time across partitions is critical to pipeline training speed, as skewed workload distributions across stages can lead to stragglers, forcing devices with lighter workloads to wait. The chunk number may also have a non-trivial influence on the throughput of the pipeline.
 
 
 ### Balanced Pipeline Partitioning
@@ -144,12 +144,12 @@ In dynamic training system such as PipeTransformer, maintaining optimally balanc
 <p align="center">
 <img src="./figure/balancing_partition.png" width="560">
 <br>
-Figure 6. Partition boundary is in the middle of a skip connection
+Figure 6. The partition boundary is in the middle of a skip connection
 </p>
 
 1. <strong>Cross-partition communication overhead.</strong> Placing a partition boundary in the middle of a skip connection leads to additional communications since tensors in the skip connection must now be copied to a different GPU. For example, with BERT partitions in Figure 6, partition $k$ must take intermediate outputs from both partition $k-2$ and partition $k-1$. In contrast, if the boundary is placed after the \code{addition} layer, the communication overhead between partition $k-1$ and $k$ is visibly smaller. Our measurements show that having cross-device communication is more expensive than having slightly imbalanced partitions (see the Appendix in our paper). Therefore, we do not consider breaking skip connections (highlighted separately as an entire attention layer and MLP layer in green color at line 7 in Algorithm 1.
 
-2. <strong>Frozen layer memory footprint.</strong> During training, AutoPipe must recompute partition boundaries several times to balance two distinct types of layers: frozen layers and active layers. The frozen layer's memory cost is a fraction of that in active layers, given that the frozen layer does not need backward activation maps, optimizer states, and gradients. Instead of launching intrusive profilers to obtain thorough metrics on memory and computational cost, we define a tunable cost factor $\lambda_{\text{frozen}}$ to estimate the memory footprint ratio of a frozen layer over the same active layer. Based on empirical measurements in our experimental hardware, we set it to $\frac{1}{6}$. 
+2. <strong>Frozen layer memory footprint.</strong> During training, AutoPipe must recompute partition boundaries several times to balance two distinct types of layers: frozen layers and active layers. The frozen layer's memory cost is a fraction of that inactive layer, given that the frozen layer does not need backward activation maps, optimizer states, and gradients. Instead of launching intrusive profilers to obtain thorough metrics on memory and computational cost, we define a tunable cost factor $\lambda_{\text{frozen}}$ to estimate the memory footprint ratio of a frozen layer over the same active layer. Based on empirical measurements in our experimental hardware, we set it to $\frac{1}{6}$. 
 
 
 
@@ -158,7 +158,7 @@ Figure 6. Partition boundary is in the middle of a skip connection
 <br>
 </p>
 
-Based on the above two considerations, AutoPipe balances pipeline partitions based on parameter sizes. More specifically, AutoPipe uses a greedy algorithm to allocate all frozen and active layers to evenly distribute partitioned sublayers into $K$ GPU devices. Pseudo code is described as the `load\_balance()` function in Algorithm 1. The frozen layers are extracted from the original model and kept in a separate model instance $\mathcal{F}_{\text{frozen}}$ in the first device of a pipeline.
+Based on the above two considerations, AutoPipe balances pipeline partitions based on parameter sizes. More specifically, AutoPipe uses a greedy algorithm to allocate all frozen and active layers to evenly distribute partitioned sublayers into $K$ GPU devices. Pseudocode is described as the `load\_balance()` function in Algorithm 1. The frozen layers are extracted from the original model and kept in a separate model instance $\mathcal{F}_{\text{frozen}}$ in the first device of a pipeline.
 
 Note that the partition algorithm employed in this paper is not the only option; PipeTransformer is modularized to work with any alternatives. 
 
@@ -172,7 +172,7 @@ Pipeline compression helps to free up GPUs to accommodate more pipeline replicas
 <br>
 </p>
 
-Once the freeze notification is received, AutoPipe will always attempt to divide the pipeline length $K$ by 2 (e.g., from 8 to 4, then 2). By using $\frac{K}{2}$ as the input, the compression algorithm can verify if the result satisfies the criterion in Equation (1). Pseudo code is shown in lines 25-33 in Algorithm 1. Note that this compression makes the acceleration ratio exponentially increase during training, meaning that if a GPU server has a larger number of GPUs (e.g., more than 8), the acceleration ratio will be further amplified.
+Once the freeze notification is received, AutoPipe will always attempt to divide the pipeline length $K$ by 2 (e.g., from 8 to 4, then 2). By using $\frac{K}{2}$ as the input, the compression algorithm can verify if the result satisfies the criterion in Equation (1). Pseudocode is shown in lines 25-33 in Algorithm 1. Note that this compression makes the acceleration ratio exponentially increase during training, meaning that if a GPU server has a larger number of GPUs (e.g., more than 8), the acceleration ratio will be further amplified.
 
 <p align="center">
 <img src="./figure/pipe_buble.png" width="560">
@@ -202,13 +202,13 @@ Despite the conceptual simplicity, subtle dependencies on communications and sta
 <p align="center">
 <img src="./figure/AutoDP.png" width="560">
 <br>
-Figure 8. AutoDP: handling dynamical data parallel with messaging between double process groups (Process 0-7 belong to machine 0, while process 8-15 belong to machine 1)
+Figure 8. AutoDP: handling dynamical data-parallel with messaging between double process groups (Process 0-7 belong to machine 0, while process 8-15 belong to machine 1)
 </p>
 
 
 
 To tackle these challenges, we create double communication process groups for DDP. As in the example shown in Figure 8, the message process group (purple) is responsible for light-weight control messages and covers all processes, while the active training process group (yellow) only contains active processes and serves as a vehicle for heavy-weight tensor communications during training. The message group remains static, whereas the training group is dismantled and reconstructed to match active processes. 
-In T0, only process 0 and 8 are active. During the transition to T1, process 0 activates processes 1 and 9 (newly added pipeline replicas) and synchronizes necessary information mentioned above using the message group. The four active processes then form a new training group, allowing static collective communications adaptive to dynamic memberships.
+In T0, only processes 0 and 8 are active. During the transition to T1, process 0 activates processes 1 and 9 (newly added pipeline replicas) and synchronizes necessary information mentioned above using the message group. The four active processes then form a new training group, allowing static collective communications adaptive to dynamic memberships.
 To redistribute the dataset, we implement a variant of DistributedSampler that can seamlessly adjust data samples to match the number of active pipeline replicas.
 
 The above design also naturally helps to reduce DDP communication overhead. More specifically, when transitioning from T0 to T1, processes 0 and 1 destroy the existing DDP instances, and active processes construct a new DDP training group using cached pipelined model (AutoPipe stores frozen model and cached model separately).
@@ -221,13 +221,13 @@ This section first summarizes experiment setups and then evaluates PipeTransform
 
 \paragraph{Implementation.} We used \code{PyTorch Pipe} as a building block, which has not yet been officially released at the time of writing of this paper. Hence, we used the developer version \code{1.8.0.dev20201219}. The BERT model definition, configuration, and related tokenizer are from \code{HuggingFace 3.5.0}. We implemented Vision Transformer using PyTorch by following its TensorFlow implementation. More details can be found in our source code.
 
-\paragraph{Models and Datasets.} Experiments employ two representative Transformers in CV and NLP: Vision Transformer (ViT) and BERT. ViT was run on an image classification task, initialized with pre-trained weights on ImageNet21K and fine-tuned on ImageNet and CIFAR-100. BERT was run on two tasks, text classification on the SST-2 dataset from the General Language Understanding Evaluation (GLUE) benchmark, and question answering on the SQuAD v1.1 Dataset (Stanford Question Answering) which is a collection of 100k crowdsourced question/answer pairs.
+\paragraph{Models and Datasets.} Experiments employ two representative Transformers in CV and NLP: Vision Transformer (ViT) and BERT. ViT was run on an image classification task, initialized with pre-trained weights on ImageNet21K and fine-tuned on ImageNet and CIFAR-100. BERT was run on two tasks, text classification on the SST-2 dataset from the General Language Understanding Evaluation (GLUE) benchmark, and question answering on the SQuAD v1.1 Dataset (Stanford Question Answering), which is a collection of 100k crowdsourced question/answer pairs.
 
-\paragraph{Training Schemes.} Given that large models normally would require thousands of GPU-days (\emph{e.g.}, GPT-3) if trained from scratch, fine-tuning downstream tasks using pre-trained models has become a trend in CV and NLP communities. Moreover, \autopipe\ is a complex training system that involves multiple core components. Thus, for the first version of \autopipe\ system development and algorithmic research, it is not cost-efficient to develop and evaluate from scratch using large-scale pretraining. Therefore, experiments presented in this section focuses on pre-trained models. Note that since the model architectures in pre-training and fine-tuning are the same, \code{PipeTransformer} can serve both. We discussed pre-training results in the Appendix.
+\paragraph{Training Schemes.} Given that large models normally would require thousands of GPU-days (\emph{e.g.}, GPT-3) if trained from scratch, fine-tuning downstream tasks using pre-trained models has become a trend in CV and NLP communities. Moreover, \autopipe\ is a complex training system that involves multiple core components. Thus, for the first version of \autopipe\ system development and algorithmic research, it is not cost-efficient to develop and evaluate from scratch using large-scale pre-training. Therefore, the experiments presented in this section focuses on pre-trained models. Note that since the model architectures in pre-training and fine-tuning are the same, \code{PipeTransformer} can serve both. We discussed pre-training results in the Appendix.
 
 \paragraph{Baseline.} Experiments in this section compares \code{PipeTransformer} to the state-of-the-art framework, a hybrid scheme of \code{PyTorch Pipe} (PyTorch’s implementation of GPipe~\cite{gpipe}) and \code{PyTorch DDP}. Since this is the first paper that studies accelerating distributed training by freezing layers, there are no perfectly aligned counterpart solutions yet.
 
-\paragraph{Hyper-parameters.} Experiments use ViT-B/16 (12 transformer layers, $16 \times 16$ input patch size) for ImageNet and CIFAR-100, BERT-large-uncased (24 layers) for SQuAD 1.1, and BERT-base-uncased (12 layers) for SST-2. With \code{PipeTransformer}, ViT and BERT training can set the per-pipeline batch size to around 400 and 64 respectively. Other hyperparameters (e.g., epoch, learning rate) for all experiments are presented in Appendix.
+\paragraph{Hyper-parameters.} Experiments use ViT-B/16 (12 transformer layers, $16 \times 16$ input patch size) for ImageNet and CIFAR-100, BERT-large-uncased (24 layers) for SQuAD 1.1, and BERT-base-uncased (12 layers) for SST-2. With \code{PipeTransformer}, ViT and BERT training can set the per-pipeline batch size to around 400 and 64, respectively. Other hyperparameters (e.g., epoch, learning rate) for all experiments are presented in Appendix.
 
 ## Overall Training Acceleration
 <p align="center">
@@ -235,7 +235,7 @@ This section first summarizes experiment setups and then evaluates PipeTransform
 <br>
 </p>
 
-We summarize the overall experimental results in Table \ref{table:speedup_cv}. Note that the speedup we report is based on a conservative $\alpha$ ($\frac{1}{3}$) value that can obtain comparable or even higher accuracy. A more aggressive $\alpha$ ($\frac{2}{5}$, $\frac{1}{2}$) can obtain a higher speedup but may lead to a slight loss in accuracy (See section \ref{sec:freeze_alpha_setting}). Note that the model size of BERT (24 layers) is larger than ViT-B/16 (12 layers), thus it takes more time for communication (see Section \ref{sec:communication_cost} for details).
+We summarize the overall experimental results in the table above. Note that the speedup we report is based on a conservative $\alpha$ ($\frac{1}{3}$) value that can obtain comparable or even higher accuracy. A more aggressive $\alpha$ ($\frac{2}{5}$, $\frac{1}{2}$) can obtain a higher speedup but may lead to a slight loss in accuracy. Note that the model size of BERT (24 layers) is larger than ViT-B/16 (12 layers), thus it takes more time for communication.
 
 ## Performance Analysis
 
@@ -265,12 +265,12 @@ Figure 10. Tuning $\alpha$ in Freezing Algorithm
 
 We ran experiments to show how the $\alpha$ in the freeze algorithms influences training speed. The result clearly demonstrates that a larger $\alpha$ (excessive freeze) leads to a greater speedup but suffers from a slight performance degradation. In the case shown in Figure 10, where $\alpha=1/5$, freeze training outperforms normal training and obtains a $2.04$-fold speedup. We provide more results in the Appendix.
 
-### Optimal Chunks in elastic pipeline
+### Optimal Chunks in the elastic pipeline
 
 <p align="center">
 <img src="./figure/experiments_optimal_k.png" width="450">
 <br>
-Figure 11. Optimal chunk numberin elastic pipeline
+Figure 11. Optimal chunk number in the elastic pipeline
 </p>
 
 We profiled the optimal number of micro-batches $M$ for different pipeline lengths $K$. Results are summarized in Figure 11. As we can see, different $K$ values lead to different optimal $M$, and the throughput gaps across different M values are large (as shown when $K=8$), which confirms the necessity of an anterior profiler in elastic pipelining.
@@ -283,7 +283,7 @@ We profiled the optimal number of micro-batches $M$ for different pipeline lengt
 Figure 12. the timing of caching
 </p>
 
-To evaluate AutoCache, we compared the sample throughput of training that activates AutoCache from epoch $0$ (blue) with the training job without AutoCache (red). Figure 12 shows that enabling caching too early can slow down training, as caching can be more expensive than forward propagation on a small number of frozen layers. After freezing more layers, caching activations clearly outperforms the corresponding forward propagation. As a result, AutoCache uses a profiler to determine the proper timing to enable caching. In our system, for ViT (12 layers), caching starts from 3 frozen layers, while for BERT (24 layers), caching starts from 5 frozen layers.
+To evaluate AutoCache, we compared the sample throughput of training that activates AutoCache from epoch $0$ (blue) with the training job without AutoCache (red). Figure 12 shows that enabling caching too early can slow down training, as caching can be more expensive than forward propagation on a small number of frozen layers. After more layers are frozen, caching activations clearly outperform the corresponding forward propagation. As a result, AutoCache uses a profiler to determine the proper timing to enable caching. In our system, for ViT (12 layers), caching starts from 3 frozen layers, while for BERT (24 layers), caching starts from 5 frozen layers.
 
 For more detailed experimental analysis, please refer to our paper.
 
